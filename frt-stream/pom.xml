@@ -17,16 +17,16 @@
   <parent>
     <groupId>com.frt</groupId>
     <artifactId>frt-parent</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>${frt.version}</version>
   </parent>
 
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.frt</groupId>
-  <artifactId>frt-stream-service</artifactId>
+  <artifactId>frt-stream</artifactId>
   <packaging>jar</packaging>
-  <version>1.0.0-SNAPSHOT</version>
-  <name>FRT STREAM SERVICE 1.0.0-SNAPSHOT</name>
-  <description>Fast River STREAM SERVICE</description>
+  <version>${frt.stream.version}</version>
+  <name>FRT STREAM SERVICE ${frt.stream.version}</name>
+  <description>Fast River STREAM SERVICE ${frt.stream.version}</description>
 
   <properties>
 	<org.apache.kafka.version>2.0.0</org.apache.kafka.version>

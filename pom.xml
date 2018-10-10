@@ -19,12 +19,14 @@
   <groupId>com.frt</groupId>
   <artifactId>frt-parent</artifactId>
   <packaging>pom</packaging>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>${frt.version}</version>
   <name>FRT</name>
   <description>Fast River FHIR-Based and Stream-Enabled Healthcare Data Repository</description>
 
   <properties>
-	<com.frt.fshbr.version>1.0.0-SNAPSHOT</com.frt.fshbr.version>
+	<frt.version>1.0.0-SNAPSHOT</frt.version>
+	<frt.fhir.version>1.0.0-SNAPSHOT</frt.fhir.version>
+	<frt.stream.version>1.0.0-SNAPSHOT</frt.stream.version>	
   </properties>  
   
   <modules>
