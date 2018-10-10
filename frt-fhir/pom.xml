@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Date:                             
+ * $Revision:                         
+ * $Author:                                         
+ * $Id: 
+ */
+-->  
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.frt</groupId>
+        <artifactId>parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+	
+    <groupId>com.frt</groupId>
+    <artifactId>frt-fhir</artifactId>
+    <packaging>pom</packaging>
+    <version>${frt.fhir.version}</version>
+    <name>FRT FHIR Server</name>
+    <description>FRT FHIR Server ${frt.fhir.version}</description>
+
+    <properties>
+        <frt.fhir.version>1.0.0-SNAPSHOT</hdr.fhir.version>
+        <sonar.skip>true</sonar.skip>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>default-check</id>
+                        <phase>none</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>oracle.hsgbu.hdr.fhir</groupId>
+                <artifactId>hdr-fhir-data</artifactId>
+                <version>${hdr.fhir.data.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>oracle.hsgbu.hdr.fhir</groupId>
+                <artifactId>hdr-fhir-base</artifactId>
+                <version>${hdr.fhir.base.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <modules>
+		<module>fhir-rest</module>		
+    </modules>
+
+</project>
