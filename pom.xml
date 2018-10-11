@@ -5,10 +5,10 @@
  *
  * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
  * 
- * $Date:                             
- * $Revision:                         
- * $Author:                                         
- * $Id: 
+ * $Id:					$: Id of last commit                
+ * $Revision::			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date::	10-10-2018	$: Date of last commit
  */
 --> 
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
@@ -27,9 +27,11 @@
 	<frt.version>1.0.0-SNAPSHOT</frt.version>
 	<frt.fhir.version>1.0.0-SNAPSHOT</frt.fhir.version>
 	<frt.stream.version>1.0.0-SNAPSHOT</frt.stream.version>	
+	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
   </properties>  
   
   <modules>
+    <module>frt-common</module>  
     <module>frt-stream</module>
     <module>frt-fhir</module>	
   </modules>
