@@ -44,6 +44,7 @@ CREATE TABLE OBSERVATION_IDENTIFIER (
 	element_id BIGINT NOT NULL,
 	observation_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
+	path VARCHAR(1024), -- path for the attribute. The valid value for observation resource: observation.identifier
 	use	VARCHAR(32), 
 	type	CLOB, -- CodeableConcept object serialization and de-serialization 	  	 	
 	system	VARCHAR(2048),
@@ -54,82 +55,34 @@ CREATE TABLE OBSERVATION_IDENTIFIER (
 	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)	
 );
 
--- FHIR Reference complex type --
-CREATE TABLE OBSERVATION_BASEDON (
+-- FHIR CodeableConcept complex type for category and code --
+CREATE TABLE OBSERVATION_CODEABLECONCEPT (
+	element_id BIGINT NOT NULL,
+	observation_id BIGINT NOT NULL,
+	element_extension BLOB, -- Extension object serialization and de-serialization
+	path VARCHAR(1024) NOT NULL, -- path for the attribute. The valid value for observation resource: observation.category, observation.code
+	coding_system	VARCHAR(2048),
+	coding_version	VARCHAR(32),
+	coding_code	VARCHAR(32),
+	coding_display	VARCHAR(2048),
+	coding_userSelected	BOOLEAN,
+	text VARCHAR(2048),
+	PRIMARY KEY (element_id), 	
+	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)			
+);
+
+-- FHIR Reference complex type for basedon, subject, context, performer --
+CREATE TABLE OBSERVATION_REFERENCE (
 	element_id BIGINT NOT NULL,
 	observation_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization  
+	path VARCHAR(1024) NOT NULL, -- path for the attribute. The valid value for observation resource: 
+	                             -- observation.basedon, observation.subject, observation.context, and observation.performer
     reference VARCHAR(2048),
 	identifier BLOB, -- Identifier object serialization and de-serialization   	
 	display VARCHAR(2048),
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)									
-);
-
--- FHIR CodeableConcept complex type --
-CREATE TABLE OBSERVATION_CATEGORY (
-	element_id BIGINT NOT NULL,
-	observation_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization
-	coding_system	VARCHAR(2048),
-	coding_version	VARCHAR(32),
-	coding_code	VARCHAR(32),
-	coding_display	VARCHAR(2048),
-	coding_userSelected	BOOLEAN,
-	text VARCHAR(2048),
-	PRIMARY KEY (element_id), 	
-	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)			
-);
-
--- FHIR CodeableConcept complex type --
-CREATE TABLE OBSERVATION_CODE (
-	element_id BIGINT NOT NULL,
-	observation_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization
-	coding_system	VARCHAR(2048),
-	coding_version	VARCHAR(32),
-	coding_code	VARCHAR(32),
-	coding_display	VARCHAR(2048),
-	coding_userSelected	BOOLEAN,
-	text VARCHAR(2048),
-	PRIMARY KEY (element_id), 	
-	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)			
-);
-
--- FHIR Reference complex type --
-CREATE TABLE OBSERVATION_SUBJECT (
-	element_id BIGINT NOT NULL,
-	patient_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization  
-    reference VARCHAR (2048),
-	identifier BLOB, -- Identifier object serialization and de-serialization   	
-	display VARCHAR(2048),
-	PRIMARY KEY (element_id), 	
-	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)			
-);
-
--- FHIR Reference complex type --
-CREATE TABLE OBSERVATION_CONTEXT (
-	element_id BIGINT NOT NULL,
-	patient_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization  
-    reference VARCHAR (2048),
-	identifier BLOB, -- Identifier object serialization and de-serialization   	
-	display VARCHAR(2048),
-	PRIMARY KEY (element_id), 	
-	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)			
-);
-
--- FHIR Reference complex type --
-CREATE TABLE OBSERVATION_PERFORMER (
-	element_id BIGINT NOT NULL,
-	patient_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization  
-    reference VARCHAR (2048),
-	identifier BLOB, -- Identifier object serialization and de-serialization   	
-	display VARCHAR(2048),
-	PRIMARY KEY (element_id), 	
-	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)			
 );
 
 -- FHIR BackboneElement complex type --

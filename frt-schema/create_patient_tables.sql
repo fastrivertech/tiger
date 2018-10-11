@@ -69,6 +69,7 @@ CREATE TABLE PATIENT_IDENTIFIER (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
+	path VARCHAR(1024), -- path for the attribute. The valid value for patient resource: patient.identifier
 	use	VARCHAR(32), 
 	type	CLOB, -- CodeableConcept object serialization and de-serialization 	  	 	
 	system	VARCHAR(128),
@@ -80,10 +81,11 @@ CREATE TABLE PATIENT_IDENTIFIER (
 );
 
 -- FHIR HumanName complex type --
-CREATE TABLE PATIENT_NAME (
+CREATE TABLE PATIENT_HUMANNAME (
 	element_id	BIGINT NOT NULL,
 	patient_id	BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
+	path VARCHAR(1024), -- path for the attribute. The valid value for patient resource: patient.name	
 	use VARCHAR(32),
 	text VARCHAR(2048),
 	family VARCHAR(32),
@@ -96,10 +98,11 @@ CREATE TABLE PATIENT_NAME (
 );
 
 -- FHIR ContactPoint complex type --
-CREATE TABLE PATIENT_TELECOM (
+CREATE TABLE PATIENT_CONTACTPOINT (
 	element_id	BIGINT NOT NULL,
 	patient_id	BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
+	path VARCHAR(1024), -- path for the attribute. The valid value for patient resource: patient.telecom
 	system VARCHAR(128),
 	value VARCHAR(2048),
 	use VARCHAR(32),
@@ -114,6 +117,7 @@ CREATE TABLE PATIENT_ADDRESS (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
+	path VARCHAR(1024), -- path for the attribute. The valid value for patient resource: patient.address
 	use VARCHAR(32),
 	type VARCHAR(32),
 	text VARCHAR(2048),
@@ -129,10 +133,11 @@ CREATE TABLE PATIENT_ADDRESS (
 );
 
 -- FHIR CodeableConcept complex type --
-CREATE TABLE PATIENT_MARITALSTATUS (
+CREATE TABLE PATIENT_CODEABLECONCEPT (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
+	path VARCHAR(1024), -- path for the attribute. The valid value for patient resource: patient.maritalstatus	
 	coding_system	VARCHAR(2048),
 	coding_version	VARCHAR(32),
 	coding_code	VARCHAR(32),
@@ -144,10 +149,11 @@ CREATE TABLE PATIENT_MARITALSTATUS (
 );
 
 -- FHIR Attachment complex type --
-CREATE TABLE PATIENT_PHOTO (
+CREATE TABLE PATIENT_ATTACHMENT (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
+	path VARCHAR(1024), -- path for the attribute. The valid value for patient resource: patient.photo		
 	contentType VARCHAR(32),
 	language VARCHAR(32),
 	data BLOB, -- base64Binary object serialization and de-serialization
@@ -158,6 +164,19 @@ CREATE TABLE PATIENT_PHOTO (
 	creation DATETIME,
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)				
+);
+
+-- FHIR Reference complex type --
+CREATE TABLE PATIENT_REFERENCE (
+	element_id BIGINT NOT NULL,
+	patient_id BIGINT NOT NULL,
+	element_extension BLOB, -- Extension object serialization and de-serialization  
+	path VARCHAR(1024), -- path for the attribute. The valid value for patient resource: patient.generalpractitioner, patient.managingorganization			
+    reference VARCHAR (2048),
+	identifier BLOB, -- Identifier object serialization and de-serialization   	
+	display VARCHAR(2048),
+	PRIMARY KEY (element_id), 	
+	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)									
 );
 
 -- FHIR BackboneElement complex type --
@@ -199,30 +218,6 @@ CREATE TABLE PATIENT_COMMUNICATION (
 	preferred BOOLEAN, 
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)								
-);
-
--- FHIR Reference complex type --
-CREATE TABLE PATIENT_GENERALPRACTITIONER (
-	element_id BIGINT NOT NULL,
-	patient_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization  
-    reference VARCHAR (2048),
-	identifier BLOB, -- Identifier object serialization and de-serialization   	
-	display VARCHAR(2048),
-	PRIMARY KEY (element_id), 	
-	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)									
-);
-
--- FHIR Reference complex type --
-CREATE TABLE PATIENT_MANAGINGORGANIZATION (
-	element_id BIGINT NOT NULL,
-	patient_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization  
-    reference VARCHAR(2048),
-	identifier BLOB, -- Identifier object serialization and de-serialization   	
-	display VARCHAR(2048),
-	PRIMARY KEY (element_id), 	
-	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)									
 );
 
 -- FHIR BackboneElement complex type --
