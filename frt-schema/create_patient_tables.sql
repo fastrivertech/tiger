@@ -25,12 +25,12 @@ CREATE TABLE RESOURCE (
 	resource_id_extension BLOB, -- Extension object serialization and de-serialization		
 	system_id	BIGINT NOT NULL,	
 	resource_meta BLOB, -- Meta object serialization and de-serialization
-	resource_implicitRules VARCHAR, 
-	resource_language VARCHAR,
+	resource_implicitRules VARCHAR(2048), -- maximum uri length 
+	resource_language VARCHAR(32), -- maximu code length
 	domainResource_text	BLOB, -- Narrative object serialization and de-serialization
-	domainResource_contained BLOB, -- A list of resource id object serialization and de-serialization 	
-    domainResource_extension	BLOB, -- a list of Extension object serialization and de-serialization
-	domainResource_modifierExtension	BLOB, -- a list of Extension object serialization and de-serialization
+	domainResource_contained BLOB, -- A list of resource_id object serialization and de-serialization 	
+    domainResource_extension	BLOB, -- A list of Extension object serialization and de-serialization
+	domainResource_modifierExtension	BLOB, -- A list of Extension object serialization and de-serialization
 	-- Element Extension
 	resource_implicitRules_extension BLOB, -- Extension object serialization and de-serialization	
 	resource_language_extension BLOB, -- Extension object serialization and de-serialization
@@ -43,154 +43,124 @@ CREATE TABLE PATIENT (
 	patient_id	BIGINT NOT NULL,
 	resource_id	BIGINT NOT NULL,
 	active	BOOLEAN NOT NULL,
-	gender VARCHAR(10),
+	gender VARCHAR(32),
 	birthDate DATE,
 	deceasedBoolean BOOLEAN,
-	deceasedDateTime DATATIME,
+	deceasedDateTime DATETIME,
 	multipleBirthBoolean BOOLEAN,
 	multipleBirthInteger INTEGER,
-	-- Element Extension
-	active_extension BLOB, -- Extension object serialization and de-serialization	
-	gender_extension BLOB, -- Extension object serialization and de-serialization	
-	birthDate_extension BLOB, -- Extension object serialization and de-serialization	
-	deceasedBoolean_extension BLOB, -- Extension object serialization and de-serialization	
-	deceasedDateTime_extension BLOB, -- Extension object serialization and de-serialization	
-	multipleBirthBoolean_extension BLOB, -- Extension object serialization and de-serialization	
-	multipleBirthInteger_extension BLOB, -- Extension object serialization and de-serialization		
 	PRIMARY KEY (patient_id), 	
-	FOREIGN KEY (resource_id) REFERENCES RESOURCE(resource_id)	
+	FOREIGN KEY (resource_id) REFERENCES RESOURCE(resource_id)
 );
 
+-- FHIR patient resource element extension table --
+CREATE TABLE PATIENT_ELEMENT_EXTENSION (
+	extension_id BIGINT NOT NULL,
+	element_id	BIGINT NOT NULL,
+	patient_id	BIGINT NOT NULL,
+	path VARCHAR(128), -- patient.active, patient.identifier.use, etc.
+	extension BLOB, -- Extension object serialization and de-serialization
+	PRIMARY KEY (extension_id), 	
+	FOREIGN KEY (element_id, patient_id) REFERENCES RESOURCE(element_id, patient_id)	
+);
+
+-- FHIR Identifier complex type --
 CREATE TABLE PATIENT_IDENTIFIER (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
-	use	VARCHAR, 
+	use	VARCHAR(32), 
 	type	CLOB, -- CodeableConcept object serialization and de-serialization 	  	 	
-	system	VARCHAR,
-	value VARCHAR, 
+	system	VARCHAR(128),
+	value VARCHAR(128), 
 	period	BLOB,  -- Period object serialization and de-serialization 	  	 
 	assigner BLOB, -- Reference object serialization and de-serialization
-	-- Element Extension
-	use_extension BLOB, -- Extension object serialization and de-serialization	
-	system_extension BLOB, -- Extension object serialization and de-serialization	
-	value_extension BLOB, -- Extension object serialization and de-serialization			
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)	
 );
 
+-- FHIR HumanName complex type --
 CREATE TABLE PATIENT_NAME (
 	element_id	BIGINT NOT NULL,
 	patient_id	BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
-	use VARCHAR,
-	text VARCHAR,
-	family VARCHAR,
+	use VARCHAR(32),
+	text VARCHAR(2048),
+	family VARCHAR(32),
 	given	CLOB, -- A list of string object serialization and de-serialization 
 	prefix	CLOB, -- A list of string object serialization and de-serialization
 	suffix	CLOB, -- A list of string object serialization and de-serialization
 	period	BLOB, -- Extension object serialization and de-serialization
-	-- Element Extension
-	use_extension BLOB, -- Extension object serialization and de-serialization	
-	text_extension BLOB, -- Extension object serialization and de-serialization	
-	family_extension BLOB, -- Extension object serialization and de-serialization		
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)	
 );
 
+-- FHIR ContactPoint complex type --
 CREATE TABLE PATIENT_TELECOM (
 	element_id	BIGINT NOT NULL,
 	patient_id	BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
-	system VARCHAR,
-	value VARCHAR,
-	use VARCHAR,
+	system VARCHAR(128),
+	value VARCHAR(2048),
+	use VARCHAR(32),
 	rank INTEGER,
 	period BLOB, -- Period object serialization and de-serialization 
-	-- Element Extension	
-	element_extension BLOB, -- Extension object serialization and de-serialization
-	system_extension BLOB, -- Extension object serialization and de-serialization
-	value_extension BLOB, -- Extension object serialization and de-serialization
-	use_extension BLOB, -- Extension object serialization and de-serialization
-	rank_extension BLOB, -- Extension object serialization and de-serialization
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)	
 );
 
+-- FHIR Address complex type --
 CREATE TABLE PATIENT_ADDRESS (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
-	use VARCHAR(20),
-	type VARCHAR(20),
-	text VARCHAR(20),
-	line VARCHAR(200),
-	city VARCHAR(20),
-	district VARCHAR(20),
-	state VARCHAR(20),
-	postalCode VARCHAR(20),
-	country VARCHAR(20),		
+	use VARCHAR(32),
+	type VARCHAR(32),
+	text VARCHAR(2048),
+	line VARCHAR(2024), -- Keep a new line character for suporting multiple lines
+	city VARCHAR(32),
+	district VARCHAR(32),
+	state VARCHAR(32),
+	postalCode VARCHAR(32),
+	country VARCHAR(32),		
 	period BLOB, -- Period object serialization and de-serialization
-	-- Element Extension 
-	use_extension BLOB, -- Extension object serialization and de-serialization
-	type_extension BLOB, -- Extension object serialization and de-serialization
-	text_extension BLOB, -- Extension object serialization and de-serialization
-	line_extension BLOB, -- Extension object serialization and de-serialization
-	city_extension BLOB, -- Extension object serialization and de-serialization
-	district_extension BLOB, -- Extension object serialization and de-serialization
-	state_extension BLOB, -- Extension object serialization and de-serialization
-	postalCode_extension BLOB, -- Extension object serialization and de-serialization
-	country_extension BLOB, -- Extension object serialization and de-serialization	
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)		
 );
 
+-- FHIR CodeableConcept complex type --
 CREATE TABLE PATIENT_MARITALSTATUS (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
-	coding_system	VARCHAR,
-	coding_version	VARCHAR,
-	coding_code	VARCHAR,
-	coding_display	VARCHAR,
+	coding_system	VARCHAR(2048),
+	coding_version	VARCHAR(32),
+	coding_code	VARCHAR(32),
+	coding_display	VARCHAR(2048),
 	coding_userSelected	BOOLEAN,
-	text VARCHAR,
-	-- Element Extension
-	coding_system_extension BLOB, -- Extension object serialization and de-serialization
-	coding_version_extension BLOB, -- Extension object serialization and de-serialization
-	coding_code_extension BLOB, -- Extension object serialization and de-serialization
-	coding_display_extension BLOB, -- Extension object serialization and de-serialization
-	coding_userSelected_extension BLOB, -- Extension object serialization and de-serialization
-	text_extension BLOB, -- Extension object serialization and de-serialization
+	text VARCHAR(2048),
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)			
 );
 
+-- FHIR Attachment complex type --
 CREATE TABLE PATIENT_PHOTO (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization
-	contentType VARCHAR,
-	language VARCHAR,
-	data BLOB,
-	url VARCHAR,
+	contentType VARCHAR(32),
+	language VARCHAR(32),
+	data BLOB, -- base64Binary object serialization and de-serialization
+	url VARCHAR(2048),
 	size INTEGER,
-	hash BLOB,
-	title VARCHAR,
-	creation DATATIME,
-	-- Element Extension
-	contentType_extension BLOB, -- Extension object serialization and de-serialization
-	language_extension BLOB, -- Extension object serialization and de-serialization
-	data_extension BLOB, -- Extension object serialization and de-serialization
-	url_extension BLOB, -- Extension object serialization and de-serialization
-	size_extension BLOB, -- Extension object serialization and de-serialization
-	hash_extension BLOB, -- Extension object serialization and de-serialization
-	title_extension BLOB, -- Extension object serialization and de-serialization
-	creation_extension BLOB, -- Extension object serialization and de-serialization	
+	hash BLOB, -- base64Binary object serialization and de-serialization
+	title VARCHAR(32),
+	creation DATETIME,
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)				
 );
 
+-- FHIR BackboneElement complex type --
 CREATE TABLE PATIENT_CONTACT (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
@@ -198,15 +168,16 @@ CREATE TABLE PATIENT_CONTACT (
 	backbone_modifierExtension BLOB, -- Extension object serialization and de-serialization 
 	relationship BLOB, -- A list of CodeableConcept object serialization and de-serialization 	
 	name BLOB, -- HumanName object serialization and de-serialization
-	telecom,-- A list of Contact object serialization and de-serialization 	 
+	telecom BLOB,-- A list of ContactPoint object serialization and de-serialization 	 
 	address BLOB, -- Address object serialization and de-serialization
-	gender VARCHAR 
+	gender VARCHAR(32), 
 	organization BLOB, -- Reference object serialization and de-serialization 
 	period BLOB, -- Period object serialization and de-serialization 
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)					
 );
 
+-- FHIR BackboneElement complex type --
 CREATE TABLE PATIENT_ANIMAL (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
@@ -218,6 +189,7 @@ CREATE TABLE PATIENT_ANIMAL (
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)							
 );
 
+-- FHIR BackboneElement complex type --
 CREATE TABLE PATIENT_COMMUNICATION (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
@@ -225,53 +197,44 @@ CREATE TABLE PATIENT_COMMUNICATION (
 	backbone_modifierExtension BLOB, -- Extension object serialization and de-serialization 
 	language BLOB -- CodeableConcept object serialization and de-serialization  
 	preferred BOOLEAN, 
-	-- Element Extension
-	preferred_extension BLOB, -- Extension object serialization and de-serialization 
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)								
 );
 
+-- FHIR Reference complex type --
 CREATE TABLE PATIENT_GENERALPRACTITIONER (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization  
-    reference VARCHAR,
+    reference VARCHAR (2048),
 	identifier BLOB, -- Identifier object serialization and de-serialization   	
-	display VARCHAR,
-	-- Element Extension
-	reference_extension BLOB, -- Extension object serialization and de-serialization
-	display_extension BLOB, -- Extension object serialization and de-serialization 
+	display VARCHAR(2048),
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)									
 );
 
+-- FHIR Reference complex type --
 CREATE TABLE PATIENT_MANAGINGORGANIZATION (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension BLOB, -- Extension object serialization and de-serialization  
-    reference VARCHAR,
+    reference VARCHAR(2048),
 	identifier BLOB, -- Identifier object serialization and de-serialization   	
-	display VARCHAR,
-	-- Element Extension
-	reference_extension BLOB, -- Extension object serialization and de-serialization
-	display_extension BLOB, -- Extension object serialization and de-serialization 
+	display VARCHAR(2048),
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)									
 );
 
+-- FHIR BackboneElement complex type --
 CREATE TABLE PATIENT_LINK (
 	element_id BIGINT NOT NULL,
 	patient_id BIGINT NOT NULL,
 	element_extension  BLOB, -- Extension object serialization and de-serialization
 	backbone_modifierExtension BLOB, -- Extension object serialization and de-serialization
-	other_reference VARCHAR,
+	other_reference VARCHAR(2048),
 	other_identifier -- Identifer object serialization and de-serialization 
-	other_display VARCHAR,
-	type VARCHAR,
-	-- Element Extension
-	other_extension BLOB, -- Extension object serialization and de-serialization
-	other_extension BLOB, -- Extension object serialization and de-serialization
-	type_extension BLOB, -- Extension object serialization and de-serialization
+	other_display VARCHAR(2048),
+	type VARCHAR(32),
 	PRIMARY KEY (element_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)										
 );
