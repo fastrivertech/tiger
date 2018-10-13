@@ -12,17 +12,16 @@
 package com.frt.util.logging;
 
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
-public class Log {
-	private final Logger delegate;
+public class Logger {
+	private final java.util.logging.Logger delegate;
 	
-	private Log(Logger delegate) {
+	private Logger(java.util.logging.Logger delegate) {
 		this.delegate = delegate;
 	}
 	
-	public static Log getLog(String name) {
-		return new Log(Logger.getLogger(name));
+	public static Logger getLog(String name) {
+		return new Logger(java.util.logging.Logger.getLogger(name));
 	}
 	
 	public void debug(String msg) {		

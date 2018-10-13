@@ -8,8 +8,18 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.fhir.rest;
+package com.frt.fhir.parser;
 
-public class CreateOperation {
+import org.hl7.fhir.dstu3.model.Resource;
 
+/**
+ * Parser Interface
+ * 
+ * @author cqye
+ */
+public interface Parser {
+	
+	<R extends Resource> String serialize(R resource) ;
+	<R extends Resource> R deserialize(Class<R> resourceClz, String message) ;
+	
 }

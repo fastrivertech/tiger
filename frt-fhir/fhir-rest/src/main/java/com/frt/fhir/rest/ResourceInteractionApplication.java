@@ -14,17 +14,23 @@ import java.util.Set;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.ApplicationPath;
 
+/**
+ * ResourceInteractionApplication class
+ * 
+ * @author cqye
+ */
 @ApplicationPath("/")
-public class FhirApplication extends Application {
+public class ResourceInteractionApplication extends Application {
 
-	public FhirApplication() {
+	public ResourceInteractionApplication() {
 		super();
 	}
 
 	@Override
 	public Set<Class<?>> getClasses() {
 		Set<Class<?>> resources = new java.util.HashSet<>();
-		resources.add(Operation.class);
+		resources.add(CreateResourceInteraction.class);
+		resources.add(ReadResourceInteraction.class);		
 		return resources;
 	}
 }

@@ -78,6 +78,11 @@
   <dependencies>
 	<dependency>
 	  <groupId>com.frt</groupId>
+      <artifactId>frt-common</artifactId>
+      <version>${frt.common.version}</version>
+	</dependency>    
+	<dependency>
+	  <groupId>com.frt</groupId>
       <artifactId>frt-stream</artifactId>
       <version>${frt.stream.version}</version>
 	</dependency>  
