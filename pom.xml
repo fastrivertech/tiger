@@ -28,12 +28,14 @@
 	<frt.fhir.version>1.0.0-SNAPSHOT</frt.fhir.version>
 	<frt.stream.version>1.0.0-SNAPSHOT</frt.stream.version>	
 	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
+	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>			
   </properties>  
   
   <modules>
     <module>frt-common</module>  
     <module>frt-stream</module>
-    <module>frt-fhir</module>	
+    <module>frt-service</module>    
+	<module>frt-fhir</module>	
   </modules>
   	
 </project>
