@@ -8,7 +8,7 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.dr.persistence;
+package com.frt.data.repository.persistence;
 
 /**
  * PersistenceException class

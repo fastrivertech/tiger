@@ -9,12 +9,8 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.dl.persistence;
+package com.frt.data.repository.dao;
 
-/**
- * StoreManager class
- * @author cqye
- */
-public class StoreManager {
+public class DaoFactory {
 
 }
