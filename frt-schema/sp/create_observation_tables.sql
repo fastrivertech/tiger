@@ -8,135 +8,139 @@
  * $Author:                                         
  * $Id: 
  */ 
+ 
  -- FHIR observation resource relevant tables --
 CREATE TABLE OBSERVATION (
 	observation_id BIGINT NOT NULL,
-	resource_id BIGINT NOT NULL,
-	status VARCHAR(32) NOT NULL,	
-	effectiveDateTime DATETIME,
-	effectivePeriod BLOB, -- Period object serialization and de-serialization
-	issued DATETIME,
-	value BLOB, -- Value object serialization and de-serialization
-	dataAbsentReason BLOB, -- CodeableConcept object serialization and de-serialization 	
-	interpretation BLOB, -- CodeableConcept object serialization and de-serialization 		
+	domain_resource_id BIGINT NOT NULL,
+	-- identifier -- Σ, refer to OBSERVATION_IDENTIFIER table
+	-- basedOn -- Σ, refer to OBSERVATION_REFERENCE table
+	status VARCHAR(32) NOT NULL, -- ?!Σ	
+	-- category -- refer to OBSERVATION_CODEABLECONCEPT
+	-- code -- Σ, refer to OBSERVATION_CODEABLECONCEPT	
+	effectiveDateTime TIMESTAMP, -- Σ
+	effectivePeriod CLOB, -- Σ, Period object serialization and de-serialization
+	issued TIMESTAMP, -- Σ
+	-- performer -- Σ, refer to OBSERVATION_REFERENCE table
+	value BLOB, -- Value object of any FHIR primitive and complex data types, serialization and de-serialization 
+	dataAbsentReason CLOB, -- I, CodeableConcept object serialization and de-serialization 	
+	interpretation CLOB, -- CodeableConcept object serialization and de-serialization 		
 	comment	VARCHAR(2048),
-	bodySite BLOB, -- CodeableConcept object serialization and de-serialization 	
-	method BLOB, -- CodeableConcept object serialization and de-serialization 	
-	specimen BLOB, -- Reference object serialization and de-serialization 	
-	device BLOB, -- Reference object serialization and de-serialization
+	bodySite CLOB, -- CodeableConcept object serialization and de-serialization 	
+	method CLOB, -- CodeableConcept object serialization and de-serialization 	
+	specimen CLOB, -- Reference object serialization and de-serialization 	
+	device CLOB, -- Reference object serialization and de-serialization
+	-- referenceRange -- I, refer to OBSERVATION_REFERENCERANGE table
+	-- related -- Σ, refer to OBSERVATION_RELATED table
+	-- component -- Σ, refer to OBSERVATION_COMPONENT table
 	PRIMARY KEY (observation_id), 	
-	FOREIGN KEY (resource_id) REFERENCES RESOURCE(resource_id)	
+	FOREIGN KEY (domain_resource_id) REFERENCES DOMAIN_RESOURCE(domain_resource_id)	
 );
 
--- FHIR observation resource element extension table --
-CREATE TABLE PATIENT_ELEMENT_EXTENSION (
+-- FHIR observation resource extension table, I and affected by constraints --
+CREATE TABLE OBSERVATION_EXTENSION (
 	extension_id BIGINT NOT NULL,
-	element_id	BIGINT NOT NULL,
 	observation_id	BIGINT NOT NULL,
-	path VARCHAR, -- observation.status, observation.identifier.use, etc.
-	extension BLOB, -- Extension object serialization and de-serialization
+	secondary_id BIGINT NOT NULL,	
+	path VARCHAR(128), -- path patterns: observation.domain.resource/observation.[child]/extension
+	url	VARCHAR(128) NOT NULL, 	
+	value CLOB, -- value of any FHIR primitive and complex data types
+	isModifier BOOLEAN DEFAULT false, -- default false
 	PRIMARY KEY (extension_id), 	
-	FOREIGN KEY (element_id, observation_id) REFERENCES RESOURCE(element_id, observation_id)	
+	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)	
 );
 
--- FHIR Identifier complex type --
+-- FHIR observation resource element extension table, I and affected by constraints --
+CREATE TABLE OBSERVATION_ELEMENT_EXTENSION (
+	extension_id BIGINT NOT NULL,
+	observation_id	BIGINT NOT NULL,
+	secondary_id BIGINT NOT NULL,	
+	path VARCHAR(128), -- path patterns:observation.[attribute]/observation.[child].[attribute]/extesion
+	url	VARCHAR(128) NOT NULL, 	
+	value BLOB, -- value of any FHIR primitive and complex data types
+	isModifier boolean DEFAULT false, -- default false
+	PRIMARY KEY (extension_id), 	
+	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)	
+);
+
+
+-- FHIR Identifier complex type, Σ --
 CREATE TABLE OBSERVATION_IDENTIFIER (
-	element_id BIGINT NOT NULL,
+	identifier_id BIGINT NOT NULL,
 	observation_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization
-	path VARCHAR(1024), -- path for the attribute. The valid value for observation resource: observation.identifier
-	use	VARCHAR(32), 
-	type	CLOB, -- CodeableConcept object serialization and de-serialization 	  	 	
-	system	VARCHAR(2048),
-	value VARCHAR(2048), 
-	period	BLOB,  -- Period object serialization and de-serialization 	  	 
-	assigner BLOB, -- Reference object serialization and de-serialization
-	PRIMARY KEY (element_id), 	
+	path VARCHAR(128), -- path for the attribute. The valid value for observation resource: observation.identifier
+	use	VARCHAR(32), -- ?!Σ
+	type CLOB, -- Σ, CodeableConcept object serialization and de-serialization 	  	 	
+	system	VARCHAR(128), -- Σ
+	value VARCHAR(128), -- Σ 
+	period	CLOB,  -- Σ, Period object serialization and de-serialization 	  	 
+	assigner CLOB, -- Σ, Reference object serialization and de-serialization
+	PRIMARY KEY (identifier_id), 	
 	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)	
 );
 
 -- FHIR CodeableConcept complex type for category and code --
 CREATE TABLE OBSERVATION_CODEABLECONCEPT (
-	element_id BIGINT NOT NULL,
+	codeableconcept_id BIGINT NOT NULL, -- as well as is element_id
 	observation_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization
-	path VARCHAR(1024) NOT NULL, -- path for the attribute. The valid value for observation resource: observation.category, observation.code
-	coding_system	VARCHAR(2048),
-	coding_version	VARCHAR(32),
-	coding_code	VARCHAR(32),
-	coding_display	VARCHAR(2048),
-	coding_userSelected	BOOLEAN,
-	text VARCHAR(2048),
-	PRIMARY KEY (element_id), 	
+	path VARCHAR(128) NOT NULL, -- path for the attribute: observation.category, observation.code
+	coding_system	VARCHAR(128), -- Σ
+	coding_version	VARCHAR(32), -- Σ
+	coding_code	VARCHAR(32), -- Σ
+	coding_display	VARCHAR(2048), -- Σ
+	coding_userSelected	BOOLEAN DEFAULT false, -- Σ
+	txt VARCHAR(2048), -- Σ
+	PRIMARY KEY (codeableconcept_id), 	
 	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)			
 );
 
--- FHIR Reference complex type for basedon, subject, context, performer --
+-- FHIR Reference complex type for basedon, subject, context, performer, ΣI --
 CREATE TABLE OBSERVATION_REFERENCE (
-	element_id BIGINT NOT NULL,
+	reference_id BIGINT NOT NULL, -- as well as is element_id
 	observation_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization  
-	path VARCHAR(1024) NOT NULL, -- path for the attribute. The valid value for observation resource: 
-	                             -- observation.basedon, observation.subject, observation.context, and observation.performer
-    reference VARCHAR(2048),
-	identifier BLOB, -- Identifier object serialization and de-serialization   	
-	display VARCHAR(2048),
-	PRIMARY KEY (element_id), 	
+	path VARCHAR(128), -- path for the attribute: observation.basedon, observation.subject, observation.context, observation.performer			
+    reference VARCHAR (2048), -- ΣI
+	identifier CLOB, -- Σ, Identifier object serialization and de-serialization   	
+	display VARCHAR(2048), -- Σ
+	PRIMARY KEY (reference_id), 	
 	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)									
 );
 
--- FHIR BackboneElement complex type --
+-- FHIR BackboneElement complex type, I --
 CREATE TABLE OBSERVATION_REFERENCERANGE (
-	element_id BIGINT NOT NULL,
+	referencerange_id BIGINT NOT NULL,  -- as well as is element_id
 	observation_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization
-	backbone_modifierExtension BLOB, -- Extension object serialization and de-serialization 
-	low BLOB, -- SimpleQuantity object serialization and de-serialization 
-	high BLOB, -- SimpleQuantity object serialization and de-serialization
-	type BLOB, -- CodeableConcept object serialization and de-serialization
-	appliesTo BLOB, -- A list CodeableConcept object serialization and de-serialization
-	age_low BLOB, -- SimpleQuantity object serialization and de-serialization
-	age_high BLOB, -- SimpleQuantity object serialization and de-serialization	
-	text VARCHAR(2048),	
-	PRIMARY KEY (element_id), 	
+	low CLOB, -- SimpleQuantity object serialization and de-serialization 
+	high CLOB, -- SimpleQuantity object serialization and de-serialization
+	type CLOB, -- CodeableConcept object serialization and de-serialization
+	appliesTo CLOB, -- A list CodeableConcept object serialization and de-serialization
+	age_low CLOB, -- SimpleQuantity object serialization and de-serialization
+	age_high CLOB, -- SimpleQuantity object serialization and de-serialization	
+	txt VARCHAR(2048),	
+	PRIMARY KEY (referencerange_id), 	
 	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)	
 );
 
--- FHIR BackboneElement complex type --
+-- FHIR BackboneElement complex type, Σ --
 CREATE TABLE OBSERVATION_RELATED (
-	element_id BIGINT NOT NULL,
+	related_id BIGINT NOT NULL, -- as well as is element_id
 	observation_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization
-	backbone_modifierExtension BLOB, -- Extension object serialization and de-serialization 
 	type VARCHAR(32),
-	target_reference VARCHAR(2048),
-    target_identifier BLOB, -- Reference object serialization and de-serialization
-	target_display VARCHAR(2048)
-	PRIMARY KEY (element_id), 	
+	target CLOB NOT NULL, -- Reference object serialization and de-serialization
+	PRIMARY KEY (related_id), 	
 	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)	
 );
 
--- FHIR BackboneElement complex type --
+-- FHIR BackboneElement complex type, Σ--
 CREATE TABLE OBSERVATION_COMPONENT (
-	element_id BIGINT NOT NULL,
+	component_id BIGINT NOT NULL,  -- as well as is element_id
 	observation_id BIGINT NOT NULL,
-	element_extension BLOB, -- Extension object serialization and de-serialization
-	backbone_modifierExtension BLOB, -- Extension object serialization and de-serialization 
-	code BLOB, -- CodeableConcept object serialization and de-serialization 
-	valueQuantity BLOB, -- Quantity object serialization and de-serialization 
-	valueCodeableConcept BLOB, -- CodeableConcept object serialization and de-serialization
-	valueString VARCHAR(2048),
-	valueRange BLOB, -- Range object serialization and de-serialization
-	valueRatio BLOB, -- Ratio object serialization and de-serialization
-	valueSampledData BLOB, -- SampledData object serialization and de-serialization
-	valueAttachment BLOB, -- Attachment object serialization and de-serialization
-	valueTime TIME,
-	valueDateTime DATETIME,
-	valuePeriod BLOB, -- Extension object serialization and de-serialization	
-	dataAbsentReason BLOB, -- CodeableConcept object serialization and de-serialization
-	interpretation BLOB, -- CodeableConcept object serialization and de-serialization
-	referenceRange BLOB, -- ReferenceRange object serialization and de-serialization
-	PRIMARY KEY (element_id), 	
+	code CLOB NOT NULL, -- CodeableConcept object serialization and de-serialization 
+	value BLOB, -- Quantity/CodeableConcept/string/Range/Ratio/SampleData/Atatchment/time/dateTime/Period object serialization and de-serialization 
+	dataAbsentReason CLOB, -- CodeableConcept object serialization and de-serialization
+	interpretation CLOB, -- CodeableConcept object serialization and de-serialization
+	referenceRange CLOB, -- ReferenceRange object serialization and de-serialization
+	PRIMARY KEY (component_id), 	
 	FOREIGN KEY (observation_id) REFERENCES OBSERVATION(observation_id)	
 );
 

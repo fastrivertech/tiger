@@ -165,7 +165,7 @@ CREATE TABLE PATIENT_ADDRESS (
 CREATE TABLE PATIENT_CODEABLECONCEPT (
 	codeableconcept_id BIGINT NOT NULL,  -- as well as is element_id
 	patient_id BIGINT NOT NULL,
-	path VARCHAR(1024), -- path for the attribute. The valid value for patient resource: patient.maritalstatus	
+	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.maritalstatus	
 	coding_system VARCHAR(128), -- Σ
 	coding_version	VARCHAR(32), -- Σ
 	coding_code	VARCHAR(32), -- Σ
@@ -180,7 +180,7 @@ CREATE TABLE PATIENT_CODEABLECONCEPT (
 CREATE TABLE PATIENT_ATTACHMENT (
 	attachment_id BIGINT NOT NULL,  -- as well as is element_id
 	patient_id BIGINT NOT NULL,
-	path VARCHAR(1024), -- path for the attribute. The valid value for patient resource: patient.photo		
+	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.photo		
 	contentType VARCHAR(32), -- Σ
 	language VARCHAR(32), -- Σ
 	data BLOB, -- Σ, base64Binary object serialization and de-serialization
@@ -233,7 +233,7 @@ CREATE TABLE PATIENT_COMMUNICATION (
 CREATE TABLE PATIENT_REFERENCE (
 	reference_id BIGINT NOT NULL, -- as well as is element_id
 	patient_id BIGINT NOT NULL,
-	path VARCHAR(1024), -- path for the attribute. The valid value for patient resource: patient.contact.organization, patient.generalpractitioner, patient.managingorganization			
+	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.contact.organization, patient.generalpractitioner, patient.managingorganization			
     reference VARCHAR (2048), -- ΣI
 	identifier CLOB, -- Σ, Identifier object serialization and de-serialization   	
 	display VARCHAR(2048), -- Σ
