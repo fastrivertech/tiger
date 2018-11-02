@@ -1,4 +1,5 @@
 
+Splice Machine User Reference
 https://doc.splicemachine.com/index.html
 
 Default Standalone Splice Machine 2.7 Users/Passwords
@@ -11,8 +12,9 @@ http://localhost:4040
 Command List:
 splice>connect 'jdbc:splice://localhost:1527/splicedb;user=YourUserId;password=YourPassword';
 splice>run '/home/ec2-user/frt/create_patient_tables.sql';
-splice>describe SYSTEM;
+splice>describe [table name];
 splice>values current_user;
+splice>show tables in [user name]
 
 splice>call syscs_util.syscs_create_user('username', 'password');
 splice>call syscs_util.syscs_drop_user('username');
