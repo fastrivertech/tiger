@@ -16,7 +16,10 @@ splice>describe [table name];
 splice>values current_user;
 splice>show tables in [user name]
 
+splice>create schema
 splice>call syscs_util.syscs_create_user('username', 'password');
+splice>call syscs_util.syscs_update_schema_owner('username', 'password')
 splice>call syscs_util.syscs_drop_user('username');
+splice>call syscs_util.syscs_kill_transaction procedure to kill the old transaction
 
 scp -i tiger.pem C:\frt-dev\tiger\frt-schema\sp\create_patient_tables.sql ec2-user@ec2-54-202-187-87.us-west-2.compute.amazonaws.com:~/frt

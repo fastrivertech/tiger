@@ -28,7 +28,8 @@
 	<frt.fhir.version>1.0.0-SNAPSHOT</frt.fhir.version>
 	<frt.stream.version>1.0.0-SNAPSHOT</frt.stream.version>	
 	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
-	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>			
+	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>	
+    <spring.data.releasetrain.version>1.4.6.RELEASE</spring.data.releasetrain.version> 	
   </properties>  
   
   <modules>
@@ -38,4 +39,23 @@
 	<module>frt-fhir</module>	
   </modules>
   	
+  <dependencyManagement>
+	<dependencies>
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-releasetrain</artifactId>
+			<version>${spring.data.releasetrain.version}</version>
+			<scope>import</scope>
+			<type>pom</type>
+		</dependency>
+		<dependency>	
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>2.1.0.RELEASE</version>
+			<scope>import</scope>
+			<type>pom</type>
+		</dependency>
+	</dependencies>
+  </dependencyManagement>
+	
 </project>

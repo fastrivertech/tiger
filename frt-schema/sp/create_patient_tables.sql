@@ -9,7 +9,7 @@
  * $Id: 
  */ 
  -- system tables --
-CREATE TABLE SYSTEM (
+CREATE TABLE SYSTEM_RESOURCE (
 	system_id	BIGINT NOT NULL,
 	version_id	BIGINT NOT NULL,
 	status		VARCHAR(16) NOT NULL,
@@ -38,8 +38,8 @@ CREATE TABLE DOMAIN_RESOURCE (
 	resource_id BIGINT NOT NULL,
 	txt CLOB, -- I, Narrative object serialization and de-serialization
 	contained CLOB, -- A list of resource_id of resource table object serialization and de-serialization 	
-    extension CLOB, -- A list of extension_id of extension table object serialization and de-serialization
-	modifierExtension CLOB, -- ?!, A list of extension_id object of extension table serialization and de-serialization
+    -- extension -- A list of extension_id of extension table object serialization and de-serialization
+	-- modifierExtension -- ?!, A list of extension_id object of extension table serialization and de-serialization
 	PRIMARY KEY (domain_resource_id), 	
 	FOREIGN KEY (resource_id) REFERENCES RESOURCE(resource_id)
 );
@@ -123,7 +123,7 @@ CREATE TABLE PATIENT_HUMANNAME (
 	given	CLOB, -- Σ, A list of string object serialization and de-serialization 
 	prefix	CLOB, -- Σ, A list of string object serialization and de-serialization
 	suffix	CLOB, -- Σ, A list of string object serialization and de-serialization
-	period	BLOB, -- Σ, Extension object serialization and de-serialization
+	period	CLOB, -- Σ, Extension object serialization and de-serialization
 	PRIMARY KEY (humanname_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)	
 );

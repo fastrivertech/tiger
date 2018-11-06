@@ -28,6 +28,10 @@
   <name>FRT SERVICE ${frt.service.version}</name>
   <description>Fast River CORE SERVICE ${frt.service.version}</description>
   
+  <properties>
+    <javax.javaee.api.version>6.0</javax.javaee.api.version>
+  </properties>
+ 
   <build>
     <plugins>
       <plugin>
@@ -40,4 +44,20 @@
     </plugins>
   </build>
   	
+  <dependencies>
+	<dependency>
+		<groupId>javax</groupId>
+		<artifactId>javaee-api</artifactId>
+		<version>${javax.javaee.api.version}</version>
+    </dependency>
+    <dependency>
+		<groupId>org.springframework.data</groupId>
+		<artifactId>spring-data-jpa</artifactId>
+	</dependency>
+	<dependency>
+		<groupId>org.springframework</groupId>
+		<artifactId>spring-jdbc</artifactId>
+	</dependency>	
+  </dependencies>
+	
 </project>
