@@ -16,6 +16,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.frt.dr.model.DomainResource;
 
+/**
+ * RepositoryService Interface
+ * @author chaye
+ */
 public interface RepositoryService {
 
 	<R extends DomainResource> R findById(Class<R> resourceClazz, String id) 

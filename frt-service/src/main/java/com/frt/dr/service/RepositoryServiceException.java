@@ -11,6 +11,10 @@
  */
 package com.frt.dr.service;
 
+/**
+ * RepositoryServiceException class
+ * @author chaye
+ */
 public class RepositoryServiceException extends Exception {
 
 	/**

@@ -19,6 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.core.env.Environment;
 
+/**
+ * RepositoryConfiguration class
+ * @author chaye
+ */
 @Configuration
 @PropertySource("./config/application.properties")
 public class RepositoryConfiguration {
@@ -27,7 +31,7 @@ public class RepositoryConfiguration {
 	private Environment env;
 	
 	@Bean
-	public DataSource spDataSource() {
+	public DataSource dataSource() {
 		String driveClassName = env.getProperty("spring.datasource.driver-class-name");
 		String url = env.getProperty("spring.datasource.url");
 		String username = env.getProperty("spring.datasource.username");
