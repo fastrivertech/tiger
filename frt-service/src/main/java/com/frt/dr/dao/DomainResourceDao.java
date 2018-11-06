@@ -9,8 +9,8 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.dr.model.base;
+package com.frt.dr.dao;
 
-public class PatientExtension {
+public class DomainResourceDao {
 
 }
