@@ -17,6 +17,9 @@ import com.frt.fhir.model.ResourceMapper;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.dr.model.base.Patient;
+import com.frt.dr.service.RepositoryApplication;
+import com.frt.dr.service.RepositoryContext;
+import com.frt.dr.service.RepositoryContextException;
 
 /**
  * RepositoryApplication class
@@ -24,7 +27,16 @@ import com.frt.dr.model.base.Patient;
  */
 public class FhirService {
 
-	public FhirService() {
+	private RepositoryApplication repositoryApplication;
+	
+	public FhirService() 
+		throws FhirServiceException {
+		try {
+			RepositoryContext context = new RepositoryContext(RepositoryApplication.class); 			
+			repositoryApplication = (RepositoryApplication)context.getBean(RepositoryApplication.class);			
+		} catch (RepositoryContextException rcex) {
+			throw new FhirServiceException(rcex);
+		}						
 	}
 	
 	public <R extends DomainResource> R create(String type, R resource) 
@@ -40,7 +52,7 @@ public class FhirService {
 		}
 	}
 
-	public <R extends DomainResource> R findById(String type, Long Id) 
+	public <R extends DomainResource> R read(String type, Long Id) 
 		throws FhirServiceException {
 		try {
 			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);		

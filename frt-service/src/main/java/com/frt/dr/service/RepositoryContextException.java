@@ -9,47 +9,47 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.fhir.service;
+package com.frt.dr.service;
 
 /**
- * FhirServiceException class
+ * RepositoryContextException class
  * @author chaye
  */
-public class FhirServiceException extends RuntimeException {
+public class RepositoryContextException extends Exception {
 
 	/**
-	 * FhirServiceException Constructor
+	 * RepositoryContextException Constructor
 	 */
-	public FhirServiceException() {
+	public RepositoryContextException() {
 		super();
 	}
 
 	/**
-	 * FhirServiceException Constructor
+	 * RepositoryContextException Constructor
 	 * 
 	 * @param m Message string
 	 */
-	public FhirServiceException(String m) {
+	public RepositoryContextException(String m) {
 		super(m);
 	}
 
 	/**
-	 * FhirServiceException Constructor
+	 * RepositoryContextException Constructor
 	 * 
 	 * @param m Message string
 	 * @param t Throwable inherited
 	 */
-	public FhirServiceException(String m, Throwable t) {
+	public RepositoryContextException(String m, Throwable t) {
 		super(m, t);
 	}
 
 	/**
-	 * FhirServiceException Constructor
+	 * RepositoryContextException Constructor
 	 * 
 	 * @param t Throwable inherited
 	 */
-	public FhirServiceException(Throwable t) {
+	public RepositoryContextException(Throwable t) {
 		super(t);
 	}
-
+	
 }

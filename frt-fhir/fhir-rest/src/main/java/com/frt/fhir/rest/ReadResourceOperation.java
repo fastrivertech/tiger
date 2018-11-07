@@ -69,7 +69,7 @@ public class ReadResourceOperation extends ResourceOperation {
 			// 404 Not Found - Unknown resource 
 			InteractionValidator.validateFormat(_format);
 			InteractionValidator.validateSummary(_summary);		
-			R resource = fhirService.findById(type, Long.valueOf(id));		
+			R resource = fhirService.read(type, Long.valueOf(id));		
 			Response.ResponseBuilder responseBuilder = Response.status(Status.OK).entity(resource);        
 			return responseBuilder.build();		
 		} catch (ValidationException vx) {

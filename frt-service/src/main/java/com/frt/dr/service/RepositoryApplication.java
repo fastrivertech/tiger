@@ -43,11 +43,10 @@ public class RepositoryApplication {
 	
 	public static void main(String[] args) {
 		try {
-			ApplicationContext context = new AnnotationConfigApplicationContext(RepositoryApplication.class);			
-			RepositoryApplication repositoryApplication = context.getBean(RepositoryApplication.class);
-			
-		} catch (Exception ex) {
-			ex.printStackTrace();
+			RepositoryContext context = new RepositoryContext(RepositoryApplication.class);			
+			RepositoryApplication repositoryApplication = (RepositoryApplication)context.getBean(RepositoryApplication.class);			
+		} catch (RepositoryContextException rsex) {
+			rsex.printStackTrace();
 		}				
 	}
 	
