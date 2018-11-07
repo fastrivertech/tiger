@@ -16,8 +16,10 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-
 import com.frt.dr.model.DomainResource;
+import com.frt.dr.dao.DaoFactory;
+import com.frt.dr.dao.BaseDao;
+import com.frt.dr.dao.DaoException;
 
 /**
  * RepositoryServiceImpl class
@@ -35,10 +37,15 @@ public class RepositoryServiceImpl implements RepositoryService {
 	
 	@Override
 	public <R extends DomainResource> R read(Class<R> resourceClazz, Long id) 
-			throws RepositoryServiceException {
-		
-		R resource = null;
-		return resource;
+		throws RepositoryServiceException {
+		try {
+			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
+			
+			R resource = null;
+			return resource;
+		} catch (DaoException dex) {
+			throw new RepositoryServiceException(dex); 
+		}
 	}
 		
 	@Override

@@ -16,13 +16,22 @@ import com.frt.dr.model.base.Patient;
 
 public class DaoFactory {
 	
+	private static DaoFactory instance = new DaoFactory();
+	
+	private DaoFactory() {	
+	}
+	
+	public static DaoFactory getInstance() {
+		return instance;
+	}
+	
 	public <D extends BaseDao> D createResourceDao(Class<? extends DomainResource> resourceClazz) 
 		throws DaoException {
 		if (resourceClazz.equals(Patient.class) ) {
 			D resourceDao = null;
 			return resourceDao;
 		} else {
-			throw new DaoException();
+			throw new DaoException(resourceClazz.getName() + "Dao Not Implemented Yet");
 		}
 	}
 	
