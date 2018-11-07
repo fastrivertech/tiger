@@ -38,6 +38,10 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ *  DomainResource class
+ * @author chaye
+ */
 public class DomainResource {
 
 	private Long domainResourceId;

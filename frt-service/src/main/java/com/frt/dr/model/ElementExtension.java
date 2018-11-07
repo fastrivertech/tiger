@@ -11,6 +11,10 @@
  */
 package com.frt.dr.model;
 
+/**
+ * ElementExtension class
+ * @author chaye
+ */
 public class ElementExtension {
 
 }

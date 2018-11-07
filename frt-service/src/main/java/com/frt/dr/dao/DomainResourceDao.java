@@ -11,6 +11,10 @@
  */
 package com.frt.dr.dao;
 
+/**
+ * DomainResourceDao class
+ * @author chaye
+ */
 public class DomainResourceDao {
 
 }

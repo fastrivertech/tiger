@@ -14,6 +14,10 @@ package com.frt.dr.dao;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.base.Patient;
 
+/**
+ * DaoFactory class
+ * @author chaye
+ */
 public class DaoFactory {
 	
 	private static DaoFactory instance = new DaoFactory();

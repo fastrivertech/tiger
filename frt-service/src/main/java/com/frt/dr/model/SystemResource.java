@@ -37,6 +37,10 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ * SystemResource class
+ * @author chaye
+ */
 @Entity
 @Table(name = "SYSTEM_RESOURCE")
 @SequenceGenerator(name = "SYSTEM_RESOURCE_SEQ", sequenceName = "SYSTEM_RESOURCE_SEQ", allocationSize=1)

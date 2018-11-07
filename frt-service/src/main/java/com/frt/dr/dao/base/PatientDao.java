@@ -22,6 +22,10 @@ import com.frt.dr.model.base.Patient;
 import com.frt.dr.dao.BaseDao;
 import com.frt.dr.dao.DaoException;
 
+/**
+ * PatientDao class
+ * @author chaye
+ */
 @Transactional
 @Repository
 public class PatientDao extends BaseDao<Patient,Long> {

@@ -16,6 +16,10 @@ import java.sql.SQLException;
 import org.springframework.jdbc.core.RowMapper;
 import com.frt.dr.model.base.Patient;
 
+/**
+ * PatientRowMapper class
+ * @author chaye
+ */
 public class PatientRowMapper implements RowMapper<Patient> {
 
 	@Override

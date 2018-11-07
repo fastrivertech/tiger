@@ -27,6 +27,10 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ * Resource class
+ * @author chaye
+ */
 public class Resource {
 
 	private Long resourceId;

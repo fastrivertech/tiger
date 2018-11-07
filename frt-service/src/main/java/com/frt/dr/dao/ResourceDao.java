@@ -11,6 +11,10 @@
  */
 package com.frt.dr.dao;
 
+/**
+ * ResourceDao class
+ * @author chaye
+ */
 public class ResourceDao {
 
 }

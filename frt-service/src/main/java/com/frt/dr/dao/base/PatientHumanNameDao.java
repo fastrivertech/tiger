@@ -11,6 +11,10 @@
  */
 package com.frt.dr.dao.base;
 
+/**
+ * PatientHumanNameDao class
+ * @author chaye
+ */
 public class PatientHumanNameDao {
 
 }

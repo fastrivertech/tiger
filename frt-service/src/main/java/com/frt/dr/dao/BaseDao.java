@@ -17,6 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.data.repository.Repository;
 
+/**
+ * BaseDao class
+ * @author chaye
+ */
 public abstract class BaseDao<T,ID> implements Repository {
 	  
 	protected JdbcTemplate jdbcTemplate;

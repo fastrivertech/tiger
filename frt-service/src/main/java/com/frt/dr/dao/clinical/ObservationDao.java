@@ -11,6 +11,10 @@
  */
 package com.frt.dr.dao.clinical;
 
+/**
+ * ObservationDao class
+ * @author chaye
+ */
 public class ObservationDao {
 
 }
