@@ -31,13 +31,15 @@ public class RepositoryApplication {
 		this.repositoryService = repositoryService;
 	}
 	
-    public <R extends DomainResource> void create(R resource)
+    public <R extends DomainResource> void create(Object object)
 		throws RepositoryServiceException {
-		
+		R resource = (R)object;
+    	
 	}
     
-    public <R extends DomainResource> R read(Long id)
-		throws RepositoryServiceException {			
+    public <R extends DomainResource> Object read(Long id)
+		throws RepositoryServiceException {
+    	
 		return null;
 	}
 	

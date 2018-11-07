@@ -10,6 +10,7 @@
  */
 package com.frt.fhir.rest;
 
+import java.util.Optional;
 import javax.ws.rs.Path;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
@@ -79,10 +80,17 @@ public class CreateResourceOperation extends ResourceOperation {
 			// Conditional create - Create a new resource only if some equivalent resource does not already exist on the server.
 			
 			InteractionValidator.validateFormat(_format);
-			R resource = parser.deserialize(type, body);			
-			R created = fhirService.create(type, resource);			
-			Response.ResponseBuilder responseBuilder = Response.status(Status.CREATED).entity(resource);		  
-	        return responseBuilder.build();		
+			R resource = parser.deserialize(type, body);	
+			Optional<R> created = fhirService.create(type, resource);
+			if (created.isPresent()) {
+				Response.ResponseBuilder responseBuilder = Response.status(Status.CREATED).entity(created.get());
+				return responseBuilder.build();
+			} else {
+				Throwable t = new ResourceException("failed to create domain resource '" + type + "'");
+				throw new ResourceOperationException(t, Response.Status.BAD_REQUEST,
+							Response.Status.BAD_REQUEST.toString(), "failed to create domain resource: " + t.getMessage(),
+							uriInfo.getAbsolutePath().getRawPath(), null);							
+			}
 		} catch (ValidationException vx) {
 			 throw new ResourceOperationException(vx, Response.Status.BAD_REQUEST,
 					 								Response.Status.BAD_REQUEST.toString(), "invalid parameter: " + vx.getMessage(),

@@ -11,6 +11,8 @@
  */
 package com.frt.fhir.service;
 
+import java.util.Optional;
+import javax.annotation.Nonnull;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import com.frt.fhir.model.ResourceMapperFactory;
 import com.frt.fhir.model.ResourceMapper;
@@ -20,6 +22,7 @@ import com.frt.dr.model.base.Patient;
 import com.frt.dr.service.RepositoryApplication;
 import com.frt.dr.service.RepositoryContext;
 import com.frt.dr.service.RepositoryContextException;
+import com.frt.dr.service.RepositoryServiceException;
 
 /**
  * RepositoryApplication class
@@ -27,38 +30,41 @@ import com.frt.dr.service.RepositoryContextException;
  */
 public class FhirService {
 
-	private RepositoryApplication repositoryApplication;
+	private RepositoryApplication repository;
 	
 	public FhirService() 
 		throws FhirServiceException {
 		try {
 			RepositoryContext context = new RepositoryContext(RepositoryApplication.class); 			
-			repositoryApplication = (RepositoryApplication)context.getBean(RepositoryApplication.class);			
+			repository = (RepositoryApplication)context.getBean(RepositoryApplication.class);			
 		} catch (RepositoryContextException rcex) {
 			throw new FhirServiceException(rcex);
 		}						
 	}
 	
-	public <R extends DomainResource> R create(String type, R resource) 
+	public <R extends DomainResource> Optional<R> create(@Nonnull String type, @Nonnull R resource) 
 		throws FhirServiceException {	
 		try {
 			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);		
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)resource);
-			
-			return null;
-		} catch (MapperException mex) {
-			throw new FhirServiceException(mex);
+			repository.create(target);
+			return Optional.of(resource);
+		} catch (MapperException | RepositoryServiceException ex) {
+			throw new FhirServiceException(ex);
 		}
 	}
 
-	public <R extends DomainResource> R read(String type, Long Id) 
+	public <R extends DomainResource> Optional<R> read(@Nonnull String type, @Nonnull Long id) 
 		throws FhirServiceException {
 		try {
-			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);		
-			return null;
-		} catch (MapperException mex) {
-			throw new FhirServiceException(mex);
+			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);
+			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
+			Object resource = repository.read(id);
+			Object target = mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)resource);						
+			return Optional.of((R)target);
+		} catch (MapperException | RepositoryServiceException ex) {
+			throw new FhirServiceException(ex);
 		}		
 	}
 	

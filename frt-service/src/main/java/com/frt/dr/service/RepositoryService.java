@@ -22,7 +22,7 @@ import com.frt.dr.model.DomainResource;
  */
 public interface RepositoryService {
 
-	<R extends DomainResource> R findById(Class<R> resourceClazz, String id) 
+	<R extends DomainResource> R read(Class<R> resourceClazz, String id) 
 		throws RepositoryServiceException;
 	
 	<R extends DomainResource> R save(R resource)

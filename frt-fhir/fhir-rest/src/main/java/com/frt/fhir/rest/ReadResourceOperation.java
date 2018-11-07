@@ -10,6 +10,7 @@
  */
 package com.frt.fhir.rest;
 
+import java.util.Optional;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -68,10 +69,17 @@ public class ReadResourceOperation extends ResourceOperation {
 			// 410 Gone - Resource deleted 
 			// 404 Not Found - Unknown resource 
 			InteractionValidator.validateFormat(_format);
-			InteractionValidator.validateSummary(_summary);		
-			R resource = fhirService.read(type, Long.valueOf(id));		
-			Response.ResponseBuilder responseBuilder = Response.status(Status.OK).entity(resource);        
-			return responseBuilder.build();		
+			InteractionValidator.validateSummary(_summary);
+			Optional<R> found = fhirService.read(type, Long.valueOf(id));
+			if (found.isPresent()) {
+				Response.ResponseBuilder responseBuilder = Response.status(Status.OK).entity(found.get());        
+				return responseBuilder.build();
+			} else {
+				 Throwable t = new ResourceException("invalid domain resource logical id '" + id + "'");
+				 throw new ResourceOperationException(t, Response.Status.NOT_FOUND,
+							Response.Status.NOT_FOUND.toString(), "invalid id: " + t.getMessage(),
+							uriInfo.getAbsolutePath().getRawPath(), null);							
+			}
 		} catch (ValidationException vx) {
 			 throw new ResourceOperationException(vx, Response.Status.BAD_REQUEST,
 					 								Response.Status.BAD_REQUEST.toString(), "invalid parameter: " + vx.getMessage(),
