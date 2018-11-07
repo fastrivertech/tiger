@@ -15,6 +15,8 @@ import org.hl7.fhir.dstu3.model.DomainResource;
 import com.frt.fhir.model.ResourceMapperFactory;
 import com.frt.fhir.model.ResourceMapper;
 import com.frt.fhir.model.MapperException;
+import com.frt.fhir.model.ResourceDictionary;
+import com.frt.dr.model.base.Patient;
 
 /**
  * RepositoryApplication class
@@ -22,11 +24,16 @@ import com.frt.fhir.model.MapperException;
  */
 public class FhirService {
 
+	public FhirService() {
+	}
+	
 	public <R extends DomainResource> R create(String type, R resource) 
 		throws FhirServiceException {	
 		try {
-			
 			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);		
+			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
+			Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)resource);
+			
 			return null;
 		} catch (MapperException mex) {
 			throw new FhirServiceException(mex);
