@@ -34,7 +34,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 	
 	@Override
-	public <R extends DomainResource> R read(Class<R> resourceClazz, String id) 
+	public <R extends DomainResource> R read(Class<R> resourceClazz, Long id) 
 			throws RepositoryServiceException {
 		
 		R resource = null;
@@ -42,7 +42,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 		
 	@Override
-	public <R extends DomainResource> R save(R resource)
+	public <R extends DomainResource> R save(Class<R> resourceClazz, R resource)
 		   throws RepositoryServiceException {
 		
 		return resource;

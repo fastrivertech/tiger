@@ -31,16 +31,16 @@ public class RepositoryApplication {
 		this.repositoryService = repositoryService;
 	}
 	
-    public <R extends DomainResource> void create(Object object)
+    public <R extends DomainResource> void create(Class<R> resourceClazz, Object object)
 		throws RepositoryServiceException {
 		R resource = (R)object;
-    	
+		this.repositoryService.save(resourceClazz,resource);
 	}
     
-    public <R extends DomainResource> Object read(Long id)
+    public <R extends DomainResource> Object read(Class<R> resourceClazz, Long id)
 		throws RepositoryServiceException {
-    	
-		return null;
+    	R resource = this.repositoryService.read(resourceClazz, id);    	
+		return resource;
 	}
 	
 	public static void main(String[] args) {

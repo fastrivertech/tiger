@@ -48,7 +48,7 @@ public class FhirService {
 			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);		
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)resource);
-			repository.create(target);
+			repository.create(resourcePair.getFrt(), target);
 			return Optional.of(resource);
 		} catch (MapperException | RepositoryServiceException ex) {
 			throw new FhirServiceException(ex);
@@ -60,7 +60,7 @@ public class FhirService {
 		try {
 			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
-			Object resource = repository.read(id);
+			Object resource = repository.read(resourcePair.getFrt(), id);
 			Object target = mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)resource);						
 			return Optional.of((R)target);
 		} catch (MapperException | RepositoryServiceException ex) {
