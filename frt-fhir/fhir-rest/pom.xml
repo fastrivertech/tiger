@@ -30,7 +30,6 @@
   <description>Fast River FHIR REST API ${frt.fhir.rest.version}</description>
   
   <properties>
-	<hapi.fhir.version>3.4.0</hapi.fhir.version>
 	<jersey.version>2.27</jersey.version>
 	<javax.ws.rs.version>2.1</javax.ws.rs.version>	
 	<javax.servlet.versoin>4.0.1</javax.servlet.versoin>
@@ -94,32 +93,26 @@
 	<dependency>
 	  <groupId>ca.uhn.hapi.fhir</groupId>
        <artifactId>hapi-fhir-base</artifactId>
-      <version>${hapi.fhir.version}</version>
 	</dependency>
 	<dependency>
 	  <groupId>ca.uhn.hapi.fhir</groupId>
        <artifactId>hapi-fhir-utilities</artifactId>
-      <version>${hapi.fhir.version}</version>
 	</dependency>
 	<dependency>
 	  <groupId>ca.uhn.hapi.fhir</groupId>
        <artifactId>hapi-fhir-structures-dstu3</artifactId>
-      <version>${hapi.fhir.version}</version>
 	</dependency>
 	<dependency>
 	  <groupId>ca.uhn.hapi.fhir</groupId>
        <artifactId>hapi-fhir-validation</artifactId>
-      <version>${hapi.fhir.version}</version>
 	</dependency>	
 	<dependency>
 	  <groupId>ca.uhn.hapi.fhir</groupId>
        <artifactId>hapi-fhir-validation-resources-dstu3</artifactId>
-      <version>${hapi.fhir.version}</version>
 	</dependency>			
 	<dependency>
 	  <groupId>javax.servlet</groupId>
 	  <artifactId>javax.servlet-api</artifactId>
-	  <version>${javax.servlet.versoin}</version>
 	</dependency>
 	<dependency>
 	  <groupId>org.glassfish.jersey.containers</groupId>

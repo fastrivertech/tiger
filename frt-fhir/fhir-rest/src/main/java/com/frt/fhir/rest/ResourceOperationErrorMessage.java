@@ -3,7 +3,7 @@ package com.frt.fhir.rest;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class ResourceInteractionErrorMessage {
+public class ResourceOperationErrorMessage {
 
     private int httpStatusCode;
     private String httpMessage;
@@ -12,7 +12,7 @@ public class ResourceInteractionErrorMessage {
     private String relatedLink;
     private String additionalInfoLink;
     
-    public ResourceInteractionErrorMessage() {        
+    public ResourceOperationErrorMessage() {        
     }
     
     public void setHttpStatusCode(int httpStatusCode) {

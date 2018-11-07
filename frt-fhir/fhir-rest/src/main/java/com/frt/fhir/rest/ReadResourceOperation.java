@@ -36,8 +36,8 @@ import com.frt.util.logging.Logger;
  */
 @Path(ResourcePath.BASE_PATH)
 @PermitAll
-public class ReadResourceInteraction extends ResourceInteraction {
-	private static Logger logger = Logger.getLog(ReadResourceInteraction.class.getName());
+public class ReadResourceOperation extends ResourceOperation {
+	private static Logger logger = Logger.getLog(ReadResourceOperation.class.getName());
 	private static Localization localizer = Localization.getInstance();
 		
 	@Context
@@ -45,7 +45,7 @@ public class ReadResourceInteraction extends ResourceInteraction {
 	
 	private JsonParser parser;
 	
-	public ReadResourceInteraction() {
+	public ReadResourceOperation() {
 		parser = new JsonParser();
 	}	
 	
@@ -71,7 +71,7 @@ public class ReadResourceInteraction extends ResourceInteraction {
 			Response.ResponseBuilder responseBuilder = Response.status(Status.OK).entity(resource);        
         return responseBuilder.build();		
 		} catch (ValidationException vx) {
-			 throw new ResourceInteractionException(vx, Response.Status.BAD_REQUEST,
+			 throw new ResourceOperationException(vx, Response.Status.BAD_REQUEST,
 					 								Response.Status.BAD_REQUEST.toString(), "invalid parameter: " + vx.getMessage(),
 					 								uriInfo.getAbsolutePath().getRawPath(), null);			
 		}

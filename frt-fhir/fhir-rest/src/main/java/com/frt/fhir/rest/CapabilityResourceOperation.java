@@ -10,6 +10,6 @@
  */
 package com.frt.fhir.rest;
 
-public class vReadResourceInteraction {
+public class CapabilityResourceOperation {
 
 }

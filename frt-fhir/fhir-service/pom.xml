@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
+--> 
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <parent>
+    <groupId>com.frt</groupId>
+    <artifactId>frt-fhir</artifactId>
+    <version>${frt.fhir.version}</version>
+  </parent>
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.frt</groupId>
+  <artifactId>frt-fhir-service</artifactId>
+  <packaging>jar</packaging>  
+  <version>${frt.fhir.service.version}</version>
+  <name>FRT FHIR CORE SERVICE ${frt.fhir.service.version}</name>
+  <description>Fast River FHIR CORE SERVICE ${frt.fhir.service.version}</description>
+  
+  <properties>
+  </properties>  
+  
+  <build>
+    <finalName>frt-fhir-service</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
+        <configuration>
+          <release>10</release>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+    
+  <dependencies>
+	<dependency>
+	  <groupId>com.frt</groupId>
+      <artifactId>frt-common</artifactId>
+      <version>${frt.common.version}</version>
+	</dependency>    
+	<dependency>
+	  <groupId>com.frt</groupId>
+      <artifactId>frt-service</artifactId>
+      <version>${frt.service.version}</version>
+	</dependency>    	
+	<dependency>
+	  <groupId>ca.uhn.hapi.fhir</groupId>
+       <artifactId>hapi-fhir-base</artifactId>
+	</dependency>
+	<dependency>
+	  <groupId>ca.uhn.hapi.fhir</groupId>
+       <artifactId>hapi-fhir-utilities</artifactId>
+	</dependency>
+	<dependency>
+	  <groupId>ca.uhn.hapi.fhir</groupId>
+       <artifactId>hapi-fhir-structures-dstu3</artifactId>
+	</dependency>	
+  </dependencies>
+ 
+</project>

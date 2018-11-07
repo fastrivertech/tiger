@@ -10,6 +10,6 @@
  */
 package com.frt.fhir.rest;
 
-public class UpdateResourceInteraction {
+public class PatchResourceOperation {
 
 }

@@ -20,17 +20,17 @@ import javax.ws.rs.ApplicationPath;
  * @author cqye
  */
 @ApplicationPath("/")
-public class ResourceInteractionApplication extends Application {
+public class ResourceOperationApplication extends Application {
 
-	public ResourceInteractionApplication() {
+	public ResourceOperationApplication() {
 		super();
 	}
 
 	@Override
 	public Set<Class<?>> getClasses() {
 		Set<Class<?>> resources = new java.util.HashSet<>();
-		resources.add(CreateResourceInteraction.class);
-		resources.add(ReadResourceInteraction.class);		
+		resources.add(CreateResourceOperation.class);
+		resources.add(ReadResourceOperation.class);		
 		return resources;
 	}
 }

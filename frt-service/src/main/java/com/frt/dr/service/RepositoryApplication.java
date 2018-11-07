@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import com.frt.dr.model.DomainResource;
 
 /**
  * RepositoryApplication class
@@ -30,16 +31,14 @@ public class RepositoryApplication {
 		this.repositoryService = repositoryService;
 	}
 	
-	public void create()
+    public <R extends DomainResource> void create(R resource)
 		throws RepositoryServiceException {
-		//FHIR model to FRT model
 		
 	}
-
-	public void read()
+    
+    public <R extends DomainResource> R read(Long id)
 		throws RepositoryServiceException {			
-		//FRT model to FHIR model 
-				
+		return null;
 	}
 	
 	public static void main(String[] args) {

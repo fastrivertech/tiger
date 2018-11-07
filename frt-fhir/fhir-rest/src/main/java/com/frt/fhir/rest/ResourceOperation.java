@@ -22,11 +22,11 @@ import com.frt.util.logging.Localization;
  * 
  * @author cqye
  */
-public abstract class ResourceInteraction {
-	private static Logger logger = Logger.getLog(ResourceInteraction.class.getName());
+public abstract class ResourceOperation {
+	private static Logger logger = Logger.getLog(ResourceOperation.class.getName());
 	private static Localization localizer = Localization.getInstance();
 
-	public ResourceInteraction() {
+	public ResourceOperation() {
 	}
 
 	public Response responseBuild(Response.ResponseBuilder responseBuilder, URI uri) {

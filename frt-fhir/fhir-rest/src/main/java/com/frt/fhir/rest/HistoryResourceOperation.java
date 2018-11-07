@@ -10,6 +10,6 @@
  */
 package com.frt.fhir.rest;
 
-public class DeleteResourceInteraction {
+public class HistoryResourceOperation {
 
 }

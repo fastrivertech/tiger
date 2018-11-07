@@ -20,22 +20,22 @@ import javax.ws.rs.core.Response;
  * 
  * @author cqye
  */
-public class ResourceInteractionException extends WebApplicationException {
+public class ResourceOperationException extends WebApplicationException {
 
-    public ResourceInteractionException(Throwable t, Response.Status s, String errorCode, String errorMessage, String relatedLink, String additionalInfoLink) {
+    public ResourceOperationException(Throwable t, Response.Status s, String errorCode, String errorMessage, String relatedLink, String additionalInfoLink) {
         super(t, Response.status(s).
                  entity(buildErrorMessage(s, errorCode, errorMessage, relatedLink, additionalInfoLink)).
                  type(MediaType.APPLICATION_JSON).build());
     }
 
-    public ResourceInteractionException(Throwable t, Response.Status s, String errorCode, String errorMessage) {
+    public ResourceOperationException(Throwable t, Response.Status s, String errorCode, String errorMessage) {
         super(t, Response.status(s).
                  entity(buildErrorMessage(s, errorCode, errorMessage, null, null)).
                  type(MediaType.APPLICATION_JSON).build());
     }
 
-	private static ResourceInteractionErrorMessage buildErrorMessage(Response.Status s, String errorCode, String errorMessage, String relatedLink, String additionalInfoLink) {
-		ResourceInteractionErrorMessage error = new ResourceInteractionErrorMessage();
+	private static ResourceOperationErrorMessage buildErrorMessage(Response.Status s, String errorCode, String errorMessage, String relatedLink, String additionalInfoLink) {
+		ResourceOperationErrorMessage error = new ResourceOperationErrorMessage();
         try {
             URI errorCodeURI = new URI(errorCode);
             error.setErrorCode(errorCodeURI.toASCIIString());
