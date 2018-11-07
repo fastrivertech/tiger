@@ -83,5 +83,44 @@ public class PatientIdentifier implements Serializable {
     
     @Column(name = "assigner")                    
     private Clob assigner;
-        
+ 
+    private List<PatientExtension> extensions;
+    
+    private List<PatientElementExtension> elementExtensions;
+    
+    public PatientIdentifier() {    	
+    }
+    
+    public Long getIdentifierId() {
+    	return this.identifierId;
+    }
+    
+    public void setIdentifierId(Long identifierId) {
+    	this.identifierId = identifierId;
+    }
+
+    public String getUse() {
+    	return this.use;
+    }
+    
+    public void setUse(String use) {
+    	this.use = use;
+    }
+    
+    public String getSystem() {
+    	return this.system;
+    }
+    
+    public void setSystem(String system) {
+    	this.system = system;
+    }
+
+    public String getValue() {
+    	return this.value;
+    }
+    
+    public void setValue(String value) {
+    	this.value = value;
+    }
+    
 }

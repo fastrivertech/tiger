@@ -87,4 +87,35 @@ public class PatientHumanName implements Serializable {
     @Column(name = "period")                                                        
     private Clob period;
     
+    private List<PatientExtension> extensions;
+    
+    private List<PatientElementExtension> elementExtensions;
+    
+    public PatientHumanName(){    	
+    }
+    
+    public Long getHumannameId() {
+    	return this.humannameId;
+    }
+    
+    public void setHumannameId(Long humannameId) {
+    	this.humannameId = humannameId;
+    }
+    
+    public String getUse() {
+    	return this.use;
+    }
+    
+    public void setUse(String use) {
+    	this.use = use;
+    }
+    
+    public String getFamily() {
+    	return this.family;
+    }
+    
+    public void setFamily(String family) {
+    	this.family = family;
+    }
+        
 }

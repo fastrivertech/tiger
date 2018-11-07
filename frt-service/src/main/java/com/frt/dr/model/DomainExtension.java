@@ -12,9 +12,9 @@
 package com.frt.dr.model;
 
 /**
- * Extension class
+ * DomainExtension class
  * @author chaye
  */
-public class Extension {
+public class DomainExtension {
 
 }

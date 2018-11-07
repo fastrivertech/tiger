@@ -60,7 +60,7 @@ public class Patient implements Serializable {
     @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")    
     @OneToMany(mappedBy = "PATIENT", cascade = CascadeType.ALL)
     @OrderBy("identifier_id ASC")        
-    private List<PatientIdentifier> indentifier;
+    private List<PatientIdentifier> identifiers;
 
     @NotNull(message = "Active cannot be Null")
     @Column(name = "active")        
@@ -69,7 +69,7 @@ public class Patient implements Serializable {
     @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")    
     @OneToMany(mappedBy = "PATIENT", cascade = CascadeType.ALL)
     @OrderBy("humanname_id ASC")    
-    private List<PatientHumanName> name;
+    private List<PatientHumanName> names;
 
     @Size(max = 32)
     @Column(name = "gender")            
@@ -89,5 +89,52 @@ public class Patient implements Serializable {
     
     @Column(name = "multipleBirthInteger")                        
     private Integer multipleBirthInteger;
+        
+    private List<PatientExtension> extensions;
+    
+    private List<PatientElementExtension> elementExtensions;
+        
+    public Patient() {    	
+    }
+    
+    public Long getPatientId() {
+    	return this.patientId;
+    }
+    
+    public void setPatientId(Long patientId) {
+    	this.patientId = patientId;
+    }
+
+    public List<PatientIdentifier> getIdentifiers() {
+    	return this.identifiers;
+    }
+    
+    public void setIdentifiers(List<PatientIdentifier> identifiers) {
+    	this.identifiers = identifiers;
+    }
+    
+    public Boolean getActive() {
+    	return this.active;
+    }
+    
+    public void setActive(Boolean active) {
+    	this.active = active;
+    }
+    
+    public String getGender() {
+    	return this.gender;
+    }
+    
+    public void setGender(String gender) {
+    	this.gender = gender;
+    }
+    
+    public List<PatientHumanName> getNames() {
+    	return this.names;
+    }
+
+    public void setNames(List<PatientHumanName> names) {
+    	this.names = names;
+    }
     
 }
