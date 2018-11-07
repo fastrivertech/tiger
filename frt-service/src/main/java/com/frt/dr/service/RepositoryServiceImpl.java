@@ -13,6 +13,7 @@ package com.frt.dr.service;
 
 import javax.sql.DataSource;
 
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -40,9 +41,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 		throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
-			
-			R resource = null;
-			return resource;
+			Optional<R> resource = dao.findById(id);
+			return resource.get();
 		} catch (DaoException dex) {
 			throw new RepositoryServiceException(dex); 
 		}
@@ -51,8 +51,13 @@ public class RepositoryServiceImpl implements RepositoryService {
 	@Override
 	public <R extends DomainResource> R save(Class<R> resourceClazz, R resource)
 		   throws RepositoryServiceException {
-		
-		return resource;
+		try {
+			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
+			Optional<R> created = dao.save(resource);
+			return created.get();
+		} catch (DaoException dex) {
+			throw new RepositoryServiceException(dex); 
+		}
 	}
 	
 }

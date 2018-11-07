@@ -26,7 +26,7 @@ public abstract class BaseDao<T,ID> implements Repository {
     	this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-    public abstract T save(T entry) throws DaoException;
+    public abstract Optional<T> save(T entry) throws DaoException;
 
     public abstract Optional<T> findById(ID id) throws DaoException;
     

@@ -36,7 +36,7 @@ public class PatientDao extends BaseDao<Patient,Long> {
 	}
 	
 	@Override	
-	public Patient save(Patient patient) 
+	public Optional<Patient> save(Patient patient) 
 		throws DaoException {
 		Object[] params = new Object[] {};
 		int[] types = new int[] {};
