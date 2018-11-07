@@ -23,13 +23,15 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.annotation.security.PermitAll;
-import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.dstu3.model.DomainResource;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.rest.validation.InteractionValidator;
 import com.frt.fhir.rest.validation.ValidationException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
+import com.frt.fhir.service.FhirService;
+import com.frt.fhir.service.FhirServiceException;
 
 /**
  * CreateResourceInteraction class
@@ -46,18 +48,20 @@ public class CreateResourceOperation extends ResourceOperation {
     private UriInfo uriInfo;
 
 	private JsonParser parser;
+	private FhirService fhirService;
 	
 	public CreateResourceOperation() {
 		parser = new JsonParser();
+		fhirService = new FhirService();
 	}
 	
 	@POST
 	@Path(ResourcePath.TYPE_PATH)
 	@Consumes(MediaType.APPLICATION_JSON)	
 	@Produces(MediaType.APPLICATION_JSON)	
-	public <R extends Resource> Response create(@PathParam("type") final String type,
-						   						@QueryParam("_format") @DefaultValue("json") final String _format, 
-						   						final String body) {
+	public <R extends DomainResource> Response create(@PathParam("type") final String type,
+						   						      @QueryParam("_format") @DefaultValue("json") final String _format, 
+						   						      final String body) {
 		try {
 			logger.info(localizer.x("CreateResourceInteraction creates a new resource"));
 			// Request includes resource, but no need id; id shall be ignored if given. versionId and lastUpdated shall be ignored 
@@ -75,8 +79,8 @@ public class CreateResourceOperation extends ResourceOperation {
 			// Conditional create - Create a new resource only if some equivalent resource does not already exist on the server.
 			
 			InteractionValidator.validateFormat(_format);
-			R resource = parser.deserialize(type, body);
-			
+			R resource = parser.deserialize(type, body);			
+			R created = fhirService.create(type, resource);			
 			Response.ResponseBuilder responseBuilder = Response.status(Status.CREATED).entity(resource);		  
 	        return responseBuilder.build();		
 		} catch (ValidationException vx) {
@@ -87,6 +91,10 @@ public class CreateResourceOperation extends ResourceOperation {
 			 throw new ResourceOperationException(jfx, Response.Status.NOT_ACCEPTABLE,
 												    Response.Status.NOT_ACCEPTABLE.toString(), "invalid resource: " + jfx.getMessage(),
 												    uriInfo.getAbsolutePath().getRawPath(), null);						
+		} catch (FhirServiceException fsx) {
+			 throw new ResourceOperationException(fsx, Response.Status.INTERNAL_SERVER_ERROR,
+					    Response.Status.INTERNAL_SERVER_ERROR.toString(), "service failure: " + fsx.getMessage(),
+					    uriInfo.getAbsolutePath().getRawPath(), null);									
 		}
 	}
 	

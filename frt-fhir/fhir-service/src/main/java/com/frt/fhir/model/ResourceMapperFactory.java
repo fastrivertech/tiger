@@ -29,12 +29,12 @@ public class ResourceMapperFactory {
 		return instance;
 	}
 	
-	public <R extends DomainResource> ResourceMapper create(Class<R> resourceClz) 
+	public <R extends DomainResource> ResourceMapper create(String type) 
 		throws MapperException {
-		if (resourceClz.getClass().getName().equals("org.hl7.fhir.dstu3.model.Patient")) {
+		if (type.equalsIgnoreCase("Patient")) {
 			return new PatientResourceMapper();			
 		} else {
-			throw new MapperException(resourceClz.getClass().getName() + " resource mapper not implemented yet");
+			throw new MapperException(type + " resource mapper not implemented yet");
 		}
 	}
 }

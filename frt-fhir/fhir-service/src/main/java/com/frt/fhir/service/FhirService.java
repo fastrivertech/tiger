@@ -22,20 +22,21 @@ import com.frt.fhir.model.MapperException;
  */
 public class FhirService {
 
-	public <R extends DomainResource> R create(Class<R> resourceClz, R resource) 
+	public <R extends DomainResource> R create(String type, R resource) 
 		throws FhirServiceException {	
 		try {
-			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(resourceClz);		
+			
+			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);		
 			return null;
 		} catch (MapperException mex) {
 			throw new FhirServiceException(mex);
 		}
 	}
 
-	public <R extends DomainResource> R findById(Class<R> resourceClz, Long Id) 
+	public <R extends DomainResource> R findById(String type, Long Id) 
 		throws FhirServiceException {
 		try {
-			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(resourceClz);		
+			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);		
 			return null;
 		} catch (MapperException mex) {
 			throw new FhirServiceException(mex);

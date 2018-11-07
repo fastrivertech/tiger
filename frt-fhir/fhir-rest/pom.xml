@@ -86,6 +86,11 @@
       <version>${frt.stream.version}</version>
 	</dependency>  
 	<dependency>
+	  <groupId>com.frt</groupId>
+      <artifactId>frt-fhir-service</artifactId>
+      <version>${frt.fhir.service.version}</version>
+	</dependency>  	
+	<dependency>
 	  <groupId>javax.ws.rs</groupId>
       <artifactId>javax.ws.rs-api</artifactId>
       <version>${javax.ws.rs.version}</version>
