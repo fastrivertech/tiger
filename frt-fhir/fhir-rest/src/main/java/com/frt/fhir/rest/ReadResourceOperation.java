@@ -22,12 +22,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.dstu3.model.DomainResource;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.rest.validation.InteractionValidator;
 import com.frt.fhir.rest.validation.ValidationException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
+import com.frt.fhir.service.FhirService;
+import com.frt.fhir.service.FhirServiceException;
 
 /**
  * CreateResourceInteraction class
@@ -44,15 +46,17 @@ public class ReadResourceOperation extends ResourceOperation {
 	private UriInfo uriInfo;
 	
 	private JsonParser parser;
+	private FhirService fhirService;
 	
 	public ReadResourceOperation() {
 		parser = new JsonParser();
+		fhirService = new FhirService();
 	}	
 	
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
-	public <R extends Resource> Response read(@PathParam("type") final String type,
+	public <R extends DomainResource> Response read(@PathParam("type") final String type,
 											  @PathParam("id") final String id,
 											  @QueryParam("_format") @DefaultValue("json") final String _format,
 											  @QueryParam("_summary") @DefaultValue("false") final String _summary) {
@@ -60,20 +64,22 @@ public class ReadResourceOperation extends ResourceOperation {
 			logger.info(localizer.x("CreateResourceInteraction reads a current resource"));		
 			// Request
 			
-			// Response includes ETag wuth versionId and Last-Modified
+			// Response includes ETag with versionId and Last-Modified
 			// 410 Gone - Resource deleted 
 			// 404 Not Found - Unknown resource 
 			InteractionValidator.validateFormat(_format);
-			InteractionValidator.validateSummary(_summary);
-			
-			R resource = (R)new org.hl7.fhir.dstu3.model.Patient();
-			
+			InteractionValidator.validateSummary(_summary);		
+			R resource = fhirService.findById(type, Long.valueOf(id));		
 			Response.ResponseBuilder responseBuilder = Response.status(Status.OK).entity(resource);        
-        return responseBuilder.build();		
+			return responseBuilder.build();		
 		} catch (ValidationException vx) {
 			 throw new ResourceOperationException(vx, Response.Status.BAD_REQUEST,
 					 								Response.Status.BAD_REQUEST.toString(), "invalid parameter: " + vx.getMessage(),
 					 								uriInfo.getAbsolutePath().getRawPath(), null);			
+		}  catch (FhirServiceException fsx) {
+			 throw new ResourceOperationException(fsx, Response.Status.INTERNAL_SERVER_ERROR,
+					    Response.Status.INTERNAL_SERVER_ERROR.toString(), "service failure: " + fsx.getMessage(),
+					    uriInfo.getAbsolutePath().getRawPath(), null);									
 		}
 	}
 	
