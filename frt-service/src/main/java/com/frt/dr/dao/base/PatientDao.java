@@ -14,10 +14,12 @@ package com.frt.dr.dao.base;
 import java.util.Optional;
 import javax.sql.DataSource;
 import java.sql.Types;
+import java.sql.SQLException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
+import org.springframework.dao.DataAccessException;
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.dao.BaseDao;
 import com.frt.dr.dao.DaoException;
@@ -30,11 +32,10 @@ import com.frt.dr.dao.DaoException;
 @Repository
 public class PatientDao extends BaseDao<Patient,Long> {
 	private static final String SQL_INSERT = "INSERT INTO Patient (" +
-	 								  		 "title, " +
-	 								  		 "release_date, " +
-	 								  		 "created) " +
-	 								  		 "VALUES (?, ?, ?, ?, ?)";
-	private static final String SQL_SELECT_BYID = "SELECT * FROM Patient WHERE patient_id = ? ";
+	 								  		 "active, " +
+	 								  		 "gender )" +
+	 								  		 "VALUES (?, ?)";
+	private static final String SQL_SELECT_BYID = "SELECT active, gender FROM Patient WHERE patient_id = ? ";
 	
 	public PatientDao() {	
 	}
@@ -42,17 +43,29 @@ public class PatientDao extends BaseDao<Patient,Long> {
 	@Override	
 	public Optional<Patient> save(Patient patient) 
 		throws DaoException {
-		Object[] params = new Object[] {};
-		int[] types = new int[] {};
-		int row = this.jdbcTemplate.update(SQL_INSERT, params, types);
-		return null;
+		try {
+			Object[] params = new Object[] {patient.getActive(), patient.getGender()};
+			int[] types = new int[] {Types.BOOLEAN, Types.VARCHAR};
+			int row = this.jdbcTemplate.update(SQL_INSERT, params, types);			
+			if (row > 0) {
+				return Optional.of(patient);
+			} else {
+				throw new DaoException("failed to persist patient resource");
+			}
+		} catch (DataAccessException dex) {
+			throw new DaoException(dex);
+		}
 	}
 	 
 	@Override
 	public Optional<Patient> findById(Long id) 
 		throws DaoException {
-		RowMapper<Patient> rowMapper = new PatientRowMapper();
-		Optional<Patient> patient = Optional.ofNullable(this.jdbcTemplate.queryForObject(SQL_SELECT_BYID, new Object[]{id}, rowMapper));
-		return patient;
+		try {
+			RowMapper<Patient> rowMapper = new PatientRowMapper();
+			Optional<Patient> patient = Optional.ofNullable(this.jdbcTemplate.queryForObject(SQL_SELECT_BYID, new Object[]{id}, rowMapper));		
+			return patient;
+		} catch (DataAccessException dex) {
+			throw new DaoException(dex);			
+		}
 	}
 }
