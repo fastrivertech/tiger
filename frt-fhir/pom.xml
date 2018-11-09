@@ -32,7 +32,8 @@
     <properties>
         <frt.fhir.rest.version>1.0.0-SNAPSHOT</frt.fhir.rest.version>
         <frt.fhir.service.version>1.0.0-SNAPSHOT</frt.fhir.service.version>
-		<hapi.fhir.version>3.4.0</hapi.fhir.version>		
+		<hapi.fhir.version>3.4.0</hapi.fhir.version>	
+		<junit.version>4.12</junit.version>	
         <sonar.skip>true</sonar.skip>
     </properties>
 
@@ -95,7 +96,13 @@
 				<groupId>ca.uhn.hapi.fhir</groupId>
 				<artifactId>hapi-fhir-validation-resources-dstu3</artifactId>
 				<version>${hapi.fhir.version}</version>
-			</dependency>									
+			</dependency>		
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+				<scope>test</scope>
+			</dependency>			
         </dependencies>
     </dependencyManagement>
 
