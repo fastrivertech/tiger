@@ -15,7 +15,7 @@ package com.frt.fhir.model;
  * MapperException Interface
  * @author chaye
  */
-public class MapperException extends Exception {
+public class MapperException extends RuntimeException {
 
 	/**
 	 * MapperException Constructor

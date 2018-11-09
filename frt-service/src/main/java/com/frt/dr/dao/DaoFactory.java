@@ -11,8 +11,11 @@
  */
 package com.frt.dr.dao;
 
+import com.frt.dr.dao.base.PatientDao;
+import com.frt.dr.dao.base.PatientHumanNameDao;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.base.Patient;
+import com.frt.dr.model.base.PatientHumanName;
 
 /**
  * DaoFactory class
@@ -29,10 +32,13 @@ public class DaoFactory {
 		return instance;
 	}
 	
-	public <D extends BaseDao> D createResourceDao(Class<? extends DomainResource> resourceClazz) 
+	public <D extends BaseDao> D createResourceDao(Class resourceClazz) 
 		throws DaoException {
 		if (resourceClazz.equals(Patient.class) ) {
-			D resourceDao = null;
+			D resourceDao = (D)new PatientDao();
+			return resourceDao;
+		} else if (resourceClazz.equals(PatientHumanName.class)) {
+			D resourceDao = (D)new PatientHumanNameDao();
 			return resourceDao;
 		} else {
 			throw new DaoException(resourceClazz.getName() + "Dao Not Implemented Yet");

@@ -57,7 +57,7 @@ public class PatientHumanName implements Serializable {
     
     @NotNull(message = "Patient logical Id cannot be Null")
     @Column(name = "patient_id")            
-    private Long patient_id;
+    private Long patientId;
     
     @Size(max = 128)    
     @Column(name = "path")                                                
@@ -100,6 +100,14 @@ public class PatientHumanName implements Serializable {
     
     public void setHumannameId(Long humannameId) {
     	this.humannameId = humannameId;
+    }
+
+    public Long getPatientId() {
+    	return this.patientId;
+    }
+    
+    public void setPatientId(Long patientId) {
+    	this.patientId = patientId;
     }
     
     public String getUse() {

@@ -49,6 +49,7 @@ public class ResourceDictionary {
 	
 	static {
 		resourcePairs.put("PATIENT", new ResourcePair(org.hl7.fhir.dstu3.model.Patient.class, com.frt.dr.model.base.Patient.class));
+		resourcePairs.put("PATIENT_HUMANNAME", new ResourcePair(org.hl7.fhir.dstu3.model.HumanName.class, com.frt.dr.model.base.PatientHumanName.class));		
 	}
 	
 	public static ResourcePair get(String key) {

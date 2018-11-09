@@ -15,7 +15,7 @@ package com.frt.dr.dao;
  * DaoException class
  * @author chaye
  */
-public class DaoException extends Exception {
+public class DaoException extends RuntimeException {
 
 	/**
 	 * DaoException Constructor
