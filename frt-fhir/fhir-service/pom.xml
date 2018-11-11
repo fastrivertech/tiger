@@ -67,7 +67,12 @@
 	<dependency>
 	  <groupId>ca.uhn.hapi.fhir</groupId>
        <artifactId>hapi-fhir-structures-dstu3</artifactId>
-	</dependency>	
+	</dependency>
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<scope>test</scope>
+	</dependency>			
   </dependencies>
  
 </project>

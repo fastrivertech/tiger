@@ -130,6 +130,9 @@ public class Patient implements Serializable {
     }
     
     public List<PatientHumanName> getNames() {
+    	if (names == null ) {
+    		names = new ArrayList<PatientHumanName>();
+    	}
     	return this.names;
     }
 

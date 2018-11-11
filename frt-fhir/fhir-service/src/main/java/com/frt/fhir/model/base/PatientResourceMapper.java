@@ -47,8 +47,11 @@ public class PatientResourceMapper implements ResourceMapper {
 		    targetClz.getName().equals("com.frt.dr.model.base.Patient")) {
 			com.frt.dr.model.base.Patient target = new com.frt.dr.model.base.Patient();
 			org.hl7.fhir.dstu3.model.Patient patient = (org.hl7.fhir.dstu3.model.Patient)source;
+			
+			target.setPatientId(Long.valueOf(patient.getId()));
 			target.setActive(Boolean.valueOf(patient.getActive()));
 			target.setGender(patient.getGender().toString());
+			
 			// org.hl7.fhir.dstu3.model.HumanName => com.frt.dr.model.base.PatientHumanName			
 			List<org.hl7.fhir.dstu3.model.HumanName> names = patient.getName();
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("PATIENT_HUMANNAME");			
@@ -63,9 +66,11 @@ public class PatientResourceMapper implements ResourceMapper {
 			// com.frt.dr.model.base.Patient => org.hl7.fhir.dstu3.model.Patient			
 			org.hl7.fhir.dstu3.model.Patient target = new org.hl7.fhir.dstu3.model.Patient();
 			com.frt.dr.model.base.Patient patient = (com.frt.dr.model.base.Patient)source;
+			
+			target.setId(patient.getPatientId().toString());			
 			target.setActive(patient.getActive());
 			target.setGender(org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender.valueOf(patient.getGender()));
-			target.setId(patient.getPatientId().toString());
+			
 			// com.frt.dr.model.base.PatientHumanName => org.hl7.fhir.dstu3.model.HumanName			
 			List<com.frt.dr.model.base.PatientHumanName> names = patient.getNames();
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("PATIENT_HUMANNAME");			
