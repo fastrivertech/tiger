@@ -37,7 +37,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 	
 	@Override
-	public <R extends DomainResource> R read(Class<R> resourceClazz, Long id) 
+	public <R extends DomainResource> R read(Class<?> resourceClazz, Long id) 
 		throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
@@ -49,7 +49,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 		
 	@Override
-	public <R extends DomainResource> R save(Class<R> resourceClazz, R resource)
+	public <R extends DomainResource> R save(Class<?> resourceClazz, R resource)
 		   throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);

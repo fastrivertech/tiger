@@ -30,6 +30,7 @@
 	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
 	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>	
     <spring.data.releasetrain.version>1.4.6.RELEASE</spring.data.releasetrain.version> 	
+	<junit.version>4.12</junit.version>	
   </properties>  
   
   <modules>
@@ -55,6 +56,12 @@
 			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>					
 	</dependencies>
   </dependencyManagement>
 	

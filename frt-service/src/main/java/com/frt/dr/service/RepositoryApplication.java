@@ -31,13 +31,13 @@ public class RepositoryApplication {
 		this.repositoryService = repositoryService;
 	}
 	
-    public <R extends DomainResource> void create(Class<R> resourceClazz, Object object)
+    public <R extends DomainResource> void create(java.lang.Class<?> resourceClazz, Object object)
 		throws RepositoryServiceException {
 		R resource = (R)object;
-		this.repositoryService.save(resourceClazz,resource);
+	    this.repositoryService.save(resourceClazz,resource);
 	}
     
-    public <R extends DomainResource> Object read(Class<R> resourceClazz, Long id)
+    public <R extends DomainResource> Object read(java.lang.Class<R> resourceClazz, Long id)
 		throws RepositoryServiceException {
     	R resource = this.repositoryService.read(resourceClazz, id);    	
 		return resource;
@@ -46,7 +46,7 @@ public class RepositoryApplication {
 	public static void main(String[] args) {
 		try {
 			RepositoryContext context = new RepositoryContext(RepositoryApplication.class);			
-			RepositoryApplication repositoryApplication = (RepositoryApplication)context.getBean(RepositoryApplication.class);			
+			RepositoryApplication repositoryApplication = (RepositoryApplication)context.getBean(RepositoryApplication.class);	
 		} catch (RepositoryContextException rsex) {
 			rsex.printStackTrace();
 		}				
