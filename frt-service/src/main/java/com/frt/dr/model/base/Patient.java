@@ -36,6 +36,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import com.frt.dr.model.DomainResource;
 
 @Entity
 @Table(name = "PATIENT")
@@ -44,7 +45,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "getById", query = "SELECT P FROM PATIENT P WHERE P.patient_id = :id")
 })
-public class Patient implements Serializable {
+public class Patient extends DomainResource implements Serializable {
     private static final long serialVersionUID = -8321293485415818761L;
 	
     @Id

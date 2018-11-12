@@ -37,7 +37,7 @@ public class PatientDao extends BaseDao<Patient,Long> {
 											 "patient_id, " +
 	 								  		 "active, " +
 	 								  		 "gender )" +
-	 								  		 "VALUES (?, ?)";
+	 								  		 "VALUES (?, ?, ?)";
 	private static final String SQL_SELECT_BYID = "SELECT active, gender FROM PATIENT WHERE patient_id = ? ";
 	
 	public PatientDao() {	
@@ -52,6 +52,7 @@ public class PatientDao extends BaseDao<Patient,Long> {
 			int row = this.jdbcTemplate.update(SQL_INSERT, params, types);			
 			if (row > 0) {
 				BaseDao dao = DaoFactory.getInstance().createResourceDao(PatientHumanName.class);
+				dao.setJdbcTemplate(this.jdbcTemplate);
 				patient.getNames().forEach(name->dao.save(name));
 				return Optional.of(patient);
 			} else {
@@ -69,6 +70,7 @@ public class PatientDao extends BaseDao<Patient,Long> {
 			RowMapper<Patient> rowMapper = new PatientRowMapper();
 			Optional<Patient> patient = Optional.ofNullable(this.jdbcTemplate.queryForObject(SQL_SELECT_BYID, new Object[]{id}, rowMapper));
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(PatientHumanName.class);
+			dao.setJdbcTemplate(this.jdbcTemplate);
 			Optional<PatientHumanName> name = dao.findById(id);
 			if (patient.isPresent()) {
 				patient.get().getNames().add(name.get());

@@ -32,6 +32,13 @@
     <javax.javaee.api.version>6.0</javax.javaee.api.version>
   </properties>
  
+  <repositories>
+    <repository>
+        <id>splicemachine-public</id>
+        <url>http://repository.splicemachine.com/nexus/content/groups/public</url>
+    </repository>	
+  </repositories>
+		
   <build>
     <plugins>
       <plugin>
@@ -63,6 +70,12 @@
 		<artifactId>junit</artifactId>
 		<scope>test</scope>
 	</dependency>			
+	<dependency>
+        <groupId>com.splicemachine</groupId>
+        <artifactId>db-client</artifactId>
+        <version>2.7.0.1835</version>
+        <scope>test</scope>
+    </dependency>       	
   </dependencies>
 	
 </project>

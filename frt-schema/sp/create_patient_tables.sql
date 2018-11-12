@@ -47,7 +47,7 @@ CREATE TABLE DOMAIN_RESOURCE (
 -- FHIR patient resource relevant tables --
 CREATE TABLE PATIENT (
 	patient_id	BIGINT NOT NULL,
-	domain_resource_id	BIGINT NOT NULL,
+	domain_resource_id	BIGINT,
 	-- identifier -- Σ, refer to PATIENT_IDENTIFIER table	
 	active	BOOLEAN NOT NULL, -- ?!Σ
 	-- name -- Σ, refer to PATIENT_HUMANNAME table

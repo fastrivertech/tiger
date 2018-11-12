@@ -29,11 +29,14 @@ import com.frt.dr.dao.DaoException;
 @Service
 public class RepositoryServiceImpl implements RepositoryService {
 	
-    private JdbcTemplate jdbcTemplate;
+    private DataSource dataSource;
+    
+    public RepositoryServiceImpl() {	
+    }
     
     @Autowired
     public void setDataSource(DataSource dataSource) {
-    	this.jdbcTemplate = new JdbcTemplate(dataSource);
+    	this.dataSource = dataSource;
     }
 	
 	@Override
@@ -41,6 +44,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
+			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
 			Optional<R> resource = dao.findById(id);
 			return resource.get();
 		} catch (DaoException dex) {
@@ -53,6 +57,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		   throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
+			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
 			Optional<R> created = dao.save(resource);
 			return created.get();
 		} catch (DaoException dex) {

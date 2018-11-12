@@ -26,8 +26,8 @@ public abstract class BaseDao<T,ID> implements Repository {
 	protected JdbcTemplate jdbcTemplate;
 	
     @Autowired
-    public void setDataSource(DataSource dataSource) {
-    	this.jdbcTemplate = new JdbcTemplate(dataSource);
+    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
+    	this.jdbcTemplate = jdbcTemplate;
     }
 
     public abstract Optional<T> save(T entry) throws DaoException;

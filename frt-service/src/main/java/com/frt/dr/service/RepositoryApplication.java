@@ -21,13 +21,13 @@ import com.frt.dr.model.DomainResource;
  * RepositoryApplication class
  * @author chaye
  */
-@ComponentScan(basePackages = "com.frt.dr")
+@ComponentScan(basePackages = "com.frt.dr.service")
 public class RepositoryApplication {
 
-	private RepositoryService repositoryService;
+	private RepositoryServiceImpl repositoryService;
 	
 	@Autowired
-	public RepositoryApplication(RepositoryService repositoryService) {
+	public RepositoryApplication(RepositoryServiceImpl repositoryService) {
 		this.repositoryService = repositoryService;
 	}
 	

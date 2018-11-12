@@ -24,7 +24,7 @@ public class RepositoryContext {
 	private ApplicationContext context;
 
 	public RepositoryContext(java.lang.Class<?>... annotatedClasses) {
-		ApplicationContext context = new AnnotationConfigApplicationContext(annotatedClasses);			
+		context = new AnnotationConfigApplicationContext(annotatedClasses);			
 	}
 		
 	public Object getBean(java.lang.Class<?> annotatedClass) 

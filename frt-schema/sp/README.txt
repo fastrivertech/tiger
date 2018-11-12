@@ -23,3 +23,8 @@ splice>call syscs_util.syscs_drop_user('username');
 splice>call syscs_util.syscs_kill_transaction procedure to kill the old transaction
 
 scp -i tiger.pem C:\frt-dev\tiger\frt-schema\sp\create_patient_tables.sql ec2-user@ec2-54-202-187-87.us-west-2.compute.amazonaws.com:~/frt
+
+select p.patient_id, p.active, p.gender, n.humanname_id, n.use, n.family from Patient p inner join patient_humanname n on p.patient_id = n.patient_id;
+delete from patient where patient_id = 10000;
+delete from patient_humanname where patient_id = 10000;
+   
