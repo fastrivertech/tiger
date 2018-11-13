@@ -20,8 +20,8 @@ import com.frt.util.logging.Localization;
  * 
  * @author cqye
  */
-public class InteractionValidator {
-	private final static Localization localizer = Localization.getInstance("com.frt.fhir");
+public class OperationValidator {
+	private final static Localization localizer = Localization.getInstance();
 
 	private final static List<String> formats = new ArrayList<>();
 	private final static List<String> summaries = new ArrayList<>();
@@ -49,7 +49,7 @@ public class InteractionValidator {
 	 * @throws ValidationException throw if the format is invalid
 	 */
 	public static void validateFormat(String format) throws ValidationException {
-		if (formats.contains(format)) {
+		if (!formats.contains(format)) {
 			throw new ValidationException(localizer.x("invalid _format " + format),
 										  ValidationException.ErrorCode.INVALID_MIME_TYPE);
 		} 

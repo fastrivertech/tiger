@@ -25,7 +25,7 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import com.frt.fhir.parser.JsonParser;
-import com.frt.fhir.rest.validation.InteractionValidator;
+import com.frt.fhir.rest.validation.OperationValidator;
 import com.frt.fhir.rest.validation.ValidationException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
@@ -62,14 +62,14 @@ public class ReadResourceOperation extends ResourceOperation {
 											  @QueryParam("_format") @DefaultValue("json") final String _format,
 											  @QueryParam("_summary") @DefaultValue("false") final String _summary) {
 		try {
-			logger.info(localizer.x("CreateResourceInteraction reads a current resource"));		
+			logger.info(localizer.x("ReadResourceOperation reads a current resource"));		
 			// Request
 			
 			// Response includes ETag with versionId and Last-Modified
 			// 410 Gone - Resource deleted 
 			// 404 Not Found - Unknown resource 
-			InteractionValidator.validateFormat(_format);
-			InteractionValidator.validateSummary(_summary);
+			OperationValidator.validateFormat(_format);
+			OperationValidator.validateSummary(_summary);
 			Optional<R> found = fhirService.read(type, Long.valueOf(id));
 			if (found.isPresent()) {
 				Response.ResponseBuilder responseBuilder = Response.status(Status.OK).entity(found.get());        

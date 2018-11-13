@@ -27,7 +27,7 @@ import javax.annotation.security.PermitAll;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.parser.JsonFormatException;
-import com.frt.fhir.rest.validation.InteractionValidator;
+import com.frt.fhir.rest.validation.OperationValidator;
 import com.frt.fhir.rest.validation.ValidationException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
@@ -79,7 +79,7 @@ public class CreateResourceOperation extends ResourceOperation {
 			// 200 OK status - Ignore request if some condition not match for conditional create
 			// Conditional create - Create a new resource only if some equivalent resource does not already exist on the server.
 			
-			InteractionValidator.validateFormat(_format);
+			OperationValidator.validateFormat(_format);
 			R resource = parser.deserialize(type, body);	
 			Optional<R> created = fhirService.create(type, resource);
 			if (created.isPresent()) {

@@ -38,7 +38,7 @@ public class PatientDao extends BaseDao<Patient,Long> {
 	 								  		 "active, " +
 	 								  		 "gender )" +
 	 								  		 "VALUES (?, ?, ?)";
-	private static final String SQL_SELECT_BYID = "SELECT active, gender FROM PATIENT WHERE patient_id = ? ";
+	private static final String SQL_SELECT_BYID = "SELECT patient_id, active, gender FROM PATIENT WHERE patient_id = ? ";
 	
 	public PatientDao() {	
 	}
