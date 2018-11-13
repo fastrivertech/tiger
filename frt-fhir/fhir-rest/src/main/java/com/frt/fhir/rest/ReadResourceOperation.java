@@ -72,8 +72,8 @@ public class ReadResourceOperation extends ResourceOperation {
 			OperationValidator.validateSummary(_summary);
 			Optional<R> found = fhirService.read(type, Long.valueOf(id));
 			if (found.isPresent()) {
-				Response.ResponseBuilder responseBuilder = Response.status(Status.OK).entity(found.get());        
-				return responseBuilder.build();
+				String resourceInJson = parser.serialize(found.get());      
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 			} else {
 				 Throwable t = new ResourceException("invalid domain resource logical id '" + id + "'");
 				 throw new ResourceOperationException(t, Response.Status.NOT_FOUND,
