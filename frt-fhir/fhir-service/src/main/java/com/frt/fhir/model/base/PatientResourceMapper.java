@@ -48,7 +48,7 @@ public class PatientResourceMapper implements ResourceMapper {
 			com.frt.dr.model.base.Patient target = new com.frt.dr.model.base.Patient();
 			org.hl7.fhir.dstu3.model.Patient patient = (org.hl7.fhir.dstu3.model.Patient)source;
 			
-			target.setPatientId(Long.valueOf(patient.getId()));
+			target.setPatientId(Long.valueOf(patient.getId().replace("Patient/", "")));
 			target.setActive(Boolean.valueOf(patient.getActive()));
 			target.setGender(patient.getGender().toString());
 			

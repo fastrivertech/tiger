@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.OperationOutcome;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.rest.validation.OperationValidator;
 import com.frt.fhir.rest.validation.ValidationException;
@@ -75,19 +76,27 @@ public class ReadResourceOperation extends ResourceOperation {
 				String resourceInJson = parser.serialize(found.get());      
 				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 			} else {
-				 Throwable t = new ResourceException("invalid domain resource logical id '" + id + "'");
-				 throw new ResourceOperationException(t, Response.Status.NOT_FOUND,
-							Response.Status.NOT_FOUND.toString(), "invalid id: " + t.getMessage(),
-							uriInfo.getAbsolutePath().getRawPath(), null);							
+				String message = "invalid domain resource logical id '" + id + "'" ; 
+				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																								  OperationOutcome.IssueSeverity.ERROR, 
+																								  OperationOutcome.IssueType.PROCESSING);
+				String resourceInJson = parser.serialize(outcome);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MediaType.APPLICATION_JSON);				
 			}
 		} catch (ValidationException vx) {
-			 throw new ResourceOperationException(vx, Response.Status.BAD_REQUEST,
-					 								Response.Status.BAD_REQUEST.toString(), "invalid parameter: " + vx.getMessage(),
-					 								uriInfo.getAbsolutePath().getRawPath(), null);			
+			String message = "invalid parameter: " + vx.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = parser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MediaType.APPLICATION_JSON);				
 		}  catch (FhirServiceException fsx) {
-			 throw new ResourceOperationException(fsx, Response.Status.INTERNAL_SERVER_ERROR,
-					    Response.Status.INTERNAL_SERVER_ERROR.toString(), "service failure: " + fsx.getMessage(),
-					    uriInfo.getAbsolutePath().getRawPath(), null);									
+			String message = "\"service failure: " + fsx.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = parser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.INTERNAL_SERVER_ERROR, "", MediaType.APPLICATION_JSON);							
 		}
 	}
 	

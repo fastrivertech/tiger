@@ -53,7 +53,11 @@ public class PatientDao extends BaseDao<Patient,Long> {
 			if (row > 0) {
 				BaseDao dao = DaoFactory.getInstance().createResourceDao(PatientHumanName.class);
 				dao.setJdbcTemplate(this.jdbcTemplate);
-				patient.getNames().forEach(name->dao.save(name));
+				patient.getNames().forEach(name->{ 
+					                               name.setPatientId(patient.getPatientId());
+												   dao.save(name);
+												 }
+										  );
 				return Optional.of(patient);
 			} else {
 				throw new DaoException("failed to persist patient resource");

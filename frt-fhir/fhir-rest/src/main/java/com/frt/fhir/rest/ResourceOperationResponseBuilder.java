@@ -13,8 +13,8 @@ package com.frt.fhir.rest;
 import java.util.Date;
 import javax.ws.rs.core.Response;
 import com.frt.util.logging.Localization;
+import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
-import org.hl7.fhir.dstu3.model.OperationOutcome.IssueSeverity;
 
 /**
  * ResourceOperationResponseBuilder class
@@ -30,8 +30,10 @@ public class ResourceOperationResponseBuilder {
 		return responseBuilder.build();
 	}
 
-	public static OperationOutcome buildOperationOutcome(String message, OperationOutcome.IssueSeverity code, OperationOutcome.IssueType issueType) {
+	public static OperationOutcome buildOperationOutcome(String message, OperationOutcome.IssueSeverity code, OperationOutcome.IssueType type) {
+		CodeableConcept codeableConcept = new CodeableConcept().setText(message);
 		OperationOutcome outcome = new OperationOutcome();
+		outcome.addIssue().setSeverity(code).setCode(type).setDetails(codeableConcept);
 		return outcome;
 	}
 

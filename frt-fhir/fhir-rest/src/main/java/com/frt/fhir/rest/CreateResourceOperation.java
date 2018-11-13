@@ -25,6 +25,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import javax.annotation.security.PermitAll;
 import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.OperationOutcome;
+
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.rest.validation.OperationValidator;
@@ -83,26 +85,37 @@ public class CreateResourceOperation extends ResourceOperation {
 			R resource = parser.deserialize(type, body);	
 			Optional<R> created = fhirService.create(type, resource);
 			if (created.isPresent()) {
-				Response.ResponseBuilder responseBuilder = Response.status(Status.CREATED).entity(created.get());
-				return responseBuilder.build();
-			} else {
-				Throwable t = new ResourceException("failed to create domain resource '" + type + "'");
-				throw new ResourceOperationException(t, Response.Status.BAD_REQUEST,
-							Response.Status.BAD_REQUEST.toString(), "failed to create domain resource: " + t.getMessage(),
-							uriInfo.getAbsolutePath().getRawPath(), null);							
+				String resourceInJson = parser.serialize(created.get());      
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
+			} else {		
+				String message = "failed to create domain resource '" + type + "'"; 
+				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																								  OperationOutcome.IssueSeverity.ERROR, 
+																								  OperationOutcome.IssueType.PROCESSING);
+				String resourceInJson = parser.serialize(outcome);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MediaType.APPLICATION_JSON);
 			}
 		} catch (ValidationException vx) {
-			 throw new ResourceOperationException(vx, Response.Status.BAD_REQUEST,
-					 								Response.Status.BAD_REQUEST.toString(), "invalid parameter: " + vx.getMessage(),
-					 								uriInfo.getAbsolutePath().getRawPath(), null);			
+			String message = "invalid parameter: " + vx.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = parser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MediaType.APPLICATION_JSON);				
 		} catch (JsonFormatException jfx) {
-			 throw new ResourceOperationException(jfx, Response.Status.NOT_ACCEPTABLE,
-												    Response.Status.NOT_ACCEPTABLE.toString(), "invalid resource: " + jfx.getMessage(),
-												    uriInfo.getAbsolutePath().getRawPath(), null);						
-		} catch (FhirServiceException fsx) {
-			 throw new ResourceOperationException(fsx, Response.Status.INTERNAL_SERVER_ERROR,
-					    Response.Status.INTERNAL_SERVER_ERROR.toString(), "service failure: " + fsx.getMessage(),
-					    uriInfo.getAbsolutePath().getRawPath(), null);									
+			String message = "invalid resource: " + jfx.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = parser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MediaType.APPLICATION_JSON);							 
+		} catch (FhirServiceException fsx) {								
+			String message = "service failure: " + fsx.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = parser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MediaType.APPLICATION_JSON);							 			 			 
 		}
 	}
 	
