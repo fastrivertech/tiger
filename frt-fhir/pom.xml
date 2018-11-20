@@ -62,16 +62,6 @@
 
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>oracle.hsgbu.hdr.fhir</groupId>
-                <artifactId>hdr-fhir-data</artifactId>
-                <version>${hdr.fhir.data.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>oracle.hsgbu.hdr.fhir</groupId>
-                <artifactId>hdr-fhir-base</artifactId>
-                <version>${hdr.fhir.base.version}</version>
-            </dependency>
 			<dependency>
 				<groupId>ca.uhn.hapi.fhir</groupId>
 				<artifactId>hapi-fhir-base</artifactId>
