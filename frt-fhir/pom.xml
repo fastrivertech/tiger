@@ -30,10 +30,22 @@
     <description>FRT FHIR Server ${frt.fhir.version}</description>
 
     <properties>
-        <frt.fhir.rest.version>1.0.0-SNAPSHOT</frt.fhir.rest.version>
+		<!-- frt -->
+		<frt.fhir.rest.version>1.0.0-SNAPSHOT</frt.fhir.rest.version>
         <frt.fhir.service.version>1.0.0-SNAPSHOT</frt.fhir.service.version>
+		<!-- hapi -->
 		<hapi.fhir.version>3.4.0</hapi.fhir.version>	
-		<junit.version>4.12</junit.version>	
+		<!-- jersey -->
+		<jersey.version>2.27</jersey.version>
+		<javax.ws.rs.version>2.1</javax.ws.rs.version>	
+		<javax.servlet.versoin>4.0.1</javax.servlet.versoin>
+		<org.glassfish.jersey.containers.version>2.27</org.glassfish.jersey.containers.version>
+		<org.glassfish.jersey.inject.version>2.27</org.glassfish.jersey.inject.version>
+		<!-- javax -->
+		<javax.xml.bind.version>2.2.7</javax.xml.bind.version>
+		<javax.activation.version>1.1</javax.activation.version>
+		<!-- junit -->
+		<junit.version>4.12</junit.version>		
         <sonar.skip>true</sonar.skip>
     </properties>
 
@@ -62,6 +74,28 @@
 
     <dependencyManagement>
         <dependencies>
+			<!-- frt -->
+			<dependency>
+			  <groupId>com.frt</groupId>
+			  <artifactId>frt-common</artifactId>
+			  <version>${frt.common.version}</version>
+			</dependency>    
+			<dependency>
+			  <groupId>com.frt</groupId>
+			  <artifactId>frt-service</artifactId>
+			  <version>${frt.service.version}</version>
+			</dependency>    
+			<dependency>
+			  <groupId>com.frt</groupId>
+			  <artifactId>frt-stream</artifactId>
+			  <version>${frt.stream.version}</version>
+			</dependency>  
+			<dependency>
+			  <groupId>com.frt</groupId>
+			  <artifactId>frt-fhir-service</artifactId>
+			  <version>${frt.fhir.service.version}</version>
+			</dependency>  				
+			<!-- hapi -->
 			<dependency>
 				<groupId>ca.uhn.hapi.fhir</groupId>
 				<artifactId>hapi-fhir-base</artifactId>
@@ -86,7 +120,35 @@
 				<groupId>ca.uhn.hapi.fhir</groupId>
 				<artifactId>hapi-fhir-validation-resources-dstu3</artifactId>
 				<version>${hapi.fhir.version}</version>
-			</dependency>		
+			</dependency>
+			<!-- javax -->	
+			<dependency>
+			  <groupId>javax.ws.rs</groupId>
+			  <artifactId>javax.ws.rs-api</artifactId>
+			  <version>${javax.ws.rs.version}</version>
+			</dependency>	
+			<dependency>
+				<groupId>javax.xml.bind</groupId>
+				<artifactId>jaxb-api</artifactId>
+				<version>${javax.xml.bind.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.activation</groupId>
+				<artifactId>activation</artifactId>
+				<version>${javax.activation.version}</version>
+			</dependency>	
+			<!-- jersey -->
+			<dependency>
+				<groupId>org.glassfish.jersey.containers</groupId>
+				<artifactId>jersey-container-grizzly2-servlet</artifactId>
+				<version>${org.glassfish.jersey.containers.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.inject</groupId>
+				<artifactId>jersey-hk2</artifactId>
+				<version>${org.glassfish.jersey.inject.version}</version>
+			</dependency>			
+			<!-- junit -->
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>

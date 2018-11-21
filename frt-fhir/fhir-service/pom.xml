@@ -13,8 +13,7 @@
 --> 
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
   <parent>
     <groupId>com.frt</groupId>
     <artifactId>frt-fhir</artifactId>
@@ -28,34 +27,31 @@
   <version>${frt.fhir.service.version}</version>
   <name>FRT FHIR CORE SERVICE ${frt.fhir.service.version}</name>
   <description>Fast River FHIR CORE SERVICE ${frt.fhir.service.version}</description>
-  
-  <properties>
-  </properties>  
-  
+   
   <build>
     <finalName>frt-fhir-service</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>${maven.compiler.plugin.version}</version>
         <configuration>
-          <release>10</release>
+          <release>${maven.compiler.plugin.version.release}</release>
         </configuration>
-      </plugin>
+      </plugin>	  
     </plugins>
   </build>
     
   <dependencies>
+	<!-- frt -->
 	<dependency>
 	  <groupId>com.frt</groupId>
       <artifactId>frt-common</artifactId>
-      <version>${frt.common.version}</version>
 	</dependency>    
 	<dependency>
 	  <groupId>com.frt</groupId>
       <artifactId>frt-service</artifactId>
-      <version>${frt.service.version}</version>
 	</dependency>    	
+	<!-- hapi -->
 	<dependency>
 	  <groupId>ca.uhn.hapi.fhir</groupId>
        <artifactId>hapi-fhir-base</artifactId>
@@ -68,6 +64,7 @@
 	  <groupId>ca.uhn.hapi.fhir</groupId>
        <artifactId>hapi-fhir-structures-dstu3</artifactId>
 	</dependency>
+	<!-- junit -->
 	<dependency>
 		<groupId>junit</groupId>
 		<artifactId>junit</artifactId>
