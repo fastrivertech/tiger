@@ -28,10 +28,6 @@
   <name>FRT SERVICE ${frt.service.version}</name>
   <description>Fast River CORE SERVICE ${frt.service.version}</description>
   
-  <properties>
-    <javax.javaee.api.version>7.0</javax.javaee.api.version>
-  </properties>
- 
   <repositories>
     <repository>
         <id>splicemachine-public</id>
@@ -43,9 +39,9 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>${maven.compiler.plugin.version}</version>
         <configuration>
-          <release>10</release>
+          <release>${maven.compiler.plugin.version.release}</release>
         </configuration>
       </plugin>
     </plugins>
@@ -55,7 +51,6 @@
 	<dependency>
 		<groupId>javax</groupId>
 		<artifactId>javaee-api</artifactId>
-		<version>${javax.javaee.api.version}</version>
 		<scope>provided</scope>
     </dependency>
     <dependency>
@@ -69,7 +64,6 @@
 	<dependency>
         <groupId>com.splicemachine</groupId>
         <artifactId>db-client</artifactId>
-        <version>2.7.0.1835</version>
     </dependency>       	
 	<dependency>
 		<groupId>junit</groupId>

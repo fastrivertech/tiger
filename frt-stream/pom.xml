@@ -36,9 +36,9 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>${maven.compiler.plugin.version}</version>
         <configuration>
-          <release>10</release>
+          <release>${maven.compiler.plugin.version.release}</release>
         </configuration>
       </plugin>
     </plugins>
@@ -47,18 +47,15 @@
   <dependencies>
 	<dependency>
       <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-streams</artifactId>
-      <version>${org.apache.kafka.version}</version>
+      <artifactId>kafka-streams</artifactId>   
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
-      <version>${org.apache.kafka.version}</version>
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-log4j-appender</artifactId>
-      <version>${org.apache.kafka.version}</version>
     </dependency>	
   </dependencies>
 	

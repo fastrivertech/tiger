@@ -24,12 +24,25 @@
   <description>Fast River FHIR-Based and Stream-Enabled Healthcare Data Repository</description>
 
   <properties>
+	<!-- frt -->
 	<frt.version>1.0.0-SNAPSHOT</frt.version>
 	<frt.fhir.version>1.0.0-SNAPSHOT</frt.fhir.version>
 	<frt.stream.version>1.0.0-SNAPSHOT</frt.stream.version>	
 	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
 	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>	
-    <spring.data.releasetrain.version>1.4.6.RELEASE</spring.data.releasetrain.version> 	
+	<!-- splice machine -->
+	<com.splicemachine.version>2.7.0.1835</com.splicemachine.version>
+    <!-- spring -->
+	<spring.data.version>1.4.6.RELEASE</spring.data.version> 	
+    <spring.boot.version>2.1.0.RELEASE</spring.boot.version> 	
+	<!-- kafka -->
+	<org.apache.kafka.version>2.0.0</org.apache.kafka.version>
+	<!-- java ee -->	
+	<javax.javaee.api.version>7.0</javax.javaee.api.version>
+	<!-- maven -->
+	<maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
+	<maven.compiler.plugin.version.release>10</maven.compiler.plugin.version.release>
+	<!-- junit -->
 	<junit.version>4.12</junit.version>	
   </properties>  
   
@@ -43,19 +56,49 @@
   <dependencyManagement>
 	<dependencies>
 		<dependency>
+			<groupId>com.splicemachine</groupId>
+			<artifactId>db-client</artifactId>
+			<version>${com.splicemachine.version}</version>
+		</dependency>       
+		<!-- spring -->
+		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-releasetrain</artifactId>
-			<version>${spring.data.releasetrain.version}</version>
+			<version>${spring.data.version}</version>
 			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
 		<dependency>	
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
-			<version>2.1.0.RELEASE</version>
+			<version>${spring.boot.version}</version>
 			<scope>import</scope>
 			<type>pom</type>
 		</dependency>
+		<!-- kafka -->
+		<dependency>
+		  <groupId>org.apache.kafka</groupId>
+		  <artifactId>kafka-streams</artifactId>
+		  <version>${org.apache.kafka.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.kafka</groupId>
+		  <artifactId>kafka-clients</artifactId>
+		  <version>${org.apache.kafka.version}</version>
+		</dependency>
+		<dependency>
+		  <groupId>org.apache.kafka</groupId>
+		  <artifactId>kafka-log4j-appender</artifactId>
+		  <version>${org.apache.kafka.version}</version>
+		</dependency>
+		<!-- java ee -->
+		<dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>${javax.javaee.api.version}</version>
+			<scope>provided</scope>
+		</dependency>		
+		<!-- junit -->	
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
