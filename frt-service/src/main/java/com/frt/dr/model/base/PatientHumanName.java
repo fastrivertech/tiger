@@ -38,6 +38,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import com.frt.dr.SqlHelper;
+import com.frt.dr.model.datatype.Period;
 
 @Entity
 @Table(name = "PATIENT_HUMANNAME")
@@ -110,12 +112,28 @@ public class PatientHumanName implements Serializable {
     	this.patientId = patientId;
     }
     
+    public String getPath() {
+    	return this.path;
+    }
+    
+    public void setPath(String path) {
+    	this.path = path;
+    }
+    
     public String getUse() {
     	return this.use;
     }
     
     public void setUse(String use) {
     	this.use = use;
+    }
+    
+    public String getTxt() {
+    	return this.txt;
+    }
+    
+    public void setTxt(String txt) {
+    	this.txt = txt;
     }
     
     public String getFamily() {
@@ -126,4 +144,36 @@ public class PatientHumanName implements Serializable {
     	this.family = family;
     }
         
+    public List<String> getGiven() {
+    	return SqlHelper.toString(this.given);
+    }
+
+    public void setGiven(Clob given) {
+    	this.given = given;
+    }
+    
+    public List<String> getPrefix() {
+    	return SqlHelper.toString(this.prefix);
+    }
+
+    public void setPrefix(Clob prefix) {
+    	this.prefix = prefix;
+    }
+    
+    public List<String> getSuffix() {
+    	return SqlHelper.toString(this.suffix);
+    }
+
+    public void setSuffix(Clob suffix) {
+    	this.suffix = suffix;
+    }
+    
+    public List<Period> getPeriod() {
+    	return SqlHelper.toPeriod(this.period);
+    }
+
+    public void setPeriod(Clob period) {
+    	this.period = period;
+    }
+    
 }
