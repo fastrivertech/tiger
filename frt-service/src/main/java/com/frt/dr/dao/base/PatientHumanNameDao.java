@@ -30,7 +30,7 @@ import com.frt.dr.model.base.PatientHumanName;
 @Transactional
 @Repository
 public class PatientHumanNameDao extends BaseDao<PatientHumanName, Long> {
-	private static final String SQL_INSERT = "INSERT INTO PATIENT_HUMANNAME (" + "humanname_id, " + "patient_id, " + "use, " + "family)"
+	private static final String SQL_INSERT = "INSERT INTO PATIENT_HUMANNAME (" + "NEXT VALUE FOR PATIENT_HUMANNAME_SEQ, " + "patient_id, " + "use, " + "family)"
 			+ "VALUES (?, ?, ?, ?)";
 	private static final String SQL_SELECT_BYID = "SELECT humanname_id, patient_id, use, family FROM PATIENT_HUMANNAME WHERE patient_id = ? ";
 
@@ -41,8 +41,8 @@ public class PatientHumanNameDao extends BaseDao<PatientHumanName, Long> {
 	public Optional<PatientHumanName> save(PatientHumanName name) 
 	    throws DaoException {
 		try {
-			Object[] params = new Object[] { name.getHumannameId(), name.getPatientId(), name.getUse(), name.getFamily() };
-			int[] types = new int[] { Types.BIGINT, Types.BIGINT, Types.VARCHAR, Types.VARCHAR };
+			Object[] params = new Object[] {name.getPatientId(), name.getUse(), name.getFamily() };
+			int[] types = new int[] {Types.BIGINT, Types.VARCHAR, Types.VARCHAR };
 			int row = this.jdbcTemplate.update(SQL_INSERT, params, types);
 			if (row > 0) {
 				return Optional.of(name);
@@ -58,8 +58,7 @@ public class PatientHumanNameDao extends BaseDao<PatientHumanName, Long> {
 	public Optional<PatientHumanName> findById(Long id) throws DaoException {
 		try {
 			RowMapper<PatientHumanName> rowMapper = new PatientHumanNameRowMapper();
-			Optional<PatientHumanName> name = Optional
-					.ofNullable(this.jdbcTemplate.queryForObject(SQL_SELECT_BYID, new Object[] { id }, rowMapper));
+			Optional<PatientHumanName> name = Optional.ofNullable(this.jdbcTemplate.queryForObject(SQL_SELECT_BYID, new Object[] { id }, rowMapper));
 			return name;
 		} catch (DataAccessException dex) {
 			throw new DaoException(dex);

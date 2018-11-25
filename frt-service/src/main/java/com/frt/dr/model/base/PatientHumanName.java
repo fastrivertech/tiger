@@ -39,7 +39,6 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import com.frt.dr.SqlHelper;
-import com.frt.dr.model.datatype.Period;
 
 @Entity
 @Table(name = "PATIENT_HUMANNAME")
@@ -144,7 +143,7 @@ public class PatientHumanName implements Serializable {
     	this.family = family;
     }
         
-    public List<String> getGiven() {
+    public String getGiven() {
     	return SqlHelper.toString(this.given);
     }
 
@@ -152,7 +151,7 @@ public class PatientHumanName implements Serializable {
     	this.given = given;
     }
     
-    public List<String> getPrefix() {
+    public String getPrefix() {
     	return SqlHelper.toString(this.prefix);
     }
 
@@ -160,7 +159,7 @@ public class PatientHumanName implements Serializable {
     	this.prefix = prefix;
     }
     
-    public List<String> getSuffix() {
+    public String getSuffix() {
     	return SqlHelper.toString(this.suffix);
     }
 
@@ -168,8 +167,8 @@ public class PatientHumanName implements Serializable {
     	this.suffix = suffix;
     }
     
-    public List<Period> getPeriod() {
-    	return SqlHelper.toPeriod(this.period);
+    public String getPeriod() {
+    	return SqlHelper.toString(this.period);
     }
 
     public void setPeriod(Clob period) {

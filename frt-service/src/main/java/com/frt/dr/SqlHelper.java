@@ -14,9 +14,6 @@ package com.frt.dr;
 import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Arrays;
-import com.frt.dr.model.datatype.Period;
 
 /**
  * SqlHelper class
@@ -25,18 +22,11 @@ import com.frt.dr.model.datatype.Period;
 public class SqlHelper {
 
 	@SuppressWarnings("finally")
-	public static Clob toClob(List<String> strings, Connection con) {
+	public static Clob toClob(String string, Connection con) {
 		Clob clob = null;
 		try {
-			StringBuilder strBuild = new StringBuilder();
-			strings.forEach(string -> {
-				if (strBuild.length() > 0) {
-					strBuild.append(",");
-				}
-				strBuild.append(string);
-			});
 			clob = con.createClob();
-			clob.setString(1, strBuild.toString());
+			clob.setString(1, string);
 		} catch (SQLException sqlex) {
 		} finally {
 			return clob;
@@ -44,20 +34,14 @@ public class SqlHelper {
 	}
 	
 	@SuppressWarnings("finally")
-	public static List<String> toString(Clob clob) {
-		List<String> strings = null;
+	public static String toString(Clob clob) {
+		String string = null;
 		try {
-			String tokens = clob.getSubString(1, (int)clob.length());
-			strings = Arrays.asList(tokens.split(","));
+			string = clob.getSubString(1, (int)clob.length());
 		} catch (SQLException sqlex) {
 		} finally {
-			return strings;
+			return string;
 		}
 	}
 
-	@SuppressWarnings("finally")
-	public static List<Period> toPeriod(Clob clob) {
-		List<Period> periods = null;
-		return periods;
-	}	
 }
