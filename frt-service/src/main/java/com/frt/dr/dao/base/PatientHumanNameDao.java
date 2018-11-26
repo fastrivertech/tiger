@@ -32,8 +32,8 @@ import com.frt.dr.model.base.PatientHumanName;
 public class PatientHumanNameDao extends BaseDao<PatientHumanName, Long> {
 	private static final String SQL_INSERT = "INSERT INTO PATIENT_HUMANNAME (" + "NEXT VALUE FOR PATIENT_HUMANNAME_SEQ, " + "patient_id, " + "use, " + "family)"
 			+ "VALUES (?, ?, ?, ?)";
-	private static final String SQL_SELECT_BYID = "SELECT humanname_id, patient_id, use, family FROM PATIENT_HUMANNAME WHERE patient_id = ? ";
-
+	private static final String SQL_SELECT_BYID = "SELECT humanname_id, patient_id, path, use, txt, family, given, prefix, suffix, period FROM PATIENT_HUMANNAME WHERE patient_id = ? ";
+		
 	public PatientHumanNameDao() {
 	}
 

@@ -20,7 +20,7 @@ public class PatientHumanNameRowMapper implements RowMapper<PatientHumanName> {
 		name.setFamily(row.getString("family"));		
 		name.setGiven(row.getClob("given"));	
 		name.setGiven(row.getClob("prefix"));	
-		name.setGiven(row.getClob("gsuffix"));	
+		name.setGiven(row.getClob("suffix"));	
 		name.setGiven(row.getClob("period"));
 		return name;
 	}	
