@@ -23,13 +23,20 @@
   <name>FRT</name>
   <description>Fast River FHIR-Based and Stream-Enabled Healthcare Data Repository</description>
 
-  <properties>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.0.RELEASE</version>
+    </parent>
+	
+	<properties>
 	<!-- frt -->
 	<frt.version>1.0.0-SNAPSHOT</frt.version>
 	<frt.fhir.version>1.0.0-SNAPSHOT</frt.fhir.version>
 	<frt.stream.version>1.0.0-SNAPSHOT</frt.stream.version>	
 	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
 	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>	
+	<frt.fhir.springboot.version>1.0.0-SNAPSHOT</frt.fhir.springboot.version>	
 	<!-- splice machine -->
 	<com.splicemachine.version>2.7.0.1835</com.splicemachine.version>
     <!-- spring -->

@@ -161,6 +161,7 @@
     <modules>
 		<module>fhir-service</module>				
 		<module>fhir-rest</module>				
+		<module>fhir-springboot</module>				
     </modules>
 
 </project>
