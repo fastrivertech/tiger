@@ -71,6 +71,8 @@ CREATE TABLE PATIENT (
 	FOREIGN KEY (domain_resource_id) REFERENCES DOMAIN_RESOURCE(domain_resource_id)
 );
 
+CREATE SEQUENCE PATIENT_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
+
 -- FHIR patient resource extension table, I and affected by constraints --
 CREATE TABLE PATIENT_EXTENSION (
 	extension_id BIGINT NOT NULL,
