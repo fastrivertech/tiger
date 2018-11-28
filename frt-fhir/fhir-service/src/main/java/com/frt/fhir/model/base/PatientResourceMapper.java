@@ -11,7 +11,14 @@
  */
 package com.frt.fhir.model.base;
 
+import java.sql.Timestamp;
 import java.util.List;
+
+import org.hl7.fhir.dstu3.model.BooleanType;
+import org.hl7.fhir.dstu3.model.DateTimeType;
+import org.hl7.fhir.dstu3.model.IntegerType;
+import org.hl7.fhir.exceptions.FHIRException;
+
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.fhir.model.ResourceMapper;
@@ -51,6 +58,81 @@ public class PatientResourceMapper implements ResourceMapper {
 			target.setPatientId(Long.valueOf(patient.getId().replace("Patient/", "")));
 			target.setActive(Boolean.valueOf(patient.getActive()));
 			target.setGender(patient.getGender().toString());
+			target.setBirthDate(patient.getBirthDate());
+
+			if (patient.getDeceased()!=null) {
+				if (patient.getDeceased() instanceof BooleanType) {
+					BooleanType bt = null;
+					try {
+						bt = patient.getDeceasedBooleanType();
+					}
+					catch (FHIRException e) {
+						throw new MapperException("FHIRException caught when mapping FHIR Patient to FRT Patient attribute: Deceased", e);
+					}
+					if (bt!=null) {
+						target.setDeceasedBoolean(bt.getValue());
+					}
+					else {
+						// assume alive
+						target.setDeceasedBoolean(false);
+					}
+				}
+				else {
+					DateTimeType dtt = null;
+					try {
+						dtt = patient.getDeceasedDateTimeType();
+					} catch (FHIRException e) {
+						e.printStackTrace();
+						throw new MapperException("FHIRException caught when mapping FHIR Patient to FRT Patient attribute: Deceased.", e);
+					}
+					target.setDeceasedDateTime(new Timestamp(dtt.getValue().getTime()));
+				}
+			}
+			else {
+				// per FHIR spec - assume patient is alive
+				target.setDeceasedBoolean(false);
+				target.setDeceasedDateTime(null);
+			}
+			
+			if (patient.getMultipleBirth()!=null) {
+				if (patient.getMultipleBirth() instanceof BooleanType) {
+					try {
+						BooleanType mbt = patient.getMultipleBirthBooleanType();
+						if (mbt!=null) {
+							target.setMultipleBirthBoolean(mbt.getValue());
+						}
+						else {
+							// assume default - not multiple birth
+							target.setMultipleBirthBoolean(false);
+						}
+					} catch (FHIRException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						throw new MapperException("FHIRException caught when mapping FHIR Patient to FRT Patient attribute: MultipleBirth.", e);
+					}
+				}
+				else {
+					// it's a birth order
+					try {
+						IntegerType it = patient.getMultipleBirthIntegerType();
+						if (it!=null) {
+							target.setMultipleBirthInteger(it.getValue());
+						}
+						else {
+							target.setMultipleBirthInteger(null);
+						}
+					} catch (FHIRException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+						throw new MapperException("FHIRException caught when mapping FHIR Patient to FRT Patient attribute: MultipleBirth.", e);
+					}
+				}
+			}
+			else {
+				// assume not multiplebirth
+				target.setMultipleBirthBoolean(false);
+				target.setMultipleBirthInteger(null);
+			}
 			
 			// org.hl7.fhir.dstu3.model.HumanName => com.frt.dr.model.base.PatientHumanName			
 			List<org.hl7.fhir.dstu3.model.HumanName> names = patient.getName();
@@ -70,6 +152,11 @@ public class PatientResourceMapper implements ResourceMapper {
 			target.setId(patient.getPatientId().toString());			
 			target.setActive(patient.getActive());
 			target.setGender(org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender.valueOf(patient.getGender()));
+			target.setBirthDate(patient.getBirthDate());
+			target.setDeceased(new BooleanType(patient.getDeceasedBoolean()));
+			target.setDeceased(new DateTimeType(patient.getDeceasedDateTime()));
+			target.setMultipleBirth(new BooleanType(patient.getMultipleBirthBoolean()));
+			target.setMultipleBirth(new IntegerType(patient.getMultipleBirthInteger()));
 			
 			// com.frt.dr.model.base.PatientHumanName => org.hl7.fhir.dstu3.model.HumanName			
 			List<com.frt.dr.model.base.PatientHumanName> names = patient.getNames();
