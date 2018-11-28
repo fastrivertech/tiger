@@ -34,11 +34,9 @@ import com.frt.dr.model.base.PatientHumanName;
 @Repository
 public class PatientDao extends BaseDao<Patient,Long> {
 	private static final String SQL_INSERT = "INSERT INTO PATIENT (" +
-											 "patient_id, " +
-	 								  		 "active, " +
-	 								  		 "gender )" +
-	 								  		 "VALUES (?, ?, ?)";
-	private static final String SQL_SELECT_BYID = "SELECT patient_id, active, gender FROM PATIENT WHERE patient_id = ? ";
+	 "patient_id, active, gender, birthdate, deceasedboolean, deceaseddatetime, multiplebirthboolean, multiplebirthinteger)"
+	 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+	private static final String SQL_SELECT_BYID = "SELECT patient_id, active, gender, birthdate, deceasedboolean, deceaseddatetime, multiplebirthboolean, multiplebirthinteger FROM PATIENT WHERE patient_id = ? ";
 	
 	public PatientDao() {	
 	}
@@ -47,8 +45,16 @@ public class PatientDao extends BaseDao<Patient,Long> {
 	public Optional<Patient> save(Patient patient) 
 		throws DaoException {
 		try {
-			Object[] params = new Object[] {patient.getPatientId(), patient.getActive(), patient.getGender()};
-			int[] types = new int[] {Types.BIGINT, Types.BOOLEAN, Types.VARCHAR};
+			Object[] params = new Object[] {patient.getPatientId(), 
+					patient.getActive(), 
+					patient.getGender(),
+					patient.getBirthDate(),
+					patient.getDeceasedBoolean(),
+					patient.getDeceasedDateTime(),
+					patient.getMultipleBirthBoolean(),
+					patient.getMultipleBirthInteger()
+					};
+			int[] types = new int[] {Types.BIGINT, Types.BOOLEAN, Types.VARCHAR, Types.DATE, Types.BOOLEAN, Types.TIMESTAMP, Types.BOOLEAN, Types.INTEGER};
 			int row = this.jdbcTemplate.update(SQL_INSERT, params, types);			
 			if (row > 0) {
 				BaseDao dao = DaoFactory.getInstance().createResourceDao(PatientHumanName.class);

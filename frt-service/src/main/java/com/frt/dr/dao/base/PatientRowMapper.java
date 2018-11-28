@@ -13,6 +13,8 @@ package com.frt.dr.dao.base;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
+
 import org.springframework.jdbc.core.RowMapper;
 import com.frt.dr.model.base.Patient;
 
@@ -29,6 +31,11 @@ public class PatientRowMapper implements RowMapper<Patient> {
 		patient.setPatientId(row.getLong("patient_id"));
 		patient.setActive(row.getBoolean("active"));
 		patient.setGender(row.getString("gender"));
+		patient.setBirthDate(new Date(row.getDate("birthdate").getTime()));
+		patient.setDeceasedBoolean(row.getBoolean("deceasedboolean"));
+		patient.setDeceasedDateTime(row.getTimestamp("deceaseddatetime"));
+		patient.setMultipleBirthBoolean(row.getBoolean("multiplebirthboolean"));
+		patient.setMultipleBirthInteger(row.getInt("multiplebirthinteger"));
 		return patient;
 	}	
 	

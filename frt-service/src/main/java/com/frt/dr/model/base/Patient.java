@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
 import java.util.Comparator;
-import java.sql.Date;
+import java.util.Date;
 import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.Basic;
@@ -82,16 +82,16 @@ public class Patient extends DomainResource implements Serializable {
     @Column(name = "deceasedBoolean")                    
     private Boolean deceasedBoolean;
 
-    @Column(name = "deceasedDateTime")                        
+	@Column(name = "deceasedDateTime")                        
     private Timestamp deceasedDateTime;
     
-    @Column(name = "multipleBirthBoolean")                        
+	@Column(name = "multipleBirthBoolean")                        
     private Boolean multipleBirthBoolean;
     
-    @Column(name = "multipleBirthInteger")                        
+	@Column(name = "multipleBirthInteger")                        
     private Integer multipleBirthInteger;
         
-    private List<PatientExtension> extensions;
+	private List<PatientExtension> extensions;
     
     private List<PatientElementExtension> elementExtensions;
         
@@ -130,6 +130,46 @@ public class Patient extends DomainResource implements Serializable {
     	this.gender = gender;
     }
     
+    public Date getBirthDate() {
+    	return this.birthDate;
+    }
+    
+    public void setBirthDate(Date birthDate) {
+    	this.birthDate = birthDate;
+    }
+
+    public Boolean getDeceasedBoolean() {
+		return deceasedBoolean;
+	}
+
+    public Timestamp getDeceasedDateTime() {
+		return deceasedDateTime;
+	}
+
+	public void setDeceasedDateTime(Timestamp deceasedDateTime) {
+		this.deceasedDateTime = deceasedDateTime;
+	}
+
+	public void setDeceasedBoolean(Boolean deceasedBoolean) {
+		this.deceasedBoolean = deceasedBoolean;
+	}
+
+    public Boolean getMultipleBirthBoolean() {
+		return multipleBirthBoolean;
+	}
+
+	public void setMultipleBirthBoolean(Boolean multipleBirthBoolean) {
+		this.multipleBirthBoolean = multipleBirthBoolean;
+	}
+
+    public Integer getMultipleBirthInteger() {
+		return multipleBirthInteger;
+	}
+
+	public void setMultipleBirthInteger(Integer multipleBirthInteger) {
+		this.multipleBirthInteger = multipleBirthInteger;
+	}
+
     public List<PatientHumanName> getNames() {
     	if (names == null ) {
     		names = new ArrayList<PatientHumanName>();
