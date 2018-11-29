@@ -29,7 +29,7 @@ CREATE TABLE RESOURCE (
 	implicitRules VARCHAR(2048), -- ?!Σ, maximum uri length 
 	language VARCHAR(32), -- Σ, maximum code length
 	PRIMARY KEY (resource_id), 	
-	FOREIGN KEY (system_id) REFERENCES SYSTEM(system_id)
+	FOREIGN KEY (system_id) REFERENCES SYSTEM_RESOURCE(system_id)
 );
 
 -- FHIR domain resource table, I and affected by constraints --- 
@@ -113,6 +113,8 @@ CREATE TABLE PATIENT_IDENTIFIER (
 	PRIMARY KEY (identifier_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)	
 );
+
+CREATE SEQUENCE PATIENT_IDENTIFIER_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
 
 -- FHIR HumanName complex type, Σ --
 CREATE TABLE PATIENT_HUMANNAME (
