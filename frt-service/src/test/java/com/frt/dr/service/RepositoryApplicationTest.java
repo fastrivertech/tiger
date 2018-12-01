@@ -19,7 +19,7 @@ public class RepositoryApplicationTest {
 			patient.setGender("MALE");
 			PatientHumanName name = new PatientHumanName();
 			name.setHumannameId(Long.valueOf(10000));
-			name.setPatientId(Long.valueOf(10000));
+			//name.setPatientId(Long.valueOf(10000));
 			name.setUse("OFFICIAL");
 			name.setFamily("Charles");
 			patient.getNames().add(name);			
