@@ -45,7 +45,7 @@ import com.frt.dr.SqlHelper;
 @SequenceGenerator(name = "PATIENT_HUMANNAME_SEQ", sequenceName = "PATIENT_HUMANNAME_SEQ", allocationSize=1)
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "getById", query = "SELECT PH FROM PATIENT_HUMANNAME PH WHERE PH.patient_id = :id")
+    @NamedQuery(name = "getByPatientId", query = "SELECT P FROM PatientHumanName P WHERE P.patientId = :patientId")
 })
 public class PatientHumanName implements Serializable {
     private static final long serialVersionUID = -8321293485415818761L;
@@ -53,11 +53,12 @@ public class PatientHumanName implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_HUMANNAME_SEQ")  
     @NotNull(message = "Humanname logical Id cannot be Null")
-    @Column(name = "humanname_id", insertable = false, updatable = false)    
+    @Column(name = "humanname_id")    
     private Long humannameId;
-    
+    /*
     @NotNull(message = "Patient logical Id cannot be Null")
     @Column(name = "patient_id")            
+    */
     private Long patientId;
     
     @Size(max = 128)    
@@ -69,7 +70,7 @@ public class PatientHumanName implements Serializable {
     private String use;
 
     @Size(max = 2048)    
-    @Column(name = "use")                                                    
+    @Column(name = "txt")                                                    
     private String txt;
     
     @Size(max = 32)    
@@ -88,6 +89,10 @@ public class PatientHumanName implements Serializable {
     @Column(name = "period")                                                        
     private Clob period;
     
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @ManyToOne(optional = false)
+    private Patient patient;
+ 
     private List<PatientExtension> extensions;
     
     private List<PatientElementExtension> elementExtensions;

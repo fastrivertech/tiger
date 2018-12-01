@@ -43,7 +43,7 @@
 		<org.glassfish.jersey.inject.version>2.27</org.glassfish.jersey.inject.version>
 		<!-- javax -->
 		<javax.xml.bind.version>2.2.7</javax.xml.bind.version>
-		<javax.activation.version>1.1</javax.activation.version>
+		<javax.activation.version>1.2.0</javax.activation.version>
 		<!-- junit -->
 		<junit.version>4.12</junit.version>		
         <sonar.skip>true</sonar.skip>
@@ -134,7 +134,7 @@
 			</dependency>
 			<dependency>
 				<groupId>javax.activation</groupId>
-				<artifactId>activation</artifactId>
+				<artifactId>javax.activation-api</artifactId>
 				<version>${javax.activation.version}</version>
 			</dependency>	
 			<!-- jersey -->
@@ -161,7 +161,6 @@
     <modules>
 		<module>fhir-service</module>				
 		<module>fhir-rest</module>				
-		<module>fhir-springboot</module>				
     </modules>
 
 </project>

@@ -13,6 +13,8 @@ package com.frt.dr.dao;
 
 import java.util.Optional;
 import javax.sql.DataSource;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.data.repository.Repository;
@@ -30,6 +32,13 @@ public abstract class BaseDao<T,ID> implements Repository {
     	this.jdbcTemplate = jdbcTemplate;
     }
 
+	@PersistenceContext
+	protected EntityManager em;
+    
+    public void setEntityManager(EntityManager em) {
+    	this.em = em;
+    }
+	
     public abstract Optional<T> save(T entry) throws DaoException;
 
     public abstract Optional<T> findById(ID id) throws DaoException;

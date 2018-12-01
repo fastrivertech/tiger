@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" 
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
+    <persistence-unit name="FRT_DR_LOCAL_PERSISTENCE" transaction-type="RESOURCE_LOCAL">
+	    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+        <exclude-unlisted-classes>true</exclude-unlisted-classes>
+		<class>com.frt.dr.model.base.Patient</class>
+		<class>com.frt.dr.model.base.PatientHumanName</class>
+        <shared-cache-mode>NONE</shared-cache-mode>		
+        <properties>			
+		    <property name="javax.persistence.jdbc.driver" value="com.splicemachine.db.jdbc.ClientDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:splice://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:1527/splicedb"/>
+            <property name="javax.persistence.jdbc.user" value="YourUserId"/>
+            <property name="javax.persistence.jdbc.password" value="YourPassword"/>
+			
+            <property name="eclipselink.ddl-generation" value="none"/>						
+			<!-- The log level: OFF/SEVERE/WARNING/INFO/CONFIG/FINE/FINER/FINEST/ALL --> 
+            <property name="eclipselink.logging.level.sql" value="WARNING"/>
+            <property name="eclipselink.logging.parameters" value="true"/>
+            <property name="eclipselink.logging.exceptions" value="true"/>
+            <property name="eclipselink.logging.logger" value="DefaultLogger"/>	
+			<!-- The default maximum number of objects allowed in a cache. By default 1000 -->	
+			<property name="eclipselink.cache.size.default" value="5000"/>	
+			<!-- The default for whether or not the session cache is shared by multiple client sessions. By default true  -->
+			<property name="eclipselink.cache.shared.default" value="true"/>
+			<!-- The maximum number of connections allowed in the JDBC write connection pool. By default 10 -->			
+			<property name="eclipselink.jdbc.write-connections.max" value="128"/>	
+			<property name ="eclipselink.target-database" value="Database" />
+		</properties>
+    </persistence-unit>
+</persistence>

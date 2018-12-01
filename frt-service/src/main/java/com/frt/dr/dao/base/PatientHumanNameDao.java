@@ -13,6 +13,8 @@ package com.frt.dr.dao.base;
 
 import java.sql.Types;
 import java.util.Optional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,6 +38,9 @@ public class PatientHumanNameDao extends BaseDao<PatientHumanName, Long> {
 			+ "VALUES (NEXT VALUE FOR PATIENT_HUMANNAME_SEQ, ?, ?, ?)";
 	private static final String SQL_SELECT_BYID = "SELECT humanname_id, patient_id, path, use, txt, family, given, prefix, suffix, period FROM PATIENT_HUMANNAME WHERE patient_id = ? ";
 		
+	@PersistenceContext
+	private EntityManager em;
+	
 	public PatientHumanNameDao() {
 	}
 

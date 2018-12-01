@@ -43,7 +43,7 @@ import com.frt.dr.model.DomainResource;
 @SequenceGenerator(name = "PATIENT_SEQ", sequenceName = "PATIENT_SEQ", allocationSize=1)
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "getById", query = "SELECT P FROM PATIENT P WHERE P.patient_id = :id")
+    @NamedQuery(name = "getPatientById", query = "SELECT P FROM Patient P WHERE P.patientId = :patientId")
 })
 public class Patient extends DomainResource implements Serializable {
     private static final long serialVersionUID = -8321293485415818761L;
@@ -51,27 +51,29 @@ public class Patient extends DomainResource implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_SEQ")  
     @NotNull(message = "Patient logical Id cannot be Null")
-    @Column(name = "patient_id", insertable = false, updatable = false)
+    @Column(name = "patient_id")
     private Long patientId;
     
     @NotNull(message = "Domain resource logical Id cannot be Null")
     @Column(name = "domain_resource_id")    
     private Long domainResourceId;
 
+    /*
     @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")    
     @OneToMany(mappedBy = "PATIENT", cascade = CascadeType.ALL)
     @OrderBy("identifier_id ASC")        
     private List<PatientIdentifier> identifiers;
-
+    */
+    
     @NotNull(message = "Active cannot be Null")
     @Column(name = "active")        
     private Boolean active;
     
-    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")    
-    @OneToMany(mappedBy = "PATIENT", cascade = CascadeType.ALL)
-    @OrderBy("humanname_id ASC")    
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OrderBy("humannameId ASC")
     private List<PatientHumanName> names;
-
+    
     @Size(max = 32)
     @Column(name = "gender")            
     private String gender;
@@ -90,11 +92,11 @@ public class Patient extends DomainResource implements Serializable {
     
 	@Column(name = "multipleBirthInteger")                        
     private Integer multipleBirthInteger;
-        
+    
 	private List<PatientExtension> extensions;
     
     private List<PatientElementExtension> elementExtensions;
-        
+       
     public Patient() {    	
     }
     
@@ -106,6 +108,7 @@ public class Patient extends DomainResource implements Serializable {
     	this.patientId = patientId;
     }
 
+    /*
     public List<PatientIdentifier> getIdentifiers() {
     	return this.identifiers;
     }
@@ -113,6 +116,7 @@ public class Patient extends DomainResource implements Serializable {
     public void setIdentifiers(List<PatientIdentifier> identifiers) {
     	this.identifiers = identifiers;
     }
+    */
     
     public Boolean getActive() {
     	return this.active;

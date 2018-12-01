@@ -14,8 +14,10 @@ package com.frt.dr.service;
 import javax.sql.DataSource;
 
 import java.util.Optional;
+import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.dao.DaoFactory;
@@ -30,7 +32,8 @@ import com.frt.dr.dao.DaoException;
 public class RepositoryServiceImpl implements RepositoryService {
 	
     private DataSource dataSource;
-    
+    private JpaTransactionManager jpaTransactionManager;
+ 
     public RepositoryServiceImpl() {	
     }
     
@@ -38,13 +41,22 @@ public class RepositoryServiceImpl implements RepositoryService {
     public void setDataSource(DataSource dataSource) {
     	this.dataSource = dataSource;
     }
-	
+	 
+    @Autowired
+    public void setJpaTransactionManager(JpaTransactionManager jpaTransactionManager) {
+    	this.jpaTransactionManager = jpaTransactionManager;
+    }
+   
 	@Override
 	public <R extends DomainResource> R read(Class<?> resourceClazz, Long id) 
 		throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
+			
 			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
+		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
+			dao.setEntityManager(em);
+			
 			Optional<R> resource = dao.findById(id);
 			return resource.get();
 		} catch (DaoException dex) {
@@ -57,7 +69,11 @@ public class RepositoryServiceImpl implements RepositoryService {
 		   throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
+			
 			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
+		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
+			dao.setEntityManager(em);
+									
 			Optional<R> created = dao.save(resource);
 			return created.get();
 		} catch (DaoException dex) {

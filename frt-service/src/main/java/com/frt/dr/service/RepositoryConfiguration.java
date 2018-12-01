@@ -18,6 +18,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.core.env.Environment;
+import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * RepositoryConfiguration class
@@ -26,7 +29,8 @@ import org.springframework.core.env.Environment;
 @Configuration
 @PropertySource("./config/application.properties")
 public class RepositoryConfiguration {
-
+	public static final String PERSISTENCE_UNIT_NAME = "FRT_DR_LOCAL_PERSISTENC";
+	
 	@Autowired
 	private Environment env;
 	
@@ -46,4 +50,18 @@ public class RepositoryConfiguration {
         return dataSource;
     }
 	
+	@Bean
+	public LocalEntityManagerFactoryBean geEntityManagerFactoryBean() {
+		LocalEntityManagerFactoryBean factoryBean = new LocalEntityManagerFactoryBean();
+	    factoryBean.setPersistenceUnitName(PERSISTENCE_UNIT_NAME);
+	    return factoryBean;
+	}
+
+	@Bean
+	public JpaTransactionManager geJpaTransactionManager() {
+		JpaTransactionManager transactionManager = new JpaTransactionManager();
+	    transactionManager.setEntityManagerFactory(geEntityManagerFactoryBean().getObject());    	    
+	    return transactionManager;
+	}	
+
 }

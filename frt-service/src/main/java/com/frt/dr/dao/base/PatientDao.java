@@ -11,10 +11,22 @@
  */
 package com.frt.dr.dao.base;
 
+import java.util.List;
 import java.util.Optional;
 import javax.sql.DataSource;
 import java.sql.Types;
 import java.sql.SQLException;
+import java.lang.IllegalStateException;
+import javax.persistence.Query;
+import javax.persistence.EntityTransaction;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.RollbackException;
+import javax.persistence.QueryTimeoutException;
+import javax.persistence.TransactionRequiredException;
+import javax.persistence.PessimisticLockException;
+import javax.persistence.LockTimeoutException;
+import javax.persistence.PersistenceException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,61 +45,49 @@ import com.frt.dr.model.base.PatientHumanName;
 @Transactional
 @Repository
 public class PatientDao extends BaseDao<Patient,Long> {
-	private static final String SQL_INSERT = "INSERT INTO PATIENT (" +
-	 "patient_id, active, gender, birthdate, deceasedboolean, deceaseddatetime, multiplebirthboolean, multiplebirthinteger)"
-	 + " VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-	private static final String SQL_SELECT_BYID = "SELECT patient_id, active, gender, birthdate, deceasedboolean, deceaseddatetime, multiplebirthboolean, multiplebirthinteger FROM PATIENT WHERE patient_id = ? ";
-	
+		
 	public PatientDao() {	
 	}
 	
 	@Override	
 	public Optional<Patient> save(Patient patient) 
-		throws DaoException {
+		throws DaoException {	
+		EntityTransaction transaction = null;
 		try {
-			Object[] params = new Object[] {patient.getPatientId(), 
-					patient.getActive(), 
-					patient.getGender(),
-					patient.getBirthDate(),
-					patient.getDeceasedBoolean(),
-					patient.getDeceasedDateTime(),
-					patient.getMultipleBirthBoolean(),
-					patient.getMultipleBirthInteger()
-					};
-			int[] types = new int[] {Types.BIGINT, Types.BOOLEAN, Types.VARCHAR, Types.DATE, Types.BOOLEAN, Types.TIMESTAMP, Types.BOOLEAN, Types.INTEGER};
-			int row = this.jdbcTemplate.update(SQL_INSERT, params, types);			
-			if (row > 0) {
-				BaseDao dao = DaoFactory.getInstance().createResourceDao(PatientHumanName.class);
-				dao.setJdbcTemplate(this.jdbcTemplate);
-				patient.getNames().forEach(name->{ 
-					                               name.setPatientId(patient.getPatientId());
-												   dao.save(name);
-												 }
-										  );
-				return Optional.of(patient);
-			} else {
-				throw new DaoException("failed to persist patient resource");
-			}									
-		} catch (DataAccessException dex) {
-			throw new DaoException(dex);
+			transaction = em.getTransaction();
+			transaction.begin();
+			em.persist(patient);
+			transaction.commit();
+			return Optional.of(patient);
+		} catch (IllegalStateException |
+				 RollbackException ex) {
+			try {
+				if (transaction != null) {
+					transaction.rollback();
+				}
+			} catch (IllegalStateException | RollbackException ignore) {
+			}
+			throw new DaoException(ex);
 		}
 	}
-	 
+	 	
 	@Override
 	public Optional<Patient> findById(Long id) 
 		throws DaoException {
 		try {
-			RowMapper<Patient> rowMapper = new PatientRowMapper();
-			Optional<Patient> patient = Optional.ofNullable(this.jdbcTemplate.queryForObject(SQL_SELECT_BYID, new Object[]{id}, rowMapper));
-			BaseDao dao = DaoFactory.getInstance().createResourceDao(PatientHumanName.class);
-			dao.setJdbcTemplate(this.jdbcTemplate);
-			Optional<PatientHumanName> name = dao.findById(id);
-			if (patient.isPresent()) {
-				patient.get().getNames().add(name.get());
-			}
+	   	    Query query = em.createNamedQuery("getPatientById");
+            query.setParameter("patientId", id);
+            List<Patient> patients = (List<Patient>) query.getResultList();          							
+			Optional<Patient> patient = Optional.ofNullable(patients.get(0));
 			return patient;
-		} catch (DataAccessException dex) {
-			throw new DaoException(dex);			
+		} catch (IllegalArgumentException | 
+				 QueryTimeoutException |
+				 TransactionRequiredException |
+				 PessimisticLockException |
+				 LockTimeoutException ex) {
+			throw new DaoException(ex);			
+		} catch (PersistenceException ex) {
+			throw new DaoException(ex);						
 		}
 	}
 }
