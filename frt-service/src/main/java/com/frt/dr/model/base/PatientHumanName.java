@@ -44,9 +44,6 @@ import com.frt.dr.SqlHelper;
 @Table(name = "PATIENT_HUMANNAME")
 @SequenceGenerator(name = "PATIENT_HUMANNAME_SEQ", sequenceName = "PATIENT_HUMANNAME_SEQ", allocationSize=1)
 @XmlRootElement
-@NamedQueries({
-    @NamedQuery(name = "getByPatientId", query = "SELECT P FROM PatientHumanName P WHERE P.patientId = :patientId")
-})
 public class PatientHumanName implements Serializable {
     private static final long serialVersionUID = -8321293485415818761L;
     
@@ -55,12 +52,7 @@ public class PatientHumanName implements Serializable {
     @NotNull(message = "Humanname logical Id cannot be Null")
     @Column(name = "humanname_id")    
     private Long humannameId;
-    /*
-    @NotNull(message = "Patient logical Id cannot be Null")
-    @Column(name = "patient_id")            
-    */
-    private Long patientId;
-    
+        
     @Size(max = 128)    
     @Column(name = "path")                                                
     private String path;
@@ -77,7 +69,7 @@ public class PatientHumanName implements Serializable {
     @Column(name = "family")                                                    
     private String family;
 
-    @Column(name = "gievn")                                                        
+    @Column(name = "given")                                                        
     private Clob given;
     
     @Column(name = "prefix")                                                        
@@ -93,9 +85,11 @@ public class PatientHumanName implements Serializable {
     @ManyToOne(optional = false)
     private Patient patient;
  
+    /*
     private List<PatientExtension> extensions;
     
     private List<PatientElementExtension> elementExtensions;
+    */
     
     public PatientHumanName(){    	
     }
@@ -108,12 +102,12 @@ public class PatientHumanName implements Serializable {
     	this.humannameId = humannameId;
     }
 
-    public Long getPatientId() {
-    	return this.patientId;
+    public Patient getPatient() {
+    	return this.patient;
     }
     
-    public void setPatientId(Long patientId) {
-    	this.patientId = patientId;
+    public void setPatient(Patient patient) {
+    	this.patient = patient;
     }
     
     public String getPath() {

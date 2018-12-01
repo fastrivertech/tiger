@@ -48,7 +48,7 @@ public class PatientHumanNameDao extends BaseDao<PatientHumanName, Long> {
 	public Optional<PatientHumanName> save(PatientHumanName name) 
 	    throws DaoException {
 		try {
-			Object[] params = new Object[] {name.getPatientId(), name.getUse(), name.getFamily() };
+			Object[] params = new Object[] {name.getPatient().getPatientId(), name.getUse(), name.getFamily() };
 			int[] types = new int[] {Types.BIGINT, Types.VARCHAR, Types.VARCHAR };
 			int row = this.jdbcTemplate.update(SQL_INSERT, params, types);
 			if (row > 0) {

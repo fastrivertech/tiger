@@ -13,12 +13,10 @@ package com.frt.fhir.model.base;
 
 import java.sql.Timestamp;
 import java.util.List;
-
 import org.hl7.fhir.dstu3.model.BooleanType;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.exceptions.FHIRException;
-
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.fhir.model.ResourceMapper;
@@ -156,7 +154,9 @@ public class PatientResourceMapper implements ResourceMapper {
 			target.setDeceased(new BooleanType(patient.getDeceasedBoolean()));
 			target.setDeceased(new DateTimeType(patient.getDeceasedDateTime()));
 			target.setMultipleBirth(new BooleanType(patient.getMultipleBirthBoolean()));
-			target.setMultipleBirth(new IntegerType(patient.getMultipleBirthInteger()));
+			if (patient.getMultipleBirthInteger() != null) {
+				target.setMultipleBirth(new IntegerType(patient.getMultipleBirthInteger()));
+			}
 			
 			// com.frt.dr.model.base.PatientHumanName => org.hl7.fhir.dstu3.model.HumanName			
 			List<com.frt.dr.model.base.PatientHumanName> names = patient.getNames();

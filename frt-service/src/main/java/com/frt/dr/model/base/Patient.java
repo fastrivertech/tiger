@@ -93,10 +93,12 @@ public class Patient extends DomainResource implements Serializable {
 	@Column(name = "multipleBirthInteger")                        
     private Integer multipleBirthInteger;
     
+	/*
 	private List<PatientExtension> extensions;
     
     private List<PatientElementExtension> elementExtensions;
-       
+    */
+	
     public Patient() {    	
     }
     

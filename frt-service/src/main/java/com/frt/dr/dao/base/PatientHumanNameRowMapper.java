@@ -13,7 +13,7 @@ public class PatientHumanNameRowMapper implements RowMapper<PatientHumanName> {
 		throws SQLException {
 		PatientHumanName name = new PatientHumanName();
 		name.setHumannameId(row.getLong("humanname_id"));
-		name.setPatientId(row.getLong("patient_id"));
+	  //name.setPatientId(row.getLong("patient_id"));
 		name.setPath(row.getString("path"));
 		name.setUse(row.getString("use"));
 		name.setTxt(row.getString("txt"));		

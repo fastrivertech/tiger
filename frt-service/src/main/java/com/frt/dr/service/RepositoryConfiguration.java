@@ -29,7 +29,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @PropertySource("./config/application.properties")
 public class RepositoryConfiguration {
-	public static final String PERSISTENCE_UNIT_NAME = "FRT_DR_LOCAL_PERSISTENC";
+	public static final String PERSISTENCE_UNIT_NAME = "FRT_DR_LOCAL_PERSISTENCE";
 	
 	@Autowired
 	private Environment env;
