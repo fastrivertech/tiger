@@ -56,6 +56,10 @@ public class PatientDao extends BaseDao<Patient,Long> {
 		try {
 			transaction = em.getTransaction();
 			transaction.begin();
+			
+			patient.setPatientId(null);
+			patient.getNames().forEach(name->name.setHumannameId(null));
+			
 			em.persist(patient);
 			transaction.commit();
 			return Optional.of(patient);

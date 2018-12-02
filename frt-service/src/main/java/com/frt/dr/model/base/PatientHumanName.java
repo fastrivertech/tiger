@@ -27,6 +27,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -48,7 +49,8 @@ public class PatientHumanName implements Serializable {
     private static final long serialVersionUID = -8321293485415818761L;
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_HUMANNAME_SEQ")  
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_HUMANNAME_SEQ")
+    @Basic(optional = false)
     @NotNull(message = "Humanname logical Id cannot be Null")
     @Column(name = "humanname_id")    
     private Long humannameId;

@@ -138,6 +138,7 @@ public class PatientResourceMapper implements ResourceMapper {
 			PatientHumanNameMapper humanMapper = new PatientHumanNameMapper();
 			names.forEach(name->{												
 									Object mapped = humanMapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map(name);
+									((com.frt.dr.model.base.PatientHumanName)mapped).setPatient((com.frt.dr.model.base.Patient)target);
 									target.getNames().add((com.frt.dr.model.base.PatientHumanName)mapped);
 								});			
 			return (Object)target;

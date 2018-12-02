@@ -50,8 +50,9 @@ public class Patient extends DomainResource implements Serializable {
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_SEQ")  
+    @Basic(optional = false)
     @NotNull(message = "Patient logical Id cannot be Null")
-    @Column(name = "patient_id")
+    @Column(name = "patient_id", updatable=false)
     private Long patientId;
     
     @NotNull(message = "Domain resource logical Id cannot be Null")

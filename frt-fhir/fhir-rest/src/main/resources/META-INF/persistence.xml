@@ -13,8 +13,9 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:splice://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:1527/splicedb"/>
             <property name="javax.persistence.jdbc.user" value="YourUserId"/>
             <property name="javax.persistence.jdbc.password" value="YourPassword"/>
-			
-            <property name="eclipselink.ddl-generation" value="none"/>						
+
+			<!-- eclipselink.ddl-generation: none/create-tables -->
+            <property name="eclipselink.ddl-generation" value="none"/>		
 			<!-- The log level: OFF/SEVERE/WARNING/INFO/CONFIG/FINE/FINER/FINEST/ALL --> 
             <property name="eclipselink.logging.level.sql" value="WARNING"/>
             <property name="eclipselink.logging.parameters" value="true"/>
@@ -26,7 +27,13 @@
 			<property name="eclipselink.cache.shared.default" value="true"/>
 			<!-- The maximum number of connections allowed in the JDBC write connection pool. By default 10 -->			
 			<property name="eclipselink.jdbc.write-connections.max" value="128"/>	
-			<property name ="eclipselink.target-database" value="Database" />
+			<property name="eclipselink.target-database" value="Database" />
+			<!--
+			<property name="eclipselink.jdbc.sequence-connection-pool" value="true" />
+			<property name="eclipselink.jdbc.sequence-connection-pool.initial" value="1" />
+			<property name="eclipselink.jdbc.sequence-connection-pool.min" value="1" />
+			<property name="eclipselink.jdbc.sequence-connection-pool.max" value="10" />
+			-->
 		</properties>
     </persistence-unit>
 </persistence>
