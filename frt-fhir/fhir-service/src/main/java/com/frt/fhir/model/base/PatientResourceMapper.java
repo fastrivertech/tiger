@@ -47,127 +47,154 @@ public class PatientResourceMapper implements ResourceMapper {
 	@Override
 	public Object map(Object source) 
 		throws MapperException {
-		// org.hl7.fhir.dstu3.model.Patient => com.frt.dr.model.base.Patient
+		
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Patient") &&
 		    targetClz.getName().equals("com.frt.dr.model.base.Patient")) {
-			com.frt.dr.model.base.Patient target = new com.frt.dr.model.base.Patient();
-			org.hl7.fhir.dstu3.model.Patient patient = (org.hl7.fhir.dstu3.model.Patient)source;
 			
-			target.setPatientId(Long.valueOf(patient.getId().replace("Patient/", "")));
-			target.setActive(Boolean.valueOf(patient.getActive()));
-			target.setGender(patient.getGender().toString());
-			target.setBirthDate(patient.getBirthDate());
-
-			if (patient.getDeceased()!=null) {
-				if (patient.getDeceased() instanceof BooleanType) {
-					BooleanType bt = null;
-					try {
-						bt = patient.getDeceasedBooleanType();
-					}
-					catch (FHIRException e) {
-						throw new MapperException("FHIRException caught when mapping FHIR Patient to FRT Patient attribute: Deceased", e);
-					}
-					if (bt!=null) {
-						target.setDeceasedBoolean(bt.getValue());
-					}
-					else {
-						// assume alive
-						target.setDeceasedBoolean(false);
-					}
+			// org.hl7.fhir.dstu3.model.Patient => com.frt.dr.model.base.Patient
+			// hapi Patient ==> frt Patient
+			try {
+				com.frt.dr.model.base.Patient frtPatient = new com.frt.dr.model.base.Patient();
+				org.hl7.fhir.dstu3.model.Patient hapiPatient = (org.hl7.fhir.dstu3.model.Patient)source;
+				// resource
+				frtPatient.setPatientId(Long.valueOf(hapiPatient.getId().replace("Patient/", "")));
+				
+				// domain resource
+				
+				// patient resource: active 
+				frtPatient.setActive(Boolean.valueOf(hapiPatient.getActive()));
+				
+				// patient resource: name
+				// org.hl7.fhir.dstu3.model.HumanName => com.frt.dr.model.base.PatientHumanName			
+				List<org.hl7.fhir.dstu3.model.HumanName> names = hapiPatient.getName();
+				ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("PATIENT_HUMANNAME");			
+				PatientHumanNameMapper humanNameMapper = new PatientHumanNameMapper();
+				names.forEach(name->{												
+										Object mappedName = humanNameMapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map(name);
+										((com.frt.dr.model.base.PatientHumanName)mappedName).setPatient((com.frt.dr.model.base.Patient)frtPatient);
+										frtPatient.getNames().add((com.frt.dr.model.base.PatientHumanName)mappedName);
+									});			
+				
+				// patient resource: telecom
+				
+				// patient resource: gender
+				frtPatient.setGender(hapiPatient.getGender().toString());
+				
+				// patient resource: birthDate
+				frtPatient.setBirthDate(hapiPatient.getBirthDate());
+				
+				// patient resource: deceased, per FHIR 3.0.1 spec - assume patient is alive
+				// patient resource: deceasedBoolean
+				if (hapiPatient.getDeceased() != null && 
+					hapiPatient.getDeceased() instanceof BooleanType) {
+					frtPatient.setDeceasedBoolean(hapiPatient.getDeceasedBooleanType().booleanValue());	
+				} else if (hapiPatient.getDeceased() != null && 
+						   hapiPatient.getDeceased() instanceof DateTimeType) {
+				// patient resource: deceasedDateTime
+					frtPatient.setDeceasedDateTime(new java.sql.Timestamp(hapiPatient.getDeceasedDateTimeType().getValue().getTime()));
+				} else {
+					frtPatient.setDeceasedBoolean(false);
+					frtPatient.setDeceasedDateTime(null);
 				}
-				else {
-					DateTimeType dtt = null;
-					try {
-						dtt = patient.getDeceasedDateTimeType();
-					} catch (FHIRException e) {
-						e.printStackTrace();
-						throw new MapperException("FHIRException caught when mapping FHIR Patient to FRT Patient attribute: Deceased.", e);
-					}
-					target.setDeceasedDateTime(new Timestamp(dtt.getValue().getTime()));
-				}
-			}
-			else {
-				// per FHIR spec - assume patient is alive
-				target.setDeceasedBoolean(false);
-				target.setDeceasedDateTime(null);
-			}
-			
-			if (patient.getMultipleBirth()!=null) {
-				if (patient.getMultipleBirth() instanceof BooleanType) {
-					try {
-						BooleanType mbt = patient.getMultipleBirthBooleanType();
-						if (mbt!=null) {
-							target.setMultipleBirthBoolean(mbt.getValue());
-						}
-						else {
-							// assume default - not multiple birth
-							target.setMultipleBirthBoolean(false);
-						}
-					} catch (FHIRException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						throw new MapperException("FHIRException caught when mapping FHIR Patient to FRT Patient attribute: MultipleBirth.", e);
-					}
-				}
-				else {
-					// it's a birth order
-					try {
-						IntegerType it = patient.getMultipleBirthIntegerType();
-						if (it!=null) {
-							target.setMultipleBirthInteger(it.getValue());
-						}
-						else {
-							target.setMultipleBirthInteger(null);
-						}
-					} catch (FHIRException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-						throw new MapperException("FHIRException caught when mapping FHIR Patient to FRT Patient attribute: MultipleBirth.", e);
-					}
-				}
-			}
-			else {
-				// assume not multiplebirth
-				target.setMultipleBirthBoolean(false);
-				target.setMultipleBirthInteger(null);
+				
+				// patient resource: address
+				
+				// patient resource: maritalStatus
+				
+				// patient resource: multipleBirth, per FHIR 3.0.1 spec, assume not multiplebirth 
+				// patient resource: multipleBirthBoolean
+				frtPatient.setMultipleBirthBoolean(hapiPatient.getMultipleBirthBooleanType() == null ?
+											 	   false : hapiPatient.getMultipleBirthBooleanType().booleanValue());	
+				// patient resource: multipleBirthInteger
+				frtPatient.setMultipleBirthInteger(hapiPatient.getMultipleBirthIntegerType() == null ? 
+												   null : hapiPatient.getMultipleBirthIntegerType().getValue());
+				
+				// patient resource: photo
+				
+				// patient resource: contact
+				
+				// patient resource: animal
+	
+				// patient resource: communication
+	
+				// patient resource: generalPractitioner
+				
+				// patient resource: managingOrganization
+					
+				// patient resource: link
+				
+				return (Object)frtPatient;
+			} catch (FHIRException ex) {
+				throw new MapperException(ex);
 			}
 			
-			// org.hl7.fhir.dstu3.model.HumanName => com.frt.dr.model.base.PatientHumanName			
-			List<org.hl7.fhir.dstu3.model.HumanName> names = patient.getName();
-			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("PATIENT_HUMANNAME");			
-			PatientHumanNameMapper humanMapper = new PatientHumanNameMapper();
-			names.forEach(name->{												
-									Object mapped = humanMapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map(name);
-									((com.frt.dr.model.base.PatientHumanName)mapped).setPatient((com.frt.dr.model.base.Patient)target);
-									target.getNames().add((com.frt.dr.model.base.PatientHumanName)mapped);
-								});			
-			return (Object)target;
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.Patient") &&
 			       targetClz.getName().equals("org.hl7.fhir.dstu3.model.Patient")) {
-			// com.frt.dr.model.base.Patient => org.hl7.fhir.dstu3.model.Patient			
-			org.hl7.fhir.dstu3.model.Patient target = new org.hl7.fhir.dstu3.model.Patient();
-			com.frt.dr.model.base.Patient patient = (com.frt.dr.model.base.Patient)source;
 			
-			target.setId(patient.getPatientId().toString());			
-			target.setActive(patient.getActive());
-			target.setGender(org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender.valueOf(patient.getGender()));
-			target.setBirthDate(patient.getBirthDate());
-			target.setDeceased(new BooleanType(patient.getDeceasedBoolean()));
-			target.setDeceased(new DateTimeType(patient.getDeceasedDateTime()));
-			target.setMultipleBirth(new BooleanType(patient.getMultipleBirthBoolean()));
-			if (patient.getMultipleBirthInteger() != null) {
-				target.setMultipleBirth(new IntegerType(patient.getMultipleBirthInteger()));
-			}
+			// com.frt.dr.model.base.Patient => org.hl7.fhir.dstu3.model.Patient
+			// frt Patient ==> hapi Patient
+			org.hl7.fhir.dstu3.model.Patient hapiPatient = new org.hl7.fhir.dstu3.model.Patient();
+			com.frt.dr.model.base.Patient frtPatient = (com.frt.dr.model.base.Patient)source;
+			// resource
+			hapiPatient.setId(frtPatient.getPatientId().toString());	
 			
-			// com.frt.dr.model.base.PatientHumanName => org.hl7.fhir.dstu3.model.HumanName			
-			List<com.frt.dr.model.base.PatientHumanName> names = patient.getNames();
+			// domain resource
+			
+			// patient resource: active
+			hapiPatient.setActive(frtPatient.getActive());
+			
+			// patient resource: name
+			// com.frt.dr.model.base.PatientHumanName => org.hl7.fhir.dstu3.model.HumanName	
+			List<com.frt.dr.model.base.PatientHumanName> names = frtPatient.getNames();
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("PATIENT_HUMANNAME");			
-			PatientHumanNameMapper humanMapper = new PatientHumanNameMapper();
+			PatientHumanNameMapper humanNameMapper = new PatientHumanNameMapper();
 			names.forEach(name->{												
-									Object mapped = humanMapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map(name);
-									target.getName().add((org.hl7.fhir.dstu3.model.HumanName)mapped);
-								});									
-			return (Object)target;
+									Object mappedName = humanNameMapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map(name);
+									hapiPatient.getName().add((org.hl7.fhir.dstu3.model.HumanName)mappedName);
+						 });									
+									
+			// patient resource: telecom
+			
+			// patient resource: gender
+			hapiPatient.setGender(org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender.valueOf(frtPatient.getGender()));
+			
+			// patient resource: birthDate
+			hapiPatient.setBirthDate(frtPatient.getBirthDate());
+			
+			// patient resource: deceased, per FHIR 3.0.1 spec - assume patient is alive
+			// patient resource: deceasedBoolean			
+			hapiPatient.setDeceased(new BooleanType(frtPatient.getDeceasedBoolean()));
+			// patient resource: deceasedDateTime
+			hapiPatient.setDeceased(new DateTimeType(frtPatient.getDeceasedDateTime()));
+			
+
+			// patient resource: address
+			
+			// patient resource: maritalStatus
+			
+			// patient resource: multipleBirth, per FHIR 3.0.1 spec, assume not multiplebirth 
+			// patient resource: multipleBirthBoolean			
+			hapiPatient.setMultipleBirth(new BooleanType(frtPatient.getMultipleBirthBoolean()));
+			// patient resource: multipleBirthInteger
+			hapiPatient.setMultipleBirth(frtPatient.getMultipleBirthInteger() == null ? 
+										 new IntegerType(0) : new IntegerType(frtPatient.getMultipleBirthInteger()));
+			
+			// patient resource: photo
+			
+			// patient resource: contact
+			
+			// patient resource: animal
+
+			// patient resource: communication
+
+			// patient resource: generalPractitioner
+			
+			// patient resource: managingOrganization
+				
+			// patient resource: link			
+		
+			return (Object)hapiPatient;
+			
 		} else {
 			throw new MapperException("map from " + sourceClz.getName() + 
 								           " to " + targetClz.getName() + 

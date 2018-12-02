@@ -37,27 +37,64 @@ public class PatientHumanNameMapper implements ResourceMapper {
 	@Override
 	public Object map(Object source) 
 		throws MapperException {
-		// org.hl7.fhir.dstu3.model.HumanName vs com.frt.dr.model.base.PatientHumanName
+
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.HumanName") &&
 		    targetClz.getName().equals("com.frt.dr.model.base.PatientHumanName")) {
-			com.frt.dr.model.base.PatientHumanName target = new com.frt.dr.model.base.PatientHumanName();
-			org.hl7.fhir.dstu3.model.HumanName name = (org.hl7.fhir.dstu3.model.HumanName)source;
+			// org.hl7.fhir.dstu3.model.HumanName => com.frt.dr.model.base.PatientHumanName
+			// hapi human name => frt human name 
 			
-			target.setHumannameId(Long.valueOf(name.getId()));			
-			target.setUse(name.getUse().name());			
-			target.setFamily(name.getFamily());			
+			com.frt.dr.model.base.PatientHumanName frtName = new com.frt.dr.model.base.PatientHumanName();
+			org.hl7.fhir.dstu3.model.HumanName hapiName = (org.hl7.fhir.dstu3.model.HumanName)source;
 			
-			return (Object)target;
+			// Element
+			frtName.setHumannameId(Long.valueOf(hapiName.getId()));		
+			
+			// HumanName element: use 
+			frtName.setUse(hapiName.getUse().name());	
+			
+			// HumanName element: text
+			frtName.setTxt(hapiName.getText());				
+			
+			// HumanName element: family
+			frtName.setFamily(hapiName.getFamily());			
+			
+			// HumanName element: given
+			
+			// HumanName element: prefix
+
+			// HumanName element: suffix
+			
+			// HumanName element: period			
+			
+			return (Object)frtName;
+			
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientHumanName") &&
 			       targetClz.getName().equals("org.hl7.fhir.dstu3.model.HumanName")) {
-			org.hl7.fhir.dstu3.model.HumanName target = new org.hl7.fhir.dstu3.model.HumanName();
-			com.frt.dr.model.base.PatientHumanName name = (com.frt.dr.model.base.PatientHumanName)source;
+			// com.frt.dr.model.base.PatientHumanName => org.hl7.fhir.dstu3.model.HumanName 
+			// frt human name => hapi human name  
 			
-			target.setId(name.getHumannameId().toString());
-			target.setUse(org.hl7.fhir.dstu3.model.HumanName.NameUse.valueOf(name.getUse()));
-			target.setFamily(name.getFamily());
+			org.hl7.fhir.dstu3.model.HumanName hapiName = new org.hl7.fhir.dstu3.model.HumanName();
+			com.frt.dr.model.base.PatientHumanName frtName = (com.frt.dr.model.base.PatientHumanName)source;
 			
-			return (Object)target;
+			// Element
+			hapiName.setId(frtName.getHumannameId().toString());
+			
+			// HumanName element: use 
+			hapiName.setUse(org.hl7.fhir.dstu3.model.HumanName.NameUse.valueOf(frtName.getUse()));
+			
+			// HumanName element: family
+			hapiName.setFamily(frtName.getFamily());
+			
+			// HumanName element: given
+			
+			// HumanName element: prefix
+
+			// HumanName element: suffix
+			
+			// HumanName element: period			
+			
+			return (Object)hapiName;
+			
 		} else {
 			throw new MapperException("map from " + sourceClz.getName() + 
 								           " to " + targetClz.getName() + 
