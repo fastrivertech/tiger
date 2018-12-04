@@ -103,11 +103,27 @@ public class PatientResourceMapper implements ResourceMapper {
 				
 				// patient resource: multipleBirth, per FHIR 3.0.1 spec, assume not multiplebirth 
 				// patient resource: multipleBirthBoolean
-				frtPatient.setMultipleBirthBoolean(hapiPatient.getMultipleBirthBooleanType() == null ?
-											 	   false : hapiPatient.getMultipleBirthBooleanType().booleanValue());	
-				// patient resource: multipleBirthInteger
-				frtPatient.setMultipleBirthInteger(hapiPatient.getMultipleBirthIntegerType() == null ? 
-												   null : hapiPatient.getMultipleBirthIntegerType().getValue());
+				// note, have to do check as below to prevent class casting exception, e.g. try to cast hapi boolean to integer
+				// when the MultipleBirth is a boolean
+				// FRT MultipleBoolean and MultipleInteger can be:
+				// (1) Boolean is NULL and Integer NOT NULL
+				// (2) Boolean is NOT NULL and Integer is NULL
+				// (3) Boolean is NULL and Integer is NULL ===> HAPI Patient.hasMultipleBirth() must be set to false
+				if (hapiPatient.hasMultipleBirth()) {
+					if (hapiPatient.getMultipleBirth() instanceof BooleanType) {
+						frtPatient.setMultipleBirthBoolean(hapiPatient.getMultipleBirthBooleanType().booleanValue());
+						frtPatient.setMultipleBirthInteger(null);
+					} else {
+						// patient resource: multipleBirthInteger
+						frtPatient.setMultipleBirthInteger(hapiPatient.getMultipleBirthIntegerType().getValue());
+						frtPatient.setMultipleBirthBoolean(null);
+					}
+				}
+				else {
+					// the default
+					frtPatient.setMultipleBirthBoolean(null);
+					frtPatient.setMultipleBirthInteger(null);
+				}
 				
 				// patient resource: photo
 				
@@ -173,11 +189,14 @@ public class PatientResourceMapper implements ResourceMapper {
 			// patient resource: maritalStatus
 			
 			// patient resource: multipleBirth, per FHIR 3.0.1 spec, assume not multiplebirth 
-			// patient resource: multipleBirthBoolean			
-			hapiPatient.setMultipleBirth(new BooleanType(frtPatient.getMultipleBirthBoolean()));
+			// patient resource: multipleBirthBoolean
+			if (frtPatient.getMultipleBirthBoolean()!=null) {
+				hapiPatient.setMultipleBirth(new BooleanType(frtPatient.getMultipleBirthBoolean()));
+			}
 			// patient resource: multipleBirthInteger
-			hapiPatient.setMultipleBirth(frtPatient.getMultipleBirthInteger() == null ? 
-										 new IntegerType(0) : new IntegerType(frtPatient.getMultipleBirthInteger()));
+			if (frtPatient.getMultipleBirthInteger()!=null) {
+				hapiPatient.setMultipleBirth(new IntegerType(frtPatient.getMultipleBirthInteger()));
+			}
 			
 			// patient resource: photo
 			
