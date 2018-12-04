@@ -15,6 +15,8 @@ import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import javax.sql.rowset.serial.SerialException;
+
 /**
  * SqlHelper class
  * @author chaye
@@ -28,6 +30,7 @@ public class SqlHelper {
 			clob = con.createClob();
 			clob.setString(1, string);
 		} catch (SQLException sqlex) {
+			sqlex.printStackTrace();
 		} finally {
 			return clob;
 		}
@@ -44,4 +47,20 @@ public class SqlHelper {
 		}
 	}
 
+	@SuppressWarnings("finally")
+	public static Clob toClob(String str) {
+		Clob clob = null;
+		try {
+			clob = new javax.sql.rowset.serial.SerialClob(str.toCharArray());
+		} catch (SerialException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			return clob;
+		}
+	}
 }

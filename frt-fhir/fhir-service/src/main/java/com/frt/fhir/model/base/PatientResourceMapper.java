@@ -75,6 +75,17 @@ public class PatientResourceMapper implements ResourceMapper {
 										frtPatient.getNames().add((com.frt.dr.model.base.PatientHumanName)mappedName);
 									});			
 				
+				// patient resource: identifier
+				// org.hl7.fhir.dstu3.model.Identifier => com.frt.dr.model.base.PatientIdentifier			
+				List<org.hl7.fhir.dstu3.model.Identifier> identifiers = hapiPatient.getIdentifier();
+				ResourceDictionary.ResourcePair resourcePair2 = ResourceDictionary.get("PATIENT_IDENTIFIER");			
+				PatientIdentifierMapper identifierMapper = new PatientIdentifierMapper();
+				identifiers.forEach(identifier->{												
+										Object mappedIdentifier = identifierMapper.from(resourcePair2.getFhir()).to(resourcePair2.getFrt()).map(identifier);
+										((com.frt.dr.model.base.PatientIdentifier)mappedIdentifier).setPatient((com.frt.dr.model.base.Patient)frtPatient);
+										frtPatient.getIdentifiers().add((com.frt.dr.model.base.PatientIdentifier)mappedIdentifier);
+									});			
+
 				// patient resource: telecom
 				
 				// patient resource: gender
@@ -169,6 +180,16 @@ public class PatientResourceMapper implements ResourceMapper {
 									hapiPatient.getName().add((org.hl7.fhir.dstu3.model.HumanName)mappedName);
 						 });									
 									
+			// patient resource: identifier
+			// com.frt.dr.model.base.PatientIdentifier => org.hl7.fhir.dstu3.model.Identifier	
+			List<com.frt.dr.model.base.PatientIdentifier> identifiers = frtPatient.getIdentifiers();
+			ResourceDictionary.ResourcePair resourcePair2 = ResourceDictionary.get("PATIENT_IDENTIFIER");			
+			PatientIdentifierMapper identifierMapper = new PatientIdentifierMapper();
+			identifiers.forEach(identifier->{												
+									Object mappedIdentifier = identifierMapper.from(resourcePair2.getFrt()).to(resourcePair2.getFhir()).map(identifier);
+									hapiPatient.getIdentifier().add((org.hl7.fhir.dstu3.model.Identifier)mappedIdentifier);
+						 });									
+
 			// patient resource: telecom
 			
 			// patient resource: gender

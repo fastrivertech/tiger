@@ -75,6 +75,11 @@ public class Patient extends DomainResource implements Serializable {
     @OrderBy("humannameId ASC")
     private List<PatientHumanName> names;
     
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OrderBy("identifierId ASC")
+    private List<PatientIdentifier> identifiers;
+
     @Size(max = 32)
     @Column(name = "gender")            
     private String gender;
@@ -111,15 +116,16 @@ public class Patient extends DomainResource implements Serializable {
     	this.patientId = patientId;
     }
 
-    /*
     public List<PatientIdentifier> getIdentifiers() {
+    	if (this.identifiers==null) {
+    		this.identifiers = new ArrayList<PatientIdentifier>();
+    	}
     	return this.identifiers;
     }
     
     public void setIdentifiers(List<PatientIdentifier> identifiers) {
     	this.identifiers = identifiers;
     }
-    */
     
     public Boolean getActive() {
     	return this.active;
