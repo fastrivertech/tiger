@@ -52,8 +52,8 @@ public class DomainResource {
 	
 	private Clob contained;
 	
-	private List<DomainExtension> domainExtension;
+	private List<Extension> domainExtension;
 
-	private List<DomainExtension> modifierExtension;
+	private List<Extension> modifierExtension;
 	
 }
