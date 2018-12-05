@@ -83,7 +83,13 @@ public class PatientDao extends BaseDao<Patient,Long> {
 	   	    Query query = em.createNamedQuery("getPatientById");
             query.setParameter("patientId", id);
             List<Patient> patients = (List<Patient>) query.getResultList();          							
-			Optional<Patient> patient = Optional.ofNullable(patients.get(0));
+            Optional<Patient> patient = null;
+            if (patients.size()>0) {
+            	patient = Optional.ofNullable(patients.get(0));
+            }
+            else {
+            	patient = Optional.empty();
+            }
 			return patient;
 		} catch (IllegalArgumentException | 
 				 QueryTimeoutException |

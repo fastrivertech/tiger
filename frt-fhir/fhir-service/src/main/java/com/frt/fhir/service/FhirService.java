@@ -57,12 +57,17 @@ public class FhirService {
 
 	public <R extends DomainResource> Optional<R> read(@Nonnull String type, @Nonnull Long id) 
 		throws FhirServiceException {
+		Optional<R> retVal = Optional.empty();
 		try {
 			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			Object resource = repository.read(resourcePair.getFrt(), id);
-			Object target = mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)resource);						
-			return Optional.of((R)target);
+			Object target = null;
+			if (resource!=null) {
+				target = mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)resource);
+				retVal = Optional.of((R)target);
+			}
+			return retVal;
 		} catch (MapperException | RepositoryServiceException ex) {
 			throw new FhirServiceException(ex);
 		}		

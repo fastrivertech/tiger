@@ -58,7 +58,12 @@ public class RepositoryServiceImpl implements RepositoryService {
 			dao.setEntityManager(em);
 			
 			Optional<R> resource = dao.findById(id);
-			return resource.get();
+			if (resource.isPresent()) {
+				return resource.get();
+			}
+			else {
+				return null;
+			}
 		} catch (DaoException dex) {
 			throw new RepositoryServiceException(dex); 
 		}
