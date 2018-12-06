@@ -1,8 +1,5 @@
 package com.frt.fhir.model.base;
 
-import static org.junit.Assert.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
 import org.hl7.fhir.dstu3.model.HumanName;
