@@ -61,7 +61,7 @@ public class PatientAddressMapper extends BaseMapper {
 				frt.setType(hapi.getType().toCode());
 			}
 			frt.setTxt(hapi.getText());
-			frt.setLine(hapi.getLine()); 
+			//frt.setLine(hapi.getLine()); 
 			frt.setCity(hapi.getCity());;
 			frt.setDistrict(hapi.getDistrict());;
 			frt.setState(hapi.getState());;
