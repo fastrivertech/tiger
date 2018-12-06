@@ -42,7 +42,6 @@ public class PatientHumanNameMapper implements ResourceMapper {
 		    targetClz.getName().equals("com.frt.dr.model.base.PatientHumanName")) {
 			// org.hl7.fhir.dstu3.model.HumanName => com.frt.dr.model.base.PatientHumanName
 			// hapi human name => frt human name 
-			
 			com.frt.dr.model.base.PatientHumanName frtName = new com.frt.dr.model.base.PatientHumanName();
 			org.hl7.fhir.dstu3.model.HumanName hapiName = (org.hl7.fhir.dstu3.model.HumanName)source;
 			

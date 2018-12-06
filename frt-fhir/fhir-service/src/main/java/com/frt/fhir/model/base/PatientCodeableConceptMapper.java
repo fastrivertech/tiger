@@ -23,22 +23,22 @@ import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceMapper;
 
-public class PatientIdentifierMapper extends BaseMapper {
+public class PatientCodeableConceptMapper extends BaseMapper {
 
 	private Class sourceClz;
 	private Class targetClz;
 	
-	public PatientIdentifierMapper() {		
+	public PatientCodeableConceptMapper() {		
 	}
 	
 	@Override
-	public PatientIdentifierMapper from(Class sourceClz) {
+	public PatientCodeableConceptMapper from(Class sourceClz) {
 		this.sourceClz = sourceClz;
 		return this;
 	}
 
 	@Override
-	public PatientIdentifierMapper to(Class targetClz) {
+	public PatientCodeableConceptMapper to(Class targetClz) {
 		this.targetClz = targetClz;
 		return this;
 	}
