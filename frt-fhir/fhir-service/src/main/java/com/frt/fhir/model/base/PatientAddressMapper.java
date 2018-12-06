@@ -18,6 +18,7 @@ import org.hl7.fhir.dstu3.model.CodeableConcept;
 import org.hl7.fhir.dstu3.model.Identifier.IdentifierUse;
 import org.hl7.fhir.dstu3.model.Period;
 import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.exceptions.FHIRException;
 
 import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
@@ -61,7 +62,7 @@ public class PatientAddressMapper extends BaseMapper {
 				frt.setType(hapi.getType().toCode());
 			}
 			frt.setTxt(hapi.getText());
-			//frt.setLine(hapi.getLine()); 
+			frt.setLine(this.serializeToJsonArray(hapi.getLine(), "line")); 
 			frt.setCity(hapi.getCity());;
 			frt.setDistrict(hapi.getDistrict());;
 			frt.setState(hapi.getState());;
@@ -77,8 +78,26 @@ public class PatientAddressMapper extends BaseMapper {
 			org.hl7.fhir.dstu3.model.Address hapi = new org.hl7.fhir.dstu3.model.Address();
 			com.frt.dr.model.base.PatientAddress frt = (com.frt.dr.model.base.PatientAddress)source;
 			
-			hapi.setId(String.valueOf(frt.getAddressId()));
+			if (frt.getAddressId()!=null) {
+				hapi.setId(String.valueOf(frt.getAddressId()));
+			}
 			hapi.setUse(org.hl7.fhir.dstu3.model.Address.AddressUse.valueOf(frt.getUse()));
+			if (frt.getType()!=null) {
+				try {
+					hapi.setType(org.hl7.fhir.dstu3.model.Address.AddressType.fromCode(frt.getType()));
+				} catch (FHIRException e) {
+					e.printStackTrace();
+					throw new MapperException("FHIRException when convert FRT PatientAddress to HAPI Address.", e);
+				}
+			}
+
+			hapi.setText(frt.getTxt());
+			hapi.setLine(this.getAddressLine(frt.getLine()));
+			hapi.setCity(frt.getCity());
+			hapi.setDistrict(frt.getDistrict());
+			hapi.setState(frt.getState());
+			hapi.setCountry(frt.getCountry());
+			hapi.setPostalCode(frt.getPostalcode());
 			// comment out for now
 //			hapi.setPeriod(getPeriod(frt.getPeriod()));
 			
