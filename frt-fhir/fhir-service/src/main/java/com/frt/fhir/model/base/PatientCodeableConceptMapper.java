@@ -11,26 +11,26 @@
  */
 package com.frt.fhir.model.base;
 
-import java.sql.Clob;
-import java.sql.SQLException;
-
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Identifier.IdentifierUse;
-import org.hl7.fhir.dstu3.model.Period;
-import org.hl7.fhir.dstu3.model.Reference;
+import java.util.Iterator;
+import java.util.Set;
 
 import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
-import com.frt.fhir.model.ResourceMapper;
+import com.frt.util.logging.Localization;
+import com.frt.util.logging.Logger;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 public class PatientCodeableConceptMapper extends BaseMapper {
+	private static Logger logger = Logger.getLog(PatientCodeableConceptMapper.class.getName());
+	private static Localization localizer = Localization.getInstance();
 
 	private Class sourceClz;
 	private Class targetClz;
-	
-	public PatientCodeableConceptMapper() {		
+
+	public PatientCodeableConceptMapper() {
 	}
-	
+
 	@Override
 	public PatientCodeableConceptMapper from(Class sourceClz) {
 		this.sourceClz = sourceClz;
@@ -42,49 +42,66 @@ public class PatientCodeableConceptMapper extends BaseMapper {
 		this.targetClz = targetClz;
 		return this;
 	}
-	
+
 	@Override
-	public Object map(Object source) 
-		throws MapperException {
+	public Object map(Object source) throws MapperException {
 		// org.hl7.fhir.dstu3.model.HumanName vs com.frt.dr.model.base.PatientHumanName
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Identifier") &&
-		    targetClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")) {
-			com.frt.dr.model.base.PatientIdentifier frt = new com.frt.dr.model.base.PatientIdentifier();
-			org.hl7.fhir.dstu3.model.Identifier hapi = (org.hl7.fhir.dstu3.model.Identifier)source;
+		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.CodeableConcept")
+				&& targetClz.getName().equals("com.frt.dr.model.base.PatientCodeableConcept")) {
 
-			if (hapi.hasId()) {
-				frt.setIdentifierId(Long.valueOf(hapi.getId()));
+			com.frt.dr.model.base.PatientCodeableConcept frt = new com.frt.dr.model.base.PatientCodeableConcept();
+
+			if (source instanceof JsonElement) {
+				// source is JsonObject representing instance of FHIR composite type
+				// CodeableConcept
+				JsonObject root = ((JsonElement) source).getAsJsonObject();
+				Set<String> attributes = root.keySet();
+				Iterator<String> it = attributes.iterator();
+				JsonObject jobj = null;
+				while (it.hasNext()) {
+					String key = it.next();
+					logger.debug(localizer.x("Patient.CodeableConcept <n, v> paire - name=" + key));
+
+					if (key.equals("code")) {
+						frt.setCoding_code(root.get(key).getAsString());
+					}
+
+					if (key.equals("system")) {
+						frt.setCoding_system(root.get(key).getAsString());
+					}
+
+					// if (key.equals("version")) {
+					// if ((jobj = root.getAsJsonObject(key)) != null) {
+					// frt.setCoding_version(SqlHelper.toClob(jobj.getAsString()));
+					// }
+					// }
+
+					if (key.equals("display")) {
+						frt.setCoding_display(root.get(key).getAsString());
+					}
+
+					if (key.equals("userSelected")) {
+						frt.setCoding_userselected(root.get(key).getAsBoolean());
+					}
+				}
+				frt.setPath("Patient.maritalStatus");
+			} else {
 			}
-			frt.setPath("Patient.Identifier");
-			frt.setUse(hapi.getUse().name());
-			frt.setSystem(hapi.getSystem());
-			frt.setValue(hapi.getValue());
-			// commented out for splice machine clob insert issue
-//			frt.setType(SqlHelper.toClob(serializeToJson(hapi.getType(), "type")));
-//			frt.setPeriod(SqlHelper.toClob(serializeToJson(hapi.getPeriod(), "period")));
-//			frt.setAssigner(SqlHelper.toClob(serializeToJson(hapi.getAssigner(), "assigner")));
+			return (Object) frt;
+		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientCodeableConcept")
+				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.CodeableConcept")) {
+			org.hl7.fhir.dstu3.model.CodeableConcept hapi = new org.hl7.fhir.dstu3.model.CodeableConcept();
 
-			return (Object)frt;
-		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientIdentifier") &&
-			       targetClz.getName().equals("org.hl7.fhir.dstu3.model.Identifier")) {
-			org.hl7.fhir.dstu3.model.Identifier hapi = new org.hl7.fhir.dstu3.model.Identifier();
-			com.frt.dr.model.base.PatientIdentifier frt = (com.frt.dr.model.base.PatientIdentifier)source;
-			
-			hapi.setId(String.valueOf(frt.getIdentifierId()));
-			hapi.setSystem(frt.getSystem());
-			hapi.setValue(frt.getValue());
-			hapi.setUse(getIdentifierUse(frt.getUse()));
-			// comment out for now
-//			hapi.setType(getType(frt.getType()));
-//			hapi.setPeriod(getPeriod(frt.getPeriod()));
-//			hapi.setAssigner(getAssigner(frt.getAssigner()));
-			
-			return (Object)hapi;
+			if (source instanceof JsonElement) {
+				// mapping done at Patient level, should never be here
+			} else {
+//				com.frt.dr.model.base.PatientCodeableConcept frt = (com.frt.dr.model.base.PatientCodeableConcept) source;
+			}
+			return (Object) hapi;
 		} else {
-			throw new MapperException("map from " + sourceClz.getName() + 
-								           " to " + targetClz.getName() + 
-								           " Not Implemented Yet");
-		}		
+			throw new MapperException(
+					"map from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
+		}
 	}
 
 }

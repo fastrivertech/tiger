@@ -51,6 +51,9 @@ public class ResourceDictionary {
 		resourcePairs.put("PATIENT", new ResourcePair(org.hl7.fhir.dstu3.model.Patient.class, com.frt.dr.model.base.Patient.class));
 		resourcePairs.put("PATIENT_HUMANNAME", new ResourcePair(org.hl7.fhir.dstu3.model.HumanName.class, com.frt.dr.model.base.PatientHumanName.class));		
 		resourcePairs.put("PATIENT_IDENTIFIER", new ResourcePair(org.hl7.fhir.dstu3.model.Identifier.class, com.frt.dr.model.base.PatientIdentifier.class));		
+		resourcePairs.put("PATIENT_ADDRESS", new ResourcePair(org.hl7.fhir.dstu3.model.Address.class, com.frt.dr.model.base.PatientAddress.class));		
+		resourcePairs.put("PATIENT_REFERENCE", new ResourcePair(org.hl7.fhir.dstu3.model.Reference.class, com.frt.dr.model.base.PatientReference.class));		
+		resourcePairs.put("PATIENT_CODEABLECONCEPT", new ResourcePair(org.hl7.fhir.dstu3.model.CodeableConcept.class, com.frt.dr.model.base.PatientCodeableConcept.class));		
 	}
 	
 	public static ResourcePair get(String key) {

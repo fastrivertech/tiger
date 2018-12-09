@@ -28,7 +28,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import com.frt.dr.SqlHelper;
 
@@ -44,6 +43,8 @@ public class PatientAddress implements Serializable {
     @Basic(optional = false)
     @NotNull(message = "Identifier logical Id cannot be Null")
     @Column(name = "address_id")    
+    private Long addressId;
+    
 	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @ManyToOne(optional = false)
     private Patient patient;
@@ -108,8 +109,6 @@ public class PatientAddress implements Serializable {
     	this.patient = patient;
     }
 
-    private Long addressId;
-    
     public Long getAddressId() {
 		return addressId;
 	}
@@ -225,4 +224,20 @@ public class PatientAddress implements Serializable {
 		this.period = period;
 	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		Util.addNVpair(sb, "use", this.getUse());
+		Util.addNVpair(sb, "type", this.getType());
+		Util.addNVpair(sb, "text", this.getTxt());
+		Util.addNVpairArray(sb, "line", this.getLine());
+		Util.addNVpair(sb, "city", this.getCity());
+		Util.addNVpair(sb, "district", this.getDistrict());
+		Util.addNVpair(sb, "state", this.getState());
+		Util.addNVpair(sb, "country", this.getCountry());
+		Util.addNVpair(sb, "postalCode", this.getPostalcode());
+		Util.addNVpair(sb, "period", this.getPeriod());
+		sb.append("}");
+		return sb.toString();
+	}
 }

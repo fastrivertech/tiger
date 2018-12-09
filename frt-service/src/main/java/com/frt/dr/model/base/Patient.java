@@ -14,9 +14,10 @@ package com.frt.dr.model.base;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+
 import javax.persistence.Entity;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -25,17 +26,16 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 import com.frt.dr.model.DomainResource;
 
 @Entity
@@ -80,7 +80,16 @@ public class Patient extends DomainResource implements Serializable {
     @OrderBy("identifierId ASC")
     private List<PatientIdentifier> identifiers;
 
-    @Size(max = 32)
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OrderBy("addressId ASC")
+    private List<PatientAddress> addresses;
+
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
+    private PatientCodeableConcept maritalStatus;
+
+	@Size(max = 32)
     @Column(name = "gender")            
     private String gender;
 
@@ -143,6 +152,25 @@ public class Patient extends DomainResource implements Serializable {
     	this.gender = gender;
     }
     
+    public List<PatientAddress> getAddresses() {
+    	if (addresses==null) {
+    		this.addresses = new ArrayList<PatientAddress>();
+    	}
+		return addresses;
+	}
+
+	public void setAddresses(List<PatientAddress> addresses) {
+		this.addresses = addresses;
+	}
+
+    public PatientCodeableConcept getMaritalStatus() {
+		return maritalStatus;
+	}
+
+	public void setMaritalStatus(PatientCodeableConcept maritalStatus) {
+		this.maritalStatus = maritalStatus;
+	}
+
     public Date getBirthDate() {
     	return this.birthDate;
     }
@@ -194,4 +222,83 @@ public class Patient extends DomainResource implements Serializable {
     	this.names = names;
     }
     
+    public String toString() {
+    	StringBuilder sb = new StringBuilder();
+    	
+    	sb.append("{\"resourceType\":\"Patient\",");
+   		
+    	Util.addNVpair(sb, "id", this.getPatientId());
+   		Util.addNVpair(sb, "active", this.getActive());
+   		Util.addNVpair(sb, "gender", this.getGender());
+   		Util.addNVpair(sb, "birthDate", (new SimpleDateFormat("yyyy-MM-dd")).format(this.getBirthDate()));
+   		Util.addNVpair(sb, "deceasedBoolean", this.getDeceasedBoolean());
+   		Util.addNVpair(sb, "deceasedDateTime", 
+   				(new SimpleDateFormat("yyyy-MM-dd"))
+   				.format(new java.util.Date(this.getDeceasedDateTime().getTime())));
+   		Util.addNVpair(sb, "multipleBirthBoolean", this.getMultipleBirthBoolean());
+   		Util.addNVpair(sb, "multipleBirthInteger", this.getMultipleBirthInteger());
+   		
+   		if (this.identifiers!=null&&this.identifiers.size()>0) {
+   			if (!Util.endingInComma(sb)) {
+   				sb.append(",");
+   			}
+   			sb.append("\"identifier\":[");
+   			boolean first = true;
+   			for (PatientIdentifier i: this.identifiers) {
+   				if (!first) {
+   					sb.append(",");
+   				}
+   				else {
+   					first = false;
+   				}
+   				sb.append(i.toString());
+   			}
+   	   		sb.append("]");
+   		}
+   		
+   		if (this.addresses!=null&&this.addresses.size()>0) {
+   			if (!Util.endingInComma(sb)) {
+   				sb.append(",");
+   			}
+   			sb.append("\"address\":[");
+   			boolean first = true;
+   			for (PatientAddress i: this.addresses) {
+   				if (!first) {
+   					sb.append(",");
+   				}
+   				else {
+   					first = false;
+   				}
+   				sb.append(i.toString());
+   			}
+   	   		sb.append("]");
+   		}
+   		
+   		if (this.names!=null&&this.names.size()>0) {
+   			if (!Util.endingInComma(sb)) {
+   				sb.append(",");
+   			}
+   			sb.append("\"name\":[");
+   			boolean first = true;
+   			for (PatientHumanName i: this.names) {
+   				if (!first) {
+   					sb.append(",");
+   				}
+   				else {
+   					first = false;
+   				}
+   				sb.append(i.toString());
+   			}
+   	   		sb.append("]");
+   		}
+
+   		if (this.maritalStatus!=null) {
+   			Util.addNVpair(sb, "maritalStatus", this.getMaritalStatus().toString());
+   		}
+   		
+   		sb.append("}");
+    	
+   		return sb.toString();
+    }
+
 }

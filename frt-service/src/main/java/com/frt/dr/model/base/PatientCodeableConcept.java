@@ -148,4 +148,16 @@ public class PatientCodeableConcept implements Serializable {
 		this.txt = txt;
 	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		Util.addNVpair(sb, "code", this.getCoding_code());
+		Util.addNVpair(sb, "version", this.getCoding_version());
+		Util.addNVpair(sb, "system", this.getCoding_system());
+		Util.addNVpair(sb, "display", this.getCoding_display());
+		Util.addNVpair(sb, "userSelected", this.getCoding_userselected());
+		Util.addNVpair(sb, "text", this.getTxt());
+		sb.append("}");
+		return sb.toString();
+	}
 }

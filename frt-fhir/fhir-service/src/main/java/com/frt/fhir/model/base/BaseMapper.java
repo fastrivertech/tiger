@@ -1,12 +1,18 @@
 package com.frt.fhir.model.base;
 
+import java.text.MessageFormat;
+import java.util.Iterator;
 import java.util.List;
 
 import org.hl7.fhir.dstu3.model.Identifier.IdentifierUse;
 import org.hl7.fhir.dstu3.model.Patient;
 
+import com.frt.dr.model.base.Util;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceMapper;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 import ca.uhn.fhir.context.FhirContext;
 
@@ -15,10 +21,11 @@ public abstract class BaseMapper implements ResourceMapper {
 	protected static String PAT_RS_TAIL = "}";
 	protected static String IDENTIFIER_BEGIN = "\"identifier\":[";
 	protected static String IDENTIFIER_END = "]";
-	protected static String ADDRESS_BEGIN = "\"address\":[";
-	protected static String ADDRESS_END = "]";
+	protected static String ADDRESS_BEGIN = "\"address\":[{";
+	protected static String ADDRESS_END = "}]";
 
 	protected ca.uhn.fhir.parser.JsonParser parser; // per mapper HAPI parser for json to object of HAPI type convert
+	protected JsonParser gparser = new JsonParser();
 
 	public BaseMapper() {
 		FhirContext context = FhirContext.forDstu3();
@@ -93,9 +100,9 @@ public abstract class BaseMapper implements ResourceMapper {
 	 */
 	protected <T extends org.hl7.fhir.dstu3.model.Type> String serializeToJsonArray(List<T> l, String fieldName) {
 		StringBuilder sb = new StringBuilder();
-		sb.append(fieldName).append(":[");
+		sb.append("\""+fieldName+"\"").append(":[");
 		for (T o : l) {
-			this.serializeToJson(o, null);
+			sb.append(this.serializeToJson(o, null));
 		}
 		sb.append("]");
 		return sb.toString();
@@ -114,62 +121,95 @@ public abstract class BaseMapper implements ResourceMapper {
 	protected <T extends org.hl7.fhir.dstu3.model.Type> String serializeToJson(T obj, String fieldName) {
 		StringBuilder sb = new StringBuilder();
 		if (fieldName != null) {
-			boolean first = true;
-			sb.append(fieldName).append(":{");
-			if (obj instanceof org.hl7.fhir.dstu3.model.Reference) {
-				// Identifier.assigner
-				org.hl7.fhir.dstu3.model.Reference r = ((org.hl7.fhir.dstu3.model.Reference) obj);
-				if (r.hasDisplay()) {
-					sb.append("display:").append(r.getDisplay());
-					first = false;
-				}
-				if (r.hasReference()) {
-					if (first) {
-						sb.append(",");
-					}
-					sb.append("reference:").append(r.getReference());
-				}
-				// if (r.hasIdentifier()) {
-				// if (first) {
-				// sb.append(",");
-				// }
-				// sb.append("identifier:").append(serializeToJson(r.getIdentifier(),
-				// "identifier"));
-				// }
-			} else if (obj instanceof org.hl7.fhir.dstu3.model.Period) {
-				// Identifier.period
-				org.hl7.fhir.dstu3.model.Period p = ((org.hl7.fhir.dstu3.model.Period) obj);
-				if (p.hasStart()) {
-					sb.append("start:").append(p.getStart().toString());
-				}
-				;
-				if (p.hasEnd()) {
-					if (p.hasStart()) {
-						sb.append(",");
-					}
-					sb.append(p.getEnd().toString());
-				}
-			} else if (obj instanceof org.hl7.fhir.dstu3.model.CodeableConcept) {
-				// Identifier.type
-				org.hl7.fhir.dstu3.model.CodeableConcept c = ((org.hl7.fhir.dstu3.model.CodeableConcept) obj);
-				if (c.hasCoding()) {
-
-				}
-				if (c.hasText()) {
-
-				}
-			} else {
-				throw new UnsupportedOperationException("Serialization of instance of type: "
-						+ obj.getClass().getCanonicalName() + " not supported yet.");
+			sb.append("\"").append(fieldName).append("\"").append(":");
+			if (!obj.isPrimitive()) {
+				// non-primitive
+				sb.append("{");
 			}
-			sb.append("}");
-		} else if (obj instanceof org.hl7.fhir.dstu3.model.StringType) {
+			sb.append(serializeToJsonObj(obj));
+			if (!obj.isPrimitive()) {
+				sb.append("}");
+			}
+		} else {
 			// element of json array
-			return ((org.hl7.fhir.dstu3.model.StringType)obj).getValue();
+			if (!obj.isPrimitive()) {
+				sb.append("{");
+				sb.append("}");
+			}
+			else {
+				// primitive type
+				sb.append("\""+obj.primitiveValue()+"\"");
+			}
+		}
+		return sb.toString();
+	}
+
+	private <T extends org.hl7.fhir.dstu3.model.Type> String serializeToJsonObj(T obj) {
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		if (obj instanceof org.hl7.fhir.dstu3.model.Reference) {
+			// Identifier.assigner
+			org.hl7.fhir.dstu3.model.Reference r = ((org.hl7.fhir.dstu3.model.Reference) obj);
+			if (r.hasDisplay()) {
+				sb.append("display:").append("\""+r.getDisplay()+"\"");
+				first = false;
+			}
+			if (r.hasReference()) {
+				if (first) {
+					sb.append(",");
+				}
+				sb.append("\"reference\":").append("\""+r.getReference()+"\"");
+			}
+			// if (r.hasIdentifier()) {
+			// if (first) {
+			// sb.append(",");
+			// }
+			// sb.append("identifier:").append(serializeToJson(r.getIdentifier(),
+			// "identifier"));
+			// }
+		} else if (obj instanceof org.hl7.fhir.dstu3.model.Period) {
+			// Identifier.period
+			org.hl7.fhir.dstu3.model.Period p = ((org.hl7.fhir.dstu3.model.Period) obj);
+			if (p.hasStart()) {
+				sb.append("\"start:\"").append("\""+p.getStart().toString()+"\"");
+			}
+			;
+			if (p.hasEnd()) {
+				if (p.hasStart()) {
+					sb.append(",");
+				}
+				sb.append("\"end\":\"" + p.getEnd().toString()+"\"");
+			}
+		} else if (obj instanceof org.hl7.fhir.dstu3.model.CodeableConcept) {
+			// Identifier.type
+			org.hl7.fhir.dstu3.model.CodeableConcept c = ((org.hl7.fhir.dstu3.model.CodeableConcept) obj);
+			if (c.hasCoding()) {
+
+			}
+			if (c.hasText()) {
+
+			}
 		} else {
 			throw new UnsupportedOperationException("Serialization of instance of type: "
 					+ obj.getClass().getCanonicalName() + " not supported yet.");
 		}
+		return sb.toString();
+	}
+
+	protected String toJsonStr(JsonArray asJsonArray) {
+		StringBuilder sb = new StringBuilder();
+		Iterator<JsonElement> it = asJsonArray.iterator();
+		sb.append("[");
+		while (it.hasNext()) {
+			JsonElement e = it.next();
+			if (e.isJsonPrimitive()) {
+				if (!Util.firstInArray(sb)) {
+					sb.append(",");
+				}
+				sb.append(e.getAsString());
+			}
+		}
+		sb.append("]");
 		return sb.toString();
 	}
 

@@ -118,5 +118,14 @@ public class PatientReference implements Serializable {
 		this.display = display;
 	}
 
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("{");
+		Util.addNVpair(sb, "reference", this.getReference());
+		Util.addNVpair(sb, "display", this.getDisplay());
+		Util.addNVpair(sb, "identifier", this.getIdentifier());
+		sb.append("}");
+		return sb.toString();
+	}
 
 }
