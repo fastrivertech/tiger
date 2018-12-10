@@ -7,6 +7,9 @@
 		<class>com.frt.dr.model.base.Patient</class>
 		<class>com.frt.dr.model.base.PatientHumanName</class>
 		<class>com.frt.dr.model.base.PatientIdentifier</class>
+		<class>com.frt.dr.model.base.PatientAddress</class>
+		<class>com.frt.dr.model.base.PatientReference</class>
+		<class>com.frt.dr.model.base.PatientCodeableConcept</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <shared-cache-mode>NONE</shared-cache-mode>		
         <properties>			
