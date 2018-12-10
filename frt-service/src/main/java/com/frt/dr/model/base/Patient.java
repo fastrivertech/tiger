@@ -232,9 +232,11 @@ public class Patient extends DomainResource implements Serializable {
    		Util.addNVpair(sb, "gender", this.getGender());
    		Util.addNVpair(sb, "birthDate", (new SimpleDateFormat("yyyy-MM-dd")).format(this.getBirthDate()));
    		Util.addNVpair(sb, "deceasedBoolean", this.getDeceasedBoolean());
+   		if (this.getDeceasedDateTime()!=null) {
    		Util.addNVpair(sb, "deceasedDateTime", 
    				(new SimpleDateFormat("yyyy-MM-dd"))
    				.format(new java.util.Date(this.getDeceasedDateTime().getTime())));
+   		}
    		Util.addNVpair(sb, "multipleBirthBoolean", this.getMultipleBirthBoolean());
    		Util.addNVpair(sb, "multipleBirthInteger", this.getMultipleBirthInteger());
    		
