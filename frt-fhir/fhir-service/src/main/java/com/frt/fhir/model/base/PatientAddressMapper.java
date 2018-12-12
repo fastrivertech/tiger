@@ -58,12 +58,11 @@ public class PatientAddressMapper extends BaseMapper {
 			Set<String> attributes = root.keySet();
 			Iterator<String> it = attributes.iterator();
 			JsonObject jobj = null;
+			frt.setPath("Patient.address");
 			while (it.hasNext()) {
 				String key = it.next();
 				logger.debug(localizer.x("Patient.Address <n, v> paire - name=" + key));
 				
-				frt.setPath("Patient.address");
-
 				if (key.equals("city")) {
 					frt.setCity(root.get(key).getAsString());
 				}
@@ -106,7 +105,7 @@ public class PatientAddressMapper extends BaseMapper {
 				if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
 					if (key.equals("period")) {
 						if ((jobj = root.getAsJsonObject(key)) != null) {
-							frt.setPeriod(SqlHelper.toClob(jobj.getAsString()));
+							frt.setPeriod(SqlHelper.toClob(jobj.toString()));
 						}
 					}
 				}
