@@ -45,14 +45,18 @@ public class PatientReferenceMapper extends BaseMapper {
 
 	@Override
 	public Object map(Object source) throws MapperException {
-		// org.hl7.fhir.dstu3.model.HumanName vs com.frt.dr.model.base.PatientHumanName
+		if (!(source instanceof JsonElement)) {
+			throw new IllegalArgumentException("PatientReference.map(source) expects JsonElement, got source of type: "
+					+ source.getClass().getCanonicalName());
+		}
+		
+		com.frt.dr.model.base.PatientReference frt = null;
+
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Reference")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientReference")) {
 
-			com.frt.dr.model.base.PatientReference frt = new com.frt.dr.model.base.PatientReference();
+			frt = new com.frt.dr.model.base.PatientReference();
 
-			if (source instanceof JsonElement) {
-				// source is JsonObject representing instance of FHIR composite type Reference
 				JsonObject root = ((JsonElement)source).getAsJsonObject();
 				Set<String> attributes = root.keySet();
 				Iterator<String> it = attributes.iterator();
@@ -64,29 +68,20 @@ public class PatientReferenceMapper extends BaseMapper {
 					if (key.equals("reference")) {
 						frt.setReference(root.get(key).getAsString());
 					}
-//					if (key.equals("identifier")) {
-//						if ((jobj = root.getAsJsonObject(key)) != null) {
-//							frt.setIdentifier(SqlHelper.toClob(jobj.toString()));
-//						}
-//					}
+					if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+						if (key.equals("identifier")) {
+							if ((jobj = root.getAsJsonObject(key)) != null) {
+								frt.setIdentifier(SqlHelper.toClob(jobj.toString()));
+							}
+						}
+					}
 				}
-			} else {
-//				org.hl7.fhir.dstu3.model.Reference hapi = (org.hl7.fhir.dstu3.model.Reference) source;
-			}
-			return (Object) frt;
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientReference")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Reference")) {
-			org.hl7.fhir.dstu3.model.Reference hapi = new org.hl7.fhir.dstu3.model.Reference();
-
-			if (source instanceof JsonElement) {
-				// mapping done at Patient level, should never be here
-			} else {
-//				com.frt.dr.model.base.PatientReference frt = (com.frt.dr.model.base.PatientReference) source;
-			}
-			return (Object) hapi;
+			throw new IllegalStateException("PatientReference.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
-			throw new MapperException(
-					"map from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
+			throw new MapperException("PatientReference.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
 		}
+		return (Object) frt;
 	}
 }

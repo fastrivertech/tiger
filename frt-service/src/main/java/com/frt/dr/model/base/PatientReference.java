@@ -28,15 +28,15 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 import com.frt.dr.SqlHelper;
+import com.frt.dr.model.ResourceComponent;
 
 @Entity
 @Table(name = "PATIENT_REFERENCE")
 @SequenceGenerator(name = "PATIENT_REFERENCE_SEQ", sequenceName = "PATIENT_REFERENCE_SEQ", allocationSize=1)
 @XmlRootElement
-public class PatientReference implements Serializable {
+public class PatientReference implements Serializable, ResourceComponent {
     private static final long serialVersionUID = -8321293485415818761L;
     
     @Id
@@ -116,16 +116,6 @@ public class PatientReference implements Serializable {
 
 	public void setDisplay(String display) {
 		this.display = display;
-	}
-
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		Util.addNVpair(sb, "reference", this.getReference());
-		Util.addNVpair(sb, "display", this.getDisplay());
-		Util.addNVpair(sb, "identifier", this.getIdentifier());
-		sb.append("}");
-		return sb.toString();
 	}
 
 }

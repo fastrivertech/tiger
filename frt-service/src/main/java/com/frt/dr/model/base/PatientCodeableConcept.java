@@ -12,7 +12,6 @@
 package com.frt.dr.model.base;
 
 import java.io.Serializable;
-import java.sql.Clob;
 import javax.persistence.Entity;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -26,13 +25,14 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+
+import com.frt.dr.model.ResourceComponent;
 
 @Entity
 @Table(name = "PATIENT_CODEABLECONCEPT")
 @SequenceGenerator(name = "PATIENT_CODEABLECONCEPT_SEQ", sequenceName = "PATIENT_CODEABLECONCEPT_SEQ", allocationSize=1)
 @XmlRootElement
-public class PatientCodeableConcept implements Serializable {
+public class PatientCodeableConcept implements Serializable, ResourceComponent {
     private static final long serialVersionUID = -8321293485415818761L;
     
     @Id
@@ -50,24 +50,25 @@ public class PatientCodeableConcept implements Serializable {
     @Column(name = "path")                                            
     private String path;
 
-    @Size(max = 128)    
+    @Size(max = 1024)    
     @Column(name = "coding_system")                                        
     private String coding_system;
 
-    @Size(max = 32)    
+    @Size(max = 1024)    
     @Column(name = "coding_version")                                    
-    private Clob coding_version;
+    private String coding_version;
 
-    @Size(max = 32)    
+    @Size(max = 1024)    
     @Column(name = "coding_code")                                
     private String coding_code;
 
-    @Size(max = 2048)    
+    @Size(max = 4096)    
     @Column(name = "coding_display")                            
     private String coding_display;
 
+    @Size(max = 1024)    
     @Column(name = "coding_userselected")                        
-    private Boolean coding_userselected;
+    private String coding_userselected;
     
     @Size(max = 2048)    
     @Column(name = "txt")                            
@@ -108,11 +109,11 @@ public class PatientCodeableConcept implements Serializable {
 		this.coding_system = coding_system;
 	}
 
-	public Clob getCoding_version() {
+	public String getCoding_version() {
 		return coding_version;
 	}
 
-	public void setCoding_version(Clob coding_version) {
+	public void setCoding_version(String coding_version) {
 		this.coding_version = coding_version;
 	}
 
@@ -132,11 +133,11 @@ public class PatientCodeableConcept implements Serializable {
 		this.coding_display = coding_display;
 	}
 
-	public Boolean getCoding_userselected() {
+	public String getCoding_userselected() {
 		return coding_userselected;
 	}
 
-	public void setCoding_userselected(Boolean coding_userselected) {
+	public void setCoding_userselected(String coding_userselected) {
 		this.coding_userselected = coding_userselected;
 	}
 
@@ -148,16 +149,4 @@ public class PatientCodeableConcept implements Serializable {
 		this.txt = txt;
 	}
 
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		Util.addNVpair(sb, "code", this.getCoding_code());
-		Util.addNVpair(sb, "version", this.getCoding_version());
-		Util.addNVpair(sb, "system", this.getCoding_system());
-		Util.addNVpair(sb, "display", this.getCoding_display());
-		Util.addNVpair(sb, "userSelected", this.getCoding_userselected());
-		Util.addNVpair(sb, "text", this.getTxt());
-		sb.append("}");
-		return sb.toString();
-	}
 }

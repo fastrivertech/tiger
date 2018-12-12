@@ -53,81 +53,55 @@ public class PatientIdentifierMapper extends BaseMapper {
 
 	@Override
 	public Object map(Object source) throws MapperException {
-		// org.hl7.fhir.dstu3.model.HumanName vs com.frt.dr.model.base.PatientHumanName
+		if (!(source instanceof JsonElement)) {
+			throw new IllegalArgumentException("PatientIdentifier.map(source) expects JsonElement, got source of type: "
+					+ source.getClass().getCanonicalName());
+		}
+		com.frt.dr.model.base.PatientIdentifier frt = null;
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Identifier")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")) {
+			frt = new com.frt.dr.model.base.PatientIdentifier();
+			JsonObject root = ((JsonElement) source).getAsJsonObject();
+			Set<String> attributes = root.keySet();
+			Iterator<String> it = attributes.iterator();
+			JsonObject jobj = null;
+			while (it.hasNext()) {
+				String key = it.next();
+				logger.debug(localizer.x("Patient.Identifier <n, v> paire - name=" + key));
 
-			com.frt.dr.model.base.PatientIdentifier frt = new com.frt.dr.model.base.PatientIdentifier();
-
-			if (source instanceof JsonElement) {
-				// source is JsonObject representing instance of FHIR composite type Identifier
-				JsonObject root = ((JsonElement)source).getAsJsonObject();
-				Set<String> attributes = root.keySet();
-				Iterator<String> it = attributes.iterator();
-				JsonObject jobj = null;
-				while (it.hasNext()) {
-					String key = it.next();
-					logger.debug(localizer.x("Patient.Identifier <n, v> paire - name=" + key));
-
-					if (key.equals("use")) {
-						frt.setUse(root.get(key).getAsString());
-					}
-//					if (key.equals("period")) {
-//						if ((jobj = root.getAsJsonObject(key)) != null) {
-//							frt.setPeriod(SqlHelper.toClob(jobj.getAsString()));
-//						}
-//					}
-					if (key.equals("value")) {
-						frt.setValue(root.get(key).getAsString());
-					}
-//					if (key.equals("type")) {
-//						if ((jobj = root.getAsJsonObject(key)) != null) {
-//							frt.setType(SqlHelper.toClob(jobj.getAsString()));
-//						}
-//					}
-					if (key.equals("system")) {
-						frt.setSystem(root.get(key).getAsString());
-					}
-				}
 				frt.setPath("Patient.identifier");
-			} else {
-				org.hl7.fhir.dstu3.model.Identifier hapi = (org.hl7.fhir.dstu3.model.Identifier) source;
-				if (hapi.hasId()) {
-					frt.setIdentifierId(Long.valueOf(hapi.getId()));
+
+				if (key.equals("use")) {
+					frt.setUse(root.get(key).getAsString());
 				}
-				frt.setPath("Patient.Identifier");
-				frt.setUse(hapi.getUse().name());
-				frt.setSystem(hapi.getSystem());
-				frt.setValue(hapi.getValue());
-				// commented out for splice machine clob insert issue
-				// frt.setType(SqlHelper.toClob(serializeToJson(hapi.getType(), "type")));
-				// frt.setPeriod(SqlHelper.toClob(serializeToJson(hapi.getPeriod(), "period")));
-				// frt.setAssigner(SqlHelper.toClob(serializeToJson(hapi.getAssigner(),
-				// "assigner")));
+
+				if (key.equals("value")) {
+					frt.setValue(root.get(key).getAsString());
+				}
+
+				if (key.equals("system")) {
+					frt.setSystem(root.get(key).getAsString());
+				}
+
+				if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+									if (key.equals("period")) {
+						if ((jobj = root.getAsJsonObject(key)) != null) {
+							frt.setPeriod(SqlHelper.toClob(jobj.getAsString()));
+						}
+					}
+					if (key.equals("type")) {
+						if ((jobj = root.getAsJsonObject(key)) != null) {
+							frt.setType(SqlHelper.toClob(jobj.getAsString()));
+						}
+					}
+				}
 			}
-			return (Object) frt;
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Identifier")) {
-			org.hl7.fhir.dstu3.model.Identifier hapi = new org.hl7.fhir.dstu3.model.Identifier();
-
-			if (source instanceof JsonElement) {
-				// mapping done at Patient level, should never be here
-			} else {
-				com.frt.dr.model.base.PatientIdentifier frt = (com.frt.dr.model.base.PatientIdentifier) source;
-				hapi.setId(String.valueOf(frt.getIdentifierId()));
-				hapi.setSystem(frt.getSystem());
-				hapi.setValue(frt.getValue());
-				hapi.setUse(getIdentifierUse(frt.getUse()));
-				// comment out for now
-				// hapi.setType(getType(frt.getType()));
-				// hapi.setPeriod(getPeriod(frt.getPeriod()));
-				// hapi.setAssigner(getAssigner(frt.getAssigner()));
-			}
-			return (Object) hapi;
+			throw new IllegalStateException("PatientIdentifier.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
-			throw new MapperException(
-					"map from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
+			throw new MapperException("PatientIdentifier.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
 		}
+		return (Object) frt;
 	}
-
 }

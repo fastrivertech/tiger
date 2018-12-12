@@ -30,12 +30,13 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.frt.dr.SqlHelper;
+import com.frt.dr.model.ResourceComponent;
 
 @Entity
 @Table(name = "PATIENT_ADDRESS")
 @SequenceGenerator(name = "PATIENT_ADDRESS_SEQ", sequenceName = "PATIENT_ADDRESS_SEQ", allocationSize=1)
 @XmlRootElement
-public class PatientAddress implements Serializable {
+public class PatientAddress implements Serializable, ResourceComponent {
     private static final long serialVersionUID = -8321293485415818761L;
     
     @Id
@@ -222,22 +223,5 @@ public class PatientAddress implements Serializable {
 
 	public void setPeriod(Clob period) {
 		this.period = period;
-	}
-
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("{");
-		Util.addNVpair(sb, "use", this.getUse());
-		Util.addNVpair(sb, "type", this.getType());
-		Util.addNVpair(sb, "text", this.getTxt());
-		Util.addNVpairArray(sb, "line", this.getLine());
-		Util.addNVpair(sb, "city", this.getCity());
-		Util.addNVpair(sb, "district", this.getDistrict());
-		Util.addNVpair(sb, "state", this.getState());
-		Util.addNVpair(sb, "country", this.getCountry());
-		Util.addNVpair(sb, "postalCode", this.getPostalcode());
-		Util.addNVpair(sb, "period", this.getPeriod());
-		sb.append("}");
-		return sb.toString();
 	}
 }

@@ -11,13 +11,17 @@
  */
 package com.frt.fhir.model.base;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import com.frt.dr.SqlHelper;
+import com.frt.dr.model.base.Util;
 import com.frt.fhir.model.MapperException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -45,63 +49,80 @@ public class PatientCodeableConceptMapper extends BaseMapper {
 
 	@Override
 	public Object map(Object source) throws MapperException {
-		// org.hl7.fhir.dstu3.model.HumanName vs com.frt.dr.model.base.PatientHumanName
+		if (!(source instanceof JsonElement)) {
+			throw new IllegalArgumentException("PatientIdentifier.map(source) expects JsonElement, got source of type: "
+					+ source.getClass().getCanonicalName());
+		}
+
+		com.frt.dr.model.base.PatientCodeableConcept frt = null;
+
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.CodeableConcept")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientCodeableConcept")) {
 
-			com.frt.dr.model.base.PatientCodeableConcept frt = new com.frt.dr.model.base.PatientCodeableConcept();
+			frt = new com.frt.dr.model.base.PatientCodeableConcept();
+			frt.setPath("Patient.maritalStatus");
 
-			if (source instanceof JsonElement) {
-				// source is JsonObject representing instance of FHIR composite type
-				// CodeableConcept
-				JsonObject root = ((JsonElement) source).getAsJsonObject();
-				Set<String> attributes = root.keySet();
-				Iterator<String> it = attributes.iterator();
-				JsonObject jobj = null;
-				while (it.hasNext()) {
-					String key = it.next();
-					logger.debug(localizer.x("Patient.CodeableConcept <n, v> paire - name=" + key));
+			JsonObject root = ((JsonElement) source).getAsJsonObject();
+			Set<String> attributes = root.keySet();
+			Iterator<String> it = attributes.iterator();
+			JsonObject jobj = null;
+			while (it.hasNext()) {
+				String key = it.next();
+				logger.debug(localizer.x("Patient.CodeableConcept <n, v> paire - name=" + key));
+				if (key.equals("text")) {
+					frt.setTxt(root.get(key).getAsString());
+				}
+				if (key.equals("coding")) {
+					List<String> codes = new ArrayList<String>();
+					List<String> systems = new ArrayList<String>();
+					List<String> versions = new ArrayList<String>();
+					List<String> displays = new ArrayList<String>();
+					List<String> userselects = new ArrayList<String>();
+					// need to mangle coding[] into a row in PATIENT_CODEABLECONCEPT
+					// say we have 3 codes in coding[]
+					// all coding.code => [c1,c2,c3]
+					// all coding.system => [s1,s2,s3]
+					// all coding.version => [v1,v2,v3]
+					// all coding.display => [d1,d2,d3]
+					// all coding.userSelected => [u1,u2,u3]
+					if (root.get(key) != null && root.get(key).isJsonArray()) {
+						JsonArray codings = root.get(key).getAsJsonArray();
+						JsonObject jo = null;
+						for (int i = 0; i < codings.size(); i++) {
+							JsonElement coding = codings.get(i);
+							if (coding.isJsonObject()) {
+								jo = coding.getAsJsonObject();
+								codes.add(jo.get("code") != null ? jo.get("code").getAsString() : "");
+								systems.add(jo.get("system") != null ? jo.get("system").getAsString() : "");
+								versions.add(jo.get("version") != null ? jo.get("version").getAsString() : "");
+								displays.add(jo.get("display") != null ? jo.get("display").getAsString() : "");
+								userselects.add(
+										jo.get("userSelected") != null ? jo.get("userSelected").getAsString() : "");
+							} else {
+								// malformed FHIR json codings
+								throw new MapperException("Malformed coding[], array of code struct expected.");
+							}
+						}
 
-					if (key.equals("code")) {
-						frt.setCoding_code(root.get(key).getAsString());
-					}
-
-					if (key.equals("system")) {
-						frt.setCoding_system(root.get(key).getAsString());
-					}
-
-					// if (key.equals("version")) {
-					// if ((jobj = root.getAsJsonObject(key)) != null) {
-					// frt.setCoding_version(SqlHelper.toClob(jobj.getAsString()));
-					// }
-					// }
-
-					if (key.equals("display")) {
-						frt.setCoding_display(root.get(key).getAsString());
-					}
-
-					if (key.equals("userSelected")) {
-						frt.setCoding_userselected(root.get(key).getAsBoolean());
+						frt.setCoding_code(gconverter.toJson(codes));
+						frt.setCoding_system(gconverter.toJson(systems));
+						frt.setCoding_version(gconverter.toJson(versions));
+						frt.setCoding_display(gconverter.toJson(displays));
+						frt.setCoding_userselected(gconverter.toJson(userselects));
+					} else {
+						// malformed CodeableConcept json
 					}
 				}
-				frt.setPath("Patient.maritalStatus");
-			} else {
 			}
-			return (Object) frt;
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientCodeableConcept")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.CodeableConcept")) {
-			org.hl7.fhir.dstu3.model.CodeableConcept hapi = new org.hl7.fhir.dstu3.model.CodeableConcept();
-
-			if (source instanceof JsonElement) {
-				// mapping done at Patient level, should never be here
-			} else {
-//				com.frt.dr.model.base.PatientCodeableConcept frt = (com.frt.dr.model.base.PatientCodeableConcept) source;
-			}
-			return (Object) hapi;
+			throw new IllegalStateException("PatientCodeableConcept.map() called source=" + sourceClz.getCanonicalName()
+					+ ", target=" + targetClz.getCanonicalName());
 		} else {
-			throw new MapperException(
-					"map from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
+			throw new MapperException("PatientCodeableConcept.map(source) from " + sourceClz.getName() + " to "
+					+ targetClz.getName() + " Not Implemented Yet");
 		}
+		return (Object) frt;
 	}
 
 }
