@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 
 import com.frt.dr.SqlHelper;
-import com.frt.dr.model.base.Util;
 import com.frt.fhir.model.MapperException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;

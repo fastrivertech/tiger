@@ -8,7 +8,6 @@ import com.frt.dr.model.base.PatientAddress;
 import com.frt.dr.model.base.PatientCodeableConcept;
 import com.frt.dr.model.base.PatientHumanName;
 import com.frt.dr.model.base.PatientIdentifier;
-import com.frt.dr.model.base.Util;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceMapper;
 import com.google.gson.Gson;
