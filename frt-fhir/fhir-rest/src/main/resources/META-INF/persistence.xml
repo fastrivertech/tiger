@@ -17,6 +17,8 @@
             <property name="javax.persistence.jdbc.url" value="jdbc:splice://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:1527/splicedb"/>
             <property name="javax.persistence.jdbc.user" value="YourUserId"/>
             <property name="javax.persistence.jdbc.password" value="YourPassword"/>
+		    <!--property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:C:\db-derby-10.14.2.0-bin\bin\MyDBTest"/-->
 
 			<!-- eclipselink.ddl-generation: none/create-tables -->
             <property name="eclipselink.ddl-generation" value="none"/>		
