@@ -58,8 +58,9 @@ public class PatientReference implements Serializable, ResourceComponent {
     @Column(name = "reference")                                        
     private String reference;
 
+    @Lob
     @Column(name = "identifier")                                    
-    private Clob identifier;
+    private String identifier;
 
     @Size(max = 2048)    
     @Column(name = "display")                                
@@ -102,10 +103,10 @@ public class PatientReference implements Serializable, ResourceComponent {
 	}
 
 	public String getIdentifier() {
-		return SqlHelper.toString(identifier);
+		return identifier;
 	}
 
-	public void setIdentifier(Clob identifier) {
+	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
 	}
 

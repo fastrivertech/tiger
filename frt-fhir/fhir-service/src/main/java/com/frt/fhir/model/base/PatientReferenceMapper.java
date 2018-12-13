@@ -57,25 +57,30 @@ public class PatientReferenceMapper extends BaseMapper {
 
 			frt = new com.frt.dr.model.base.PatientReference();
 
-				JsonObject root = ((JsonElement)source).getAsJsonObject();
-				Set<String> attributes = root.keySet();
-				Iterator<String> it = attributes.iterator();
-				JsonObject jobj = null;
-				while (it.hasNext()) {
-					String key = it.next();
-					logger.debug(localizer.x("Patient.Reference <n, v> paire - name=" + key));
+			JsonObject root = ((JsonElement)source).getAsJsonObject();
+			Set<String> attributes = root.keySet();
+			Iterator<String> it = attributes.iterator();
+			JsonObject jobj = null;
+			while (it.hasNext()) {
+				String key = it.next();
+				logger.debug(localizer.x("Patient.Reference <n, v> paire - name=" + key));
 
-					if (key.equals("reference")) {
-						frt.setReference(root.get(key).getAsString());
-					}
-					if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
-						if (key.equals("identifier")) {
-							if ((jobj = root.getAsJsonObject(key)) != null) {
-								frt.setIdentifier(SqlHelper.toClob(jobj.toString()));
-							}
+				if (key.equals("reference")) {
+					frt.setReference(root.get(key).getAsString());
+				}
+
+				if (key.equals("display")) {
+					frt.setDisplay(root.get(key).getAsString());
+				}
+
+				if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+					if (key.equals("identifier")) {
+						if ((jobj = root.getAsJsonObject(key)) != null) {
+							frt.setIdentifier(jobj.toString());
 						}
 					}
 				}
+			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientReference")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Reference")) {
 			throw new IllegalStateException("PatientReference.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());

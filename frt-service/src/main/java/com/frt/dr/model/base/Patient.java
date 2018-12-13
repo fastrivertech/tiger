@@ -89,6 +89,10 @@ public class Patient extends DomainResource implements Serializable {
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private PatientCodeableConcept maritalStatus;
 
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
+    private PatientReference managingOrganization;
+
 	@Size(max = 32)
     @Column(name = "gender")            
     private String gender;
@@ -222,4 +226,12 @@ public class Patient extends DomainResource implements Serializable {
     	this.names = names;
     }
     
+    public PatientReference getManagingOrganization() {
+		return managingOrganization;
+	}
+
+	public void setManagingOrganization(PatientReference managingOrganization) {
+		this.managingOrganization = managingOrganization;
+	}
+
 }

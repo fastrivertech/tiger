@@ -72,6 +72,11 @@ public class PatientDao extends BaseDao<Patient,Long> {
 				patient.getMaritalStatus().setPath("Patient.maritalStatus");
 			}
 
+			if (patient.getManagingOrganization()!=null) {
+				patient.getManagingOrganization().setReferenceId(null);
+				patient.getManagingOrganization().setPath("Patient.managingOrganization");
+			}
+
 			em.persist(patient);
 			transaction.commit();
 			return Optional.of(patient);
