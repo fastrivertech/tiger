@@ -26,6 +26,7 @@ import com.frt.dr.model.base.PatientAddress;
 import com.frt.dr.model.base.PatientCodeableConcept;
 import com.frt.dr.model.base.PatientHumanName;
 import com.frt.dr.model.base.PatientIdentifier;
+import com.frt.dr.model.base.PatientReference;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.util.logging.Localization;
@@ -212,8 +213,14 @@ public class PatientResourceMapper extends BaseMapper {
 					}
 
 					if (key.equals("managingOrganization")) {
-						logger.debug(
-								localizer.x("skip 'managingOrganization' attribute (Reference(Organization) for now."));
+						if ((jobj = root.getAsJsonObject(key)) != null) {
+							PatientReferenceMapper m = new PatientReferenceMapper();
+							m = m.from(org.hl7.fhir.dstu3.model.Reference.class)
+									.to(com.frt.dr.model.base.PatientReference.class);
+							PatientReference pr = (PatientReference) m.map(jobj);
+							pr.setPatient(frtPatient);
+							frtPatient.setManagingOrganization(pr);;
+						}
 					}
 				}
 			}
