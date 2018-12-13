@@ -59,7 +59,7 @@ public class PatientCodeableConceptMapper extends BaseMapper {
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientCodeableConcept")) {
 
 			frt = new com.frt.dr.model.base.PatientCodeableConcept();
-			frt.setPath("Patient.maritalStatus"); // hard code for now
+			//frt.setPath("Patient.maritalStatus"); // should set by caller
 
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			Set<String> attributes = root.keySet();

@@ -58,7 +58,6 @@ public class PatientReference implements Serializable, ResourceComponent {
     @Column(name = "reference")                                        
     private String reference;
 
-	@Lob @Basic (fetch=FetchType.LAZY)
     @Column(name = "identifier")                                    
     private Clob identifier;
 

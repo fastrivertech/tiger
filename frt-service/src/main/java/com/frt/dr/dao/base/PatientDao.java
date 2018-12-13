@@ -58,11 +58,19 @@ public class PatientDao extends BaseDao<Patient,Long> {
 			transaction.begin();
 			
 			patient.setPatientId(null);
-			patient.getNames().forEach(name->name.setHumannameId(null));
-			patient.getIdentifiers().forEach(identifier->identifier.setIdentifierId(null));
-			patient.getAddresses().forEach(address->address.setAddressId(null));
-			patient.getMaritalStatus().setCodeableconceptId(null);
-			patient.getMaritalStatus().setPath("Patient.maritalStatus");
+			if (patient.getNames()!=null&&patient.getNames().size()>0) {
+				patient.getNames().forEach(name->name.setHumannameId(null));
+			}
+			if (patient.getIdentifiers()!=null&&patient.getIdentifiers().size()>0) {
+				patient.getIdentifiers().forEach(identifier->identifier.setIdentifierId(null));
+			}
+			if (patient.getAddresses()!=null&&patient.getAddresses().size()>0) {
+				patient.getAddresses().forEach(address->address.setAddressId(null));
+			}
+			if (patient.getMaritalStatus()!=null) {
+				patient.getMaritalStatus().setCodeableconceptId(null);
+				patient.getMaritalStatus().setPath("Patient.maritalStatus");
+			}
 
 			em.persist(patient);
 			transaction.commit();

@@ -12,7 +12,6 @@
 package com.frt.dr.model.base;
 
 import java.io.Serializable;
-import java.sql.Clob;
 import javax.persistence.Entity;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -20,13 +19,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import com.frt.dr.SqlHelper;
 import com.frt.dr.model.ResourceComponent;
 
 @Entity
@@ -59,17 +58,25 @@ public class PatientHumanName implements Serializable, ResourceComponent {
     @Column(name = "family")                                                    
     private String family;
 
+    @Lob
     @Column(name = "given")                                                        
-    private Clob given;
+//    private Clob given;
+    private String given;
     
+    @Lob
     @Column(name = "prefix")                                                        
-    private Clob prefix;
+//    private Clob prefix;
+    private String prefix;
     
+    @Lob
     @Column(name = "suffix")                                                        
-    private Clob suffix;
+//    private Clob suffix;
+    private String suffix;
     
+    @Lob
     @Column(name = "period")                                                        
-    private Clob period;
+//    private Clob period;
+    private String period;
     
     @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @ManyToOne(optional = false)
@@ -132,36 +139,67 @@ public class PatientHumanName implements Serializable, ResourceComponent {
     	this.family = family;
     }
         
+//    public String getGiven() {
+//    	return SqlHelper.toString(this.given);
+//    }
+//
+//    public void setGiven(Clob given) {
+//    	this.given = given;
+//    }
+//    
+//    public String getPrefix() {
+//    	return SqlHelper.toString(this.prefix);
+//    }
+//
+//    public void setPrefix(Clob prefix) {
+//    	this.prefix = prefix;
+//    }
+//    
+//    public String getSuffix() {
+//    	return SqlHelper.toString(this.suffix);
+//    }
+//
+//    public void setSuffix(Clob suffix) {
+//    	this.suffix = suffix;
+//    }
+//    
+//    public String getPeriod() {
+//    	return SqlHelper.toString(this.period);
+//    }
+//
+//    public void setPeriod(Clob period) {
+//    	this.period = period;
+//    }
+    
     public String getGiven() {
-    	return SqlHelper.toString(this.given);
+    	return this.given;
     }
 
-    public void setGiven(Clob given) {
+    public void setGiven(String given) {
     	this.given = given;
     }
     
     public String getPrefix() {
-    	return SqlHelper.toString(this.prefix);
+    	return this.prefix;
     }
 
-    public void setPrefix(Clob prefix) {
+    public void setPrefix(String prefix) {
     	this.prefix = prefix;
     }
     
     public String getSuffix() {
-    	return SqlHelper.toString(this.suffix);
+    	return this.suffix;
     }
 
-    public void setSuffix(Clob suffix) {
+    public void setSuffix(String suffix) {
     	this.suffix = suffix;
     }
     
     public String getPeriod() {
-    	return SqlHelper.toString(this.period);
+    	return this.period;
     }
 
-    public void setPeriod(Clob period) {
+    public void setPeriod(String period) {
     	this.period = period;
     }
-    
 }

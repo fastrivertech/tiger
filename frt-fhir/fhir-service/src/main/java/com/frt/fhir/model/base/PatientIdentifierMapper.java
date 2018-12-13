@@ -85,12 +85,25 @@ public class PatientIdentifierMapper extends BaseMapper {
 				if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
 					if (key.equals("period")) {
 						if ((jobj = root.getAsJsonObject(key)) != null) {
-							frt.setPeriod(SqlHelper.toClob(jobj.toString()));
+//							frt.setPeriod(SqlHelper.toClob(jobj.toString()));
+							String v = jobj.toString();
+							frt.setPeriod(v);
 						}
 					}
+					
 					if (key.equals("type")) {
 						if ((jobj = root.getAsJsonObject(key)) != null) {
-							frt.setType(SqlHelper.toClob(jobj.toString()));
+//							frt.setType(SqlHelper.toClob(jobj.toString()));
+							String v = jobj.toString();
+							frt.setType(v);
+						}
+					}
+
+					if (key.equals("assigner")) {
+						if ((jobj = root.getAsJsonObject(key)) != null) {
+//							frt.setType(SqlHelper.toClob(jobj.toString()));
+							String v = jobj.toString();
+							frt.setAssigner(v);
 						}
 					}
 				}

@@ -82,13 +82,13 @@ public class PatientHumanNameMapper implements ResourceMapper {
 
 				if (System.getenv("DERBY_DB") != null && System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
 					if (key.equals("given")) {
-						frt.setGiven(SqlHelper.toClob(root.get(key).toString()));
+						frt.setGiven(root.get(key).toString());
 					}
 					if (key.equals("prefix")) {
-						frt.setPrefix(SqlHelper.toClob(root.get(key).toString()));
+						frt.setPrefix(root.get(key).toString());
 					}
 					if (key.equals("suffix")) {
-						frt.setSuffix(SqlHelper.toClob(root.get(key).toString()));
+						frt.setSuffix(root.get(key).toString());
 					}
 				}
 			}

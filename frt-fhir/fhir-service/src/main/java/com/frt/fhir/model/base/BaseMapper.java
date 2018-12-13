@@ -103,7 +103,7 @@ public abstract class BaseMapper implements ResourceMapper {
 	   		addNVpair(sb, "multipleBirthBoolean", p.getMultipleBirthBoolean());
 	   		addNVpair(sb, "multipleBirthInteger", p.getMultipleBirthInteger());
 	   		
-	   		if (p.getIdentifiers()!=null&&p.getIdentifiers().size()>0) {
+	   		if (p.getIdentifiers()!=null/**&&p.getIdentifiers().size()>0**/) {
 	   			if (!endingInComma(sb)) {
 	   				sb.append(VAL_DEL);
 	   			}
@@ -180,24 +180,24 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpair(sb, "state", component.getState());
 			addNVpair(sb, "country", component.getCountry());
 			addNVpair(sb, "postalCode", component.getPostalcode());
-			addNVpair(sb, "period", component.getPeriod());
+			addNVpairObject(sb, "period", component.getPeriod());
 		} else if (frtComponent instanceof com.frt.dr.model.base.PatientIdentifier) {
 			com.frt.dr.model.base.PatientIdentifier component = (com.frt.dr.model.base.PatientIdentifier)frtComponent;
 			addNVpair(sb, "use", component.getUse());
 			addNVpair(sb, "system", component.getSystem());
 			addNVpair(sb, "value", component.getValue());
-			addNVpair(sb, "type", component.getType());
-			addNVpair(sb, "period", component.getPeriod());
-			addNVpair(sb, "assigner", component.getAssigner());
+			addNVpairObject(sb, "type", component.getType());
+			addNVpairObject(sb, "period", component.getPeriod());
+			addNVpairObject(sb, "assigner", component.getAssigner());
 		} else if (frtComponent instanceof com.frt.dr.model.base.PatientHumanName) {
 			com.frt.dr.model.base.PatientHumanName component = (com.frt.dr.model.base.PatientHumanName)frtComponent;
 			addNVpair(sb, "use", component.getUse());
 			addNVpair(sb, "text", component.getTxt());
 			addNVpair(sb, "family", component.getFamily());
-			addNVpair(sb, "given", component.getGiven());
-			addNVpair(sb, "prefix", component.getPrefix());
-			addNVpair(sb, "suffix", component.getSuffix());
-			addNVpair(sb, "period", component.getPeriod());
+			addNVpairArray(sb, "given", component.getGiven());
+			addNVpairArray(sb, "prefix", component.getPrefix());
+			addNVpairArray(sb, "suffix", component.getSuffix());
+			addNVpairObject(sb, "period", component.getPeriod());
 		} else if (frtComponent instanceof com.frt.dr.model.base.PatientCodeableConcept) {
 			com.frt.dr.model.base.PatientCodeableConcept component = (com.frt.dr.model.base.PatientCodeableConcept)frtComponent;
 			// by the way 0..* Coding object is encoded,
@@ -212,7 +212,7 @@ public abstract class BaseMapper implements ResourceMapper {
 			com.frt.dr.model.base.PatientReference component = (com.frt.dr.model.base.PatientReference)frtComponent;
 			addNVpair(sb, "reference", component.getReference());
 			addNVpair(sb, "display", component.getDisplay());
-			addNVpair(sb, "identifier", component.getIdentifier());
+			addNVpairObject(sb, "identifier", component.getIdentifier());
 		} else {
 			throw new UnsupportedOperationException("Convert instance of composite type: " + frtComponent.getClass().getCanonicalName() + " not supported.");
 		}

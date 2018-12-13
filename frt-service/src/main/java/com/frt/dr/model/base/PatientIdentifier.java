@@ -58,9 +58,10 @@ public class PatientIdentifier implements Serializable, ResourceComponent {
     @Column(name = "use")                                        
     private String use;
 
-	@Lob @Basic (fetch=FetchType.LAZY)
+    @Lob
     @Column(name = "type")                                    
-    private Clob type;
+//    private Clob type;
+    private String type;
 
     @Size(max = 128)    
     @Column(name = "system")                                
@@ -70,13 +71,15 @@ public class PatientIdentifier implements Serializable, ResourceComponent {
     @Column(name = "value")                            
     private String value;
 
-	@Lob @Basic (fetch=FetchType.LAZY)
+    @Lob
     @Column(name = "period")                        
-    private Clob period;
+//    private Clob period;
+    private String period;
     
-	@Lob @Basic (fetch=FetchType.LAZY)
+    @Lob
 	@Column(name = "assigner")                    
-    private Clob assigner;
+//    private Clob assigner;
+    private String assigner;
  
 //    private List<PatientExtension> extensions;
 //    
@@ -133,27 +136,45 @@ public class PatientIdentifier implements Serializable, ResourceComponent {
     	this.patient = patient;
     }
 
+//    public String getType() {
+//		return SqlHelper.toString(this.type);
+//	}
+
+//    public Clob getType() {
     public String getType() {
-		return SqlHelper.toString(this.type);
+		return this.type;
 	}
 
-	public void setType(Clob type) {
+//    public void setType(Clob type) {
+    public void setType(String type) {
 		this.type = type;
 	}
 
+//    public String getPeriod() {
+//		return SqlHelper.toString(this.period);
+//	}
+
+//    public Clob getPeriod() {
     public String getPeriod() {
-		return SqlHelper.toString(this.period);
+		return this.period;
 	}
 
-	public void setPeriod(Clob period) {
+//    public void setPeriod(Clob period) {
+    public void setPeriod(String period) {
 		this.period = period;
 	}
 
+//    public String getAssigner() {
+//		return SqlHelper.toString(this.assigner);
+//	}
+
+//    public Clob getAssigner() {
     public String getAssigner() {
-		return SqlHelper.toString(this.assigner);
+		return this.assigner;
 	}
 
-	public void setAssigner(Clob assigner) {
+//    public void setAssigner(Clob assigner) {
+    public void setAssigner(String assigner) {
 		this.assigner = assigner;
 	}
 

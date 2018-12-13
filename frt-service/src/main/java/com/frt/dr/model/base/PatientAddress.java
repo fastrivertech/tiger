@@ -90,9 +90,9 @@ public class PatientAddress implements Serializable, ResourceComponent {
     @Column(name = "country")                            
     private String country;
 
-    @Lob @Basic (fetch=FetchType.LAZY)
+    @Lob
     @Column(name = "period")                        
-    private Clob period;
+    private String period;
     
 //    private List<PatientExtension> extensions;
 //    
@@ -217,11 +217,19 @@ public class PatientAddress implements Serializable, ResourceComponent {
 		this.country = country;
 	}
 
-    public String getPeriod() {
-		return SqlHelper.toString(this.period);
+//    public String getPeriod() {
+//		return SqlHelper.toString(this.period);
+//	}
+//
+//	public void setPeriod(Clob period) {
+//		this.period = period;
+//	}
+
+	public String getPeriod() {
+		return this.period;
 	}
 
-	public void setPeriod(Clob period) {
+	public void setPeriod(String period) {
 		this.period = period;
 	}
 }

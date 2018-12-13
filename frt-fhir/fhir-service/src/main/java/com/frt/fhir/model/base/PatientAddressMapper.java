@@ -105,7 +105,7 @@ public class PatientAddressMapper extends BaseMapper {
 				if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
 					if (key.equals("period")) {
 						if ((jobj = root.getAsJsonObject(key)) != null) {
-							frt.setPeriod(SqlHelper.toClob(jobj.toString()));
+							frt.setPeriod(jobj.toString());
 						}
 					}
 				}
