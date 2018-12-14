@@ -2,9 +2,11 @@ package com.frt.fhir.model.base;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.Iterator;
 import java.util.List;
 
 import com.frt.dr.model.ResourceComponent;
+import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientAddress;
 import com.frt.dr.model.base.PatientCodeableConcept;
 import com.frt.dr.model.base.PatientHumanName;
@@ -15,6 +17,7 @@ import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -28,6 +31,8 @@ public abstract class BaseMapper implements ResourceMapper {
 	protected static String IDENTIFIER_TAG = "\"identifier\"";
 	protected static String ADDRESS_TAG = "\"address\"";
 	protected static String HUMANNAME_TAG = "\"name\"";
+	protected static String PHOTO_TAG = "\"photo\"";
+	protected static String TELECOM_TAG = "\"telecom\"";
 	private static String NV_PAIR_FORMAT = "\"{0}\":\"{1}\"";
 	private static String NV_PAIR_FORMAT_ARRAY = "\"{0}\":{1}";
 	private static String NV_PAIR_FORMAT_OBJ = "\"{0}\":{1}";
@@ -105,16 +110,20 @@ public abstract class BaseMapper implements ResourceMapper {
 				addNVpair(sb, "deceasedDateTime", (new SimpleDateFormat("yyyy-MM-dd"))
 						.format(new java.util.Date(p.getDeceasedDateTime().getTime())));
 			}
-			addNVpair(sb, "multipleBirthBoolean", p.getMultipleBirthBoolean());
-			addNVpair(sb, "multipleBirthInteger", p.getMultipleBirthInteger());
 
 			appendArray(sb, p.getIdentifiers(), IDENTIFIER_TAG);
-			appendArray(sb, p.getAddresses(), ADDRESS_TAG);
 			appendArray(sb, p.getNames(), HUMANNAME_TAG);
+			appendArray(sb, p.getAddresses(), ADDRESS_TAG);
+			appendArray(sb, p.getTelecoms(), TELECOM_TAG);
 
 			if (p.getMaritalStatus() != null) {
 				addNVpairObject(sb, "maritalStatus", componentToJson(p.getMaritalStatus()));
 			}
+
+			addNVpair(sb, "multipleBirthBoolean", p.getMultipleBirthBoolean());
+			addNVpair(sb, "multipleBirthInteger", p.getMultipleBirthInteger());
+
+			appendArray(sb, p.getPhotos(), PHOTO_TAG);
 
 			if (p.getManagingOrganization() != null) {
 				addNVpairObject(sb, "managingOrganization", componentToJson(p.getManagingOrganization()));
@@ -173,6 +182,23 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpair(sb, "reference", component.getReference());
 			addNVpair(sb, "display", component.getDisplay());
 			addNVpairObject(sb, "identifier", component.getIdentifier());
+		} else if (frtComponent instanceof com.frt.dr.model.base.PatientAttachment) {
+			com.frt.dr.model.base.PatientAttachment component = (com.frt.dr.model.base.PatientAttachment) frtComponent;
+			addNVpair(sb, "contentType", component.getContenttype());
+			addNVpair(sb, "language", component.getLanguage());
+			addNVpair(sb, "title", component.getTitle());
+			addNVpair(sb, "url", component.getUrl());
+			addNVpair(sb, "size", component.getSize());
+			addNVpair(sb, "creation", component.getCreation());
+			addNVpair(sb, "data", component.getData());
+			addNVpair(sb, "hash", component.getHash());
+		} else if (frtComponent instanceof com.frt.dr.model.base.PatientContactPoint) {
+			com.frt.dr.model.base.PatientContactPoint component = (com.frt.dr.model.base.PatientContactPoint) frtComponent;
+			addNVpair(sb, "use", component.getUse());
+			addNVpair(sb, "system", component.getSystem());
+			addNVpair(sb, "value", component.getValue());
+			addNVpair(sb, "rank", component.getRank());
+			addNVpairObject(sb, "perios", component.getPeriod());
 		} else {
 			throw new UnsupportedOperationException("Convert instance of composite type: "
 					+ frtComponent.getClass().getCanonicalName() + " not supported.");

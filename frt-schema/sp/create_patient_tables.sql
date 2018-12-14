@@ -159,6 +159,9 @@ CREATE TABLE PATIENT_CONTACTPOINT (
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)	
 );
 
+CREATE SEQUENCE PATIENT_CONTACTPOINT_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
+INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_CONTACTPOINT_SEQ', 1);
+
 -- FHIR Address complex type, Σ --
 CREATE TABLE PATIENT_ADDRESS (
 	address_id BIGINT NOT NULL, -- as well as is element_id
@@ -207,15 +210,18 @@ CREATE TABLE PATIENT_ATTACHMENT (
 	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.photo		
 	contentType VARCHAR(32), -- Σ
 	language VARCHAR(32), -- Σ
-	data BLOB, -- Σ, base64Binary object serialization and de-serialization
+	data CLOB, -- Σ, base64Binary object serialization and de-serialization
 	url VARCHAR(1024), -- Σ
 	size INTEGER, -- Σ
-	hash BLOB, -- Σ, base64Binary object serialization and de-serialization
+	hash CLOB, -- Σ, base64Binary object serialization and de-serialization
 	title VARCHAR(32), -- Σ
 	creation TIMESTAMP, -- Σ
 	PRIMARY KEY (attachment_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)				
 );
+
+CREATE SEQUENCE PATIENT_ATTACHMENT_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
+INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_ATTACHMENT_SEQ', 1);
 
 -- FHIR BackboneElement complex type, I and affected by constraints --
 CREATE TABLE PATIENT_CONTACT ( 
@@ -243,6 +249,9 @@ CREATE TABLE PATIENT_ANIMAL (
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)							
 );
 
+CREATE SEQUENCE PATIENT_ANIMAL_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
+INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_ANIMAL_SEQ', 1);
+
 -- FHIR BackboneElement complex type --
 CREATE TABLE PATIENT_COMMUNICATION (
 	communication_id BIGINT NOT NULL, -- as well as is element_id
@@ -252,6 +261,9 @@ CREATE TABLE PATIENT_COMMUNICATION (
 	PRIMARY KEY (communication_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)								
 );
+
+CREATE SEQUENCE PATIENT_COMMUNICATION_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
+INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_COMMUNICATION_SEQ', 1);
 
 -- FHIR Reference complex type, ΣI --
 CREATE TABLE PATIENT_REFERENCE (

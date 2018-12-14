@@ -86,6 +86,16 @@ public class Patient extends DomainResource implements Serializable {
     private List<PatientAddress> addresses;
 
     @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OrderBy("attachmentId ASC")
+    private List<PatientAttachment> photos;
+
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OrderBy("contactpointId ASC")
+    private List<PatientContactPoint> telecoms;
+
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private PatientCodeableConcept maritalStatus;
 
@@ -226,7 +236,29 @@ public class Patient extends DomainResource implements Serializable {
     	this.names = names;
     }
     
-    public PatientReference getManagingOrganization() {
+    public List<PatientAttachment> getPhotos() {
+    	if (photos == null ) {
+    		photos = new ArrayList<PatientAttachment>();
+    	}
+		return photos;
+	}
+
+	public void setPhotos(List<PatientAttachment> photos) {
+		this.photos = photos;
+	}
+
+    public List<PatientContactPoint> getTelecoms() {
+    	if (telecoms==null) {
+    		telecoms = new ArrayList<PatientContactPoint>();
+    	}
+		return telecoms;
+	}
+
+	public void setTelecoms(List<PatientContactPoint> telecoms) {
+		this.telecoms = telecoms;
+	}
+
+	public PatientReference getManagingOrganization() {
 		return managingOrganization;
 	}
 

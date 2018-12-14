@@ -47,13 +47,15 @@ public class ResourceDictionary {
 	
 	static Hashtable<String, ResourcePair> resourcePairs = new Hashtable<String, ResourcePair>();
 	
-	static {
+	static { // this map table seems only used at recource level
 		resourcePairs.put("PATIENT", new ResourcePair(org.hl7.fhir.dstu3.model.Patient.class, com.frt.dr.model.base.Patient.class));
 		resourcePairs.put("PATIENT_HUMANNAME", new ResourcePair(org.hl7.fhir.dstu3.model.HumanName.class, com.frt.dr.model.base.PatientHumanName.class));		
 		resourcePairs.put("PATIENT_IDENTIFIER", new ResourcePair(org.hl7.fhir.dstu3.model.Identifier.class, com.frt.dr.model.base.PatientIdentifier.class));		
 		resourcePairs.put("PATIENT_ADDRESS", new ResourcePair(org.hl7.fhir.dstu3.model.Address.class, com.frt.dr.model.base.PatientAddress.class));		
 		resourcePairs.put("PATIENT_REFERENCE", new ResourcePair(org.hl7.fhir.dstu3.model.Reference.class, com.frt.dr.model.base.PatientReference.class));		
 		resourcePairs.put("PATIENT_CODEABLECONCEPT", new ResourcePair(org.hl7.fhir.dstu3.model.CodeableConcept.class, com.frt.dr.model.base.PatientCodeableConcept.class));		
+		resourcePairs.put("PATIENT_ATTACHMENT", new ResourcePair(org.hl7.fhir.dstu3.model.Attachment.class, com.frt.dr.model.base.PatientAttachment.class));		
+		resourcePairs.put("PATIENT_CONTACTPOINT", new ResourcePair(org.hl7.fhir.dstu3.model.ContactPoint.class, com.frt.dr.model.base.PatientContactPoint.class));		
 	}
 	
 	public static ResourcePair get(String key) {

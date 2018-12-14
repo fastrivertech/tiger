@@ -22,8 +22,11 @@ import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.exceptions.FHIRException;
 
+import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientAddress;
+import com.frt.dr.model.base.PatientAttachment;
 import com.frt.dr.model.base.PatientCodeableConcept;
+import com.frt.dr.model.base.PatientContactPoint;
 import com.frt.dr.model.base.PatientHumanName;
 import com.frt.dr.model.base.PatientIdentifier;
 import com.frt.dr.model.base.PatientReference;
@@ -88,6 +91,10 @@ public class PatientResourceMapper extends BaseMapper {
 						frtPatient.setPatientId(root.get(key).getAsLong());
 					}
 
+					if (key.equals("active")) {
+						frtPatient.setActive(root.get(key).getAsBoolean());
+					}
+
 					if (key.equals("text")) {
 						// skip narrative for now - DomainResource attribute
 						logger.debug(localizer.x("skip 'text' attribute (Narrative)"));
@@ -98,26 +105,22 @@ public class PatientResourceMapper extends BaseMapper {
 						if (root.getAsJsonArray(key) != null) {
 							JsonArray l = root.getAsJsonArray(key);
 							if (l != null) {
-								List<PatientIdentifier> ids = frtPatient.getIdentifiers();
+								List<PatientIdentifier> arr = frtPatient.getIdentifiers();
 								Iterator<JsonElement> i = l.iterator();
 								while (i.hasNext()) {
 									PatientIdentifierMapper m = new PatientIdentifierMapper();
 									m = m.from(org.hl7.fhir.dstu3.model.Identifier.class)
 											.to(com.frt.dr.model.base.PatientIdentifier.class);
 									JsonObject id = (JsonObject) i.next();
-									PatientIdentifier pid = (PatientIdentifier) m.map(id);
-									pid.setPatient(frtPatient);
-									ids.add(pid);
+									PatientIdentifier t = (PatientIdentifier) m.map(id);
+									t.setPatient(frtPatient);
+									arr.add(t);
 								}
-								frtPatient.setIdentifiers(ids);
+								frtPatient.setIdentifiers(arr);
 							}
 						} else {
 							throw new MapperException("Patient.identifier (Identifier[]) expects value of array.");
 						}
-					}
-
-					if (key.equals("active")) {
-						frtPatient.setActive(root.get(key).getAsBoolean());
 					}
 
 					if (key.equals("name")) {
@@ -125,27 +128,91 @@ public class PatientResourceMapper extends BaseMapper {
 						if (root.getAsJsonArray(key) != null) {
 							JsonArray l = root.getAsJsonArray(key);
 							if (l != null) {
-								List<PatientHumanName> nms = frtPatient.getNames();
+								List<PatientHumanName> arr = frtPatient.getNames();
 								Iterator<JsonElement> i = l.iterator();
 								while (i.hasNext()) {
 									PatientHumanNameMapper m = new PatientHumanNameMapper();
 									m = m.from(org.hl7.fhir.dstu3.model.HumanName.class)
 											.to(com.frt.dr.model.base.PatientHumanName.class);
-									JsonObject id = (JsonObject) i.next();
-									PatientHumanName pnm = (PatientHumanName) m.map(id);
-									pnm.setPatient(frtPatient);
-									nms.add(pnm);
+									JsonObject e = (JsonObject) i.next();
+									PatientHumanName t = (PatientHumanName) m.map(e);
+									t.setPatient(frtPatient);
+									arr.add(t);
 								}
-								frtPatient.setNames(nms);
+								frtPatient.setNames(arr);
 							}
 						} else {
 							throw new MapperException("Patient.name (HumanName[]) expects value of array.");
 						}
 					}
 
+					if (key.equals("address")) {
+						// array of FHIR type Address
+						if (root.getAsJsonArray(key) != null) {
+							JsonArray l = root.getAsJsonArray(key);
+							if (l != null) {
+								List<PatientAddress> arr = frtPatient.getAddresses();
+								Iterator<JsonElement> i = l.iterator();
+								while (i.hasNext()) {
+									PatientAddressMapper m = new PatientAddressMapper();
+									m = m.from(org.hl7.fhir.dstu3.model.Address.class)
+											.to(com.frt.dr.model.base.PatientAddress.class);
+									JsonObject e = (JsonObject) i.next();
+									PatientAddress t = (PatientAddress) m.map(e);
+									t.setPatient(frtPatient);
+									arr.add(t);
+								}
+								frtPatient.setAddresses(arr);
+							}
+						} else {
+							throw new MapperException("Patient.address (Address[]) expects value of array.");
+						}
+					}
+
 					if (key.equals("telecom")) {
-						// array of FHIR type ContactPoint
-						logger.debug(localizer.x("skip 'telecom' attribute (ContactPoint)"));
+						// array of object of FHIR type ContactPoint
+						if (root.getAsJsonArray(key) != null) {
+							JsonArray l = root.getAsJsonArray(key);
+							if (l != null) {
+								List<PatientContactPoint> arr = frtPatient.getTelecoms();
+								Iterator<JsonElement> i = l.iterator();
+								while (i.hasNext()) {
+									PatientContactPointMapper m = new PatientContactPointMapper();
+									m = m.from(org.hl7.fhir.dstu3.model.ContactPoint.class)
+											.to(com.frt.dr.model.base.PatientContactPoint.class);
+									JsonObject e = (JsonObject) i.next();
+									PatientContactPoint t = (PatientContactPoint) m.map(e);
+									t.setPatient(frtPatient);
+									arr.add(t);
+								}
+								frtPatient.setTelecoms(arr);
+							}
+						} else {
+							throw new MapperException("Patient.telecom (ContactPoint[]) expects value of array.");
+						}
+					}
+
+					if (key.equals("photo")) {
+						// array of object of FHIR type Attachment
+						if (root.getAsJsonArray(key) != null) {
+							JsonArray l = root.getAsJsonArray(key);
+							if (l != null) {
+								List<PatientAttachment> arr = frtPatient.getPhotos();
+								Iterator<JsonElement> i = l.iterator();
+								while (i.hasNext()) {
+									PatientAttachmentMapper m = new PatientAttachmentMapper();
+									m = m.from(org.hl7.fhir.dstu3.model.Attachment.class)
+											.to(com.frt.dr.model.base.PatientAttachment.class);
+									JsonObject e = (JsonObject) i.next();
+									PatientAttachment t = (PatientAttachment) m.map(e);
+									t.setPatient(frtPatient);
+									arr.add(t);
+								}
+								frtPatient.setPhotos(arr);
+							}
+						} else {
+							throw new MapperException("Patient.photo (Attachment[]) expects value of array.");
+						}
 					}
 
 					if (key.equals("gender")) {
@@ -163,29 +230,6 @@ public class PatientResourceMapper extends BaseMapper {
 					if (key.equals("deceasedDateTime")) {
 						frtPatient.setDeceasedDateTime(
 								new Timestamp(Date.valueOf(root.get(key).getAsString()).getTime()));
-					}
-
-					if (key.equals("address")) {
-						// array of FHIR type Address
-						if (root.getAsJsonArray(key) != null) {
-							JsonArray l = root.getAsJsonArray(key);
-							if (l != null) {
-								List<PatientAddress> addrs = frtPatient.getAddresses();
-								Iterator<JsonElement> i = l.iterator();
-								while (i.hasNext()) {
-									PatientAddressMapper m = new PatientAddressMapper();
-									m = m.from(org.hl7.fhir.dstu3.model.Address.class)
-											.to(com.frt.dr.model.base.PatientAddress.class);
-									JsonObject e = (JsonObject) i.next();
-									PatientAddress t = (PatientAddress) m.map(e);
-									t.setPatient(frtPatient);
-									addrs.add(t);
-								}
-								frtPatient.setAddresses(addrs);
-							}
-						} else {
-							throw new MapperException("Patient.address (Address[]) expects value of array.");
-						}
 					}
 
 					if (key.equals("maritalStatus")) {
@@ -239,5 +283,4 @@ public class PatientResourceMapper extends BaseMapper {
 					"Patient.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
 		}
 	}
-
 }

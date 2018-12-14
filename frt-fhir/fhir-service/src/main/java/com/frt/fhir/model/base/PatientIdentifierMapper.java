@@ -93,7 +93,6 @@ public class PatientIdentifierMapper extends BaseMapper {
 					
 					if (key.equals("type")) {
 						if ((jobj = root.getAsJsonObject(key)) != null) {
-//							frt.setType(SqlHelper.toClob(jobj.toString()));
 							String v = jobj.toString();
 							frt.setType(v);
 						}
@@ -101,7 +100,6 @@ public class PatientIdentifierMapper extends BaseMapper {
 
 					if (key.equals("assigner")) {
 						if ((jobj = root.getAsJsonObject(key)) != null) {
-//							frt.setType(SqlHelper.toClob(jobj.toString()));
 							String v = jobj.toString();
 							frt.setAssigner(v);
 						}
