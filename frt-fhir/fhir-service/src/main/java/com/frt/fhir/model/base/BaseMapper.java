@@ -91,7 +91,7 @@ public abstract class BaseMapper implements ResourceMapper {
 				}
 				codings.add(obj);
 			}
-			sb.append("coding:").append(gconverter.toJson(codings));
+			sb.append("\"coding\":").append(gconverter.toJson(codings));
 		}
 	}
 
@@ -104,7 +104,9 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpair(sb, "id", p.getPatientId());
 			addNVpair(sb, "active", p.getActive());
 			addNVpair(sb, "gender", p.getGender());
-			addNVpair(sb, "birthDate", (new SimpleDateFormat("yyyy-MM-dd")).format(p.getBirthDate()));
+			if (p.getBirthDate()!=null) {
+				addNVpair(sb, "birthDate", (new SimpleDateFormat("yyyy-MM-dd")).format(p.getBirthDate()));
+			}
 			addNVpair(sb, "deceasedBoolean", p.getDeceasedBoolean());
 			if (p.getDeceasedDateTime() != null) {
 				addNVpair(sb, "deceasedDateTime", (new SimpleDateFormat("yyyy-MM-dd"))
@@ -198,7 +200,7 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpair(sb, "system", component.getSystem());
 			addNVpair(sb, "value", component.getValue());
 			addNVpair(sb, "rank", component.getRank());
-			addNVpairObject(sb, "perios", component.getPeriod());
+			addNVpairObject(sb, "period", component.getPeriod());
 		} else {
 			throw new UnsupportedOperationException("Convert instance of composite type: "
 					+ frtComponent.getClass().getCanonicalName() + " not supported.");
