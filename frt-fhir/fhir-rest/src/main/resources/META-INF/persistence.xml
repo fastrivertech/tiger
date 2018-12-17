@@ -10,10 +10,12 @@
 		<class>com.frt.dr.model.base.PatientAddress</class>
 		<class>com.frt.dr.model.base.PatientReference</class>
 		<class>com.frt.dr.model.base.PatientCodeableConcept</class>
+		<class>com.frt.dr.model.base.PatientContactPoint</class>
+		<class>com.frt.dr.model.base.PatientAttachment</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <shared-cache-mode>NONE</shared-cache-mode>		
         <properties>			
-		    <property name="javax.persistence.jdbc.driver" value="com.splicemachine.db.jdbc.ClientDriver"/>
+			<property name="javax.persistence.jdbc.driver" value="com.splicemachine.db.jdbc.ClientDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:splice://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:1527/splicedb"/>
             <property name="javax.persistence.jdbc.user" value="YourUserId"/>
             <property name="javax.persistence.jdbc.password" value="YourPassword"/>
