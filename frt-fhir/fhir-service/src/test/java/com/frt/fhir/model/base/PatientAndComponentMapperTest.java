@@ -96,7 +96,7 @@ public class PatientAndComponentMapperTest {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			fail("Gold file not found: " + f.getPath());
+			fail("Gold file not found: src/test/data/frt_patient_sample_gold.json");
 		}
 	}
 
