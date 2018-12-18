@@ -30,13 +30,13 @@ import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.frt.dr.SqlHelper;
-import com.frt.dr.model.ResourceComponent;
+import com.frt.dr.model.ResourceComplexType;
 
 @Entity
 @Table(name = "PATIENT_REFERENCE")
 @SequenceGenerator(name = "PATIENT_REFERENCE_SEQ", sequenceName = "PATIENT_REFERENCE_SEQ", allocationSize=1)
 @XmlRootElement
-public class PatientReference implements Serializable, ResourceComponent {
+public class PatientReference implements Serializable, ResourceComplexType {
     private static final long serialVersionUID = -8321293485415818761L;
     
     @Id

@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 
-import com.frt.dr.model.ResourceComponent;
+import com.frt.dr.model.ResourceComplexType;
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientAddress;
 import com.frt.dr.model.base.PatientCodeableConcept;
@@ -62,39 +62,6 @@ public abstract class BaseMapper implements ResourceMapper {
 	@Override
 	public abstract Object map(Object source) throws MapperException;
 
-	public static void toCodingArray(StringBuilder sb, PatientCodeableConcept c) {
-		String[] codes = gconverter.fromJson(c.getCoding_code(), String[].class);
-		String[] systems = gconverter.fromJson(c.getCoding_system(), String[].class);
-		String[] versions = gconverter.fromJson(c.getCoding_version(), String[].class);
-		String[] displays = gconverter.fromJson(c.getCoding_display(), String[].class);
-		String[] selects = gconverter.fromJson(c.getCoding_userselected(), String[].class);
-		if (codes.length > 0) {
-			// per the encoding algorithm, codes.length == systems.length == version.length
-			// == displays.length = selects.length
-			JsonArray codings = new JsonArray();
-			for (int i = 0; i < codes.length; i++) {
-				JsonObject obj = new JsonObject();
-				if (codes[i] != null && !codes[i].isEmpty()) {
-					obj.addProperty("code", codes[i]);
-				}
-				if (systems[i] != null && !systems[i].isEmpty()) {
-					obj.addProperty("system", systems[i]);
-				}
-				if (versions[i] != null && !versions[i].isEmpty()) {
-					obj.addProperty("version", versions[i]);
-				}
-				if (displays[i] != null && !displays[i].isEmpty()) {
-					obj.addProperty("display", displays[i]);
-				}
-				if (selects[i] != null && !selects[i].isEmpty()) {
-					obj.addProperty("userSelected", selects[i]);
-				}
-				codings.add(obj);
-			}
-			sb.append("\"coding\":").append(gconverter.toJson(codings));
-		}
-	}
-
 	public static String resourceToJson(com.frt.dr.model.DomainResource frtResource) {
 		final StringBuilder sb = new StringBuilder();
 		if (frtResource instanceof com.frt.dr.model.base.Patient) {
@@ -136,7 +103,7 @@ public abstract class BaseMapper implements ResourceMapper {
 		return sb.toString();
 	}
 
-	public static String componentToJson(ResourceComponent frtComponent) {
+	public static String componentToJson(ResourceComplexType frtComponent) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(OBJ_BEGIN);
 		if (frtComponent instanceof com.frt.dr.model.base.PatientAddress) {
@@ -170,14 +137,7 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpairObject(sb, "period", component.getPeriod());
 		} else if (frtComponent instanceof com.frt.dr.model.base.PatientCodeableConcept) {
 			com.frt.dr.model.base.PatientCodeableConcept component = (com.frt.dr.model.base.PatientCodeableConcept) frtComponent;
-			// by the way 0..* Coding object is encoded,
-			// here we need to decode PATIENT_CODEABLECONCEPT columns
-			// CODING_CODE, CODING_SYSTEM, CODING_VERSION, CODING_DISPLAY,
-			// CODING_USERSELECTED
-			// into json array of Coding object
-			if (component.getCoding_code() != null) {
-				BaseMapper.toCodingArray(sb, component);
-			}
+			addNVpairArray(sb, "coding", component.getCoding());
 			addNVpair(sb, "text", component.getTxt());
 		} else if (frtComponent instanceof com.frt.dr.model.base.PatientReference) {
 			com.frt.dr.model.base.PatientReference component = (com.frt.dr.model.base.PatientReference) frtComponent;
@@ -191,7 +151,10 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpair(sb, "title", component.getTitle());
 			addNVpair(sb, "url", component.getUrl());
 			addNVpair(sb, "size", component.getSize());
-			addNVpair(sb, "creation", component.getCreation());
+			if (component.getCreation()!=null) {
+				addNVpair(sb, "creation", (new SimpleDateFormat("yyyy-MM-dd"))
+				.format(new java.util.Date(component.getCreation().getTime())));
+			}
 			addNVpair(sb, "data", component.getData());
 			addNVpair(sb, "hash", component.getHash());
 		} else if (frtComponent instanceof com.frt.dr.model.base.PatientContactPoint) {
@@ -279,7 +242,7 @@ public abstract class BaseMapper implements ResourceMapper {
 				if (!firstInArray(sb)) {
 					sb.append(VAL_DEL);
 				}
-				sb.append(componentToJson((ResourceComponent)e));
+				sb.append(componentToJson((ResourceComplexType)e));
 			});
 			sb.append(ARRAY_END);
 		}

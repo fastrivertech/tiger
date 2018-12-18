@@ -23,6 +23,7 @@ import org.hl7.fhir.dstu3.model.Reference;
 
 import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
+import com.frt.fhir.model.ResourceDictionary;
 import com.frt.fhir.model.ResourceMapper;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
@@ -60,51 +61,20 @@ public class PatientIdentifierMapper extends BaseMapper {
 		com.frt.dr.model.base.PatientIdentifier frt = null;
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Identifier")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")) {
-			frt = new com.frt.dr.model.base.PatientIdentifier();
+			frt = ResourceDictionary.getComplexInstance(PATIENT_IDENTIFIER);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			Set<String> attributes = root.keySet();
 			Iterator<String> it = attributes.iterator();
 			JsonObject jobj = null;
 			frt.setPath("Patient.identifier");
-			while (it.hasNext()) {
-				String key = it.next();
-				logger.debug(localizer.x("Patient.Identifier <n, v> paire - name=" + key));
+			frt.setUse(root.get("use")!=null?root.get("use").getAsString():null);
+			frt.setValue(root.get("value")!=null?root.get("value").getAsString():null);
+			frt.setSystem(root.get("system")!=null?root.get("system").getAsString():null);
 
-				if (key.equals("use")) {
-					frt.setUse(root.get(key).getAsString());
-				}
-
-				if (key.equals("value")) {
-					frt.setValue(root.get(key).getAsString());
-				}
-
-				if (key.equals("system")) {
-					frt.setSystem(root.get(key).getAsString());
-				}
-
-				if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
-					if (key.equals("period")) {
-						if ((jobj = root.getAsJsonObject(key)) != null) {
-//							frt.setPeriod(SqlHelper.toClob(jobj.toString()));
-							String v = jobj.toString();
-							frt.setPeriod(v);
-						}
-					}
-					
-					if (key.equals("type")) {
-						if ((jobj = root.getAsJsonObject(key)) != null) {
-							String v = jobj.toString();
-							frt.setType(v);
-						}
-					}
-
-					if (key.equals("assigner")) {
-						if ((jobj = root.getAsJsonObject(key)) != null) {
-							String v = jobj.toString();
-							frt.setAssigner(v);
-						}
-					}
-				}
+			if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+				frt.setPeriod(root.getAsJsonObject("period")!=null?root.getAsJsonObject("period").toString():null);
+				frt.setType(root.getAsJsonObject("type")!=null?root.getAsJsonObject("type").toString():null);
+				frt.setAssigner(root.getAsJsonObject("assigner")!=null?root.getAsJsonObject("assigner").toString():null);
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Identifier")) {

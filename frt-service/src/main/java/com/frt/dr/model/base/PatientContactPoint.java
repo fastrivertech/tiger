@@ -27,7 +27,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.frt.dr.model.ResourceComponent;
+import com.frt.dr.model.ResourceComplexType;
 
 /**********
  * Name	     Flags	     Card.	    Type	                     Description & Constraintsdoco
@@ -51,7 +51,7 @@ ContactPoint	ΣI		                          	Element	Details of a Technology med
 @Table(name = "PATIENT_CONTACTPOINT")
 @SequenceGenerator(name = "PATIENT_CONTACTPOINT_SEQ", sequenceName = "PATIENT_CONTACTPOINT_SEQ", allocationSize=1)
 @XmlRootElement
-public class PatientContactPoint implements Serializable, ResourceComponent {
+public class PatientContactPoint implements Serializable, ResourceComplexType {
     private static final long serialVersionUID = -8321293485415818761L;
     
     @Id

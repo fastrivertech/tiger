@@ -16,6 +16,7 @@ import java.util.Set;
 
 import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
+import com.frt.fhir.model.ResourceDictionary;
 import com.frt.fhir.model.ResourceMapper;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
@@ -56,43 +57,18 @@ public class PatientHumanNameMapper implements ResourceMapper {
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.HumanName")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientHumanName")) {
 
-			frt = new com.frt.dr.model.base.PatientHumanName();
-
+			frt = ResourceDictionary.getComplexInstance(PATIENT_HUMANNAME);
 			frt.setPath("Patient.name");
-
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
-			Set<String> attributes = root.keySet();
-			Iterator<String> it = attributes.iterator();
+			frt.setUse(root.get("use")!=null?root.get("use").getAsString():null);
+			frt.setFamily(root.get("family")!=null?root.get("family").getAsString():null);
+			frt.setTxt(root.get("text")!=null?root.get("text").getAsString():null);
 
-			while (it.hasNext()) {
-				String key = it.next();
-				logger.debug(localizer.x("Patient.HumanName <n, v> paire - name=" + key));
-
-				if (key.equals("use")) {
-					frt.setUse(root.get(key).getAsString());
-				}
-
-				if (key.equals("family")) {
-					frt.setFamily(root.get(key).getAsString());
-				}
-
-				if (key.equals("text")) {
-					frt.setTxt(root.get(key).getAsString());
-				}
-
-				if (System.getenv("DERBY_DB") != null && System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
-					if (key.equals("given")) {
-						frt.setGiven(root.get(key).toString());
-					}
-					if (key.equals("prefix")) {
-						frt.setPrefix(root.get(key).toString());
-					}
-					if (key.equals("suffix")) {
-						frt.setSuffix(root.get(key).toString());
-					}
-				}
+			if (System.getenv("DERBY_DB") != null && System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+				frt.setGiven(root.get("given")!=null?root.get("given").toString():null);
+				frt.setPrefix(root.get("prefix")!=null?root.get("prefix").toString():null);
+				frt.setSuffix(root.get("suffix")!=null?root.get("suffix").toString():null);
 			}
-
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientHumanName")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.HumanName")) {
 			throw new IllegalStateException("PatientHumanName.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());

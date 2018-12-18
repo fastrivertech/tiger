@@ -16,6 +16,7 @@ import java.util.Set;
 
 import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
+import com.frt.fhir.model.ResourceDictionary;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.JsonElement;
@@ -49,43 +50,25 @@ public class PatientReferenceMapper extends BaseMapper {
 			throw new IllegalArgumentException("PatientReference.map(source) expects JsonElement, got source of type: "
 					+ source.getClass().getCanonicalName());
 		}
-		
 		com.frt.dr.model.base.PatientReference frt = null;
-
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Reference")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientReference")) {
-
-			frt = new com.frt.dr.model.base.PatientReference();
-
-			JsonObject root = ((JsonElement)source).getAsJsonObject();
-			Set<String> attributes = root.keySet();
-			Iterator<String> it = attributes.iterator();
-			JsonObject jobj = null;
-			while (it.hasNext()) {
-				String key = it.next();
-				logger.debug(localizer.x("Patient.Reference <n, v> paire - name=" + key));
-
-				if (key.equals("reference")) {
-					frt.setReference(root.get(key).getAsString());
-				}
-
-				if (key.equals("display")) {
-					frt.setDisplay(root.get(key).getAsString());
-				}
-
-				if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
-					if (key.equals("identifier")) {
-						if ((jobj = root.getAsJsonObject(key)) != null) {
-							frt.setIdentifier(jobj.toString());
-						}
-					}
-				}
+			frt = ResourceDictionary.getComplexInstance(PATIENT_REFERENCE);
+			JsonObject root = ((JsonElement) source).getAsJsonObject();
+			frt.setReference(root.get("reference") != null ? root.get("reference").getAsString() : null);
+			frt.setDisplay(root.get("display") != null ? root.get("display").getAsString() : null);
+			if (System.getenv("DERBY_DB") != null && System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+				frt.setIdentifier(
+						root.getAsJsonObject("identifier") != null ? root.getAsJsonObject("identifier").toString()
+								: null);
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientReference")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Reference")) {
-			throw new IllegalStateException("PatientReference.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
+			throw new IllegalStateException("PatientReference.map() called source=" + sourceClz.getCanonicalName()
+					+ ", target=" + targetClz.getCanonicalName());
 		} else {
-			throw new MapperException("PatientReference.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
+			throw new MapperException("PatientReference.map(source) from " + sourceClz.getName() + " to "
+					+ targetClz.getName() + " Not Implemented Yet");
 		}
 		return (Object) frt;
 	}

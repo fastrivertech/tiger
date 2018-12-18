@@ -11,11 +11,14 @@
  */
 package com.frt.fhir.model.base;
 
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Set;
 
 import com.frt.fhir.model.MapperException;
+import com.frt.fhir.model.ResourceDictionary;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.JsonElement;
@@ -52,49 +55,19 @@ public class PatientAttachmentMapper extends BaseMapper {
 		com.frt.dr.model.base.PatientAttachment frt = null;
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Attachment")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientAttachment")) {
-			frt = new com.frt.dr.model.base.PatientAttachment();
+			frt = ResourceDictionary.getComplexInstance(PATIENT_ATTACHMENT);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
-			Set<String> attributes = root.keySet();
-			Iterator<String> it = attributes.iterator();
-			JsonObject jobj = null;
 			frt.setPath("Patient.photo");
-			while (it.hasNext()) {
-				String key = it.next();
-				logger.debug(localizer.x("Patient.Attachment <n, v> paire - name=" + key));
-
-				if (key.equals("contentType")) {
-					frt.setContenttype(root.get(key).getAsString());
-				}
-
-				if (key.equals("language")) {
-					frt.setLanguage(root.get(key).getAsString());
-				}
-
-				if (key.equals("url")) {
-					frt.setUrl(root.get(key).getAsString());
-				}
-
-				if (key.equals("size")) {
-					frt.setSize(root.get(key).getAsInt());
-				}
-
-				if (key.equals("title")) {
-					frt.setTitle(root.get(key).getAsString());
-				}
-
-				if (key.equals("creation")) {
-					frt.setCreation(Timestamp.valueOf(root.get(key).toString()));
-				}
-
-				if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
-					// remove ENV var checking when splice machine resolves the JDBC insert LOB error
-					if (key.equals("data")&&(root.get(key)!= null)) {
-						frt.setData(root.get(key).getAsString());
-					}
-					if (key.equals("hash")&&(root.get(key)!= null)) {
-						frt.setHash(root.get(key).getAsString());
-					}
-				}
+			frt.setContenttype(root.get("contentType")!=null?root.get("contentType").getAsString():null);
+			frt.setLanguage(root.get("language")!=null?root.get("language").getAsString():null);
+			frt.setUrl(root.get("url")!=null?root.get("url").getAsString():null);
+			frt.setSize(root.get("size")!=null?root.get("size").getAsInt():null);
+			frt.setTitle(root.get("title")!=null?root.get("title").getAsString():null);
+			frt.setCreation(root.get("creation")!=null? new Timestamp(Date.valueOf((root.get("creation").getAsString())).getTime()):null);
+			if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+				// remove ENV var checking when splice machine resolves the JDBC insert LOB error
+				frt.setData(root.get("data")!=null?root.get("data").getAsString():null);
+				frt.setHash(root.get("hash")!=null?root.get("hash").getAsString():null);
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientAttachment")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Attachment")) {

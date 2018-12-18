@@ -30,7 +30,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import com.frt.dr.model.ResourceComponent;
+import com.frt.dr.model.ResourceComplexType;
 
 /****
  * FHIR composite type: Attachment Name Flags Card. Type Description &
@@ -55,7 +55,7 @@ import com.frt.dr.model.ResourceComponent;
 @Table(name = "PATIENT_ATTACHMENT")
 @SequenceGenerator(name = "PATIENT_ATTACHMENT_SEQ", sequenceName = "PATIENT_ATTACHMENT_SEQ", allocationSize = 1)
 @XmlRootElement
-public class PatientAttachment implements Serializable, ResourceComponent {
+public class PatientAttachment implements Serializable, ResourceComplexType {
 	private static final long serialVersionUID = -8321293485415818761L;
 
 	@Id

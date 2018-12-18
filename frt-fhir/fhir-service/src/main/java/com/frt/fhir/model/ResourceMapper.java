@@ -18,7 +18,17 @@ import com.frt.fhir.model.MapperException;
  * @author chaye
  */
 public interface ResourceMapper {
-	
+	// FHIR resources
+	public static final String PATIENT = "PATIENT";
+	// FHIR complex types
+	public static final String PATIENT_ADDRESS = "PATIENT_ADDRESS";
+	public static final String PATIENT_CONTACTPOINT = "PATIENT_CONTACTPOINT";
+	public static final String PATIENT_CODEABLECONCEPT = "PATIENT_CODEABLECONCEPT";
+	public static final String PATIENT_ATTACHMENT = "PATIENT_ATTACHMENT";
+	public static final String PATIENT_HUMANNAME = "PATIENT_HUMANNAME";
+	public static final String PATIENT_IDENTIFIER = "PATIENT_IDENTIFIER";
+	public static final String PATIENT_REFERENCE = "PATIENT_REFERENCE";
+
 	ResourceMapper from(Class source);
 	
 	ResourceMapper to(Class target);
