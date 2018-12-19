@@ -1,5 +1,5 @@
 package com.frt.dr.model;
 
-public class BackboneElement {
+public interface BackboneElement {
 
 }

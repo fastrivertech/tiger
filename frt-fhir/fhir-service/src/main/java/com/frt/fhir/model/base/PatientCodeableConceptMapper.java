@@ -11,17 +11,10 @@
  */
 package com.frt.fhir.model.base;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
-import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
-import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -50,7 +43,7 @@ public class PatientCodeableConceptMapper extends BaseMapper {
 	@Override
 	public Object map(Object source) throws MapperException {
 		if (!(source instanceof JsonElement)) {
-			throw new IllegalArgumentException("PatientIdentifier.map(source) expects JsonElement, got source of type: "
+			throw new IllegalArgumentException("PatientCodeableConceptMapper.map(source) expects JsonElement, got source of type: "
 					+ source.getClass().getCanonicalName());
 		}
 
@@ -64,10 +57,10 @@ public class PatientCodeableConceptMapper extends BaseMapper {
 			frt.setTxt(root.get("text")!=null?root.get("text").getAsString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientCodeableConcept")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.CodeableConcept")) {
-			throw new IllegalStateException("PatientCodeableConcept.map() called source=" + sourceClz.getCanonicalName()
+			throw new IllegalStateException("PatientCodeableConceptMapper.map() called source=" + sourceClz.getCanonicalName()
 					+ ", target=" + targetClz.getCanonicalName());
 		} else {
-			throw new MapperException("PatientCodeableConcept.map(source) from " + sourceClz.getName() + " to "
+			throw new MapperException("PatientCodeableConceptMapper.map(source) from " + sourceClz.getName() + " to "
 					+ targetClz.getName() + " Not Implemented Yet");
 		}
 		return (Object) frt;

@@ -189,12 +189,13 @@ CREATE TABLE PATIENT_CODEABLECONCEPT (
 	codeableconcept_id BIGINT NOT NULL,  -- as well as is element_id
 	patient_id BIGINT NOT NULL,
 	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.maritalstatus	
-	coding_system VARCHAR(1024), -- S persist system value(s) for the codings 0..* as a json array, e.g. ["urn://http:www.iso.8910B", "urn:0.0.76.u.336", "", ...] 
-	coding_version	VARCHAR(1024), -- S persist version value(s) for the codings 0..* as a json array, e.g. ["v2 R3", "v2.3", "", ...] 
-	coding_code	VARCHAR(1024), -- S persist code value(s) (defined under system indicated by 'system') for the codings 0..* as a json array, e.g. ["U", "M", "", ...] 
-	coding_display	VARCHAR(4096), -- S persist display value(s) for the codings 0..* as a json array, e.g. ["my display.", "", "status description.", ...] 
+--	coding_system VARCHAR(1024), -- S persist system value(s) for the codings 0..* as a json array, e.g. ["urn://http:www.iso.8910B", "urn:0.0.76.u.336", "", ...] 
+--	coding_version	VARCHAR(1024), -- S persist version value(s) for the codings 0..* as a json array, e.g. ["v2 R3", "v2.3", "", ...] 
+--	coding_code	VARCHAR(1024), -- S persist code value(s) (defined under system indicated by 'system') for the codings 0..* as a json array, e.g. ["U", "M", "", ...] 
+--	coding_display	VARCHAR(4096), -- S persist display value(s) for the codings 0..* as a json array, e.g. ["my display.", "", "status description.", ...] 
 --	coding_userSelected	BOOLEAN DEFAULT false, -- S
-	coding_userSelected	VARCHAR(1024), -- S persist userselected boolean value(s) for the codings 0..* as a json array, e.g. [true, true, false, ...] 
+--	coding_userSelected	VARCHAR(1024), -- S persist userselected boolean value(s) for the codings 0..* as a json array, e.g. [true, true, false, ...] 
+	coding CLOB,
 	txt VARCHAR(2048), -- S
 	PRIMARY KEY (codeableconcept_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)			
@@ -289,3 +290,6 @@ CREATE TABLE PATIENT_LINK (
 	PRIMARY KEY (link_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)										
 );
+
+CREATE SEQUENCE PATIENT_LINK_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
+INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_LINK_SEQ', 1);

@@ -16,6 +16,7 @@ import java.util.Hashtable;
 
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.ResourceComplexType;
+import com.frt.fhir.model.base.BaseMapper;
 
 /**
  * ResourceMappingTable Interface
@@ -60,6 +61,9 @@ public class ResourceDictionary {
 		resourcePairs.put(ResourceMapper.PATIENT_CODEABLECONCEPT, new ResourcePair(org.hl7.fhir.dstu3.model.CodeableConcept.class, com.frt.dr.model.base.PatientCodeableConcept.class));		
 		resourcePairs.put(ResourceMapper.PATIENT_ATTACHMENT, new ResourcePair(org.hl7.fhir.dstu3.model.Attachment.class, com.frt.dr.model.base.PatientAttachment.class));		
 		resourcePairs.put(ResourceMapper.PATIENT_CONTACTPOINT, new ResourcePair(org.hl7.fhir.dstu3.model.ContactPoint.class, com.frt.dr.model.base.PatientContactPoint.class));		
+		resourcePairs.put(ResourceMapper.PATIENT_ANIMAL, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientAnimal.class));		
+		resourcePairs.put(ResourceMapper.PATIENT_COMMUNICATION, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientCommunication.class));		
+		resourcePairs.put(ResourceMapper.PATIENT_LINK, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientLink.class));		
 	}
 	
 	static Hashtable<String, Class> resources = new Hashtable<String, Class>();
@@ -78,9 +82,41 @@ public class ResourceDictionary {
 		complextypes.put(ResourceMapper.PATIENT_CODEABLECONCEPT, com.frt.dr.model.base.PatientCodeableConcept.class);		
 		complextypes.put(ResourceMapper.PATIENT_ATTACHMENT, com.frt.dr.model.base.PatientAttachment.class);		
 		complextypes.put(ResourceMapper.PATIENT_CONTACTPOINT, com.frt.dr.model.base.PatientContactPoint.class);		
+		complextypes.put(ResourceMapper.PATIENT_ANIMAL, com.frt.dr.model.base.PatientAnimal.class);		
+		complextypes.put(ResourceMapper.PATIENT_COMMUNICATION, com.frt.dr.model.base.PatientCommunication.class);		
+		complextypes.put(ResourceMapper.PATIENT_LINK, com.frt.dr.model.base.PatientLink.class);		
 	}
 
-	public static DomainResource getResourceInstance(String type) {
+	static Hashtable<String, Class> mappers = new Hashtable<String, Class>();
+
+	static {
+		mappers.put(ResourceMapper.PATIENT, com.frt.fhir.model.base.PatientResourceMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_HUMANNAME, com.frt.fhir.model.base.PatientHumanNameMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_IDENTIFIER, com.frt.fhir.model.base.PatientIdentifierMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_ADDRESS, com.frt.fhir.model.base.PatientAddressMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_REFERENCE, com.frt.fhir.model.base.PatientReferenceMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_CODEABLECONCEPT, com.frt.fhir.model.base.PatientCodeableConceptMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_ATTACHMENT, com.frt.fhir.model.base.PatientAttachmentMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_CONTACTPOINT, com.frt.fhir.model.base.PatientContactPointMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_ANIMAL, com.frt.fhir.model.base.PatientAnimalMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_COMMUNICATION, com.frt.fhir.model.base.PatientCommunicationMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_LINK, com.frt.fhir.model.base.PatientLinkMapper.class);		
+	}
+
+	public static <T extends ResourceMapper> T getMapper(String type) {
+		BaseMapper instance = null;
+		try {
+			instance = (BaseMapper)(mappers.get(type).getConstructor().newInstance());
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			// come back and throw a wrapped FRT exception
+			e.printStackTrace();
+			throw new MapperException("Exception caught when create instance of mapper type:" + mappers.get(type).getCanonicalName(), e);
+		}
+		return (T)instance;
+	}
+
+	public static <T extends DomainResource> T getResourceInstance(String type) {
 		DomainResource instance = null;
 		try {
 			instance = (DomainResource)(resources.get(type).getConstructor().newInstance());
@@ -88,8 +124,9 @@ public class ResourceDictionary {
 				| NoSuchMethodException | SecurityException e) {
 			// come back and throw a wrapped FRT exception
 			e.printStackTrace();
+			throw new MapperException("Exception caught when create instance of resource type:" + resources.get(type).getCanonicalName(), e);
 		}
-		return instance;
+		return (T)instance;
 	}
 
 	public static <T extends ResourceComplexType> T getComplexInstance(String type) {
@@ -100,6 +137,7 @@ public class ResourceDictionary {
 				| NoSuchMethodException | SecurityException e) {
 			// come back and throw a wrapped FRT exception
 			e.printStackTrace();
+			throw new MapperException("Exception caught when create instance of resource complex type:" + complextypes.get(type).getCanonicalName(), e);
 		}
 		return (T)instance;
 	}

@@ -28,6 +28,9 @@ public interface ResourceMapper {
 	public static final String PATIENT_HUMANNAME = "PATIENT_HUMANNAME";
 	public static final String PATIENT_IDENTIFIER = "PATIENT_IDENTIFIER";
 	public static final String PATIENT_REFERENCE = "PATIENT_REFERENCE";
+	public static final String PATIENT_ANIMAL = "PATIENT_ANIMAL";
+	public static final String PATIENT_COMMUNICATION = "PATIENT_COMMUNICATION";
+	public static final String PATIENT_LINK = "PATIENT_LINK";
 
 	ResourceMapper from(Class source);
 	

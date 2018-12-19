@@ -103,6 +103,20 @@ public class Patient extends DomainResource implements Serializable {
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private PatientReference managingOrganization;
 
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
+    private PatientAnimal animal;
+
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OrderBy("communicationId ASC")
+    private List<PatientCommunication> communications;
+
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OrderBy("linkId ASC")
+    private List<PatientLink> links;
+
 	@Size(max = 32)
     @Column(name = "gender")            
     private String gender;
@@ -264,6 +278,36 @@ public class Patient extends DomainResource implements Serializable {
 
 	public void setManagingOrganization(PatientReference managingOrganization) {
 		this.managingOrganization = managingOrganization;
+	}
+
+    public PatientAnimal getAnimal() {
+		return animal;
+	}
+
+	public void setAnimal(PatientAnimal animal) {
+		this.animal = animal;
+	}
+
+	public List<PatientCommunication> getCommunications() {
+		if (communications==null) {
+			communications = new ArrayList<PatientCommunication>();
+		}
+		return communications;
+	}
+
+	public void setCommunications(List<PatientCommunication> communications) {
+		this.communications = communications;
+	}
+
+	public List<PatientLink> getLinks() {
+		if (links==null) {
+			links = new ArrayList<PatientLink>();
+		}
+		return links;
+	}
+
+	public void setLinks(List<PatientLink> links) {
+		this.links = links;
 	}
 
 }

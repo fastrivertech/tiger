@@ -11,10 +11,6 @@
  */
 package com.frt.fhir.model.base;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.util.logging.Localization;

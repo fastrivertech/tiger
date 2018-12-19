@@ -11,19 +11,14 @@
  */
 package com.frt.fhir.model.base;
 
-import java.util.Iterator;
-import java.util.Set;
-
-import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
-import com.frt.fhir.model.ResourceMapper;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-public class PatientHumanNameMapper implements ResourceMapper {
+public class PatientHumanNameMapper extends BaseMapper {
 	private static Logger logger = Logger.getLog(PatientHumanNameMapper.class.getName());
 	private static Localization localizer = Localization.getInstance();
 
@@ -48,7 +43,7 @@ public class PatientHumanNameMapper implements ResourceMapper {
 	@Override
 	public Object map(Object source) throws MapperException {
 		if (!(source instanceof JsonElement)) {
-			throw new IllegalArgumentException("PatientHumanName.map(source) expects JsonElement, got source of type: "
+			throw new IllegalArgumentException("PatientHumanNameMapper.map(source) expects JsonElement, got source of type: "
 					+ source.getClass().getCanonicalName());
 		}
 
@@ -71,9 +66,9 @@ public class PatientHumanNameMapper implements ResourceMapper {
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientHumanName")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.HumanName")) {
-			throw new IllegalStateException("PatientHumanName.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
+			throw new IllegalStateException("PatientHumanNameMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
-			throw new MapperException("PatientHumanName.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
+			throw new MapperException("PatientHumanNameMapper.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
 		}
 		return (Object) frt;
 	}

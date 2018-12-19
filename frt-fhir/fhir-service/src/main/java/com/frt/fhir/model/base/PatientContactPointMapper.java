@@ -11,19 +11,8 @@
  */
 package com.frt.fhir.model.base;
 
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Set;
-
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Identifier.IdentifierUse;
-import org.hl7.fhir.dstu3.model.Period;
-import org.hl7.fhir.dstu3.model.Reference;
-
-import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
-import com.frt.fhir.model.ResourceMapper;
+import com.frt.fhir.model.ResourceDictionary;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.JsonElement;
@@ -62,40 +51,15 @@ public class PatientContactPointMapper extends BaseMapper {
 		
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.ContactPoint")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientContactPoint")) {
-			frt = new com.frt.dr.model.base.PatientContactPoint();
+			frt = ResourceDictionary.getComplexInstance(PATIENT_CONTACTPOINT);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
-			Set<String> attributes = root.keySet();
-			Iterator<String> it = attributes.iterator();
-			JsonObject jobj = null;
 			frt.setPath("Patient.telecom");
-			while (it.hasNext()) {
-				String key = it.next();
-				logger.debug(localizer.x("Patient.telecom <n, v> paire - name=" + key));
-
-				if (key.equals("use")) {
-					frt.setUse(root.get(key).getAsString());
-				}
-
-				if (key.equals("value")) {
-					frt.setValue(root.get(key).getAsString());
-				}
-
-				if (key.equals("system")) {
-					frt.setSystem(root.get(key).getAsString());
-				}
-
-				if (key.equals("rank")) {
-					frt.setRank(root.get(key).getAsInt());
-				}
-
-				if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
-					if (key.equals("period")) {
-						if ((jobj = root.getAsJsonObject(key)) != null) {
-							String v = jobj.toString();
-							frt.setPeriod(v);
-						}
-					}
-				}
+			frt.setUse(root.get("use")!=null?root.get("use").getAsString():null);
+			frt.setValue(root.get("value")!=null?root.get("value").getAsString():null);
+			frt.setSystem(root.get("system")!=null?root.get("system").getAsString():null);
+			frt.setRank(root.get("rank")!=null?root.get("rank").getAsInt():null);
+			if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+				frt.setPeriod(root.getAsJsonObject("period")!=null?root.getAsJsonObject("period").toString():null);
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientContactPoint")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.ContactPoint")) {

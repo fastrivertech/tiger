@@ -11,20 +11,8 @@
  */
 package com.frt.fhir.model.base;
 
-import java.sql.Clob;
-import java.sql.SQLException;
-import java.util.Iterator;
-import java.util.Set;
-
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.Identifier.IdentifierUse;
-import org.hl7.fhir.dstu3.model.Period;
-import org.hl7.fhir.dstu3.model.Reference;
-
-import com.frt.dr.SqlHelper;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
-import com.frt.fhir.model.ResourceMapper;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.JsonElement;
@@ -55,7 +43,7 @@ public class PatientIdentifierMapper extends BaseMapper {
 	@Override
 	public Object map(Object source) throws MapperException {
 		if (!(source instanceof JsonElement)) {
-			throw new IllegalArgumentException("PatientIdentifier.map(source) expects JsonElement, got source of type: "
+			throw new IllegalArgumentException("PatientIdentifierMapper.map(source) expects JsonElement, got source of type: "
 					+ source.getClass().getCanonicalName());
 		}
 		com.frt.dr.model.base.PatientIdentifier frt = null;
@@ -63,9 +51,6 @@ public class PatientIdentifierMapper extends BaseMapper {
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_IDENTIFIER);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
-			Set<String> attributes = root.keySet();
-			Iterator<String> it = attributes.iterator();
-			JsonObject jobj = null;
 			frt.setPath("Patient.identifier");
 			frt.setUse(root.get("use")!=null?root.get("use").getAsString():null);
 			frt.setValue(root.get("value")!=null?root.get("value").getAsString():null);
@@ -78,9 +63,9 @@ public class PatientIdentifierMapper extends BaseMapper {
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Identifier")) {
-			throw new IllegalStateException("PatientIdentifier.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
+			throw new IllegalStateException("PatientIdentifierMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
-			throw new MapperException("PatientIdentifier.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
+			throw new MapperException("PatientIdentifierMapper.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");
 		}
 		return (Object) frt;
 	}

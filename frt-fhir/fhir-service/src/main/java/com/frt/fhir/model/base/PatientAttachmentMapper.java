@@ -13,9 +13,6 @@ package com.frt.fhir.model.base;
 
 import java.sql.Date;
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Iterator;
-import java.util.Set;
 
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;

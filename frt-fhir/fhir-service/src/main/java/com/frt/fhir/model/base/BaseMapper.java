@@ -2,29 +2,20 @@ package com.frt.fhir.model.base;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.Iterator;
 import java.util.List;
 
 import com.frt.dr.model.ResourceComplexType;
-import com.frt.dr.model.base.Patient;
-import com.frt.dr.model.base.PatientAddress;
-import com.frt.dr.model.base.PatientCodeableConcept;
-import com.frt.dr.model.base.PatientHumanName;
-import com.frt.dr.model.base.PatientIdentifier;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceMapper;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import ca.uhn.fhir.context.FhirContext;
 
 public abstract class BaseMapper implements ResourceMapper {
-	private static Logger logger = Logger.getLog(PatientAddressMapper.class.getName());
+	private static Logger logger = Logger.getLog(BaseMapper.class.getName());
 	private static Localization localizer = Localization.getInstance();
 	protected static String PAT_RS_BEGIN = "{\"resourceType\": \"Patient\",";
 	protected static String PAT_RS_END = "}";
@@ -33,6 +24,9 @@ public abstract class BaseMapper implements ResourceMapper {
 	protected static String HUMANNAME_TAG = "\"name\"";
 	protected static String PHOTO_TAG = "\"photo\"";
 	protected static String TELECOM_TAG = "\"telecom\"";
+	protected static String LINK_TAG = "\"link\"";
+	protected static String COMMUNICATION_TAG = "\"communication\"";
+	protected static String ANIMAL_TAG = "\"animal\"";
 	private static String NV_PAIR_FORMAT = "\"{0}\":\"{1}\"";
 	private static String NV_PAIR_FORMAT_ARRAY = "\"{0}\":{1}";
 	private static String NV_PAIR_FORMAT_OBJ = "\"{0}\":{1}";
@@ -94,9 +88,17 @@ public abstract class BaseMapper implements ResourceMapper {
 
 			appendArray(sb, p.getPhotos(), PHOTO_TAG);
 
+			if (p.getAnimal()!=null) {
+				addNVpairObject(sb, "animal", componentToJson(p.getAnimal()));
+			}
+
+			appendArray(sb, p.getCommunications(), COMMUNICATION_TAG);
+
 			if (p.getManagingOrganization() != null) {
 				addNVpairObject(sb, "managingOrganization", componentToJson(p.getManagingOrganization()));
 			}
+
+			appendArray(sb, p.getLinks(), LINK_TAG);
 
 			sb.append(PAT_RS_END);
 		}
@@ -164,6 +166,19 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpair(sb, "value", component.getValue());
 			addNVpair(sb, "rank", component.getRank());
 			addNVpairObject(sb, "period", component.getPeriod());
+		} else if (frtComponent instanceof com.frt.dr.model.base.PatientAnimal) {
+			com.frt.dr.model.base.PatientAnimal component = (com.frt.dr.model.base.PatientAnimal) frtComponent;
+			addNVpairObject(sb, "bread", component.getBreed());
+			addNVpairObject(sb, "species", component.getSpecies());
+			addNVpairObject(sb, "genderstatus", component.getGenderStatus());
+		} else if (frtComponent instanceof com.frt.dr.model.base.PatientCommunication) {
+			com.frt.dr.model.base.PatientCommunication component = (com.frt.dr.model.base.PatientCommunication) frtComponent;
+			addNVpairObject(sb, "language", component.getLanguage());
+			addNVpair(sb, "preferred", component.getPreferred());
+		} else if (frtComponent instanceof com.frt.dr.model.base.PatientLink) {
+			com.frt.dr.model.base.PatientLink component = (com.frt.dr.model.base.PatientLink) frtComponent;
+			addNVpairObject(sb, "other", component.getOther());
+			addNVpair(sb, "type", component.getType());
 		} else {
 			throw new UnsupportedOperationException("Convert instance of composite type: "
 					+ frtComponent.getClass().getCanonicalName() + " not supported.");
