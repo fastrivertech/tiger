@@ -52,7 +52,7 @@ public class PatientAnimalMapper extends BaseMapper {
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientAnimal")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_ANIMAL);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
-			if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
 				frt.setSpecies(root.getAsJsonObject("species")!=null?root.getAsJsonObject("species").toString():null);
 				frt.setBreed(root.getAsJsonObject("breed")!=null?root.getAsJsonObject("breed").toString():null);
 				frt.setGenderStatus(root.getAsJsonObject("genderstatus")!=null?root.getAsJsonObject("genderstatus").toString():null);

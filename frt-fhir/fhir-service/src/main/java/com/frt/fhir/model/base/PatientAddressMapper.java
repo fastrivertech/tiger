@@ -63,7 +63,7 @@ public class PatientAddressMapper extends BaseMapper {
 			frt.setUse(root.get("use")!=null?root.get("use").getAsString():null);
 			frt.setTxt(root.get("txt")!=null?root.get("txt").getAsString():null);
 
-			if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
 				frt.setPeriod(root.getAsJsonObject("period")!=null?root.getAsJsonObject("period").toString():null);
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientAddress")

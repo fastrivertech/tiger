@@ -59,7 +59,7 @@ public class PatientHumanNameMapper extends BaseMapper {
 			frt.setFamily(root.get("family")!=null?root.get("family").getAsString():null);
 			frt.setTxt(root.get("text")!=null?root.get("text").getAsString():null);
 
-			if (System.getenv("DERBY_DB") != null && System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
 				frt.setGiven(root.get("given")!=null?root.get("given").toString():null);
 				frt.setPrefix(root.get("prefix")!=null?root.get("prefix").toString():null);
 				frt.setSuffix(root.get("suffix")!=null?root.get("suffix").toString():null);

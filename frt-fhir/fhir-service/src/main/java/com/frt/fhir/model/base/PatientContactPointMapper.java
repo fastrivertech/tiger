@@ -58,7 +58,7 @@ public class PatientContactPointMapper extends BaseMapper {
 			frt.setValue(root.get("value")!=null?root.get("value").getAsString():null);
 			frt.setSystem(root.get("system")!=null?root.get("system").getAsString():null);
 			frt.setRank(root.get("rank")!=null?root.get("rank").getAsInt():null);
-			if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
 				frt.setPeriod(root.getAsJsonObject("period")!=null?root.getAsJsonObject("period").toString():null);
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientContactPoint")

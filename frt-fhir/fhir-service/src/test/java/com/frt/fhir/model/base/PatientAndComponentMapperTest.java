@@ -25,17 +25,17 @@ import com.frt.fhir.model.ResourceMapperFactory;
 import ca.uhn.fhir.context.FhirContext;
 
 public class PatientAndComponentMapperTest {
-	protected void setUp() {
-		// set env var DERBY_DB to YES so that logic processing Clobs will be executed
-		Map<String, String> tmpEnv = new HashMap<String, String>();
-		tmpEnv.put("DERBY_DB", "YES");
-		try {
-			this.setEnv(tmpEnv);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+//	protected void setUp() {
+//		// set env var DERBY_DB to YES so that logic processing Clobs will be executed
+//		Map<String, String> tmpEnv = new HashMap<String, String>();
+//		tmpEnv.put("DERBY_DB", "YES");
+//		try {
+//			this.setEnv(tmpEnv);
+//		} catch (Exception e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//	}
 	@Test
 	public void test() {
 		ca.uhn.fhir.context.FhirContext context = FhirContext.forDstu3();
@@ -43,7 +43,7 @@ public class PatientAndComponentMapperTest {
 
 		ResourceMapperFactory factory = ResourceMapperFactory.getInstance();
 		ResourceMapper mapper = factory.create("Patient");
-		File f = new File("src/test/data/fhir_patient_resource_sample.json");
+		File f = new File("src/test/data/fhir_patient_resource_sample_6k.json");
 		FileReader fr = null;
 		try {
 			fr = new FileReader(f);
@@ -86,12 +86,21 @@ public class PatientAndComponentMapperTest {
 		assertNotNull("Patient.managingOrganization (FHIR Reference(Organization)) Expected, but it is NULL.",
 				frt.getManagingOrganization());
 		assertNotNull("Patient.maritalStatus (FHIR CodeableConcept) Expected, but it is NULL.", frt.getMaritalStatus());
+
+		assertNotNull("Patient.animal (FHIR BackboneElement) Expected, but it is NULL.", frt.getAnimal());
+
+		assertNotNull("Patient.communication (FHIR BackboneElement) Expected, but it is NULL.", frt.getCommunications());
+		assertEquals("Patient.communication (FHIR BackboneElement[]) Expected, 1 element expected.", 1, frt.getCommunications().size());
+
+		assertNotNull("Patient.link (FHIR BackboneElement) Expected, but it is NULL.", frt.getLinks());
+		assertEquals("Patient.link (FHIR BackboneElement[]) Expected, 1 element expected.", 1, frt.getLinks().size());
+		
 		String frtStr = BaseMapper.resourceToJson(frt);
 
 		try {
 			String gold = readFromFile("src/test/data/frt_patient_sample_gold.json");
-//			System.out.println("frt=" + frtStr);
-//			System.out.println("gold=" + gold);
+			System.out.println("frt=" + frtStr);
+			System.out.println("gold=" + gold);
 			assertEquals("FRT Patient json does not match the cannonical json string.", gold, frtStr);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -108,31 +117,31 @@ public class PatientAndComponentMapperTest {
 		return new String(Files.readAllBytes(Paths.get(filePath)));
 	}
 
-	protected void setEnv(Map<String, String> newenv) throws Exception {
-		try {
-			Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
-			Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
-			theEnvironmentField.setAccessible(true);
-			Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
-			env.putAll(newenv);
-			Field theCaseInsensitiveEnvironmentField = processEnvironmentClass
-					.getDeclaredField("theCaseInsensitiveEnvironment");
-			theCaseInsensitiveEnvironmentField.setAccessible(true);
-			Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
-			cienv.putAll(newenv);
-		} catch (NoSuchFieldException e) {
-			Class[] classes = Collections.class.getDeclaredClasses();
-			Map<String, String> env = System.getenv();
-			for (Class cl : classes) {
-				if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
-					Field field = cl.getDeclaredField("m");
-					field.setAccessible(true);
-					Object obj = field.get(env);
-					Map<String, String> map = (Map<String, String>) obj;
-					map.clear();
-					map.putAll(newenv);
-				}
-			}
-		}
-	}
+//	protected void setEnv(Map<String, String> newenv) throws Exception {
+//		try {
+//			Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
+//			Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
+//			theEnvironmentField.setAccessible(true);
+//			Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
+//			env.putAll(newenv);
+//			Field theCaseInsensitiveEnvironmentField = processEnvironmentClass
+//					.getDeclaredField("theCaseInsensitiveEnvironment");
+//			theCaseInsensitiveEnvironmentField.setAccessible(true);
+//			Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
+//			cienv.putAll(newenv);
+//		} catch (NoSuchFieldException e) {
+//			Class[] classes = Collections.class.getDeclaredClasses();
+//			Map<String, String> env = System.getenv();
+//			for (Class cl : classes) {
+//				if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
+//					Field field = cl.getDeclaredField("m");
+//					field.setAccessible(true);
+//					Object obj = field.get(env);
+//					Map<String, String> map = (Map<String, String>) obj;
+//					map.clear();
+//					map.putAll(newenv);
+//				}
+//			}
+//		}
+//	}
 }

@@ -53,7 +53,7 @@ public class PatientCommunicationMapper extends BaseMapper {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_COMMUNICATION);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			frt.setPreferred(root.get("preferred")!=null?root.get("preferred").getAsBoolean():null);
-			if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
 				frt.setLanguage(root.getAsJsonObject("language")!=null?root.getAsJsonObject("language").toString():null);
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientCommunication")

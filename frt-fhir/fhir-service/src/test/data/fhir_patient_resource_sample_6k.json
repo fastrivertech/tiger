@@ -131,8 +131,7 @@
     "contentType": "application/pdf",
     "language":"en",
     "data":"/9j/4...KAP//Z",
-    "title":"Definition of Procedure",
-	"creation":"2001-05-28"
+    "title":"Definition of Procedure"
   },
   {
     "contentType": "application/json",
@@ -141,6 +140,7 @@
     "title":"Definition of Resource In JSON"
   }
   ],
+
   "maritalStatus": {
     "coding": { 
       "system": "http://hl7.org/fhir/v3/MaritalStatus",
@@ -202,7 +202,63 @@
       }
     }
   ],
+  "animal": {
+    "species": {
+      "coding": [
+        {
+          "system": "http://hl7.org/fhir/animal-species",
+          "code": "canislf",
+          "display": "Dog"
+        }
+      ]
+    },
+    "breed": {
+      "coding": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "58108001",
+          "display": "Golden retriever"
+        },
+        {
+          "system": "http://hl7.org/fhir/animal-breed",
+          "code": "gret",
+          "display": "Golden Retriever"
+        }
+      ]
+    },
+    "genderStatus": {
+      "coding": [
+        {
+          "system": "http://hl7.org/fhir/animal-genderstatus",
+          "code": "neutered"
+        }
+      ]
+    }
+  },
+  "communication": [
+    {
+      "language": {
+        "coding": [
+          {
+            "system": "urn:ietf:bcp:47",
+            "code": "nl",
+            "display": "Dutch"
+          }
+        ],
+        "text": "Nederlands"
+      },
+      "preferred": true
+    }
+  ],
   "managingOrganization": {
     "reference": "Organization/1"
-  }
+  },
+  "link": [
+    {
+      "other": {
+        "reference": "Patient/pat2"
+      },
+      "type": "seealso"
+    }
+  ]
 }

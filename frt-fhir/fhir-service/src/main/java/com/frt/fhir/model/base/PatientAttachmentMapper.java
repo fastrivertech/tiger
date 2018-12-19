@@ -61,7 +61,7 @@ public class PatientAttachmentMapper extends BaseMapper {
 			frt.setSize(root.get("size")!=null?root.get("size").getAsInt():null);
 			frt.setTitle(root.get("title")!=null?root.get("title").getAsString():null);
 			frt.setCreation(root.get("creation")!=null? new Timestamp(Date.valueOf((root.get("creation").getAsString())).getTime()):null);
-			if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
 				// remove ENV var checking when splice machine resolves the JDBC insert LOB error
 				frt.setData(root.get("data")!=null?root.get("data").getAsString():null);
 				frt.setHash(root.get("hash")!=null?root.get("hash").getAsString():null);

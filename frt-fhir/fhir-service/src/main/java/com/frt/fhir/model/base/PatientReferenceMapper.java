@@ -53,7 +53,7 @@ public class PatientReferenceMapper extends BaseMapper {
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			frt.setReference(root.get("reference") != null ? root.get("reference").getAsString() : null);
 			frt.setDisplay(root.get("display") != null ? root.get("display").getAsString() : null);
-			if (System.getenv("DERBY_DB") != null && System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
 				frt.setIdentifier(
 						root.getAsJsonObject("identifier") != null ? root.getAsJsonObject("identifier").toString()
 								: null);

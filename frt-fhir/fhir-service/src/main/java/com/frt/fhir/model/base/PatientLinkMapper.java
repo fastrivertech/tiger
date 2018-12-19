@@ -53,7 +53,7 @@ public class PatientLinkMapper extends BaseMapper {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_LINK);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			frt.setType(root.get("type")!=null?root.get("type").getAsString():null);
-			if (System.getenv("DERBY_DB")!=null&&System.getenv("DERBY_DB").equalsIgnoreCase("YES")) {
+			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
 				frt.setOther(root.getAsJsonObject("other")!=null?root.getAsJsonObject("other").toString():null);
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientLink")
