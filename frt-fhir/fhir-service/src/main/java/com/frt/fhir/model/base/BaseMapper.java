@@ -23,6 +23,7 @@ public abstract class BaseMapper implements ResourceMapper {
 	protected static String ADDRESS_TAG = "\"address\"";
 	protected static String HUMANNAME_TAG = "\"name\"";
 	protected static String PHOTO_TAG = "\"photo\"";
+	protected static String CONTACT_TAG = "\"contact\"";
 	protected static String TELECOM_TAG = "\"telecom\"";
 	protected static String LINK_TAG = "\"link\"";
 	protected static String COMMUNICATION_TAG = "\"communication\"";
@@ -65,10 +66,13 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpair(sb, "id", p.getPatientId());
 			addNVpair(sb, "active", p.getActive());
 			addNVpair(sb, "gender", p.getGender());
+			
 			if (p.getBirthDate()!=null) {
 				addNVpair(sb, "birthDate", (new SimpleDateFormat("yyyy-MM-dd")).format(p.getBirthDate()));
 			}
+			
 			addNVpair(sb, "deceasedBoolean", p.getDeceasedBoolean());
+			
 			if (p.getDeceasedDateTime() != null) {
 				addNVpair(sb, "deceasedDateTime", (new SimpleDateFormat("yyyy-MM-dd"))
 						.format(new java.util.Date(p.getDeceasedDateTime().getTime())));
@@ -87,6 +91,7 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpair(sb, "multipleBirthInteger", p.getMultipleBirthInteger());
 
 			appendArray(sb, p.getPhotos(), PHOTO_TAG);
+			appendArray(sb, p.getContacts(), CONTACT_TAG);
 
 			if (p.getAnimal()!=null) {
 				addNVpairObject(sb, "animal", componentToJson(p.getAnimal()));
@@ -165,6 +170,15 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpair(sb, "system", component.getSystem());
 			addNVpair(sb, "value", component.getValue());
 			addNVpair(sb, "rank", component.getRank());
+			addNVpairObject(sb, "period", component.getPeriod());
+		} else if (frtComponent instanceof com.frt.dr.model.base.PatientContact) {
+			com.frt.dr.model.base.PatientContact component = (com.frt.dr.model.base.PatientContact) frtComponent;
+			addNVpairArray(sb, "relationship", component.getRelationship());
+			addNVpairObject(sb, "name", component.getName());
+			addNVpairArray(sb, "telecom", component.getTelecom());
+			addNVpairObject(sb, "address", component.getAddress());
+			addNVpair(sb, "gender", component.getGender());
+			addNVpairObject(sb, "organization", component.getOrganization());
 			addNVpairObject(sb, "period", component.getPeriod());
 		} else if (frtComponent instanceof com.frt.dr.model.base.PatientAnimal) {
 			com.frt.dr.model.base.PatientAnimal component = (com.frt.dr.model.base.PatientAnimal) frtComponent;

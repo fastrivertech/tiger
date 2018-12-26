@@ -27,6 +27,7 @@ import com.frt.dr.model.base.PatientAddress;
 import com.frt.dr.model.base.PatientAttachment;
 import com.frt.dr.model.base.PatientCodeableConcept;
 import com.frt.dr.model.base.PatientCommunication;
+import com.frt.dr.model.base.PatientContact;
 import com.frt.dr.model.base.PatientContactPoint;
 import com.frt.dr.model.base.PatientHumanName;
 import com.frt.dr.model.base.PatientIdentifier;
@@ -91,10 +92,10 @@ public class PatientResourceMapper extends BaseMapper {
 					if (l != null) {
 						List<PatientIdentifier> arr = frtPatient.getIdentifiers();
 						Iterator<JsonElement> i = l.iterator();
+						PatientIdentifierMapper m = ResourceDictionary.getMapper(PATIENT_IDENTIFIER);
+						m = m.from(org.hl7.fhir.dstu3.model.Identifier.class)
+								.to(com.frt.dr.model.base.PatientIdentifier.class);
 						while (i.hasNext()) {
-							PatientIdentifierMapper m = ResourceDictionary.getMapper(PATIENT_IDENTIFIER);
-							m = m.from(org.hl7.fhir.dstu3.model.Identifier.class)
-									.to(com.frt.dr.model.base.PatientIdentifier.class);
 							JsonObject id = (JsonObject) i.next();
 							PatientIdentifier t = (PatientIdentifier) m.map(id);
 							t.setPatient(frtPatient);
@@ -110,10 +111,10 @@ public class PatientResourceMapper extends BaseMapper {
 					if (l != null) {
 						List<PatientHumanName> arr = frtPatient.getNames();
 						Iterator<JsonElement> i = l.iterator();
+						PatientHumanNameMapper m = ResourceDictionary.getMapper(PATIENT_HUMANNAME);
+						m = m.from(org.hl7.fhir.dstu3.model.HumanName.class)
+								.to(com.frt.dr.model.base.PatientHumanName.class);
 						while (i.hasNext()) {
-							PatientHumanNameMapper m = ResourceDictionary.getMapper(PATIENT_HUMANNAME);
-							m = m.from(org.hl7.fhir.dstu3.model.HumanName.class)
-									.to(com.frt.dr.model.base.PatientHumanName.class);
 							JsonObject e = (JsonObject) i.next();
 							PatientHumanName t = (PatientHumanName) m.map(e);
 							t.setPatient(frtPatient);
@@ -129,10 +130,10 @@ public class PatientResourceMapper extends BaseMapper {
 					if (l != null) {
 						List<PatientAddress> arr = frtPatient.getAddresses();
 						Iterator<JsonElement> i = l.iterator();
+						PatientAddressMapper m = ResourceDictionary.getMapper(PATIENT_ADDRESS);
+						m = m.from(org.hl7.fhir.dstu3.model.Address.class)
+								.to(com.frt.dr.model.base.PatientAddress.class);
 						while (i.hasNext()) {
-							PatientAddressMapper m = ResourceDictionary.getMapper(PATIENT_ADDRESS);
-							m = m.from(org.hl7.fhir.dstu3.model.Address.class)
-									.to(com.frt.dr.model.base.PatientAddress.class);
 							JsonObject e = (JsonObject) i.next();
 							PatientAddress t = (PatientAddress) m.map(e);
 							t.setPatient(frtPatient);
@@ -148,10 +149,10 @@ public class PatientResourceMapper extends BaseMapper {
 					if (l != null) {
 						List<PatientContactPoint> arr = frtPatient.getTelecoms();
 						Iterator<JsonElement> i = l.iterator();
+						PatientContactPointMapper m = ResourceDictionary.getMapper(PATIENT_CONTACTPOINT);
+						m = m.from(org.hl7.fhir.dstu3.model.ContactPoint.class)
+								.to(com.frt.dr.model.base.PatientContactPoint.class);
 						while (i.hasNext()) {
-							PatientContactPointMapper m = ResourceDictionary.getMapper(PATIENT_CONTACTPOINT);
-							m = m.from(org.hl7.fhir.dstu3.model.ContactPoint.class)
-									.to(com.frt.dr.model.base.PatientContactPoint.class);
 							JsonObject e = (JsonObject) i.next();
 							PatientContactPoint t = (PatientContactPoint) m.map(e);
 							t.setPatient(frtPatient);
@@ -166,16 +167,33 @@ public class PatientResourceMapper extends BaseMapper {
 					JsonArray l = root.getAsJsonArray("photo");
 					List<PatientAttachment> arr = frtPatient.getPhotos();
 					Iterator<JsonElement> i = l.iterator();
+					PatientAttachmentMapper m = ResourceDictionary.getMapper(PATIENT_ATTACHMENT);
+					m = m.from(org.hl7.fhir.dstu3.model.Attachment.class)
+							.to(com.frt.dr.model.base.PatientAttachment.class);
 					while (i.hasNext()) {
-						PatientAttachmentMapper m = ResourceDictionary.getMapper(PATIENT_ATTACHMENT);
-						m = m.from(org.hl7.fhir.dstu3.model.Attachment.class)
-								.to(com.frt.dr.model.base.PatientAttachment.class);
 						JsonObject e = (JsonObject) i.next();
 						PatientAttachment t = (PatientAttachment) m.map(e);
 						t.setPatient(frtPatient);
 						arr.add(t);
 					}
 					frtPatient.setPhotos(arr);
+				}
+
+				// array of object of FHIR type Contact
+				if (root.getAsJsonArray("contact") != null) {
+					JsonArray l = root.getAsJsonArray("contact");
+					List<PatientContact> arr = frtPatient.getContacts();
+					Iterator<JsonElement> i = l.iterator();
+					PatientContactMapper m = ResourceDictionary.getMapper(PATIENT_CONTACT);
+					m = m.from(org.hl7.fhir.dstu3.model.BackboneElement.class)
+							.to(com.frt.dr.model.base.PatientContact.class);
+					while (i.hasNext()) {
+						JsonObject e = (JsonObject) i.next();
+						PatientContact t = (PatientContact) m.map(e);
+						t.setPatient(frtPatient);
+						arr.add(t);
+					}
+					frtPatient.setContacts(arr);
 				}
 
 				frtPatient.setGender(root.get("gender") != null ? root.get("gender").getAsString() : null);
@@ -203,10 +221,6 @@ public class PatientResourceMapper extends BaseMapper {
 				frtPatient.setMultipleBirthInteger(root.get("multipleBirthInteger") != null
 						? Integer.valueOf(root.get("multipleBirthInteger").toString())
 						: null);
-
-				if (root.get("contact") != null) {
-					logger.debug(localizer.x("skip 'contact' attribute (BackboneElement) for now."));
-				}
 
 				// 0 or 1 of object of FHIR type BackboneElement[] Patient.animal.
 				if (root.getAsJsonObject("animal") != null) {
@@ -250,10 +264,10 @@ public class PatientResourceMapper extends BaseMapper {
 					JsonArray l = root.getAsJsonArray("link");
 					List<PatientLink> arr = frtPatient.getLinks();
 					Iterator<JsonElement> i = l.iterator();
+					ResourceMapper m = ResourceDictionary.getMapper(PATIENT_LINK);
+					m = m.from(org.hl7.fhir.dstu3.model.BackboneElement.class)
+							.to(com.frt.dr.model.base.PatientLink.class);
 					while (i.hasNext()) {
-						ResourceMapper m = ResourceDictionary.getMapper(PATIENT_LINK);
-						m = m.from(org.hl7.fhir.dstu3.model.BackboneElement.class)
-								.to(com.frt.dr.model.base.PatientLink.class);
 						JsonObject e = (JsonObject) i.next();
 						PatientLink t = (PatientLink) m.map(e);
 						t.setPatient(frtPatient);

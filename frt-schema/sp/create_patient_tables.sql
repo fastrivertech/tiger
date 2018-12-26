@@ -234,10 +234,14 @@ CREATE TABLE PATIENT_CONTACT (
 	address CLOB, -- Address object serialization and de-serialization, can keep in PATIENT_ADDRESS with a path of patient.contact.address
 	gender VARCHAR(32), 
 	-- organization -- I, refer to PATIENT_REFERENCE table
+	organization CLOB,
 	period CLOB, -- Period object serialization and de-serialization 
 	PRIMARY KEY (contact_id), 	
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)					
 );
+
+CREATE SEQUENCE PATIENT_CONTACT_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
+INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_CONTACT_SEQ', 1);
 
 -- FHIR BackboneElement complex type, ?!Σ --
 CREATE TABLE PATIENT_ANIMAL (

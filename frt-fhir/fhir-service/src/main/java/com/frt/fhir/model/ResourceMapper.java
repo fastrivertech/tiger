@@ -23,6 +23,7 @@ public interface ResourceMapper {
 	// FHIR complex types
 	public static final String PATIENT_ADDRESS = "PATIENT_ADDRESS";
 	public static final String PATIENT_CONTACTPOINT = "PATIENT_CONTACTPOINT";
+	public static final String PATIENT_CONTACT = "PATIENT_CONTACT";
 	public static final String PATIENT_CODEABLECONCEPT = "PATIENT_CODEABLECONCEPT";
 	public static final String PATIENT_ATTACHMENT = "PATIENT_ATTACHMENT";
 	public static final String PATIENT_HUMANNAME = "PATIENT_HUMANNAME";

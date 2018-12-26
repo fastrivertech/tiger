@@ -60,22 +60,18 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
 
     @Lob
     @Column(name = "given")                                                        
-//    private Clob given;
     private String given;
     
     @Lob
     @Column(name = "prefix")                                                        
-//    private Clob prefix;
     private String prefix;
     
     @Lob
     @Column(name = "suffix")                                                        
-//    private Clob suffix;
     private String suffix;
     
     @Lob
     @Column(name = "period")                                                        
-//    private Clob period;
     private String period;
     
     @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
@@ -139,38 +135,6 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
     	this.family = family;
     }
         
-//    public String getGiven() {
-//    	return SqlHelper.toString(this.given);
-//    }
-//
-//    public void setGiven(Clob given) {
-//    	this.given = given;
-//    }
-//    
-//    public String getPrefix() {
-//    	return SqlHelper.toString(this.prefix);
-//    }
-//
-//    public void setPrefix(Clob prefix) {
-//    	this.prefix = prefix;
-//    }
-//    
-//    public String getSuffix() {
-//    	return SqlHelper.toString(this.suffix);
-//    }
-//
-//    public void setSuffix(Clob suffix) {
-//    	this.suffix = suffix;
-//    }
-//    
-//    public String getPeriod() {
-//    	return SqlHelper.toString(this.period);
-//    }
-//
-//    public void setPeriod(Clob period) {
-//    	this.period = period;
-//    }
-    
     public String getGiven() {
     	return this.given;
     }

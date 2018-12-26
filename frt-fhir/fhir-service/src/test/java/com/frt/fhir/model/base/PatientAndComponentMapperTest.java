@@ -25,17 +25,6 @@ import com.frt.fhir.model.ResourceMapperFactory;
 import ca.uhn.fhir.context.FhirContext;
 
 public class PatientAndComponentMapperTest {
-//	protected void setUp() {
-//		// set env var DERBY_DB to YES so that logic processing Clobs will be executed
-//		Map<String, String> tmpEnv = new HashMap<String, String>();
-//		tmpEnv.put("DERBY_DB", "YES");
-//		try {
-//			this.setEnv(tmpEnv);
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//	}
 	@Test
 	public void test() {
 		ca.uhn.fhir.context.FhirContext context = FhirContext.forDstu3();
@@ -95,6 +84,18 @@ public class PatientAndComponentMapperTest {
 		assertNotNull("Patient.link (FHIR BackboneElement) Expected, but it is NULL.", frt.getLinks());
 		assertEquals("Patient.link (FHIR BackboneElement[]) Expected, 1 element expected.", 1, frt.getLinks().size());
 		
+		assertNotNull("Patient.contact (FHIR BackboneElement) Expected, but it is NULL.", frt.getContacts());
+		assertEquals("Patient.contact (FHIR BackboneElement[]) Expected, 1 element expected.", 1, frt.getContacts().size());
+
+		String address = frt.getContacts().get(0).getAddress();
+		assertTrue("Patient.contact(0).address not empty.", !address.isEmpty());
+		String relationship = frt.getContacts().get(0).getRelationship();
+		assertTrue("Patient.contact(0).relationship not empty.", !relationship.isEmpty());
+		String name = frt.getContacts().get(0).getName();
+		assertTrue("Patient.contact(0).name not empty.", !name.isEmpty());
+		String telecom = frt.getContacts().get(0).getTelecom();
+		assertTrue("Patient.contact(0).telecom not empty.", !telecom.isEmpty());
+
 		String frtStr = BaseMapper.resourceToJson(frt);
 
 		try {
@@ -116,32 +117,4 @@ public class PatientAndComponentMapperTest {
 	private String readFromFile(String filePath) throws IOException {
 		return new String(Files.readAllBytes(Paths.get(filePath)));
 	}
-
-//	protected void setEnv(Map<String, String> newenv) throws Exception {
-//		try {
-//			Class<?> processEnvironmentClass = Class.forName("java.lang.ProcessEnvironment");
-//			Field theEnvironmentField = processEnvironmentClass.getDeclaredField("theEnvironment");
-//			theEnvironmentField.setAccessible(true);
-//			Map<String, String> env = (Map<String, String>) theEnvironmentField.get(null);
-//			env.putAll(newenv);
-//			Field theCaseInsensitiveEnvironmentField = processEnvironmentClass
-//					.getDeclaredField("theCaseInsensitiveEnvironment");
-//			theCaseInsensitiveEnvironmentField.setAccessible(true);
-//			Map<String, String> cienv = (Map<String, String>) theCaseInsensitiveEnvironmentField.get(null);
-//			cienv.putAll(newenv);
-//		} catch (NoSuchFieldException e) {
-//			Class[] classes = Collections.class.getDeclaredClasses();
-//			Map<String, String> env = System.getenv();
-//			for (Class cl : classes) {
-//				if ("java.util.Collections$UnmodifiableMap".equals(cl.getName())) {
-//					Field field = cl.getDeclaredField("m");
-//					field.setAccessible(true);
-//					Object obj = field.get(env);
-//					Map<String, String> map = (Map<String, String>) obj;
-//					map.clear();
-//					map.putAll(newenv);
-//				}
-//			}
-//		}
-//	}
 }

@@ -61,6 +61,7 @@ public class ResourceDictionary {
 		resourcePairs.put(ResourceMapper.PATIENT_CODEABLECONCEPT, new ResourcePair(org.hl7.fhir.dstu3.model.CodeableConcept.class, com.frt.dr.model.base.PatientCodeableConcept.class));		
 		resourcePairs.put(ResourceMapper.PATIENT_ATTACHMENT, new ResourcePair(org.hl7.fhir.dstu3.model.Attachment.class, com.frt.dr.model.base.PatientAttachment.class));		
 		resourcePairs.put(ResourceMapper.PATIENT_CONTACTPOINT, new ResourcePair(org.hl7.fhir.dstu3.model.ContactPoint.class, com.frt.dr.model.base.PatientContactPoint.class));		
+		resourcePairs.put(ResourceMapper.PATIENT_CONTACT, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientContact.class));		
 		resourcePairs.put(ResourceMapper.PATIENT_ANIMAL, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientAnimal.class));		
 		resourcePairs.put(ResourceMapper.PATIENT_COMMUNICATION, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientCommunication.class));		
 		resourcePairs.put(ResourceMapper.PATIENT_LINK, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientLink.class));		
@@ -82,6 +83,7 @@ public class ResourceDictionary {
 		complextypes.put(ResourceMapper.PATIENT_CODEABLECONCEPT, com.frt.dr.model.base.PatientCodeableConcept.class);		
 		complextypes.put(ResourceMapper.PATIENT_ATTACHMENT, com.frt.dr.model.base.PatientAttachment.class);		
 		complextypes.put(ResourceMapper.PATIENT_CONTACTPOINT, com.frt.dr.model.base.PatientContactPoint.class);		
+		complextypes.put(ResourceMapper.PATIENT_CONTACT, com.frt.dr.model.base.PatientContact.class);		
 		complextypes.put(ResourceMapper.PATIENT_ANIMAL, com.frt.dr.model.base.PatientAnimal.class);		
 		complextypes.put(ResourceMapper.PATIENT_COMMUNICATION, com.frt.dr.model.base.PatientCommunication.class);		
 		complextypes.put(ResourceMapper.PATIENT_LINK, com.frt.dr.model.base.PatientLink.class);		
@@ -98,6 +100,7 @@ public class ResourceDictionary {
 		mappers.put(ResourceMapper.PATIENT_CODEABLECONCEPT, com.frt.fhir.model.base.PatientCodeableConceptMapper.class);		
 		mappers.put(ResourceMapper.PATIENT_ATTACHMENT, com.frt.fhir.model.base.PatientAttachmentMapper.class);		
 		mappers.put(ResourceMapper.PATIENT_CONTACTPOINT, com.frt.fhir.model.base.PatientContactPointMapper.class);		
+		mappers.put(ResourceMapper.PATIENT_CONTACT, com.frt.fhir.model.base.PatientContactMapper.class);		
 		mappers.put(ResourceMapper.PATIENT_ANIMAL, com.frt.fhir.model.base.PatientAnimalMapper.class);		
 		mappers.put(ResourceMapper.PATIENT_COMMUNICATION, com.frt.fhir.model.base.PatientCommunicationMapper.class);		
 		mappers.put(ResourceMapper.PATIENT_LINK, com.frt.fhir.model.base.PatientLinkMapper.class);		

@@ -59,13 +59,6 @@ public class Patient extends DomainResource implements Serializable {
     @Column(name = "domain_resource_id")    
     private Long domainResourceId;
 
-    /*
-    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")    
-    @OneToMany(mappedBy = "PATIENT", cascade = CascadeType.ALL)
-    @OrderBy("identifier_id ASC")        
-    private List<PatientIdentifier> identifiers;
-    */
-    
     @NotNull(message = "Active cannot be Null")
     @Column(name = "active")        
     private Boolean active;
@@ -86,6 +79,11 @@ public class Patient extends DomainResource implements Serializable {
     private List<PatientAddress> addresses;
 
     @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+    @OrderBy("contactId ASC")
+    private List<PatientContact> contacts;
+
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("attachmentId ASC")
     private List<PatientAttachment> photos;
@@ -310,4 +308,14 @@ public class Patient extends DomainResource implements Serializable {
 		this.links = links;
 	}
 
+    public List<PatientContact> getContacts() {
+    	if (contacts==null) {
+    		contacts = new ArrayList<PatientContact>();
+    	}
+		return contacts;
+	}
+
+    public void setContacts(List<PatientContact> contacts) {
+		this.contacts = contacts;
+	}
 }

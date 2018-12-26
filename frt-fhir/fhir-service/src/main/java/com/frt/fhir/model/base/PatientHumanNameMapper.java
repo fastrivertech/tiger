@@ -63,6 +63,7 @@ public class PatientHumanNameMapper extends BaseMapper {
 				frt.setGiven(root.get("given")!=null?root.get("given").toString():null);
 				frt.setPrefix(root.get("prefix")!=null?root.get("prefix").toString():null);
 				frt.setSuffix(root.get("suffix")!=null?root.get("suffix").toString():null);
+				frt.setPeriod(root.get("period")!=null?root.get("period").toString():null);
 			}
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientHumanName")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.HumanName")) {
