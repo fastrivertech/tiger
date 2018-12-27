@@ -27,6 +27,7 @@ public abstract class BaseMapper implements ResourceMapper {
 	protected static String TELECOM_TAG = "\"telecom\"";
 	protected static String LINK_TAG = "\"link\"";
 	protected static String COMMUNICATION_TAG = "\"communication\"";
+	protected static String GENERALPRACTITIONER_TAG = "\"generalPractitioner\"";
 	protected static String ANIMAL_TAG = "\"animal\"";
 	private static String NV_PAIR_FORMAT = "\"{0}\":\"{1}\"";
 	private static String NV_PAIR_FORMAT_ARRAY = "\"{0}\":{1}";
@@ -98,6 +99,7 @@ public abstract class BaseMapper implements ResourceMapper {
 			}
 
 			appendArray(sb, p.getCommunications(), COMMUNICATION_TAG);
+			appendArray(sb, p.getGeneralPractitioners(), GENERALPRACTITIONER_TAG);
 
 			if (p.getManagingOrganization() != null) {
 				addNVpairObject(sb, "managingOrganization", componentToJson(p.getManagingOrganization()));

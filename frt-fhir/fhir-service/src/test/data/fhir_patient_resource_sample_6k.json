@@ -250,6 +250,26 @@
       "preferred": true
     }
   ],
+
+  "generalPractitioner": [
+  {
+    "reference": "Organization/1",
+	"identifier": [
+    	{
+      		"use": "official",
+      		"system": "urn:oid:2.16.528.1.1007.3.1",
+      		"value": "874635264"
+    	},
+    	{
+      		"use": "usual",
+      		"system": "urn:oid:2.16.840.1.113883.2.4.6.3",
+      		"value": "567IUI51C154"
+    	}
+  	],
+  	"display": "Sample general practitioner."
+  }
+  ],
+  
   "managingOrganization": {
     "reference": "Organization/1"
   },

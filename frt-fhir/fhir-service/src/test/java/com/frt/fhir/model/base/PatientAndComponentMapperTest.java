@@ -5,17 +5,16 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.frt.fhir.model.ResourceDictionary;
@@ -25,6 +24,11 @@ import com.frt.fhir.model.ResourceMapperFactory;
 import ca.uhn.fhir.context.FhirContext;
 
 public class PatientAndComponentMapperTest {
+	@Before
+	public void setUp() {
+		System.setProperty("frt.persist.store.derby", "TRUE");
+		System.out.println("frt.persist.store.derby ==> TRUE");
+	}
 	@Test
 	public void test() {
 		ca.uhn.fhir.context.FhirContext context = FhirContext.forDstu3();
@@ -87,6 +91,7 @@ public class PatientAndComponentMapperTest {
 		assertNotNull("Patient.contact (FHIR BackboneElement) Expected, but it is NULL.", frt.getContacts());
 		assertEquals("Patient.contact (FHIR BackboneElement[]) Expected, 1 element expected.", 1, frt.getContacts().size());
 
+		// cover Patient.contact FHIR Reference[]
 		String address = frt.getContacts().get(0).getAddress();
 		assertTrue("Patient.contact(0).address not empty.", !address.isEmpty());
 		String relationship = frt.getContacts().get(0).getRelationship();
@@ -96,8 +101,19 @@ public class PatientAndComponentMapperTest {
 		String telecom = frt.getContacts().get(0).getTelecom();
 		assertTrue("Patient.contact(0).telecom not empty.", !telecom.isEmpty());
 
-		String frtStr = BaseMapper.resourceToJson(frt);
+		// cover Patient.generalPractitioner FHIR Reference[]
+		assertNotNull("Expect Patient.generalPractitioner here.", frt.getGeneralPractitioners());
+		assertEquals("Expect Patient.generalPractitioner 1 element.", 1, frt.getGeneralPractitioners().size());
+		String ref = frt.getGeneralPractitioners().get(0).getReference();
+		assertTrue("Patient.generalPractitioner(0).reference not empty.", !ref.isEmpty());
+		assertNotNull("Patient.generalPractitioner(0).identifier not empty.", frt.getGeneralPractitioners().get(0).getIdentifier());
+		String display = frt.getGeneralPractitioners().get(0).getDisplay();
+		assertTrue("Patient.generalPractitioner(0).display not empty.", !display.isEmpty());
 
+		String frtStr = BaseMapper.resourceToJson(frt);
+//
+//		writeFile("src/test/data/frt_patient_sample_gold.json", frtStr);
+//		
 		try {
 			String gold = readFromFile("src/test/data/frt_patient_sample_gold.json");
 			System.out.println("frt=" + frtStr);
@@ -110,11 +126,33 @@ public class PatientAndComponentMapperTest {
 		}
 	}
 
-	protected void tearDown() {
+	@After
+	public void tearDown() {
 		
 	}
 	
 	private String readFromFile(String filePath) throws IOException {
 		return new String(Files.readAllBytes(Paths.get(filePath)));
 	}
+
+//	private void writeFile(String filePath, String content) {
+//		FileWriter fw=null;
+//		try {
+//			fw = new FileWriter(new File(filePath));
+//			fw.write(content);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		finally {
+//			if (fw!=null) {
+//				try {
+//					fw.close();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//	}
 }
