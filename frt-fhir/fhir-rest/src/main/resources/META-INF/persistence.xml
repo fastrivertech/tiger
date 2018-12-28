@@ -19,13 +19,22 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <shared-cache-mode>NONE</shared-cache-mode>		
         <properties>			
-			<!--property name="javax.persistence.jdbc.driver" value="com.splicemachine.db.jdbc.ClientDriver"/>
+			<!-- for splice machine 
+			<property name="javax.persistence.jdbc.driver" value="com.splicemachine.db.jdbc.ClientDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:splice://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:1527/splicedb"/>
             <property name="javax.persistence.jdbc.user" value="YourUserId"/>
-            <property name="javax.persistence.jdbc.password" value="YourPassword"/-->
-		    <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
-            <property name="javax.persistence.jdbc.url" value="jdbc:derby:D:\APACHE\db-derby-10.14.2.0-bin\bin\TIGER_DB"/>
-
+            <property name="javax.persistence.jdbc.password" value="YourPassword"/>
+			-->
+			<!-- for embedded derby -->
+		    <!--
+			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby:C:\apache\derby\tiger_db"/>
+			-->
+			<!-- for  network derby -->
+		    <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
+            <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/tiger_db"/>	
+            <property name="javax.persistence.jdbc.user" value="APP"/>
+            <property name="javax.persistence.jdbc.password" value="null"/>
 			<!-- eclipselink.ddl-generation: none/create-tables -->
             <property name="eclipselink.ddl-generation" value="none"/>		
 			<!-- The log level: OFF/SEVERE/WARNING/INFO/CONFIG/FINE/FINER/FINEST/ALL --> 

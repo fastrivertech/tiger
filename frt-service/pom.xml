@@ -77,6 +77,16 @@
         <groupId>com.splicemachine</groupId>
         <artifactId>db-client</artifactId>
     </dependency>       	
+	<!-- embedded apache derby -->
+	<dependency>
+		<groupId>org.apache.derby</groupId>
+		<artifactId>derby</artifactId>
+	</dependency>    	
+	<!-- network apache derby client-->		
+	<dependency>
+		<groupId>org.apache.derby</groupId>
+		<artifactId>derbyclient</artifactId>
+	</dependency>       				
 	<dependency>
 		<groupId>junit</groupId>
 		<artifactId>junit</artifactId>
