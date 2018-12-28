@@ -55,7 +55,7 @@ public class FhirService {
 		}
 	}
 
-	public <R extends DomainResource> Optional<R> read(@Nonnull String type, @Nonnull Long id) 
+	public <R extends DomainResource> Optional<R> read(@Nonnull String type, @Nonnull String id) 
 		throws FhirServiceException {
 		Optional<R> retVal = Optional.empty();
 		try {

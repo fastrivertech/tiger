@@ -21,6 +21,6 @@ public interface ResourcePath {
 	 // - will result in 404 http return when retrieve patient with id ../Patient/10000
 	 public static final String TYPE_PATH = "/{type:[a-zA-Z]+}";
 	 // removed the space between id: and the regex - same reason as in case of TYPE_PATH 
-	 public static final String ID_PATH = "/{id:[a-zA-Z0-9]+}";
+	 public static final String ID_PATH = "/{id:[A-Za-z0-9\\-\\.]+}";
 	 public static final String HISTORY_PATH = "/_history";	 	 
 }

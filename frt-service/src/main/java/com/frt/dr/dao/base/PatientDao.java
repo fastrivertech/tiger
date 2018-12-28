@@ -44,7 +44,7 @@ import com.frt.dr.model.base.PatientHumanName;
  */
 @Transactional
 @Repository
-public class PatientDao extends BaseDao<Patient,Long> {
+public class PatientDao extends BaseDao<Patient,String> {
 		
 	public PatientDao() {	
 	}
@@ -93,7 +93,7 @@ public class PatientDao extends BaseDao<Patient,Long> {
 	}
 	 	
 	@Override
-	public Optional<Patient> findById(Long id) 
+	public Optional<Patient> findById(String id) 
 		throws DaoException {
 		try {
 	   	    Query query = em.createNamedQuery("getPatientById");

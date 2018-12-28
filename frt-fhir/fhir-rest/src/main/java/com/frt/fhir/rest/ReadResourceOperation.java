@@ -71,7 +71,7 @@ public class ReadResourceOperation extends ResourceOperation {
 			// 404 Not Found - Unknown resource 
 			OperationValidator.validateFormat(_format);
 			OperationValidator.validateSummary(_summary);
-			Optional<R> found = fhirService.read(type, Long.valueOf(id));
+			Optional<R> found = fhirService.read(type, id);
 			if (found.isPresent()) {
 				String resourceInJson = parser.serialize(found.get());      
 				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
