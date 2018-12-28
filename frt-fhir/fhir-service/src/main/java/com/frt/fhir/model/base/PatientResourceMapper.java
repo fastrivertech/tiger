@@ -72,20 +72,24 @@ public class PatientResourceMapper extends BaseMapper {
 
 	@Override
 	public Object map(Object source) throws MapperException {
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Patient")
-				&& targetClz.getName().equals("com.frt.dr.model.base.Patient")) {
+		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Patient") && 
+			targetClz.getName().equals("com.frt.dr.model.base.Patient")) {
 
 			com.frt.dr.model.base.Patient frtPatient = ResourceDictionary.getResourceInstance(PATIENT);
 			org.hl7.fhir.dstu3.model.Patient hapiPatient = (org.hl7.fhir.dstu3.model.Patient) source;
 			// resource
-			frtPatient.setPatientId(Long.valueOf(hapiPatient.getId().replace("Patient/", "")));
+			frtPatient.setPatientId(hapiPatient.getId());
 
 			if (source instanceof org.hl7.fhir.dstu3.model.Patient) {
 				String jp = this.parser.encodeResourceToString(hapiPatient);
 				JsonElement el = gparser.parse(jp);
-				JsonObject root = el.getAsJsonObject();
-				frtPatient.setPatientId(root.get("id") != null ? root.get("id").getAsLong() : null);
-				frtPatient.setActive(root.get("active") != null ? root.get("active").getAsBoolean() : null);
+				JsonObject root = el.getAsJsonObject();				
+				if (root.get("id") != null) {
+					frtPatient.setPatientId( root.get("id").getAsString());
+				}
+				if (root.get("active") != null) {
+					frtPatient.setActive(root.get("active").getAsBoolean());
+				}
 				// array of FHIR type Identifier
 				if (root.getAsJsonArray("identifier") != null) {
 					JsonArray l = root.getAsJsonArray("identifier");

@@ -44,7 +44,7 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
     @Basic(optional = false)
     @NotNull(message = "Identifier logical Id cannot be Null")
     @Column(name = "identifier_id")    
-    private Long identifierId;
+    private String identifierId;
     
     @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @ManyToOne(optional = false)
@@ -60,7 +60,7 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
 
     @Lob
     @Column(name = "type")                                    
-//    private Clob type;
+  //private Clob type;
     private String type;
 
     @Size(max = 128)    
@@ -73,26 +73,26 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
 
     @Lob
     @Column(name = "period")                        
-//    private Clob period;
+  //private Clob period;
     private String period;
     
     @Lob
 	@Column(name = "assigner")                    
-//    private Clob assigner;
+  //private Clob assigner;
     private String assigner;
  
-//    private List<PatientExtension> extensions;
-//    
-//    private List<PatientElementExtension> elementExtensions;
+  //private List<PatientExtension> extensions;
+  
+  //private List<PatientElementExtension> elementExtensions;
     
 	public PatientIdentifier() {    	
     }
     
-    public Long getIdentifierId() {
+    public String getIdentifierId() {
     	return this.identifierId;
     }
     
-    public void setIdentifierId(Long identifierId) {
+    public void setIdentifierId(String identifierId) {
     	this.identifierId = identifierId;
     }
 

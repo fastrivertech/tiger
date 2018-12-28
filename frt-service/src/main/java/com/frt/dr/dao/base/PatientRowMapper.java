@@ -28,7 +28,7 @@ public class PatientRowMapper implements RowMapper<Patient> {
 	public Patient mapRow(ResultSet row, int rowNum) 
 		throws SQLException {
 		Patient patient = new Patient();
-		patient.setPatientId(row.getLong("patient_id"));
+		patient.setPatientId(row.getString("patient_id"));
 		patient.setActive(row.getBoolean("active"));
 		patient.setGender(row.getString("gender"));
 		patient.setBirthDate(new Date(row.getDate("birthdate").getTime()));

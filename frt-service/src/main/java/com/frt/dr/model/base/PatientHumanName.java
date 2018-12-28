@@ -40,7 +40,7 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
     @Basic(optional = false)
     @NotNull(message = "Humanname logical Id cannot be Null")
     @Column(name = "humanname_id")    
-    private Long humannameId;
+    private String humannameId;
         
     @Size(max = 128)    
     @Column(name = "path")                                                
@@ -87,11 +87,11 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
     public PatientHumanName(){    	
     }
     
-    public Long getHumannameId() {
+    public String getHumannameId() {
     	return this.humannameId;
     }
     
-    public void setHumannameId(Long humannameId) {
+    public void setHumannameId(String humannameId) {
     	this.humannameId = humannameId;
     }
 

@@ -44,9 +44,9 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 public class DomainResource {
 
-	private Long domainResourceId;
+	private String domainResourceId;
 	
-	private Long resourceId;
+	private String resourceId;
 	
 	private Clob txt;
 	

@@ -18,8 +18,8 @@ CREATE TABLE SEQUENCE (
 
  -- system tables --
 CREATE TABLE SYSTEM_RESOURCE (
-	system_id	BIGINT NOT NULL,
-	version_id	BIGINT NOT NULL,
+	system_id	VARCHAR(64) NOT NULL,
+	version_id	VARCHAR(64) NOT NULL,
 	status		VARCHAR(16) NOT NULL,
 	createDate	TIMESTAMP,
 	createUser	VARCHAR(32),
@@ -30,8 +30,8 @@ CREATE TABLE SYSTEM_RESOURCE (
 
 -- FHIR base resource table --- 
 CREATE TABLE RESOURCE (
-	resource_id	BIGINT NOT NULL,
-	system_id	BIGINT NOT NULL,	
+	resource_id	VARCHAR(64) NOT NULL,
+	system_id	VARCHAR(64) NOT NULL,	
 	id	VARCHAR(32), -- Σ   
 	meta CLOB, -- Σ, Meta object serialization and de-serialization
 	implicitRules VARCHAR(2048), -- ?!Σ, maximum uri length 
@@ -42,8 +42,8 @@ CREATE TABLE RESOURCE (
 
 -- FHIR domain resource table, I and affected by constraints --- 
 CREATE TABLE DOMAIN_RESOURCE (
-	domain_resource_id	BIGINT NOT NULL,
-	resource_id BIGINT NOT NULL,
+	domain_resource_id	VARCHAR(64) NOT NULL,
+	resource_id VARCHAR(64) NOT NULL,
 	txt CLOB, -- I, Narrative object serialization and de-serialization
 	contained CLOB, -- A list of resource_id of resource table object serialization and de-serialization 	
     -- extension -- A list of extension_id of extension table object serialization and de-serialization
@@ -54,8 +54,8 @@ CREATE TABLE DOMAIN_RESOURCE (
 
 -- FHIR patient resource relevant tables --
 CREATE TABLE PATIENT (
-	patient_id	BIGINT NOT NULL,
-	domain_resource_id	BIGINT,
+	patient_id	VARCHAR(64) NOT NULL,
+	domain_resource_id	VARCHAR(64),
 	-- identifier -- Σ, refer to PATIENT_IDENTIFIER table	
 	active	BOOLEAN NOT NULL, -- ?!Σ
 	-- name -- Σ, refer to PATIENT_HUMANNAME table
@@ -84,9 +84,9 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_SEQ', 1);
 					   
 -- FHIR patient resource extension table, I and affected by constraints --
 CREATE TABLE PATIENT_EXTENSION (
-	extension_id BIGINT NOT NULL,
-	patient_id	BIGINT NOT NULL,
-	secondary_id BIGINT NOT NULL,	
+	extension_id VARCHAR(64) NOT NULL,
+	patient_id	VARCHAR(64) NOT NULL,
+	secondary_id VARCHAR(64) NOT NULL,	
 	path VARCHAR(128), -- path patterns: patient.domain.resource/paitent.[child]/extension, for exampe, patient, patient.identifier, etc.
 	url	VARCHAR(128) NOT NULL, 	
 	value CLOB, -- value of any FHIR primitive and complex data types
@@ -97,9 +97,9 @@ CREATE TABLE PATIENT_EXTENSION (
 
 -- FHIR patient resource element extension table, I and affected by constraints --
 CREATE TABLE PATIENT_ELEMENT_EXTENSION (
-	extension_id BIGINT NOT NULL,
-	patient_id	BIGINT NOT NULL,
-	secondary_id BIGINT NOT NULL,	
+	extension_id VARCHAR(64) NOT NULL,
+	patient_id	VARCHAR(64) NOT NULL,
+	secondary_id VARCHAR(64) NOT NULL,	
 	path VARCHAR(128), -- path patterns:paitent.[attribute]/patient.[child].[attribute]/extesion, for exampe, patient.active, patient.identifier.id, etc.
 	url	VARCHAR(128) NOT NULL, 	
 	value BLOB, -- value of any FHIR primitive and complex data types
@@ -110,8 +110,8 @@ CREATE TABLE PATIENT_ELEMENT_EXTENSION (
 
 -- FHIR Identifier complex type, Σ --
 CREATE TABLE PATIENT_IDENTIFIER (
-	identifier_id BIGINT NOT NULL, -- as well as is element_id
-	patient_id BIGINT NOT NULL,
+	identifier_id VARCHAR(64) NOT NULL, -- as well as is element_id
+	patient_id VARCHAR(64) NOT NULL,
 	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.identifier	
 	use	VARCHAR(32), -- ?!Σ
 	type CLOB, -- Σ, CodeableConcept object serialization and de-serialization 	  	 	
@@ -128,8 +128,8 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_IDENTIFIER_SEQ', 1);
 
 -- FHIR HumanName complex type, Σ --
 CREATE TABLE PATIENT_HUMANNAME (
-	humanname_id BIGINT NOT NULL, -- as well as is element_id
-	patient_id	BIGINT NOT NULL,
+	humanname_id VARCHAR(64) NOT NULL, -- as well as is element_id
+	patient_id	VARCHAR(64) NOT NULL,
 	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.name	
 	use VARCHAR(32), -- ?!Σ
 	txt VARCHAR(2048), -- Σ
@@ -147,8 +147,8 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_HUMANNAME_SEQ', 1);
 
 -- FHIR ContactPoint complex type, Σ --
 CREATE TABLE PATIENT_CONTACTPOINT (
-	contactpoint_id	BIGINT NOT NULL, -- as well as is element_id
-	patient_id	BIGINT NOT NULL,
+	contactpoint_id	VARCHAR(64) NOT NULL, -- as well as is element_id
+	patient_id VARCHAR(64) NOT NULL,
 	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.telecom
 	system VARCHAR(128), -- Σ
 	value VARCHAR(2048), -- Σ
@@ -164,8 +164,8 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_CONTACTPOINT_SEQ', 1
 
 -- FHIR Address complex type, Σ --
 CREATE TABLE PATIENT_ADDRESS (
-	address_id BIGINT NOT NULL, -- as well as is element_id
-	patient_id BIGINT NOT NULL,
+	address_id VARCHAR(64) NOT NULL, -- as well as is element_id
+	patient_id VARCHAR(64) NOT NULL,
 	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.address
 	use VARCHAR(32), -- ?!Σ
 	type VARCHAR(32), -- Σ
@@ -186,8 +186,8 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_ADDRESS_SEQ', 1);
 
 -- FHIR CodeableConcept complex type --
 CREATE TABLE PATIENT_CODEABLECONCEPT (
-	codeableconcept_id BIGINT NOT NULL,  -- as well as is element_id
-	patient_id BIGINT NOT NULL,
+	codeableconcept_id VARCHAR(64) NOT NULL,  -- as well as is element_id
+	patient_id VARCHAR(64) NOT NULL,
 	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.maritalstatus	
 	coding CLOB, -- Σ, collection of Coding object serialization and de-serialization
 	txt VARCHAR(2048), -- Σ
@@ -200,8 +200,8 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_CODEABLECONCEPT_SEQ'
 
 -- FHIR Attachment complex type ,Σ --
 CREATE TABLE PATIENT_ATTACHMENT (
-	attachment_id BIGINT NOT NULL,  -- as well as is element_id
-	patient_id BIGINT NOT NULL,
+	attachment_id VARCHAR(64) NOT NULL,  -- as well as is element_id
+	patient_id VARCHAR(64) NOT NULL,
 	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.photo		
 	contentType VARCHAR(32), -- Σ
 	language VARCHAR(32), -- Σ
@@ -220,8 +220,8 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_ATTACHMENT_SEQ', 1);
 
 -- FHIR BackboneElement complex type, I and affected by constraints --
 CREATE TABLE PATIENT_CONTACT ( 
-	contact_id BIGINT NOT NULL, -- as well as is element_id
-	patient_id BIGINT NOT NULL,
+	contact_id VARCHAR(64) NOT NULL, -- as well as is element_id
+	patient_id VARCHAR(64) NOT NULL,
 	relationship CLOB, -- A list of CodeableConcept object serialization and de-serialization 	
 	name CLOB, -- HumanName object serialization and de-serialization, can keep in PATIENT_HUMANNAME with a path of patient.contact.name
 	telecom CLOB,-- A list of ContactPoint object serialization and de-serialization, can keep in PATIENT_CONTACTPOINT with a path of patient.contact.telecom 	 
@@ -239,8 +239,8 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_CONTACT_SEQ', 1);
 
 -- FHIR BackboneElement complex type, ?!Σ --
 CREATE TABLE PATIENT_ANIMAL (
-	animal_id BIGINT NOT NULL, -- as well as is element_id
-	patient_id BIGINT NOT NULL,
+	animal_id VARCHAR(64) NOT NULL, -- as well as is element_id
+	patient_id VARCHAR(64) NOT NULL,
 	species CLOB, -- CodeableConcept object serialization and de-serialization
 	breed CLOB, -- CodeableConcept object serialization and de-serialization
 	genderStatus CLOB, -- CodeableConcept object serialization and de-serialization
@@ -253,8 +253,8 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_ANIMAL_SEQ', 1);
 
 -- FHIR BackboneElement complex type --
 CREATE TABLE PATIENT_COMMUNICATION (
-	communication_id BIGINT NOT NULL, -- as well as is element_id
-	patient_id BIGINT NOT NULL,
+	communication_id VARCHAR(64) NOT NULL, -- as well as is element_id
+	patient_id VARCHAR(64) NOT NULL,
 	language CLOB NOT NULL, -- CodeableConcept object serialization and de-serialization  
 	preferred BOOLEAN, 
 	PRIMARY KEY (communication_id), 	
@@ -266,8 +266,8 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_COMMUNICATION_SEQ', 
 
 -- FHIR Reference complex type, ΣI --
 CREATE TABLE PATIENT_REFERENCE (
-	reference_id BIGINT NOT NULL, -- as well as is element_id
-	patient_id BIGINT NOT NULL,
+	reference_id VARCHAR(64) NOT NULL, -- as well as is element_id
+	patient_id VARCHAR(64) NOT NULL,
 	path VARCHAR(128), -- path for the attribute. The valid value for patient resource: patient.contact.organization, patient.generalpractitioner, patient.managingorganization			
     reference VARCHAR (2048), -- ΣI
 	identifier CLOB, -- Σ, Identifier object serialization and de-serialization   	
@@ -281,8 +281,8 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_REFERENCE_SEQ', 1);
 
 -- FHIR BackboneElement complex type ?!Σ --
 CREATE TABLE PATIENT_LINK (
-	link_id BIGINT NOT NULL, -- as well as is element_id
-	patient_id BIGINT NOT NULL, 
+	link_id VARCHAR(64) NOT NULL, -- as well as is element_id
+	patient_id VARCHAR(64) NOT NULL, 
 	other CLOB NOT NULL, -- Σ 
 	type VARCHAR(32) NOT NULL, -- Σ
 	PRIMARY KEY (link_id), 	

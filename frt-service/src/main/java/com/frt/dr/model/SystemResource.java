@@ -50,9 +50,9 @@ import javax.xml.bind.annotation.XmlTransient;
 })
 public class SystemResource {
 
-	private Long systemId;
+	private String systemId;
 	
-	private Long versionId;
+	private String versionId;
 	
 	private String Status;
 	

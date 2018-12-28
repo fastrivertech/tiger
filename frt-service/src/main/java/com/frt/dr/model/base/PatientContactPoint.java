@@ -59,7 +59,7 @@ public class PatientContactPoint implements Serializable, ResourceComplexType {
     @Basic(optional = false)
     @NotNull(message = "ContactPoint logical Id cannot be Null")
     @Column(name = "contactpoint_id")    
-    private Long contactpointId;
+    private String contactpointId;
     
 	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @ManyToOne(optional = false)
@@ -91,11 +91,11 @@ public class PatientContactPoint implements Serializable, ResourceComplexType {
 	public PatientContactPoint() {    	
     }
     
-    public Long getContactpointId() {
+    public String getContactpointId() {
 		return contactpointId;
 	}
 
-	public void setContactpointId(Long contactpointId) {
+	public void setContactpointId(String contactpointId) {
 		this.contactpointId = contactpointId;
 	}
 

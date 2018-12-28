@@ -41,7 +41,7 @@ public class PatientCodeableConcept implements Serializable, ResourceComplexType
     @Basic(optional = false)
     @NotNull(message = "Identifier logical Id cannot be Null")
     @Column(name = "codeableconcept_id")    
-    private Long codeableconceptId;
+    private String codeableconceptId;
     
     @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @ManyToOne(optional = false)
@@ -78,11 +78,11 @@ public class PatientCodeableConcept implements Serializable, ResourceComplexType
     	this.patient = patient;
     }
 
-	public Long getCodeableconceptId() {
+	public String getCodeableconceptId() {
 		return codeableconceptId;
 	}
 
-	public void setCodeableconceptId(Long codeableconceptId) {
+	public void setCodeableconceptId(String codeableconceptId) {
 		this.codeableconceptId = codeableconceptId;
 	}
 

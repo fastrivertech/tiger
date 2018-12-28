@@ -44,7 +44,7 @@ public class PatientAddress implements Serializable, ResourceComplexType {
     @Basic(optional = false)
     @NotNull(message = "Identifier logical Id cannot be Null")
     @Column(name = "address_id")    
-    private Long addressId;
+    private String addressId;
     
 	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @ManyToOne(optional = false)
@@ -110,12 +110,12 @@ public class PatientAddress implements Serializable, ResourceComplexType {
     	this.patient = patient;
     }
 
-    public Long getAddressId() {
+    public String getAddressId() {
 		return addressId;
 	}
 
 
-	public void setAddressId(Long addressId) {
+	public void setAddressId(String addressId) {
 		this.addressId = addressId;
 	}
 

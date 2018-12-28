@@ -33,9 +33,9 @@ import javax.xml.bind.annotation.XmlTransient;
  */
 public class Resource {
 
-	private Long resourceId;
+	private String resourceId;
 	
-	private Long systemId;
+	private String systemId;
 	
 	private String id;
 	

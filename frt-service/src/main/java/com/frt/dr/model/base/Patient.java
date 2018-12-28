@@ -52,16 +52,16 @@ public class Patient extends DomainResource implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_SEQ")  
     @Basic(optional = false)
     @NotNull(message = "Patient logical Id cannot be Null")
-    @Column(name = "patient_id", updatable=false)
-    private Long patientId;
+    @Column(name = "patient_id", nullable = false, updatable=false)
+    private String patientId;
     
     @NotNull(message = "Domain resource logical Id cannot be Null")
     @Column(name = "domain_resource_id")    
-    private Long domainResourceId;
+    private String domainResourceId;
 
     @NotNull(message = "Active cannot be Null")
-    @Column(name = "active")        
-    private Boolean active;
+    @Column(name = "active", nullable = false, updatable = true)        
+    private Boolean active =  Boolean.TRUE;
     
     @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
@@ -148,11 +148,11 @@ public class Patient extends DomainResource implements Serializable {
     public Patient() {    	
     }
     
-    public Long getPatientId() {
+    public String getPatientId() {
     	return this.patientId;
     }
     
-    public void setPatientId(Long patientId) {
+    public void setPatientId(String patientId) {
     	this.patientId = patientId;
     }
 

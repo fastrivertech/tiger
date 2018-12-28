@@ -63,7 +63,7 @@ public class PatientAttachment implements Serializable, ResourceComplexType {
 	@Basic(optional = false)
 	@NotNull(message = "Attachment logical Id cannot be Null")
 	@Column(name = "attachment_id")
-	private Long attachmentId;
+	private String attachmentId;
 
 	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
 	@ManyToOne(optional = false)
@@ -126,11 +126,11 @@ public class PatientAttachment implements Serializable, ResourceComplexType {
 		this.path = path;
 	}
 
-	public Long getAttachmentId() {
+	public String getAttachmentId() {
 		return attachmentId;
 	}
 
-	public void setAttachmentId(Long attachmentId) {
+	public void setAttachmentId(String attachmentId) {
 		this.attachmentId = attachmentId;
 	}
 
