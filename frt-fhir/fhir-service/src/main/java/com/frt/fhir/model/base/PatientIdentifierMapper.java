@@ -51,7 +51,6 @@ public class PatientIdentifierMapper extends BaseMapper {
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_IDENTIFIER);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
-			frt.setPath("Patient.identifier");
 			frt.setUse(root.get("use")!=null?root.get("use").getAsString():null);
 			frt.setValue(root.get("value")!=null?root.get("value").getAsString():null);
 			frt.setSystem(root.get("system")!=null?root.get("system").getAsString():null);

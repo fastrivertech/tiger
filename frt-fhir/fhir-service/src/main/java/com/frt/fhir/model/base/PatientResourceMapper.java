@@ -142,7 +142,7 @@ public class PatientResourceMapper extends BaseMapper {
 						while (i.hasNext()) {
 							JsonObject e = (JsonObject) i.next();
 							PatientAddress t = (PatientAddress) m.map(e);
-							t.setPath("Patient.name");
+							t.setPath("Patient.address");
 							t.setPatient(frtPatient);
 							arr.add(t);
 						}
