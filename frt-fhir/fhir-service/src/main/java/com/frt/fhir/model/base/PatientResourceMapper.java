@@ -96,7 +96,11 @@ public class PatientResourceMapper extends BaseMapper {
 			if (root.get("id") != null) {
 				frtPatient.setPatientId(root.get("id").getAsString());
 			}
-			
+			if (hapiPatient.getIdElement().hasExtension()) {
+				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getIdElement().getExtension();
+				addExtensions(frtPatient, extensions, "patient.id");				
+			}
+									
 			// patient.identifier: array of FHIR complex data type Identifier
 			if (root.getAsJsonArray("identifier") != null) {
 				JsonArray l = root.getAsJsonArray("identifier");
@@ -121,7 +125,11 @@ public class PatientResourceMapper extends BaseMapper {
 			if (root.get("active") != null) {
 				frtPatient.setActive(root.get("active").getAsBoolean());
 			}
-				
+			if (hapiPatient.getActiveElement().hasExtension()) {
+				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getActiveElement().getExtension();
+				addExtensions(frtPatient, extensions, "patient.active");				
+			}
+							
 			// patient.name: array of FHIR complex data type HumanName
 			if (root.getAsJsonArray("name") != null) {
 				JsonArray l = root.getAsJsonArray("name");
@@ -164,19 +172,37 @@ public class PatientResourceMapper extends BaseMapper {
 			
 			// patient.gender
 			frtPatient.setGender(root.get("gender") != null ? root.get("gender").getAsString() : null);
+			if (hapiPatient.getGenderElement().hasExtension()) {
+				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getGenderElement().getExtension();
+				addExtensions(frtPatient, extensions, "patient.gender");				
+			}
 			
 			// patient.birthDate
 			frtPatient.setBirthDate(root.get("birthDate") != null ? Date.valueOf(root.get("birthDate").getAsString()) : null);
 			if (hapiPatient.getBirthDateElement().hasExtension()) {
 				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getBirthDateElement().getExtension();
-				addExtensions(frtPatient, extensions, "patient.birthdate");				
+				addExtensions(frtPatient, extensions, "patient.birthDate");				
 			}
 			
 			// patient.deceased[x].deceasedBoolean
 			frtPatient.setDeceasedBoolean(root.get("deceasedBoolean") != null ? root.get("deceasedBoolean").getAsBoolean() : null);
+			try {
+				if (hapiPatient.getDeceasedBooleanType().hasExtension()) {
+					List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getDeceasedBooleanType().getExtension();
+					addExtensions(frtPatient, extensions, "patient.deceasedBoolean");				
+				}
+			} catch (FHIRException ignore) {								
+			}
 			
 			// patient.deceased[x].deceasedDateTime
 			frtPatient.setDeceasedDateTime(root.get("deceasedDateTime") != null ? new Timestamp(Date.valueOf(root.get("deceasedDateTime").getAsString()).getTime()) : null);
+			try {
+				if (hapiPatient.getDeceasedDateTimeType().hasExtension()) {
+					List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getDeceasedDateTimeType().getExtension();
+					addExtensions(frtPatient, extensions, "patient.deceasedDateTime");				
+				}
+			} catch (FHIRException ignore) {								
+			}
 			
 			// patient.address: array of FHIR complex data type Address
 			if (root.getAsJsonArray("address") != null) {
@@ -210,9 +236,23 @@ public class PatientResourceMapper extends BaseMapper {
 
 			// patient.multipleBirth[x].multipleBirthBoolean
 			frtPatient.setMultipleBirthBoolean(root.get("multipleBirthBoolean") != null ? Boolean.valueOf(root.get("multipleBirthBoolean").toString()) : null);
+			try {
+				if (hapiPatient.getMultipleBirthBooleanType().hasExtension()) {
+					List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getMultipleBirthBooleanType().getExtension();
+					addExtensions(frtPatient, extensions, "patient.multipleBirthBoolean");				
+				}
+			} catch (FHIRException ignore) {				
+			}
 			
 			// patient.multipleBirth[x].multipleBirthInteger
 			frtPatient.setMultipleBirthInteger(root.get("multipleBirthInteger") != null ? Integer.valueOf(root.get("multipleBirthInteger").toString()) : null);
+			try {
+				if (hapiPatient.getMultipleBirthIntegerType().hasExtension()) {
+					List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getMultipleBirthIntegerType().getExtension();
+					addExtensions(frtPatient, extensions, "patient.multipleBirthInteger");				
+				}
+			} catch (FHIRException ignore) {				
+			}
 		
 			// patient.photo: array of FHIR complex data type Attachment
 			if (root.getAsJsonArray("photo") != null) {
@@ -335,7 +375,15 @@ public class PatientResourceMapper extends BaseMapper {
 					.parseResource(BaseMapper.resourceToJson(frtPatient));
 			
 			List<PatientExtension> patientExtensions = frtPatient.getExtensions();
-			getExtensions(hapiPatient, patientExtensions, "patient.birthdate");
+
+			getExtensions(hapiPatient, patientExtensions, "patient.mulitpleBirthInteger");												
+			getExtensions(hapiPatient, patientExtensions, "patient.mulitpleBirthBoolean");									
+			getExtensions(hapiPatient, patientExtensions, "patient.deceasedDateTime");						
+			getExtensions(hapiPatient, patientExtensions, "patient.deceasedBoolean");			
+			getExtensions(hapiPatient, patientExtensions, "patient.birthDate");
+			getExtensions(hapiPatient, patientExtensions, "patient.gender");
+			getExtensions(hapiPatient, patientExtensions, "patient.active");			
+			getExtensions(hapiPatient, patientExtensions, "patient.id");			
 			getExtensions(hapiPatient, patientExtensions, "patient");
 			
 			return hapiPatient;
