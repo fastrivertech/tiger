@@ -17,7 +17,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-
 import javax.persistence.Entity;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -36,12 +35,12 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import com.frt.dr.model.DomainResource;
 
 @Entity
 @Table(name = "PATIENT")
 @SequenceGenerator(name = "PATIENT_SEQ", sequenceName = "PATIENT_SEQ", allocationSize=1)
-@XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "getPatientById", query = "SELECT P FROM Patient P WHERE P.patientId = :patientId")
 })
@@ -139,12 +138,13 @@ public class Patient extends DomainResource implements Serializable {
 	@Column(name = "multipleBirthInteger")                        
     private Integer multipleBirthInteger;
     
-	/*
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
+	@OrderBy("patientExtensionId ASC")	
 	private List<PatientExtension> extensions;
     
-    private List<PatientElementExtension> elementExtensions;
-    */
-	
+  //private List<PatientExtension> elementExtensions;
+     
     public Patient() {    	
     }
     
@@ -334,4 +334,19 @@ public class Patient extends DomainResource implements Serializable {
     public void setContacts(List<PatientContact> contacts) {
 		this.contacts = contacts;
 	}
+    
+    
+    @XmlTransient
+    public List<PatientExtension> getExtensions() {
+    	if (extensions == null) {
+    		extensions = new ArrayList<PatientExtension>();
+    	}
+        return extensions;
+    }
+
+    
+    public void setExtensions( List<PatientExtension> extensions) {
+        this.extensions = extensions;
+    }    
+    
 }

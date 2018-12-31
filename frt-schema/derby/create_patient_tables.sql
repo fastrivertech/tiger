@@ -84,29 +84,18 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_SEQ', 1);
 					   
 -- FHIR patient resource extension table, I and affected by constraints --
 CREATE TABLE PATIENT_EXTENSION (
-	extension_id VARCHAR(64) NOT NULL,
+	patient_extension_id VARCHAR(64) NOT NULL,
 	patient_id	VARCHAR(64) NOT NULL,
-	secondary_id VARCHAR(64) NOT NULL,	
 	path VARCHAR(128), -- path patterns: patient.domain.resource/paitent.[child]/extension, for exampe, patient, patient.identifier, etc.
 	url	VARCHAR(128) NOT NULL, 	
 	value CLOB, -- value of any FHIR primitive and complex data types
 	isModifier BOOLEAN DEFAULT false, -- default false
-	PRIMARY KEY (extension_id), 	
+	PRIMARY KEY (patient_extension_id), 
 	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)	
 );
 
--- FHIR patient resource element extension table, I and affected by constraints --
-CREATE TABLE PATIENT_ELEMENT_EXTENSION (
-	extension_id VARCHAR(64) NOT NULL,
-	patient_id	VARCHAR(64) NOT NULL,
-	secondary_id VARCHAR(64) NOT NULL,	
-	path VARCHAR(128), -- path patterns:paitent.[attribute]/patient.[child].[attribute]/extesion, for exampe, patient.active, patient.identifier.id, etc.
-	url	VARCHAR(128) NOT NULL, 	
-	value BLOB, -- value of any FHIR primitive and complex data types
-	isModifier boolean DEFAULT false, -- default false
-	PRIMARY KEY (extension_id), 	
-	FOREIGN KEY (patient_id) REFERENCES PATIENT(patient_id)	
-);
+CREATE SEQUENCE PATIENT_EXTENSION_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
+INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_EXTENSION_SEQ', 1);
 
 -- FHIR Identifier complex type, Σ --
 CREATE TABLE PATIENT_IDENTIFIER (

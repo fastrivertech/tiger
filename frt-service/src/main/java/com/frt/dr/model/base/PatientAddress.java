@@ -13,6 +13,8 @@ package com.frt.dr.model.base;
 
 import java.io.Serializable;
 import java.sql.Clob;
+import java.util.List;
+
 import javax.persistence.FetchType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -94,9 +96,9 @@ public class PatientAddress implements Serializable, ResourceComplexType {
     @Column(name = "period")                        
     private String period;
     
-//    private List<PatientExtension> extensions;
-//    
-//    private List<PatientElementExtension> elementExtensions;
+  //private List<PatientExtension> extensions;
+        
+  //private List<PatientElementExtension> elementExtensions;
     
 	public PatientAddress() {    	
     }

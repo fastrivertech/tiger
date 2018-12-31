@@ -26,7 +26,6 @@ import javax.ws.rs.core.UriInfo;
 import javax.annotation.security.PermitAll;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
-
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.rest.validation.OperationValidator;

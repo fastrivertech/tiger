@@ -5,6 +5,7 @@
     <persistence-unit name="FRT_DR_LOCAL_PERSISTENCE" transaction-type="RESOURCE_LOCAL">
 	    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
 		<class>com.frt.dr.model.base.Patient</class>
+		<class>com.frt.dr.model.base.PatientExtension</class>
 		<class>com.frt.dr.model.base.PatientHumanName</class>
 		<class>com.frt.dr.model.base.PatientIdentifier</class>
 		<class>com.frt.dr.model.base.PatientAddress</class>
