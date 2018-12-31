@@ -329,11 +329,13 @@ public class PatientResourceMapper extends BaseMapper {
 						+ sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 			}
 			
+						
 			com.frt.dr.model.base.Patient frtPatient = (com.frt.dr.model.base.Patient) source;
 			org.hl7.fhir.dstu3.model.Patient hapiPatient = (org.hl7.fhir.dstu3.model.Patient) this.parser
 					.parseResource(BaseMapper.resourceToJson(frtPatient));
 			
 			List<PatientExtension> patientExtensions = frtPatient.getExtensions();
+			getExtensions(hapiPatient, patientExtensions, "patient.birthdate");
 			getExtensions(hapiPatient, patientExtensions, "patient");
 			
 			return hapiPatient;
@@ -366,11 +368,21 @@ public class PatientResourceMapper extends BaseMapper {
 							  List<PatientExtension> patientExtensions,
 							  String path) {
 		patientExtensions.forEach(patientExtension->{
-			if (path.equalsIgnoreCase(patientExtension.getPath())) {
+			// patient.extension
+			if (path.equalsIgnoreCase("patient") &&
+				path.equalsIgnoreCase(patientExtension.getPath())) {
 				org.hl7.fhir.dstu3.model.Extension extension = new org.hl7.fhir.dstu3.model.Extension();
 				extension.setUrl(patientExtension.getUrl());
 				extension.setValue(new StringType(patientExtension.getValue()));
 				hapiPatient.addExtension(extension);	
+			} 
+			// patient.birthdate.extension
+			if (path.equalsIgnoreCase("patient.birthdate") &&
+				path.equalsIgnoreCase(patientExtension.getPath())) {
+				org.hl7.fhir.dstu3.model.Extension extension = new org.hl7.fhir.dstu3.model.Extension();
+				extension.setUrl(patientExtension.getUrl());
+				extension.setValue(new StringType(patientExtension.getValue()));
+				hapiPatient.getBirthDateElement().addExtension(extension);
 			}
 		});					
 		
