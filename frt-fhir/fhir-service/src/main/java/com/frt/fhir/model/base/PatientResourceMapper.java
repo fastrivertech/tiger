@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import org.hl7.fhir.dstu3.model.BooleanType;
 import org.hl7.fhir.dstu3.model.DateTimeType;
+import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.exceptions.FHIRException;
@@ -96,7 +97,8 @@ public class PatientResourceMapper extends BaseMapper {
 			if (root.get("id") != null) {
 				frtPatient.setPatientId(root.get("id").getAsString());
 			}
-			if (hapiPatient.getIdElement().hasExtension()) {
+			if (hapiPatient.hasIdElement() &&
+				hapiPatient.getIdElement().hasExtension()) {
 				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getIdElement().getExtension();
 				addExtensions(frtPatient, extensions, "patient.id");				
 			}
@@ -125,7 +127,8 @@ public class PatientResourceMapper extends BaseMapper {
 			if (root.get("active") != null) {
 				frtPatient.setActive(root.get("active").getAsBoolean());
 			}
-			if (hapiPatient.getActiveElement().hasExtension()) {
+			if (hapiPatient.hasActiveElement() &&
+				hapiPatient.getActiveElement().hasExtension()) {
 				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getActiveElement().getExtension();
 				addExtensions(frtPatient, extensions, "patient.active");				
 			}
@@ -172,14 +175,16 @@ public class PatientResourceMapper extends BaseMapper {
 			
 			// patient.gender
 			frtPatient.setGender(root.get("gender") != null ? root.get("gender").getAsString() : null);
-			if (hapiPatient.getGenderElement().hasExtension()) {
+			if (hapiPatient.hasGenderElement() &&
+				hapiPatient.getGenderElement().hasExtension()) {
 				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getGenderElement().getExtension();
 				addExtensions(frtPatient, extensions, "patient.gender");				
 			}
 			
 			// patient.birthDate
 			frtPatient.setBirthDate(root.get("birthDate") != null ? Date.valueOf(root.get("birthDate").getAsString()) : null);
-			if (hapiPatient.getBirthDateElement().hasExtension()) {
+			if (hapiPatient.hasBirthDateElement() &&
+				hapiPatient.getBirthDateElement().hasExtension()) {
 				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getBirthDateElement().getExtension();
 				addExtensions(frtPatient, extensions, "patient.birthDate");				
 			}
@@ -187,7 +192,8 @@ public class PatientResourceMapper extends BaseMapper {
 			// patient.deceased[x].deceasedBoolean
 			frtPatient.setDeceasedBoolean(root.get("deceasedBoolean") != null ? root.get("deceasedBoolean").getAsBoolean() : null);
 			try {
-				if (hapiPatient.getDeceasedBooleanType().hasExtension()) {
+				if (hapiPatient.hasDeceasedBooleanType() &&
+					hapiPatient.getDeceasedBooleanType().hasExtension()) {
 					List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getDeceasedBooleanType().getExtension();
 					addExtensions(frtPatient, extensions, "patient.deceasedBoolean");				
 				}
@@ -197,7 +203,8 @@ public class PatientResourceMapper extends BaseMapper {
 			// patient.deceased[x].deceasedDateTime
 			frtPatient.setDeceasedDateTime(root.get("deceasedDateTime") != null ? new Timestamp(Date.valueOf(root.get("deceasedDateTime").getAsString()).getTime()) : null);
 			try {
-				if (hapiPatient.getDeceasedDateTimeType().hasExtension()) {
+				if (hapiPatient.hasDeceasedDateTimeType() &&
+					hapiPatient.getDeceasedDateTimeType().hasExtension()) {
 					List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getDeceasedDateTimeType().getExtension();
 					addExtensions(frtPatient, extensions, "patient.deceasedDateTime");				
 				}
@@ -237,7 +244,8 @@ public class PatientResourceMapper extends BaseMapper {
 			// patient.multipleBirth[x].multipleBirthBoolean
 			frtPatient.setMultipleBirthBoolean(root.get("multipleBirthBoolean") != null ? Boolean.valueOf(root.get("multipleBirthBoolean").toString()) : null);
 			try {
-				if (hapiPatient.getMultipleBirthBooleanType().hasExtension()) {
+				if (hapiPatient.hasMultipleBirthBooleanType() &&
+					hapiPatient.getMultipleBirthBooleanType().hasExtension()) {
 					List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getMultipleBirthBooleanType().getExtension();
 					addExtensions(frtPatient, extensions, "patient.multipleBirthBoolean");				
 				}
@@ -247,7 +255,8 @@ public class PatientResourceMapper extends BaseMapper {
 			// patient.multipleBirth[x].multipleBirthInteger
 			frtPatient.setMultipleBirthInteger(root.get("multipleBirthInteger") != null ? Integer.valueOf(root.get("multipleBirthInteger").toString()) : null);
 			try {
-				if (hapiPatient.getMultipleBirthIntegerType().hasExtension()) {
+				if (hapiPatient.hasMultipleBirthIntegerType() && 
+					hapiPatient.getMultipleBirthIntegerType().hasExtension()) {
 					List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getMultipleBirthIntegerType().getExtension();
 					addExtensions(frtPatient, extensions, "patient.multipleBirthInteger");				
 				}
@@ -429,8 +438,11 @@ public class PatientResourceMapper extends BaseMapper {
 				path.equalsIgnoreCase(patientExtension.getPath())) {
 				org.hl7.fhir.dstu3.model.Extension extension = new org.hl7.fhir.dstu3.model.Extension();
 				extension.setUrl(patientExtension.getUrl());
-				extension.setValue(new StringType(patientExtension.getValue()));
+				String value = patientExtension.getValue();
+				value = value.substring(value.indexOf("[") + 1, value.indexOf("]") - 1);									
+				extension.setValue(new StringType(value)); // => DateTimeType				
 				hapiPatient.getBirthDateElement().addExtension(extension);
+				
 			}
 		});					
 		
