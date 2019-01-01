@@ -1,12 +1,18 @@
 package com.frt.fhir.model.base;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.frt.dr.model.ResourceComplexType;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceMapper;
+import com.frt.fhir.service.HAPIComplexTypesResource;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.Gson;
@@ -17,6 +23,8 @@ import ca.uhn.fhir.context.FhirContext;
 public abstract class BaseMapper implements ResourceMapper {
 	private static Logger logger = Logger.getLog(BaseMapper.class.getName());
 	private static Localization localizer = Localization.getInstance();
+	protected static String CUST_RS_BEGIN = "{\"resourceType\": \"HAPIComplexTypesResource\",";
+	protected static String CUST_RS_END = "}";
 	protected static String PAT_RS_BEGIN = "{\"resourceType\": \"Patient\",";
 	protected static String PAT_RS_END = "}";
 	protected static String IDENTIFIER_TAG = "\"identifier\"";
@@ -47,8 +55,9 @@ public abstract class BaseMapper implements ResourceMapper {
 	public BaseMapper() {
 		FhirContext context = FhirContext.forDstu3();
 		parser = (ca.uhn.fhir.parser.JsonParser) context.newJsonParser();
+		context.registerCustomType(HAPIComplexTypesResource.class);
 	}
-
+	
 	@Override
 	public abstract ResourceMapper from(Class source);
 
@@ -57,6 +66,89 @@ public abstract class BaseMapper implements ResourceMapper {
 
 	@Override
 	public abstract Object map(Object source) throws MapperException;
+
+	/**
+	 * 
+	 * @param type - one of the HAPI FHIR complex types
+	 * @param message - json string of the complex type as indicated by <code>type</code>
+	 * @return the HAPI object of the type;
+	 */
+	public <T extends org.hl7.fhir.dstu3.model.Type> T parseComplexType(Class<T> type, String message) {
+		return (T)parseComplexType(type.getSimpleName().toLowerCase(), message);
+	}
+
+	/**
+	 * 
+	 * @param type - one of the HAPI FHIR complex types
+	 * @param message - json string of array of element of complex type as indicated by <code>type</code> 
+	 * @return the array of elements of HAPI complex type
+	 */
+	public <T extends org.hl7.fhir.dstu3.model.Type> List<T> parseComplexTypeArray(Class<T> type, String message) {
+		return (List)parseComplexType(type.getSimpleName().toLowerCase()+"Array", message);
+	}
+
+	private Object parseComplexType(String fieldName, String message) {
+		StringBuilder sb = new StringBuilder();
+		sb.append(CUST_RS_BEGIN).append("\"").append(fieldName).append("\":").append(message).append(CUST_RS_END);
+		HAPIComplexTypesResource rs = this.parser.parseResource(HAPIComplexTypesResource.class, sb.toString());
+		Field field=null;
+		try {
+			field = rs.getClass().getDeclaredField(fieldName);
+		} catch (NoSuchFieldException | SecurityException e) {
+			// TODO Auto-generated catch block
+			throw new MapperException(e);
+		}
+		field.setAccessible(true);
+		Object value = null;
+		try {
+			value = field.get(rs);
+		} catch (IllegalArgumentException | IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			throw new MapperException(e);
+		}
+		return value;
+	}
+
+//	public <T extends org.hl7.fhir.dstu3.model.Type> Map<Class<T>, Object> parseComplexTypeArray(Class<T>[] types, String[] messages, Boolean[] isArray) {
+//		StringBuilder sb = new StringBuilder();
+//		Map<Class<T>, Object> ret = new HashMap<Class<T>, Object>();
+//		sb.append(CUST_RS_BEGIN);
+//		boolean first = true;
+//		for (int i=0; i<types.length;i++) {
+//			if (!first) {
+//				sb.append(VAL_DEL);
+//			}
+//			if (isArray[i]) {
+//				sb.append("\"").append(types[i].getSimpleName().toLowerCase()).append("Array").append("\":").append(messages[i]);
+//			}
+//			else {
+//				sb.append("\"").append(types[i].getSimpleName().toLowerCase()).append("\":").append(messages[i]);
+//			}
+//		}
+//		sb.append(CUST_RS_END);
+//		HAPIComplexTypesResource rs = this.parser.parseResource(HAPIComplexTypesResource.class, sb.toString());
+//		return ret;
+//	}
+
+	private Object invokeGetter(HAPIComplexTypesResource rs, String attr) {
+		Object ret = null;
+		Method getter = null;
+		try {
+			getter = rs.getClass().getMethod("get"+attr);
+		} catch (NoSuchMethodException | SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (getter!=null) {
+			try {
+				ret = getter.invoke(rs);
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return ret;
+	}
 
 	public static String resourceToJson(com.frt.dr.model.DomainResource frtResource) {
 		final StringBuilder sb = new StringBuilder();

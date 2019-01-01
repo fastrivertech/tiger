@@ -17,12 +17,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
+
 import org.hl7.fhir.dstu3.model.BooleanType;
 import org.hl7.fhir.dstu3.model.DateTimeType;
 import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.exceptions.FHIRException;
+
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientExtension;
 import com.frt.dr.model.base.PatientAddress;
@@ -74,14 +76,13 @@ public class PatientResourceMapper extends BaseMapper {
 
 	@Override
 	public Object map(Object source) throws MapperException {
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Patient")
-				&& targetClz.getName().equals("com.frt.dr.model.base.Patient")) {
+		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Patient") && 
+			targetClz.getName().equals("com.frt.dr.model.base.Patient")) {
 
 			com.frt.dr.model.base.Patient frtPatient = ResourceDictionary.getResourceInstance(PATIENT);
 			org.hl7.fhir.dstu3.model.Patient hapiPatient = (org.hl7.fhir.dstu3.model.Patient) source;
-			
 			// resource
-			// frtPatient.setPatientId(hapiPatient.getId());
+			frtPatient.setPatientId(hapiPatient.getId());
 
 			// patient.domainresource.extension
 			if (hapiPatient.hasExtension()) {
