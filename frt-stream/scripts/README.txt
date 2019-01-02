@@ -20,3 +20,9 @@ Install(unzip) to C:\apache\kafka\kafka_2.12-2.1.0
 6. Stop a single node Kafka server   
    tiger\frt-stream\scripts\stop
    
+7. Delete FhirTopic
+   Kafka 2.12-.2.1.0 has an issue of phyically deleting a topic. The workaround is 
+   7.1) stop the kafka server
+   7.2) manually delete C:\tmp\kafka-logs and C:\tmp\zookeeper
+   7.3) restart the kafka server
+   
