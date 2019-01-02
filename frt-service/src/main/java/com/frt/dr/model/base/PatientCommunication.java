@@ -100,4 +100,11 @@ public class PatientCommunication implements Serializable, ResourceComplexType, 
 		this.language = language;
 	}
 
+
+	@Override
+	public void setPath(String path) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

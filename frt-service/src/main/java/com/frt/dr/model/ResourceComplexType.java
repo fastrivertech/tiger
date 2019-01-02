@@ -1,5 +1,7 @@
 package com.frt.dr.model;
 
+import com.frt.dr.model.base.Patient;
+
 /**
  * marker interface for all
  * FRT object for FHIR composite types e.g.
@@ -8,5 +10,6 @@ package com.frt.dr.model;
  *
  */
 public interface ResourceComplexType {
-
+	void setPath(String path);
+	void setPatient(Patient p);
 }

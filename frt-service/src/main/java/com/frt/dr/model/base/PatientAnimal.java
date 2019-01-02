@@ -118,6 +118,13 @@ public class PatientAnimal implements Serializable, ResourceComplexType, Backbon
 	}
 
 
+	@Override
+	public void setPath(String path) {
+		// TODO Auto-generated method stub
+		
+	}
+
+
 //    public String getPeriod() {
 //		return SqlHelper.toString(this.period);
 //	}

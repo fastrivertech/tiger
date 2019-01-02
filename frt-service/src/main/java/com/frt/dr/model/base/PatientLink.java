@@ -100,4 +100,11 @@ public class PatientLink implements Serializable, ResourceComplexType, BackboneE
 		this.other = other;
 	}
 
+
+	@Override
+	public void setPath(String path) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

@@ -157,4 +157,10 @@ public class PatientContact implements Serializable, ResourceComplexType {
 		this.organization = organization;
 	}
 
+	@Override
+	public void setPath(String path) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
