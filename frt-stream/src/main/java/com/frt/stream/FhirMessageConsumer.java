@@ -36,8 +36,7 @@ public class FhirMessageConsumer {
 
 		int count = 0;
 		while (true) {
-			final ConsumerRecords<Long, String> consumerRecords = consumer.poll(1000);
-
+			final ConsumerRecords<Long, String> consumerRecords = consumer.poll(5000);
 			if (consumerRecords.count() == 0) {
 				count++;
 				if (count > 10)
@@ -45,12 +44,10 @@ public class FhirMessageConsumer {
 				else
 					continue;
 			}
-
 			consumerRecords.forEach(record -> {
-				System.out.printf("Consumer Record:(%s, %s, %d, %d)\n", record.key(), record.value(),
-						record.partition(), record.offset());
+				System.out.printf("Consumer Record:(%s, %s, %d, %d)\n", 
+						           record.key(), record.value(), record.partition(), record.offset());
 			});
-
 			consumer.commitAsync();
 		}
 		consumer.close();
