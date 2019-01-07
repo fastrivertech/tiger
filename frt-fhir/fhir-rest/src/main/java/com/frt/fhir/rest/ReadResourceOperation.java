@@ -10,6 +10,7 @@
  */
 package com.frt.fhir.rest;
 
+import java.util.List;
 import java.util.Optional;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
@@ -32,6 +33,8 @@ import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.frt.fhir.service.FhirService;
 import com.frt.fhir.service.FhirServiceException;
+import com.frt.stream.service.StreamService;
+import com.frt.stream.service.StreamServiceException;
 
 /**
  * CreateResourceInteraction class
@@ -49,10 +52,18 @@ public class ReadResourceOperation extends ResourceOperation {
 	
 	private JsonParser parser;
 	private FhirService fhirService;
+	private StreamService streamService;
 	
-	public ReadResourceOperation() {
-		parser = new JsonParser();
-		fhirService = new FhirService();
+	public ReadResourceOperation() 
+		throws RuntimeException {
+		try {
+			parser = new JsonParser();
+			fhirService = new FhirService();
+			streamService = new StreamService();
+			streamService.initialize();
+		} catch (StreamServiceException ssex) {
+			throw new RuntimeException(ssex);
+		}		
 	}	
 	
 	@GET
@@ -70,29 +81,38 @@ public class ReadResourceOperation extends ResourceOperation {
 			// 410 Gone - Resource deleted 
 			// 404 Not Found - Unknown resource 
 			OperationValidator.validateFormat(_format);
-			OperationValidator.validateSummary(_summary);
-			Optional<R> found = fhirService.read(type, id);
+			OperationValidator.validateSummary(_summary);			
+			String message;
+			if (streamService.enabled()) {
+				streamService.write(id);
+				List<String> bodys = streamService.read();
+				message = bodys.get(0);
+			} else {
+				message = id;
+			}			
+			
+			Optional<R> found = fhirService.read(type, message);			
 			if (found.isPresent()) {
 				String resourceInJson = parser.serialize(found.get());      
 				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 			} else {
-				String message = "invalid domain resource logical id '" + id + "'" ; 
-				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+				String error = "invalid domain resource logical id '" + id + "'" ; 
+				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																								  OperationOutcome.IssueSeverity.ERROR, 
 																								  OperationOutcome.IssueType.PROCESSING);
 				String resourceInJson = parser.serialize(outcome);
 				return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MediaType.APPLICATION_JSON);				
 			}
 		} catch (ValidationException vx) {
-			String message = "invalid parameter: " + vx.getMessage(); 
-			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+			String error = "invalid parameter: " + vx.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
 			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MediaType.APPLICATION_JSON);				
-		}  catch (FhirServiceException fsx) {
-			String message = "\"service failure: " + fsx.getMessage(); 
-			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+		}  catch (FhirServiceException | StreamServiceException ex) {
+			String error = "\"service failure: " + ex.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
