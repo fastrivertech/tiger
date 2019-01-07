@@ -23,6 +23,9 @@ import org.hl7.fhir.dstu3.model.DateType;
 import org.hl7.fhir.dstu3.model.IntegerType;
 import org.hl7.fhir.dstu3.model.StringType;
 import org.hl7.fhir.exceptions.FHIRException;
+
+import com.frt.dr.model.DomainResource;
+import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientExtension;
@@ -39,7 +42,7 @@ import com.frt.dr.model.base.PatientReference;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.fhir.model.ResourceDictionary.ResourcePair;
-import com.frt.fhir.model.ResourceMapper;
+import com.frt.fhir.model.ResourceMapperInterface;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.JsonArray;
@@ -82,28 +85,52 @@ public class PatientResourceMapper extends BaseMapper {
 			com.frt.dr.model.base.Patient frtPatient = ResourceDictionary.getResourceInstance(PATIENT);
 			org.hl7.fhir.dstu3.model.Patient hapiPatient = (org.hl7.fhir.dstu3.model.Patient) source;
 			// resource
-			frtPatient.setPatientId(hapiPatient.getId());
-
+			frtPatient.setId(hapiPatient.getId());
 			// patient.domainresource.extension
 			if (hapiPatient.hasExtension()) {
 				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getExtension();
 				addExtensions(frtPatient, extensions, "patient");
 			}
-			
+
+			// HAPI bug? jp below missing DomainResource.contained
 			String jp = this.parser.encodeResourceToString(hapiPatient);
+			List<org.hl7.fhir.dstu3.model.Resource> contained = hapiPatient.getContained();
+			if (contained!=null&&contained.size()>0) {
+				StringBuilder sb = new StringBuilder();
+				boolean first = true;
+				sb.append(ARRAY_BEGIN);
+				for (org.hl7.fhir.dstu3.model.Resource r: contained) {
+					if (first) {
+						first = false;
+					}
+					else {
+						sb.append(VAL_DEL);
+					}
+					sb.append(this.parser.encodeResourceToString(r));
+				}
+				sb.append(ARRAY_END);
+				frtPatient.setContained(sb.toString());
+			}
+
 			JsonElement el = gparser.parse(jp);
 			JsonObject root = el.getAsJsonObject();
 			
 			// patient.domainresource.resource.id	
 			if (root.get("id") != null) {
-				frtPatient.setPatientId(root.get("id").getAsString());
+				frtPatient.setId(root.get("id").getAsString());
 			}
 			if (hapiPatient.hasIdElement() &&
 				hapiPatient.getIdElement().hasExtension()) {
 				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getIdElement().getExtension();
 				addExtensions(frtPatient, extensions, "patient.id");				
 			}
-									
+
+			// map super class : DomainResource
+			DomainResourceMapper drm = ResourceDictionary.getMapper(DOMAINRESOURCE);
+			ResourcePair pair = ResourceDictionary.get(DOMAINRESOURCE);
+			drm = drm.from(pair.getFhir()).to(pair.getFrt());
+			drm.map(root, frtPatient);
+
 			// patient.identifier: array of FHIR complex data type Identifier
 			mapComponent(frtPatient, root, frtPatient.getIdentifiers(), "identifier", "Patient.identifier", PATIENT_IDENTIFIER);
 
@@ -219,7 +246,6 @@ public class PatientResourceMapper extends BaseMapper {
 				throw new IllegalStateException("PatientResourceMapper.map() called source="
 						+ sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 			}
-			
 						
 			com.frt.dr.model.base.Patient frtPatient = (com.frt.dr.model.base.Patient) source;
 			org.hl7.fhir.dstu3.model.Patient hapiPatient = (org.hl7.fhir.dstu3.model.Patient) this.parser
@@ -243,94 +269,11 @@ public class PatientResourceMapper extends BaseMapper {
 					+ targetClz.getName() + " Not Implemented Yet");
 		}
 	}
+
+	@Override
+	public Object map(Object source, Object target) throws MapperException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
-	public void addExtensions(com.frt.dr.model.base.Patient frtPatient, 
-							  List<org.hl7.fhir.dstu3.model.Extension> extensions,
-							  String path) {
-		
-		List<PatientExtension> patientExtensions = frtPatient.getExtensions();
-		extensions.forEach(extension->{
-			PatientExtension patientExtension = new PatientExtension();
-			patientExtension.setPatient(frtPatient);
-			patientExtension.setPath(path);
-			patientExtension.setUrl(extension.getUrl());
-			if (extension.hasValue()) {
-				patientExtension.setValue(extension.getValue().toString());
-			}
-			patientExtensions.add(patientExtension);
-		});		
-		
-	}
-
-	public void getExtensions(org.hl7.fhir.dstu3.model.Patient hapiPatient, 
-							  List<PatientExtension> patientExtensions,
-							  String path) {
-		patientExtensions.forEach(patientExtension->{
-			// patient.extension
-			if (path.equalsIgnoreCase("patient") &&
-				path.equalsIgnoreCase(patientExtension.getPath())) {
-				org.hl7.fhir.dstu3.model.Extension extension = new org.hl7.fhir.dstu3.model.Extension();
-				extension.setUrl(patientExtension.getUrl());
-				extension.setValue(new StringType(patientExtension.getValue()));
-				hapiPatient.addExtension(extension);	
-			} 
-			// patient.birthdate.extension
-			if (path.equalsIgnoreCase("patient.birthdate") &&
-				path.equalsIgnoreCase(patientExtension.getPath())) {
-				org.hl7.fhir.dstu3.model.Extension extension = new org.hl7.fhir.dstu3.model.Extension();
-				extension.setUrl(patientExtension.getUrl());
-				String value = patientExtension.getValue();
-				value = value.substring(value.indexOf("[") + 1, value.indexOf("]") - 1);									
-				extension.setValue(new StringType(value)); // => DateTimeType				
-				hapiPatient.getBirthDateElement().addExtension(extension);
-				
-			}
-		});					
-		
-	}	
-
-	/**
-	 * helper to map child component (which is a list) of Patient resource
-	 * @param frtPatient
-	 * @param jsonRoot - json array as the component value
-	 * @param lst
-	 * @param jsonAttName
-	 * @param path
-	 * @param mapperName
-	 * @return
-	 */
-	private <T extends ResourceComplexType> List<T> mapComponent(Patient  frtPatient, JsonObject jsonRoot, List<T> lst, String jsonAttName, String path, String mapperName) {
-		if (jsonRoot.getAsJsonArray(jsonAttName) != null) {
-			ResourcePair rp = ResourceDictionary.get(mapperName);
-			final ResourceMapper m = ResourceDictionary.getMapper(mapperName).from(rp.getFhir()).to(rp.getFrt());
-			jsonRoot.getAsJsonArray(jsonAttName).forEach(e -> {
-						T t = (T)m.map(e);
-						t.setPath(path);
-						t.setPatient(frtPatient);
-						lst.add(t);
-			});
-		}
-		return lst;
-	}
-
-	/**
-	 * helper to map child component (which is an object) of Patient resource
-	 * @param frtPatient
-	 * @param jsonRoot - the value (json object)
-	 * @param jsonAttName
-	 * @param path
-	 * @param mapperName
-	 * @return
-	 */
-	private <T extends ResourceComplexType> T mapComponent(Patient  frtPatient, JsonObject jsonRoot, String jsonAttName, String path, String mapperName) {
-		T ret = null;
-		if (jsonRoot.getAsJsonObject(jsonAttName) != null) {
-			ResourcePair rp = ResourceDictionary.get(mapperName);
-			final ResourceMapper m = ResourceDictionary.getMapper(mapperName).from(rp.getFhir()).to(rp.getFrt());
-			ret = (T)m.map(jsonRoot.getAsJsonObject(jsonAttName));
-			ret.setPath(path);
-			ret.setPatient(frtPatient);
-		}
-		return ret;
-	}
 }
