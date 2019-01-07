@@ -11,9 +11,6 @@
  */
 package com.frt.dr.service;
 
-import java.util.List;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import com.frt.dr.model.DomainResource;
 
 /**
@@ -21,11 +18,9 @@ import com.frt.dr.model.DomainResource;
  * @author chaye
  */
 public interface RepositoryService {
-
 	<R extends DomainResource> R read(java.lang.Class<?> resourceClazz, String id) 
 		throws RepositoryServiceException;
 	
 	<R extends DomainResource> R save(java.lang.Class<?> resourceClazz, R resource)
 	   throws RepositoryServiceException;
-	
 }

@@ -14,7 +14,7 @@ public class RepositoryApplicationTest {
 			RepositoryApplication repository = (RepositoryApplication)context.getBean(RepositoryApplication.class);	
 			
 			Patient patient = new Patient();
-			patient.setPatientId("03FAC9BB-5C5E-4F26-93EA-750A333B88E5");
+			patient.setId("03FAC9BB-5C5E-4F26-93EA-750A333B88E5");
 			patient.setActive(true);
 			patient.setGender("MALE");
 			PatientHumanName name = new PatientHumanName();

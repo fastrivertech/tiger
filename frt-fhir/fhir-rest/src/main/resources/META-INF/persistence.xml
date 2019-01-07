@@ -17,6 +17,8 @@
 		<class>com.frt.dr.model.base.PatientLink</class>
 		<class>com.frt.dr.model.base.PatientCommunication</class>
 		<class>com.frt.dr.model.base.PatientContact</class>
+		<class>com.frt.dr.model.DomainResource</class>
+		<class>com.frt.dr.model.Resource</class>
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <shared-cache-mode>NONE</shared-cache-mode>		
         <properties>			
@@ -37,6 +39,7 @@
             <property name="javax.persistence.jdbc.user" value="APP"/>
             <property name="javax.persistence.jdbc.password" value="null"/>
 			<!-- eclipselink.ddl-generation: none/create-tables -->
+            <!-- property name="eclipselink.ddl-generation" value="none"/-->		
             <property name="eclipselink.ddl-generation" value="none"/>		
 			<!-- The log level: OFF/SEVERE/WARNING/INFO/CONFIG/FINE/FINER/FINEST/ALL --> 
             <property name="eclipselink.logging.level.sql" value="WARNING"/>

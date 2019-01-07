@@ -52,7 +52,7 @@ ContactPoint	ΣI		                          	Element	Details of a Technology med
 @SequenceGenerator(name = "PATIENT_CONTACTPOINT_SEQ", sequenceName = "PATIENT_CONTACTPOINT_SEQ", allocationSize=1)
 @XmlRootElement
 public class PatientContactPoint implements Serializable, ResourceComplexType {
-    private static final long serialVersionUID = -8321293485415818761L;
+    private static final long serialVersionUID = -8321293485415816190L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_CONTACTPOINT_SEQ")  
@@ -61,10 +61,14 @@ public class PatientContactPoint implements Serializable, ResourceComplexType {
     @Column(name = "contactpoint_id")    
     private String contactpointId;
     
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-    @ManyToOne(optional = false)
-    private Patient patient;
+//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+//    @ManyToOne(optional = false)
+//    private Patient patient;
 
+	@JoinColumn(name = "patient_id", referencedColumnName = "id")
+	@ManyToOne(optional = false)
+	private Patient patient;
+	
     @Size(max = 128)    
     @Column(name = "path")                                            
     private String path;

@@ -29,7 +29,7 @@ public class ResourceMapperFactory {
 		return instance;
 	}
 	
-	public <R extends DomainResource> ResourceMapper create(String type) 
+	public <R extends DomainResource> ResourceMapperInterface create(String type) 
 		throws MapperException {
 		if (type.equalsIgnoreCase("Patient")) {
 			return new PatientResourceMapper();			

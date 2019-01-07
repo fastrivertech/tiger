@@ -9,18 +9,27 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hl7.fhir.dstu3.model.StringType;
+
+import com.frt.dr.model.DomainResource;
+import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
+import com.frt.dr.model.base.Patient;
+import com.frt.dr.model.base.PatientExtension;
 import com.frt.fhir.model.MapperException;
-import com.frt.fhir.model.ResourceMapper;
+import com.frt.fhir.model.ResourceDictionary;
+import com.frt.fhir.model.ResourceMapperInterface;
+import com.frt.fhir.model.ResourceDictionary.ResourcePair;
 import com.frt.fhir.service.HAPIComplexTypesResource;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import ca.uhn.fhir.context.FhirContext;
 
-public abstract class BaseMapper implements ResourceMapper {
+public abstract class BaseMapper implements ResourceMapperInterface {
 	private static Logger logger = Logger.getLog(BaseMapper.class.getName());
 	private static Localization localizer = Localization.getInstance();
 	protected static String CUST_RS_BEGIN = "{\"resourceType\": \"HAPIComplexTypesResource\",";
@@ -37,15 +46,15 @@ public abstract class BaseMapper implements ResourceMapper {
 	protected static String COMMUNICATION_TAG = "\"communication\"";
 	protected static String GENERALPRACTITIONER_TAG = "\"generalPractitioner\"";
 	protected static String ANIMAL_TAG = "\"animal\"";
-	private static String NV_PAIR_FORMAT = "\"{0}\":\"{1}\"";
-	private static String NV_PAIR_FORMAT_ARRAY = "\"{0}\":{1}";
-	private static String NV_PAIR_FORMAT_OBJ = "\"{0}\":{1}";
-	private static String NV_SEP = ":";
-	private static String VAL_DEL = ",";
-	private static String ARRAY_BEGIN = "[";
-	private static String ARRAY_END = "]";
-	private static String OBJ_BEGIN = "{";
-	private static String OBJ_END = "}";
+	protected static String NV_PAIR_FORMAT = "\"{0}\":\"{1}\"";
+	protected static String NV_PAIR_FORMAT_ARRAY = "\"{0}\":{1}";
+	protected static String NV_PAIR_FORMAT_OBJ = "\"{0}\":{1}";
+	protected static String NV_SEP = ":";
+	protected static String VAL_DEL = ",";
+	protected static String ARRAY_BEGIN = "[";
+	protected static String ARRAY_END = "]";
+	protected static String OBJ_BEGIN = "{";
+	protected static String OBJ_END = "}";
 
 	protected static Gson gconverter = new Gson();
 
@@ -57,41 +66,51 @@ public abstract class BaseMapper implements ResourceMapper {
 		parser = (ca.uhn.fhir.parser.JsonParser) context.newJsonParser();
 		context.registerCustomType(HAPIComplexTypesResource.class);
 	}
-	
-	@Override
-	public abstract ResourceMapper from(Class source);
 
 	@Override
-	public abstract ResourceMapper to(Class target);
+	public abstract ResourceMapperInterface from(Class source);
+
+	@Override
+	public abstract ResourceMapperInterface to(Class target);
 
 	@Override
 	public abstract Object map(Object source) throws MapperException;
 
+	@Override
+	public Object map(Object source, Object target) throws MapperException {
+		throw new UnsupportedOperationException("Mapping with target instance given is not supported for this mapper, mapper :" + this.getClass().getCanonicalName());
+	}
 	/**
 	 * 
-	 * @param type - one of the HAPI FHIR complex types
-	 * @param message - json string of the complex type as indicated by <code>type</code>
+	 * @param type
+	 *            - one of the HAPI FHIR complex types
+	 * @param message
+	 *            - json string of the complex type as indicated by
+	 *            <code>type</code>
 	 * @return the HAPI object of the type;
 	 */
 	public <T extends org.hl7.fhir.dstu3.model.Type> T parseComplexType(Class<T> type, String message) {
-		return (T)parseComplexType(type.getSimpleName().toLowerCase(), message);
+		return (T) parseComplexType(type.getSimpleName().toLowerCase(), message);
 	}
 
 	/**
 	 * 
-	 * @param type - one of the HAPI FHIR complex types
-	 * @param message - json string of array of element of complex type as indicated by <code>type</code> 
+	 * @param type
+	 *            - one of the HAPI FHIR complex types
+	 * @param message
+	 *            - json string of array of element of complex type as indicated by
+	 *            <code>type</code>
 	 * @return the array of elements of HAPI complex type
 	 */
 	public <T extends org.hl7.fhir.dstu3.model.Type> List<T> parseComplexTypeArray(Class<T> type, String message) {
-		return (List)parseComplexType(type.getSimpleName().toLowerCase()+"Array", message);
+		return (List) parseComplexType(type.getSimpleName().toLowerCase() + "Array", message);
 	}
 
 	private Object parseComplexType(String fieldName, String message) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(CUST_RS_BEGIN).append("\"").append(fieldName).append("\":").append(message).append(CUST_RS_END);
 		HAPIComplexTypesResource rs = this.parser.parseResource(HAPIComplexTypesResource.class, sb.toString());
-		Field field=null;
+		Field field = null;
 		try {
 			field = rs.getClass().getDeclaredField(fieldName);
 		} catch (NoSuchFieldException | SecurityException e) {
@@ -109,37 +128,40 @@ public abstract class BaseMapper implements ResourceMapper {
 		return value;
 	}
 
-//	public <T extends org.hl7.fhir.dstu3.model.Type> Map<Class<T>, Object> parseComplexTypeArray(Class<T>[] types, String[] messages, Boolean[] isArray) {
-//		StringBuilder sb = new StringBuilder();
-//		Map<Class<T>, Object> ret = new HashMap<Class<T>, Object>();
-//		sb.append(CUST_RS_BEGIN);
-//		boolean first = true;
-//		for (int i=0; i<types.length;i++) {
-//			if (!first) {
-//				sb.append(VAL_DEL);
-//			}
-//			if (isArray[i]) {
-//				sb.append("\"").append(types[i].getSimpleName().toLowerCase()).append("Array").append("\":").append(messages[i]);
-//			}
-//			else {
-//				sb.append("\"").append(types[i].getSimpleName().toLowerCase()).append("\":").append(messages[i]);
-//			}
-//		}
-//		sb.append(CUST_RS_END);
-//		HAPIComplexTypesResource rs = this.parser.parseResource(HAPIComplexTypesResource.class, sb.toString());
-//		return ret;
-//	}
+	// public <T extends org.hl7.fhir.dstu3.model.Type> Map<Class<T>, Object>
+	// parseComplexTypeArray(Class<T>[] types, String[] messages, Boolean[] isArray)
+	// {
+	// StringBuilder sb = new StringBuilder();
+	// Map<Class<T>, Object> ret = new HashMap<Class<T>, Object>();
+	// sb.append(CUST_RS_BEGIN);
+	// boolean first = true;
+	// for (int i=0; i<types.length;i++) {
+	// if (!first) {
+	// sb.append(VAL_DEL);
+	// }
+	// if (isArray[i]) {
+	// sb.append("\"").append(types[i].getSimpleName().toLowerCase()).append("Array").append("\":").append(messages[i]);
+	// }
+	// else {
+	// sb.append("\"").append(types[i].getSimpleName().toLowerCase()).append("\":").append(messages[i]);
+	// }
+	// }
+	// sb.append(CUST_RS_END);
+	// HAPIComplexTypesResource rs =
+	// this.parser.parseResource(HAPIComplexTypesResource.class, sb.toString());
+	// return ret;
+	// }
 
 	private Object invokeGetter(HAPIComplexTypesResource rs, String attr) {
 		Object ret = null;
 		Method getter = null;
 		try {
-			getter = rs.getClass().getMethod("get"+attr);
+			getter = rs.getClass().getMethod("get" + attr);
 		} catch (NoSuchMethodException | SecurityException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (getter!=null) {
+		if (getter != null) {
 			try {
 				ret = getter.invoke(rs);
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
@@ -155,17 +177,20 @@ public abstract class BaseMapper implements ResourceMapper {
 		if (frtResource instanceof com.frt.dr.model.base.Patient) {
 			com.frt.dr.model.base.Patient p = (com.frt.dr.model.base.Patient) frtResource;
 			sb.append(PAT_RS_BEGIN);
-
-			addNVpair(sb, "id", p.getPatientId());
+			
+			addNVpair(sb, "id", p.getId());
+			
+			appendDRS(sb, (DomainResource)p);
+			
 			addNVpair(sb, "active", p.getActive());
 			addNVpair(sb, "gender", p.getGender());
-			
-			if (p.getBirthDate()!=null) {
+
+			if (p.getBirthDate() != null) {
 				addNVpair(sb, "birthDate", (new SimpleDateFormat("yyyy-MM-dd")).format(p.getBirthDate()));
 			}
-			
+
 			addNVpair(sb, "deceasedBoolean", p.getDeceasedBoolean());
-			
+
 			if (p.getDeceasedDateTime() != null) {
 				addNVpair(sb, "deceasedDateTime", (new SimpleDateFormat("yyyy-MM-dd"))
 						.format(new java.util.Date(p.getDeceasedDateTime().getTime())));
@@ -186,7 +211,7 @@ public abstract class BaseMapper implements ResourceMapper {
 			appendArray(sb, p.getPhotos(), PHOTO_TAG);
 			appendArray(sb, p.getContacts(), CONTACT_TAG);
 
-			if (p.getAnimal()!=null) {
+			if (p.getAnimal() != null) {
 				addNVpairObject(sb, "animal", componentToJson(p.getAnimal()));
 			}
 
@@ -202,6 +227,28 @@ public abstract class BaseMapper implements ResourceMapper {
 			sb.append(PAT_RS_END);
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * append domain resource contents
+	 * @param sb
+	 * @param p
+	 */
+	private static void appendDRS(StringBuilder sb, DomainResource p) {
+		appendRS(sb, (Resource)p);
+		addNVpairObject(sb, "text", p.getTxt());
+		addNVpairArray(sb, "contained", p.getContained());
+	}
+
+	/**
+	 * append super super class content
+	 * @param sb
+	 * @param p
+	 */
+	private static void appendRS(StringBuilder sb, Resource p) {
+		addNVpairObject(sb, "meta", p.getMeta());
+		addNVpair(sb, "implicitRules", p.getImplicitRules());
+		addNVpair(sb, "language", p.getLanguage());
 	}
 
 	public static String componentToJson(ResourceComplexType frtComponent) {
@@ -252,9 +299,9 @@ public abstract class BaseMapper implements ResourceMapper {
 			addNVpair(sb, "title", component.getTitle());
 			addNVpair(sb, "url", component.getUrl());
 			addNVpair(sb, "size", component.getSize());
-			if (component.getCreation()!=null) {
+			if (component.getCreation() != null) {
 				addNVpair(sb, "creation", (new SimpleDateFormat("yyyy-MM-dd"))
-				.format(new java.util.Date(component.getCreation().getTime())));
+						.format(new java.util.Date(component.getCreation().getTime())));
 			}
 			addNVpair(sb, "data", component.getData());
 			addNVpair(sb, "hash", component.getHash());
@@ -365,10 +412,116 @@ public abstract class BaseMapper implements ResourceMapper {
 				if (!firstInArray(sb)) {
 					sb.append(VAL_DEL);
 				}
-				sb.append(componentToJson((ResourceComplexType)e));
+				sb.append(componentToJson((ResourceComplexType) e));
 			});
 			sb.append(ARRAY_END);
 		}
+	}
+
+	/**
+	 * helper to map child component (which is a list) of Patient resource
+	 * 
+	 * @param frtPatient
+	 * @param jsonRoot
+	 *            - json array as the component value
+	 * @param lst
+	 * @param jsonAttName
+	 * @param path
+	 * @param mapperName
+	 * @return
+	 */
+	protected <T extends ResourceComplexType> List<T> mapComponent(Patient frtPatient, JsonObject jsonRoot, List<T> lst,
+			String jsonAttName, String path, String mapperName) {
+		if (jsonRoot.getAsJsonArray(jsonAttName) != null) {
+			ResourcePair rp = ResourceDictionary.get(mapperName);
+			final ResourceMapperInterface m = ResourceDictionary.getMapper(mapperName).from(rp.getFhir())
+					.to(rp.getFrt());
+			jsonRoot.getAsJsonArray(jsonAttName).forEach(e -> {
+				T t = (T) m.map(e);
+				t.setPath(path);
+				t.setPatient(frtPatient);
+				lst.add(t);
+			});
+		}
+		return lst;
+	}
+
+	protected <T extends ResourceComplexType> T mapComponent(DomainResource frtDomainResource, JsonObject jsonRoot,
+			String jsonAttName, String path, String mapperName) {
+		T ret = null;
+		if (jsonRoot.getAsJsonObject(jsonAttName) != null) {
+			ResourcePair rp = ResourceDictionary.get(mapperName);
+			final ResourceMapperInterface m = ResourceDictionary.getMapper(mapperName).from(rp.getFhir())
+					.to(rp.getFrt());
+			ret = (T) m.map(jsonRoot.getAsJsonObject(jsonAttName));
+		}
+		return ret;
+	}
+
+	/**
+	 * helper to map child component (which is an object) of Patient resource
+	 * 
+	 * @param frtPatient
+	 * @param jsonRoot
+	 *            - the value (json object)
+	 * @param jsonAttName
+	 * @param path
+	 * @param mapperName
+	 * @return
+	 */
+	protected <T extends ResourceComplexType> T mapComponent(Patient frtPatient, JsonObject jsonRoot,
+			String jsonAttName, String path, String mapperName) {
+		T ret = null;
+		if (jsonRoot.getAsJsonObject(jsonAttName) != null) {
+			ResourcePair rp = ResourceDictionary.get(mapperName);
+			final ResourceMapperInterface m = ResourceDictionary.getMapper(mapperName).from(rp.getFhir())
+					.to(rp.getFrt());
+			ret = (T) m.map(jsonRoot.getAsJsonObject(jsonAttName));
+			ret.setPath(path);
+			ret.setPatient(frtPatient);
+		}
+		return ret;
+	}
+
+	protected void addExtensions(com.frt.dr.model.base.Patient frtPatient,
+			List<org.hl7.fhir.dstu3.model.Extension> extensions, String path) {
+
+		List<PatientExtension> patientExtensions = frtPatient.getExtensions();
+		extensions.forEach(extension -> {
+			PatientExtension patientExtension = new PatientExtension();
+			patientExtension.setPatient(frtPatient);
+			patientExtension.setPath(path);
+			patientExtension.setUrl(extension.getUrl());
+			if (extension.hasValue()) {
+				patientExtension.setValue(extension.getValue().toString());
+			}
+			patientExtensions.add(patientExtension);
+		});
+
+	}
+
+	protected void getExtensions(org.hl7.fhir.dstu3.model.Patient hapiPatient, List<PatientExtension> patientExtensions,
+			String path) {
+		patientExtensions.forEach(patientExtension -> {
+			// patient.extension
+			if (path.equalsIgnoreCase("patient") && path.equalsIgnoreCase(patientExtension.getPath())) {
+				org.hl7.fhir.dstu3.model.Extension extension = new org.hl7.fhir.dstu3.model.Extension();
+				extension.setUrl(patientExtension.getUrl());
+				extension.setValue(new StringType(patientExtension.getValue()));
+				hapiPatient.addExtension(extension);
+			}
+			// patient.birthdate.extension
+			if (path.equalsIgnoreCase("patient.birthdate") && path.equalsIgnoreCase(patientExtension.getPath())) {
+				org.hl7.fhir.dstu3.model.Extension extension = new org.hl7.fhir.dstu3.model.Extension();
+				extension.setUrl(patientExtension.getUrl());
+				String value = patientExtension.getValue();
+				value = value.substring(value.indexOf("[") + 1, value.indexOf("]") - 1);
+				extension.setValue(new StringType(value)); // => DateTimeType
+				hapiPatient.getBirthDateElement().addExtension(extension);
+
+			}
+		});
+
 	}
 
 }

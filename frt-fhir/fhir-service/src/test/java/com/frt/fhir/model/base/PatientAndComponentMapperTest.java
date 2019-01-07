@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,7 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.frt.fhir.model.ResourceDictionary;
-import com.frt.fhir.model.ResourceMapper;
+import com.frt.fhir.model.ResourceMapperInterface;
 import com.frt.fhir.model.ResourceMapperFactory;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -31,7 +32,7 @@ public class PatientAndComponentMapperTest {
 		ca.uhn.fhir.parser.JsonParser parser = (ca.uhn.fhir.parser.JsonParser) context.newJsonParser();
 
 		ResourceMapperFactory factory = ResourceMapperFactory.getInstance();
-		ResourceMapper mapper = factory.create("Patient");
+		ResourceMapperInterface mapper = factory.create("Patient");
 		File f = new File("src/test/data/fhir_patient_resource_sample_6k.json");
 		FileReader fr = null;
 		try {
@@ -106,10 +107,17 @@ public class PatientAndComponentMapperTest {
 		String display = frt.getGeneralPractitioners().get(0).getDisplay();
 		assertTrue("Patient.generalPractitioner(0).display not empty.", !display.isEmpty());
 
+		assertNotNull("Expect Resource.meta", frt.getMeta());
+		assertNotNull("Expect DomainResource.text", frt.getTxt());
+		System.out.println("language=" + frt.getLanguage());
+		assertTrue("Expect Resource.language = ru", frt.getLanguage()!=null&&frt.getLanguage().equals("ru"));
+		System.out.println("contained=" + frt.getContained());
+		assertNotNull("Expect DomainResource.contained.", frt.getContained());
+		
 		String frtStr = BaseMapper.resourceToJson(frt);
-//
+
 //		writeFile("src/test/data/frt_patient_sample_gold.json", frtStr);
-//		
+		
 		try {
 			String gold = readFromFile("src/test/data/frt_patient_sample_gold.json");
 			System.out.println("frt=" + frtStr);
@@ -131,24 +139,24 @@ public class PatientAndComponentMapperTest {
 		return new String(Files.readAllBytes(Paths.get(filePath)));
 	}
 
-//	private void writeFile(String filePath, String content) {
-//		FileWriter fw=null;
-//		try {
-//			fw = new FileWriter(new File(filePath));
-//			fw.write(content);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		finally {
-//			if (fw!=null) {
-//				try {
-//					fw.close();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//	}
+	private void writeFile(String filePath, String content) {
+		FileWriter fw=null;
+		try {
+			fw = new FileWriter(new File(filePath));
+			fw.write(content);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if (fw!=null) {
+				try {
+					fw.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 }

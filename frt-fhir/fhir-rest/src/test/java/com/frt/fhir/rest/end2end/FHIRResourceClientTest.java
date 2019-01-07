@@ -44,8 +44,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.frt.fhir.model.ResourceDictionary;
-import com.frt.fhir.model.ResourceMapper;
 import com.frt.fhir.model.ResourceMapperFactory;
+import com.frt.fhir.model.ResourceMapperInterface;
 import com.frt.fhir.model.base.BaseMapper;
 
 import ca.uhn.fhir.context.FhirContext;
@@ -119,7 +119,7 @@ public class FHIRResourceClientTest {
 			System.out.println("Patient retrieved, patient:" + p.toString());
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("PATIENT");
 			ResourceMapperFactory factory = ResourceMapperFactory.getInstance();
-			ResourceMapper mapper = factory.create("Patient");
+			ResourceMapperInterface mapper = factory.create("Patient");
 			Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map(p);
 			if (target instanceof com.frt.dr.model.base.Patient) {
 				String frtStr = BaseMapper.resourceToJson((com.frt.dr.model.base.Patient) target);

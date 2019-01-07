@@ -31,7 +31,7 @@ import com.frt.dr.model.Extension;
 @Table(name = "PATIENT_EXTENSION")
 @SequenceGenerator(name = "PATIENT_EXTENSION_SEQ", sequenceName = "PATIENT_EXTENSION_SEQ", allocationSize=1)
 public class PatientExtension extends Extension {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -1L;
 	 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_EXTENSION_SEQ")
@@ -40,11 +40,15 @@ public class PatientExtension extends Extension {
     @Column(name = "patient_extension_id", nullable = false, updatable = true)    
 	private String patientExtensionId;
 	
-    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-    @ManyToOne(optional = false)
-    private Patient patient;
+//    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+//    @ManyToOne(optional = false)
+//    private Patient patient;
 	    
-    public PatientExtension() { 	
+	@JoinColumn(name = "patient_id", referencedColumnName = "id")
+	@ManyToOne(optional = false)
+	private Patient patient;
+
+	public PatientExtension() { 	
     }
     
     

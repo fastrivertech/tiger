@@ -38,7 +38,7 @@ import com.frt.dr.model.ResourceComplexType;
 @SequenceGenerator(name = "PATIENT_ANIMAL_SEQ", sequenceName = "PATIENT_ANIMAL_SEQ", allocationSize=1)
 @XmlRootElement
 public class PatientAnimal implements Serializable, ResourceComplexType, BackboneElement {
-    private static final long serialVersionUID = -8321293485415818761L;
+    private static final long serialVersionUID = -3321293485415818761L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_ANIMAL_SEQ")  
@@ -47,9 +47,13 @@ public class PatientAnimal implements Serializable, ResourceComplexType, Backbon
     @Column(name = "animal_id")    
     private Long animalId;
     
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-    @ManyToOne(optional = false)
-    private Patient patient;
+//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+//    @ManyToOne(optional = false)
+//    private Patient patient;
+
+	@JoinColumn(name = "patient_id", referencedColumnName = "id")
+	@ManyToOne(optional = false)
+	private Patient patient;
 
     @Lob
     @Column(name = "species")                        

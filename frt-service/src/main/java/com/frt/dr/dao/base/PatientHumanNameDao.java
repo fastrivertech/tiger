@@ -46,19 +46,20 @@ public class PatientHumanNameDao extends BaseDao<PatientHumanName, Long> {
 
 	@Override
 	public Optional<PatientHumanName> save(PatientHumanName name) 
-	    throws DaoException {
-		try {
-			Object[] params = new Object[] {name.getPatient().getPatientId(), name.getUse(), name.getFamily() };
-			int[] types = new int[] {Types.BIGINT, Types.VARCHAR, Types.VARCHAR };
-			int row = this.jdbcTemplate.update(SQL_INSERT, params, types);
-			if (row > 0) {
-				return Optional.of(name);
-			} else {
-				throw new DaoException("failed to persist patient humanname resource");
-			}		
-		} catch (DataAccessException dex) {
-			throw new DaoException(dex);
-		}
+	    /*throws DaoException*/ {
+//		try {
+//			Object[] params = new Object[] {name.getPatient().getPatientId(), name.getUse(), name.getFamily() };
+//			int[] types = new int[] {Types.BIGINT, Types.VARCHAR, Types.VARCHAR };
+//			int row = this.jdbcTemplate.update(SQL_INSERT, params, types);
+//			if (row > 0) {
+//				return Optional.of(name);
+//			} else {
+//				throw new DaoException("failed to persist patient humanname resource");
+//			}		
+//		} catch (DataAccessException dex) {
+//			throw new DaoException(dex);
+//		}
+		return null;
 	}
 
 	@Override

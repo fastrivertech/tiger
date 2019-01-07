@@ -35,7 +35,7 @@ import com.frt.dr.model.ResourceComplexType;
 @SequenceGenerator(name = "PATIENT_CONTACT_SEQ", sequenceName = "PATIENT_CONTACT_SEQ", allocationSize=1)
 @XmlRootElement
 public class PatientContact implements Serializable, ResourceComplexType {
-    private static final long serialVersionUID = -8321293485415818761L;
+    private static final long serialVersionUID = -4321293485415818761L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_CONTACT_SEQ")
@@ -44,6 +44,14 @@ public class PatientContact implements Serializable, ResourceComplexType {
     @Column(name = "contact_id")    
     private Long contactId;
         
+//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+//  @ManyToOne(optional = false)
+//  private Patient patient;
+
+	@JoinColumn(name = "patient_id", referencedColumnName = "id")
+	@ManyToOne(optional = false)
+	private Patient patient;
+
     @Size(max = 32)    
     @Column(name = "gender")                                                
     private String gender;
@@ -72,11 +80,7 @@ public class PatientContact implements Serializable, ResourceComplexType {
     @Column(name = "organization")                                                        
     private String organization;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-    @ManyToOne(optional = false)
-    private Patient patient;
- 
-    /*
+	/*
     private List<PatientExtension> extensions;
     
     private List<PatientElementExtension> elementExtensions;

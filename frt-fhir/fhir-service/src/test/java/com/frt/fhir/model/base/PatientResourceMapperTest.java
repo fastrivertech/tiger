@@ -6,7 +6,7 @@ import org.hl7.fhir.dstu3.model.HumanName;
 import org.hl7.fhir.dstu3.model.HumanName.NameUse;
 import org.junit.Test;
 import com.frt.fhir.model.ResourceDictionary;
-import com.frt.fhir.model.ResourceMapper;
+import com.frt.fhir.model.ResourceMapperInterface;
 import com.frt.fhir.model.ResourceMapperFactory;
 
 public class PatientResourceMapperTest {
@@ -22,7 +22,7 @@ public class PatientResourceMapperTest {
 		name.setUse(NameUse.OFFICIAL);
 		name.setFamily("Charles");
 		patient1.getName().add(name);
-		ResourceMapper mapper = ResourceMapperFactory.getInstance().create("Patient");		
+		ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create("Patient");		
 		ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("Patient");
 		// from fhir to frt
 		Object target1 = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)patient1);		

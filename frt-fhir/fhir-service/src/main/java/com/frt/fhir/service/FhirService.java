@@ -15,7 +15,7 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import com.frt.fhir.model.ResourceMapperFactory;
-import com.frt.fhir.model.ResourceMapper;
+import com.frt.fhir.model.ResourceMapperInterface;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.dr.model.base.Patient;
@@ -45,7 +45,7 @@ public class FhirService {
 	public <R extends DomainResource> Optional<R> create(@Nonnull String type, @Nonnull R resource) 
 		throws FhirServiceException {	
 		try {
-			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);		
+			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)resource);
 			repository.create(resourcePair.getFrt(), target);
@@ -59,7 +59,7 @@ public class FhirService {
 		throws FhirServiceException {
 		Optional<R> retVal = Optional.empty();
 		try {
-			ResourceMapper mapper = ResourceMapperFactory.getInstance().create(type);
+			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			Object resource = repository.read(resourcePair.getFrt(), id);
 			Object target = null;

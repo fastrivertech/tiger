@@ -8,7 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import com.frt.fhir.model.MapperException;
-import com.frt.fhir.model.ResourceMapper;
+import com.frt.fhir.model.ResourceMapperInterface;
 
 public class HAPIDataTypeParserTest {
 	private static final String MARITAL_STATUS = "\"codeableconcept\": {\r\n" + 
@@ -123,13 +123,13 @@ public class HAPIDataTypeParserTest {
 		mapper = new BaseMapper() {
 
 			@Override
-			public ResourceMapper from(Class source) {
+			public ResourceMapperInterface from(Class source) {
 				// TODO Auto-generated method stub
 				return null;
 			}
 
 			@Override
-			public ResourceMapper to(Class target) {
+			public ResourceMapperInterface to(Class target) {
 				// TODO Auto-generated method stub
 				return null;
 			}

@@ -33,7 +33,7 @@ import com.frt.dr.model.ResourceComplexType;
 @SequenceGenerator(name = "PATIENT_HUMANNAME_SEQ", sequenceName = "PATIENT_HUMANNAME_SEQ", allocationSize=1)
 @XmlRootElement
 public class PatientHumanName implements Serializable, ResourceComplexType {
-    private static final long serialVersionUID = -8321293485415818761L;
+    private static final long serialVersionUID = -8321293485415818091L;
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_HUMANNAME_SEQ")
@@ -42,6 +42,14 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
     @Column(name = "humanname_id")    
     private String humannameId;
         
+//  @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+//  @ManyToOne(optional = false)
+//  private Patient patient;
+
+    @JoinColumn(name = "patient_id", referencedColumnName = "id")
+	@ManyToOne(optional = false)
+	private Patient patient;
+
     @Size(max = 128)    
     @Column(name = "path")                                                
     private String path;
@@ -74,10 +82,6 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
     @Column(name = "period")                                                        
     private String period;
     
-    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-    @ManyToOne(optional = false)
-    private Patient patient;
- 
     /*
     private List<PatientExtension> extensions;
     

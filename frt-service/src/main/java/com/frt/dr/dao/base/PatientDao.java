@@ -27,16 +27,12 @@ import javax.persistence.TransactionRequiredException;
 import javax.persistence.PessimisticLockException;
 import javax.persistence.LockTimeoutException;
 import javax.persistence.PersistenceException;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Repository;
-import org.springframework.dao.DataAccessException;
+
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.dao.BaseDao;
 import com.frt.dr.dao.DaoException;
-import com.frt.dr.dao.DaoFactory;
-import com.frt.dr.model.base.PatientHumanName;
 
 /**
  * PatientDao class
@@ -75,7 +71,7 @@ public class PatientDao extends BaseDao<Patient,String> {
 				patient.getManagingOrganization().setReferenceId(null);
 				patient.getManagingOrganization().setPath("patient.managingOrganization");
 			}
-
+	
 			em.persist(patient);
 			transaction.commit();
 			return Optional.of(patient);
@@ -96,7 +92,7 @@ public class PatientDao extends BaseDao<Patient,String> {
 		throws DaoException {
 		try {
 	   	    Query query = em.createNamedQuery("getPatientById");
-            query.setParameter("patientId", id);
+            query.setParameter("id", id);
             List<Patient> patients = (List<Patient>) query.getResultList();          							
             Optional<Patient> patient = null;
             if (patients.size()>0) {

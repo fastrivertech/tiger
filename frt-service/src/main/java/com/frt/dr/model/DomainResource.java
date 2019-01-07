@@ -12,48 +12,104 @@
 package com.frt.dr.model;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.io.Serializable;
-import java.util.Comparator;
-import java.sql.Date;
-import java.sql.Timestamp;
 import java.sql.Clob;
-import javax.persistence.Entity;
+
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
+import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
+
+import com.frt.dr.model.base.PatientExtension;
 
 /**
  *  DomainResource class
  * @author chaye
  */
-public class DomainResource {
+@Entity
+@DiscriminatorValue("DOMAIN_RESOURCE")
+@Table(name = "DOMAIN_RESOURCE")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name="CONCRETE_RESOURCE_TYPE")
+//@SequenceGenerator(name = "DOMAIN_RESOURCE_SEQ", sequenceName = "DOMAIN_RESOURCE_SEQ", allocationSize=1)
+@NamedQueries({
+    @NamedQuery(name = "getDomainResourceById", query = "SELECT DR FROM DomainResource DR WHERE DR.id = :id")
+})
+public class DomainResource extends Resource {
+    private static final long serialVersionUID = -8321293485415818761L;
 
-	private String domainResourceId;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "DOMAIN_RESOURCE_SEQ")  
+//    @Basic(optional = false)
+//    @NotNull(message = "DomainResource logical Id cannot be Null")
+//    @Size(max = 64)    
+//    @Column(name = "domain_resource_id", nullable = false, updatable=false)
+//	private String domainResourceId;
+//	
+//    @NotNull(message = "Resource logical Id cannot be Null")
+//    @Column(name = "resource_id")    
+//	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
+//    @OneToOne(mappedBy = "resource", cascade = CascadeType.ALL)
+//	private Resource resource;
 	
-	private String resourceId;
+    @Lob
+    @Column(name = "txt")                        
+	private String txt;
 	
-	private Clob txt;
-	
-	private Clob contained;
-	
-	private List<Extension> domainExtension;
+    @Lob
+    @Column(name = "contained")                        
+	private String contained;
 
-	private List<Extension> modifierExtension;
+//	private List<PatientExtension> extension;
+//
+//	private List<PatientExtension> modifierExtension;
+	
+//	public String getDomainResourceId() {
+//		return domainResourceId;
+//	}
+//
+//	public void setDomainResourceId(String domainResourceId) {
+//		this.domainResourceId = domainResourceId;
+//	}
+//
+//	public Resource getResource() {
+//		return resource;
+//	}
+//
+//	public void setResource(Resource resource) {
+//		this.resource = resource;
+//	}
+
+	public String getTxt() {
+		return txt;
+	}
+
+	public void setTxt(String txt) {
+		this.txt = txt;
+	}
+
+	public String getContained() {
+		return contained;
+	}
+
+	public void setContained(String contained) {
+		this.contained = contained;
+	}
 	
 }

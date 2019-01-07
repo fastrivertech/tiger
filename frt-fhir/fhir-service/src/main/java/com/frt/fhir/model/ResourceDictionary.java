@@ -53,60 +53,66 @@ public class ResourceDictionary {
 	static Hashtable<String, ResourcePair> resourcePairs = new Hashtable<String, ResourcePair>();
 	
 	static {
-		resourcePairs.put(ResourceMapper.PATIENT, new ResourcePair(org.hl7.fhir.dstu3.model.Patient.class, com.frt.dr.model.base.Patient.class));
-		resourcePairs.put(ResourceMapper.PATIENT_HUMANNAME, new ResourcePair(org.hl7.fhir.dstu3.model.HumanName.class, com.frt.dr.model.base.PatientHumanName.class));		
-		resourcePairs.put(ResourceMapper.PATIENT_IDENTIFIER, new ResourcePair(org.hl7.fhir.dstu3.model.Identifier.class, com.frt.dr.model.base.PatientIdentifier.class));		
-		resourcePairs.put(ResourceMapper.PATIENT_ADDRESS, new ResourcePair(org.hl7.fhir.dstu3.model.Address.class, com.frt.dr.model.base.PatientAddress.class));		
-		resourcePairs.put(ResourceMapper.PATIENT_REFERENCE, new ResourcePair(org.hl7.fhir.dstu3.model.Reference.class, com.frt.dr.model.base.PatientReference.class));		
-		resourcePairs.put(ResourceMapper.PATIENT_CODEABLECONCEPT, new ResourcePair(org.hl7.fhir.dstu3.model.CodeableConcept.class, com.frt.dr.model.base.PatientCodeableConcept.class));		
-		resourcePairs.put(ResourceMapper.PATIENT_ATTACHMENT, new ResourcePair(org.hl7.fhir.dstu3.model.Attachment.class, com.frt.dr.model.base.PatientAttachment.class));		
-		resourcePairs.put(ResourceMapper.PATIENT_CONTACTPOINT, new ResourcePair(org.hl7.fhir.dstu3.model.ContactPoint.class, com.frt.dr.model.base.PatientContactPoint.class));		
-		resourcePairs.put(ResourceMapper.PATIENT_CONTACT, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientContact.class));		
-		resourcePairs.put(ResourceMapper.PATIENT_ANIMAL, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientAnimal.class));		
-		resourcePairs.put(ResourceMapper.PATIENT_COMMUNICATION, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientCommunication.class));		
-		resourcePairs.put(ResourceMapper.PATIENT_LINK, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientLink.class));		
+		resourcePairs.put(ResourceMapperInterface.DOMAINRESOURCE, new ResourcePair(org.hl7.fhir.dstu3.model.DomainResource.class, com.frt.dr.model.DomainResource.class));
+		resourcePairs.put(ResourceMapperInterface.RESOURCE, new ResourcePair(org.hl7.fhir.dstu3.model.Resource.class, com.frt.dr.model.Resource.class));
+		resourcePairs.put(ResourceMapperInterface.PATIENT, new ResourcePair(org.hl7.fhir.dstu3.model.Patient.class, com.frt.dr.model.base.Patient.class));
+		resourcePairs.put(ResourceMapperInterface.PATIENT_HUMANNAME, new ResourcePair(org.hl7.fhir.dstu3.model.HumanName.class, com.frt.dr.model.base.PatientHumanName.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_IDENTIFIER, new ResourcePair(org.hl7.fhir.dstu3.model.Identifier.class, com.frt.dr.model.base.PatientIdentifier.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_ADDRESS, new ResourcePair(org.hl7.fhir.dstu3.model.Address.class, com.frt.dr.model.base.PatientAddress.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_REFERENCE, new ResourcePair(org.hl7.fhir.dstu3.model.Reference.class, com.frt.dr.model.base.PatientReference.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_CODEABLECONCEPT, new ResourcePair(org.hl7.fhir.dstu3.model.CodeableConcept.class, com.frt.dr.model.base.PatientCodeableConcept.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_ATTACHMENT, new ResourcePair(org.hl7.fhir.dstu3.model.Attachment.class, com.frt.dr.model.base.PatientAttachment.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_CONTACTPOINT, new ResourcePair(org.hl7.fhir.dstu3.model.ContactPoint.class, com.frt.dr.model.base.PatientContactPoint.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_CONTACT, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientContact.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_ANIMAL, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientAnimal.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_COMMUNICATION, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientCommunication.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_LINK, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientLink.class));		
 	}
 	
 	static Hashtable<String, Class> resources = new Hashtable<String, Class>();
 
 	static {
-		resources.put(ResourceMapper.PATIENT, com.frt.dr.model.base.Patient.class);
+		resources.put(ResourceMapperInterface.PATIENT, com.frt.dr.model.base.Patient.class);
+		resources.put(ResourceMapperInterface.RESOURCE, com.frt.dr.model.Resource.class);
+		resources.put(ResourceMapperInterface.DOMAINRESOURCE, com.frt.dr.model.DomainResource.class);
 	}
 
 	static Hashtable<String, Class> complextypes = new Hashtable<String, Class>();
 
 	static {
-		complextypes.put(ResourceMapper.PATIENT_HUMANNAME, com.frt.dr.model.base.PatientHumanName.class);		
-		complextypes.put(ResourceMapper.PATIENT_IDENTIFIER, com.frt.dr.model.base.PatientIdentifier.class);		
-		complextypes.put(ResourceMapper.PATIENT_ADDRESS, com.frt.dr.model.base.PatientAddress.class);		
-		complextypes.put(ResourceMapper.PATIENT_REFERENCE, com.frt.dr.model.base.PatientReference.class);		
-		complextypes.put(ResourceMapper.PATIENT_CODEABLECONCEPT, com.frt.dr.model.base.PatientCodeableConcept.class);		
-		complextypes.put(ResourceMapper.PATIENT_ATTACHMENT, com.frt.dr.model.base.PatientAttachment.class);		
-		complextypes.put(ResourceMapper.PATIENT_CONTACTPOINT, com.frt.dr.model.base.PatientContactPoint.class);		
-		complextypes.put(ResourceMapper.PATIENT_CONTACT, com.frt.dr.model.base.PatientContact.class);		
-		complextypes.put(ResourceMapper.PATIENT_ANIMAL, com.frt.dr.model.base.PatientAnimal.class);		
-		complextypes.put(ResourceMapper.PATIENT_COMMUNICATION, com.frt.dr.model.base.PatientCommunication.class);		
-		complextypes.put(ResourceMapper.PATIENT_LINK, com.frt.dr.model.base.PatientLink.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_HUMANNAME, com.frt.dr.model.base.PatientHumanName.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_IDENTIFIER, com.frt.dr.model.base.PatientIdentifier.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_ADDRESS, com.frt.dr.model.base.PatientAddress.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_REFERENCE, com.frt.dr.model.base.PatientReference.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_CODEABLECONCEPT, com.frt.dr.model.base.PatientCodeableConcept.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_ATTACHMENT, com.frt.dr.model.base.PatientAttachment.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_CONTACTPOINT, com.frt.dr.model.base.PatientContactPoint.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_CONTACT, com.frt.dr.model.base.PatientContact.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_ANIMAL, com.frt.dr.model.base.PatientAnimal.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_COMMUNICATION, com.frt.dr.model.base.PatientCommunication.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_LINK, com.frt.dr.model.base.PatientLink.class);		
 	}
 
 	static Hashtable<String, Class> mappers = new Hashtable<String, Class>();
 
 	static {
-		mappers.put(ResourceMapper.PATIENT, com.frt.fhir.model.base.PatientResourceMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_HUMANNAME, com.frt.fhir.model.base.PatientHumanNameMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_IDENTIFIER, com.frt.fhir.model.base.PatientIdentifierMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_ADDRESS, com.frt.fhir.model.base.PatientAddressMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_REFERENCE, com.frt.fhir.model.base.PatientReferenceMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_CODEABLECONCEPT, com.frt.fhir.model.base.PatientCodeableConceptMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_ATTACHMENT, com.frt.fhir.model.base.PatientAttachmentMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_CONTACTPOINT, com.frt.fhir.model.base.PatientContactPointMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_CONTACT, com.frt.fhir.model.base.PatientContactMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_ANIMAL, com.frt.fhir.model.base.PatientAnimalMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_COMMUNICATION, com.frt.fhir.model.base.PatientCommunicationMapper.class);		
-		mappers.put(ResourceMapper.PATIENT_LINK, com.frt.fhir.model.base.PatientLinkMapper.class);		
+		mappers.put(ResourceMapperInterface.RESOURCE, com.frt.fhir.model.base.ResourceMapper.class);		
+		mappers.put(ResourceMapperInterface.DOMAINRESOURCE, com.frt.fhir.model.base.DomainResourceMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT, com.frt.fhir.model.base.PatientResourceMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_HUMANNAME, com.frt.fhir.model.base.PatientHumanNameMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_IDENTIFIER, com.frt.fhir.model.base.PatientIdentifierMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_ADDRESS, com.frt.fhir.model.base.PatientAddressMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_REFERENCE, com.frt.fhir.model.base.PatientReferenceMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_CODEABLECONCEPT, com.frt.fhir.model.base.PatientCodeableConceptMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_ATTACHMENT, com.frt.fhir.model.base.PatientAttachmentMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_CONTACTPOINT, com.frt.fhir.model.base.PatientContactPointMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_CONTACT, com.frt.fhir.model.base.PatientContactMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_ANIMAL, com.frt.fhir.model.base.PatientAnimalMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_COMMUNICATION, com.frt.fhir.model.base.PatientCommunicationMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_LINK, com.frt.fhir.model.base.PatientLinkMapper.class);		
 	}
 
-	public static <T extends ResourceMapper> T getMapper(String type) {
+	public static <T extends ResourceMapperInterface> T getMapper(String type) {
 		BaseMapper instance = null;
 		try {
 			instance = (BaseMapper)(mappers.get(type).getConstructor().newInstance());
