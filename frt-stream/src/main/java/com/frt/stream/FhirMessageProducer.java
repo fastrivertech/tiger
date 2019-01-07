@@ -55,7 +55,7 @@ public class FhirMessageProducer {
 			String messageId = "message_" + ++id;
 			producer.send(new ProducerRecord<String, String>("FhirTopic", messageId + " " + message));
 			producer.commitTransaction();
-			System.out.println("    " + messageId + " sent successfully");
+			System.out.println("    sent " + messageId + " " + message);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

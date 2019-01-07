@@ -22,21 +22,28 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 
 public class FhirMessageConsumer {
 
-	public static void main(String[] args) {
+	private Consumer<Long, String> consumer;
+	
+	public FhirMessageConsumer() {
 
 		String TOPIC = "FhirTopic";
 		String BOOTSTRAP_SERVERS = "localhost:9092";
 		Properties props = new Properties();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "FhirMessageConsumer");
+		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+		props.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, "read_committed");
+		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-		final Consumer<Long, String> consumer = new KafkaConsumer<>(props);
+		consumer = new KafkaConsumer<>(props);
 		consumer.subscribe(Collections.singletonList(TOPIC));
+	}
 
+	public void receives() {
 		int count = 0;
 		while (true) {
-			final ConsumerRecords<Long, String> consumerRecords = consumer.poll(5000);
+			ConsumerRecords<Long, String> consumerRecords = consumer.poll(1000);
 			if (consumerRecords.count() == 0) {
 				count++;
 				if (count > 10)
@@ -45,12 +52,26 @@ public class FhirMessageConsumer {
 					continue;
 			}
 			consumerRecords.forEach(record -> {
-				System.out.printf("Consumer Record:(%s, %s, %d, %d)\n", 
+				System.out.printf("    received: (%s, %s, %d, %d)\n", 
 						           record.key(), record.value(), record.partition(), record.offset());
 			});
 			consumer.commitAsync();
 		}
+		consumer.close();		
+	}
+	
+	public void receive() {
+		ConsumerRecords<Long, String> consumerRecords = consumer.poll(5000);
+		consumerRecords.forEach(record -> {
+			System.out.printf("    received: (%s, %s, %d, %d)\n", 
+					           record.key(), record.value(), record.partition(), record.offset());
+		});
+		consumer.commitSync();
 		consumer.close();
 	}
-
+	
+	
+	public static void main(String[] args) {
+		new FhirMessageConsumer().receives();
+	}
 }
