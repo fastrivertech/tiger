@@ -81,7 +81,8 @@ public class ReadResourceOperation extends ResourceOperation {
 			// 410 Gone - Resource deleted 
 			// 404 Not Found - Unknown resource 
 			OperationValidator.validateFormat(_format);
-			OperationValidator.validateSummary(_summary);			
+			OperationValidator.validateSummary(_summary);
+			
 			String message;
 			if (streamService.enabled()) {
 				streamService.write(id);

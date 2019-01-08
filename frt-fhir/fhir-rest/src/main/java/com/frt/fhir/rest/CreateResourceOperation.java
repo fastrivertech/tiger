@@ -89,16 +89,18 @@ public class CreateResourceOperation extends ResourceOperation {
 			//                            This should be accompanied by an OperationOutcome resource providing additional detail
 			// 412 Precondition Failed - Conditional create not supported
 			// 200 OK status - Ignore request if some condition not match for conditional create
-			// Conditional create - Create a new resource only if some equivalent resource does not already exist on the server.
-			String message;
+			// Conditional create - Create a new resource only if some equivalent resource does not already exist on the server.			
 			OperationValidator.validateFormat(_format);
+			
+			String message;
 			if (streamService.enabled()) {
 				streamService.write(body);
 				List<String> bodys = streamService.read();
 				message = bodys.get(0);
 			} else {
 				message = body;
-			}			
+			}
+			
 			R resource = parser.deserialize(type, message);	
 			Optional<R> created = fhirService.create(type, resource);
 			if (created.isPresent()) {
