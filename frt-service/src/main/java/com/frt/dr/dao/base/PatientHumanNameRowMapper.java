@@ -1,5 +1,6 @@
 package com.frt.dr.dao.base;
 
+import java.math.BigInteger;
 import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -12,7 +13,7 @@ public class PatientHumanNameRowMapper implements RowMapper<PatientHumanName> {
 	public PatientHumanName mapRow(ResultSet row, int rowNum) 
 		throws SQLException {
 		PatientHumanName name = new PatientHumanName();
-		name.setHumannameId(row.getString("humanname_id"));
+		name.setHumannameId(BigInteger.valueOf(row.getLong("humanname_id")));
 	  //name.setPatientId(row.getString("patient_id"));
 		name.setPath(row.getString("path"));
 		name.setUse(row.getString("use"));

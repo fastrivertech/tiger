@@ -13,6 +13,7 @@ package com.frt.dr.model;
 
 import java.util.List;
 import java.io.Serializable;
+import java.math.BigInteger;
 import java.sql.Clob;
 
 import javax.persistence.Basic;
@@ -47,26 +48,24 @@ import com.frt.dr.model.base.PatientExtension;
 @Table(name = "DOMAIN_RESOURCE")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="CONCRETE_RESOURCE_TYPE")
-//@SequenceGenerator(name = "DOMAIN_RESOURCE_SEQ", sequenceName = "DOMAIN_RESOURCE_SEQ", allocationSize=1)
+@SequenceGenerator(name = "DOMAINRESOURCE_SEQ", sequenceName = "DOMAINRESOURCE_SEQ", allocationSize=1)
 @NamedQueries({
     @NamedQuery(name = "getDomainResourceById", query = "SELECT DR FROM DomainResource DR WHERE DR.id = :id")
 })
 public class DomainResource extends Resource {
     private static final long serialVersionUID = -8321293485415818761L;
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "DOMAIN_RESOURCE_SEQ")  
-//    @Basic(optional = false)
-//    @NotNull(message = "DomainResource logical Id cannot be Null")
-//    @Size(max = 64)    
-//    @Column(name = "domain_resource_id", nullable = false, updatable=false)
-//	private String domainResourceId;
-//	
-//    @NotNull(message = "Resource logical Id cannot be Null")
-//    @Column(name = "resource_id")    
-//	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
-//    @OneToOne(mappedBy = "resource", cascade = CascadeType.ALL)
-//	private Resource resource;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "DOMAINRESOURCE_SEQ")  
+    @Basic(optional = false)
+    @NotNull(message = "DomainResource physical Id cannot be Null")
+    @Column(name = "domainresource_id", nullable = false, updatable=false)
+	private BigInteger domainResourceId;
+	
+    @NotNull(message = "Resource physical Id cannot be Null")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
+    @OneToOne(optional=false)
+	private Resource resource;
 	
     @Lob
     @Column(name = "txt")                        
@@ -80,21 +79,21 @@ public class DomainResource extends Resource {
 //
 //	private List<PatientExtension> modifierExtension;
 	
-//	public String getDomainResourceId() {
-//		return domainResourceId;
-//	}
-//
-//	public void setDomainResourceId(String domainResourceId) {
-//		this.domainResourceId = domainResourceId;
-//	}
-//
-//	public Resource getResource() {
-//		return resource;
-//	}
-//
-//	public void setResource(Resource resource) {
-//		this.resource = resource;
-//	}
+	public BigInteger getDomainResourceId() {
+		return domainResourceId;
+	}
+
+	public void setDomainResourceId(BigInteger domainResourceId) {
+		this.domainResourceId = domainResourceId;
+	}
+
+	public Resource getResource() {
+		return resource;
+	}
+
+	public void setResource(Resource resource) {
+		this.resource = resource;
+	}
 
 	public String getTxt() {
 		return txt;

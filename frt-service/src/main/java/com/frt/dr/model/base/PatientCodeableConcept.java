@@ -12,6 +12,8 @@
 package com.frt.dr.model.base;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+
 import javax.persistence.Entity;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -31,42 +33,38 @@ import com.frt.dr.model.ResourceComplexType;
 
 @Entity
 @Table(name = "PATIENT_CODEABLECONCEPT")
-@SequenceGenerator(name = "PATIENT_CODEABLECONCEPT_SEQ", sequenceName = "PATIENT_CODEABLECONCEPT_SEQ", allocationSize=1)
+@SequenceGenerator(name = "PATIENT_CODEABLECONCEPT_SEQ", sequenceName = "PATIENT_CODEABLECONCEPT_SEQ", allocationSize = 1)
 @XmlRootElement
 public class PatientCodeableConcept implements Serializable, ResourceComplexType {
-    private static final long serialVersionUID = -321293485415818761L;
-    
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_CODEABLECONCEPT_SEQ")  
-    @Basic(optional = false)
-    @NotNull(message = "Identifier logical Id cannot be Null")
-    @Column(name = "codeableconcept_id")    
-    private String codeableconceptId;
-    
-//    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @ManyToOne(optional = false)
-//    private Patient patient;
+	private static final long serialVersionUID = -321293485415818761L;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "id")
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_CODEABLECONCEPT_SEQ")
+	@Basic(optional = false)
+	@NotNull(message = "Identifier physical Id cannot be Null")
+	@Column(name = "codeableconcept_id")
+	private BigInteger codeableconceptId;
+
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
 	@ManyToOne(optional = false)
 	private Patient patient;
-    
-    @Size(max = 128)    
-    @Column(name = "path")                                            
-    private String path;
 
-    @Lob    
-    @Column(name = "coding")                                        
-    private String coding;
+	@Size(max = 128)
+	@Column(name = "path")
+	private String path;
 
-    @Size(max = 2048)    
-    @Column(name = "txt")                            
-    private String txt;
+	@Lob
+	@Column(name = "coding")
+	private String coding;
 
-    public PatientCodeableConcept() {    	
-    }
-    
-    public String getPath() {
+	@Size(max = 2048)
+	@Column(name = "txt")
+	private String txt;
+
+	public PatientCodeableConcept() {
+	}
+
+	public String getPath() {
 		return path;
 	}
 
@@ -74,19 +72,19 @@ public class PatientCodeableConcept implements Serializable, ResourceComplexType
 		this.path = path;
 	}
 
-    public Patient getPatient() {
-    	return this.patient;
-    }
-    
-    public void setPatient(Patient patient) {
-    	this.patient = patient;
-    }
+	public Patient getPatient() {
+		return this.patient;
+	}
 
-	public String getCodeableconceptId() {
+	public void setPatient(Patient patient) {
+		this.patient = patient;
+	}
+
+	public BigInteger getCodeableconceptId() {
 		return codeableconceptId;
 	}
 
-	public void setCodeableconceptId(String codeableconceptId) {
+	public void setCodeableconceptId(BigInteger codeableconceptId) {
 		this.codeableconceptId = codeableconceptId;
 	}
 

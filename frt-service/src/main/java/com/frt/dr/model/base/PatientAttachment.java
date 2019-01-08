@@ -12,9 +12,7 @@
 package com.frt.dr.model.base;
 
 import java.io.Serializable;
-import java.sql.Blob;
-import java.sql.Clob;
-import javax.persistence.FetchType;
+import java.math.BigInteger;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -43,9 +41,9 @@ import com.frt.dr.model.ResourceComplexType;
  * of the content (BCP-47) Common Languages (Extensible but limited to All
  * Languages) . data 0..1 base64Binary Data inline, base64ed . url Σ 0..1 uri
  * Uri where the data can be found . size Σ 0..1 unsignedInt Number of bytes of
- * content (if url provided) . hash Σ 0..1 base64Binary Hash of the data (sha-1,
- * base64ed) . title Σ 0..1 string Label to display in place of the data .
- * creation Σ 0..1 dateTime Date attachment was first created
+ * content (if url provided) . hash Σ 0..1 base64Binary Hash of the data
+ * (sha-1, base64ed) . title Σ 0..1 string Label to display in place of the
+ * data . creation Σ 0..1 dateTime Date attachment was first created
  * 
  * @author JIMFUQIAN
  *
@@ -61,15 +59,11 @@ public class PatientAttachment implements Serializable, ResourceComplexType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_ATTACHMENT_SEQ")
 	@Basic(optional = false)
-	@NotNull(message = "Attachment logical Id cannot be Null")
+	@NotNull(message = "Attachment physical Id cannot be Null")
 	@Column(name = "attachment_id")
-	private String attachmentId;
+	private BigInteger attachmentId;
 
-//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//	@ManyToOne(optional = false)
-//	private Patient patient;
-
-	@JoinColumn(name = "patient_id", referencedColumnName = "id")
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
 	@ManyToOne(optional = false)
 	private Patient patient;
 
@@ -130,11 +124,11 @@ public class PatientAttachment implements Serializable, ResourceComplexType {
 		this.path = path;
 	}
 
-	public String getAttachmentId() {
+	public BigInteger getAttachmentId() {
 		return attachmentId;
 	}
 
-	public void setAttachmentId(String attachmentId) {
+	public void setAttachmentId(BigInteger attachmentId) {
 		this.attachmentId = attachmentId;
 	}
 

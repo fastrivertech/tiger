@@ -12,18 +12,19 @@
 package com.frt.dr.model.base;
 
 import javax.persistence.Entity;
+
+import java.math.BigInteger;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import com.frt.dr.model.Extension;
 
@@ -36,27 +37,22 @@ public class PatientExtension extends Extension {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_EXTENSION_SEQ")
     @Basic(optional = false)
-    @NotNull(message = "patient extension logical Id cannot be Null")
+    @NotNull(message = "patient extension physical Id cannot be Null")
     @Column(name = "patient_extension_id", nullable = false, updatable = true)    
-	private String patientExtensionId;
+	private BigInteger patientExtensionId;
 	
-//    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @ManyToOne(optional = false)
-//    private Patient patient;
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @ManyToOne(optional = false)
+    private Patient patient;
 	    
-	@JoinColumn(name = "patient_id", referencedColumnName = "id")
-	@ManyToOne(optional = false)
-	private Patient patient;
-
 	public PatientExtension() { 	
     }
     
-    
-    public String getPatientExtensionId() {
+    public BigInteger getPatientExtensionId() {
     	return this.patientExtensionId;
     }
     
-    public void getPatientExtensionId(String patientExtensionId) {
+    public void getPatientExtensionId(BigInteger patientExtensionId) {
     	this.patientExtensionId = patientExtensionId;
     }
     

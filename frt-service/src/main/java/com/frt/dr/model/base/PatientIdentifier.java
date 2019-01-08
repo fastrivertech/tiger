@@ -12,9 +12,8 @@
 package com.frt.dr.model.base;
 
 import java.io.Serializable;
-import java.sql.Clob;
+import java.math.BigInteger;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
@@ -28,8 +27,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-
-import com.frt.dr.SqlHelper;
 import com.frt.dr.model.ResourceComplexType;
 
 @Entity
@@ -42,15 +39,11 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_IDENTIFIER_SEQ")  
     @Basic(optional = false)
-    @NotNull(message = "Identifier logical Id cannot be Null")
+    @NotNull(message = "Identifier physical Id cannot be Null")
     @Column(name = "identifier_id")    
-    private String identifierId;
+    private BigInteger identifierId;
     
-//  @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//  @ManyToOne(optional = false)
-//  private Patient patient;
-
-    @JoinColumn(name = "patient_id", referencedColumnName = "id")
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
 	@ManyToOne(optional = false)
 	private Patient patient;
 
@@ -92,11 +85,11 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
 	public PatientIdentifier() {    	
     }
     
-    public String getIdentifierId() {
+    public BigInteger getIdentifierId() {
     	return this.identifierId;
     }
     
-    public void setIdentifierId(String identifierId) {
+    public void setIdentifierId(BigInteger identifierId) {
     	this.identifierId = identifierId;
     }
 

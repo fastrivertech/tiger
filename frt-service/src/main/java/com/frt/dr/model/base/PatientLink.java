@@ -12,6 +12,8 @@
 package com.frt.dr.model.base;
 
 import java.io.Serializable;
+import java.math.BigInteger;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,15 +42,11 @@ public class PatientLink implements Serializable, ResourceComplexType, BackboneE
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_LINK_SEQ")  
     @Basic(optional = false)
-    @NotNull(message = "Link logical Id cannot be Null")
+    @NotNull(message = "Link physical Id cannot be Null")
     @Column(name = "link_id")    
-    private Long linkId;
+    private BigInteger linkId;
     
-//  @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//  @ManyToOne(optional = false)
-//  private Patient patient;
-
-    @JoinColumn(name = "patient_id", referencedColumnName = "id")
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
 	@ManyToOne(optional = false)
 	private Patient patient;
 
@@ -85,12 +83,12 @@ public class PatientLink implements Serializable, ResourceComplexType, BackboneE
 	}
 
 
-	public Long getLinkId() {
+	public BigInteger getLinkId() {
 		return linkId;
 	}
 
 
-	public void setLinkId(Long linkId) {
+	public void setLinkId(BigInteger linkId) {
 		this.linkId = linkId;
 	}
 

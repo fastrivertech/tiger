@@ -14,8 +14,13 @@ package com.frt.dr.model.base;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -42,132 +47,74 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Patient extends DomainResource {
     private static final long serialVersionUID = -8321293485415818762L;
 	
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_SEQ")  
-//    @Basic(optional = false)
-//    @NotNull(message = "Patient logical Id cannot be Null")
-//    @Size(max = 64)    
-//    @Column(name = "patient_id", nullable = false, updatable=false)
-//    private String patientId;
-//    
-//	@JoinColumn(name = "domain_resource_id", referencedColumnName = "domain_resource_id")
-//    @OneToOne(optional = false)
-//    private DomainResource domainResource; // rename to avoid conflict with DomainResource.domainResourceId
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_SEQ")  
+    @Basic(optional = false)
+    @NotNull(message = "Patient primary key cannot be Null")
+    @Column(name = "patient_id", nullable = false, updatable=false)
+    private BigInteger patientId;
+    
+	@JoinColumn(name = "domainresource_id", referencedColumnName = "domainresource_id")
+    @OneToOne(optional = false)
+    private DomainResource domainResource;
 
 	@NotNull(message = "Active cannot be Null")
     @Column(name = "active", nullable = false, updatable = true)        
     private Boolean active =  Boolean.TRUE;
     
-//    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    @OrderBy("humannameId ASC")
-//    private List<PatientHumanName> names;
-//    
-//    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    @OrderBy("identifierId ASC")
-//    private List<PatientIdentifier> identifiers;
-//
-//    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    @OrderBy("addressId ASC")
-//    private List<PatientAddress> addresses;
-//
-//    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    @OrderBy("contactId ASC")
-//    private List<PatientContact> contacts;
-//
-//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    @OrderBy("attachmentId ASC")
-//    private List<PatientAttachment> photos;
-//
-//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    @OrderBy("contactpointId ASC")
-//    private List<PatientContactPoint> telecoms;
-//
-//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
-//    private PatientCodeableConcept maritalStatus;
-//
-//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    @OrderBy("referenceId ASC")
-//    private List<PatientReference> generalPractitioners;
-//
-//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
-//    private PatientReference managingOrganization;
-//
-//    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
-//    private PatientAnimal animal;
-//
-//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    @OrderBy("communicationId ASC")
-//    private List<PatientCommunication> communications;
-//
-//	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
-//    @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
-//    @OrderBy("linkId ASC")
-//    private List<PatientLink> links;
-
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("humannameId ASC")
     private List<PatientHumanName> names;
     
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("identifierId ASC")
     private List<PatientIdentifier> identifiers;
 
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("addressId ASC")
     private List<PatientAddress> addresses;
 
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("contactId ASC")
     private List<PatientContact> contacts;
 
-	@JoinColumn(name = "id", referencedColumnName = "id")
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("attachmentId ASC")
     private List<PatientAttachment> photos;
 
-	@JoinColumn(name = "id", referencedColumnName = "id")
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("contactpointId ASC")
     private List<PatientContactPoint> telecoms;
 
-	@JoinColumn(name = "id", referencedColumnName = "id")
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private PatientCodeableConcept maritalStatus;
 
-	@JoinColumn(name = "id", referencedColumnName = "id")
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("referenceId ASC")
     private List<PatientReference> generalPractitioners;
 
-	@JoinColumn(name = "id", referencedColumnName = "id")
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private PatientReference managingOrganization;
 
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private PatientAnimal animal;
 
-	@JoinColumn(name = "id", referencedColumnName = "id")
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("communicationId ASC")
     private List<PatientCommunication> communications;
 
-	@JoinColumn(name = "id", referencedColumnName = "id")
+	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("linkId ASC")
     private List<PatientLink> links;
@@ -201,13 +148,13 @@ public class Patient extends DomainResource {
     public Patient() {    	
     }
     
-//    public String getPatientId() {
-//    	return this.patientId;
-//    }
-//    
-//    public void setPatientId(String patientId) {
-//    	this.patientId = patientId;
-//    }
+    public BigInteger getPatientId() {
+    	return this.patientId;
+    }
+    
+    public void setPatientId(BigInteger patientId) {
+    	this.patientId = patientId;
+    }
 
     public List<PatientIdentifier> getIdentifiers() {
     	if (this.identifiers==null) {
@@ -388,13 +335,13 @@ public class Patient extends DomainResource {
 		this.contacts = contacts;
 	}
     
-//    public DomainResource getDomainResource() {
-//		return domainResource;
-//	}
-//
-//	public void setDomainResource(DomainResource domainResource) {
-//		this.domainResource = domainResource;
-//	}
+    public DomainResource getDomainResource() {
+		return domainResource;
+	}
+
+	public void setDomainResource(DomainResource domainResource) {
+		this.domainResource = domainResource;
+	}
     
     @XmlTransient
     public List<PatientExtension> getExtensions() {

@@ -1,6 +1,9 @@
 package com.frt.dr.service;
 
 import static org.junit.Assert.*;
+
+import java.math.BigInteger;
+
 import org.junit.Test;
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientHumanName;
@@ -18,8 +21,7 @@ public class RepositoryApplicationTest {
 			patient.setActive(true);
 			patient.setGender("MALE");
 			PatientHumanName name = new PatientHumanName();
-			name.setHumannameId("A8838F72-A8BD-4398-B85C-DCC0BB5FB5CE");
-			//name.setPatientId(Long.valueOf(10000));
+			name.setHumannameId(BigInteger.valueOf(10000));
 			name.setUse("OFFICIAL");
 			name.setFamily("Charles");
 			patient.getNames().add(name);			
