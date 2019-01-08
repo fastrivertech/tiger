@@ -11,33 +11,21 @@
  */
 package com.frt.dr.model;
 
-import java.util.List;
-import java.io.Serializable;
 import java.math.BigInteger;
-import java.sql.Clob;
 
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-
-import com.frt.dr.model.base.PatientExtension;
 
 /**
  *  DomainResource class
@@ -48,6 +36,7 @@ import com.frt.dr.model.base.PatientExtension;
 @Table(name = "DOMAIN_RESOURCE")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name="DOMAIN_RESOURCE_TYPE")
+//FYI: uncomment Seq Generator will cause Resource insert does not accept NULL error
 //@SequenceGenerator(name = "DOMAINRESOURCE_SEQ", sequenceName = "DOMAINRESOURCE_SEQ", allocationSize=1)
 @NamedQueries({
     @NamedQuery(name = "getDomainResourceById", query = "SELECT DR FROM DomainResource DR WHERE DR.id = :id")
@@ -55,18 +44,10 @@ import com.frt.dr.model.base.PatientExtension;
 public class DomainResource extends Resource {
     private static final long serialVersionUID = -8321293485415818761L;
 
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "DOMAINRESOURCE_SEQ")  
-//    @Basic(optional = false)
-//    @NotNull(message = "DomainResource physical Id cannot be Null")
-//    @Column(name = "domainresource_id", nullable = false, updatable=false)
-//    @OneToOne(mappedBy="domainResource", cascade = CascadeType.ALL)
-//    private BigInteger domainResourceId;
-//	
-//    @NotNull(message = "DomainResource physical Id cannot be Null")
-//	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id", updatable=false)
-//    @OneToOne(optional=false)
-//	private Resource resource;
+    //FYI: uncomment Seq Generator will cause Resource insert does not accept NULL error
+    //@GeneratedValue(strategy = GenerationType.AUTO, generator = "DOMAINRESOURCE_SEQ")  
+    @Column(name = "domain_resource_id", nullable = false, updatable=false)
+    private BigInteger domainResourceId;
 	
     @Lob
     @Column(name = "txt")                        
@@ -80,21 +61,13 @@ public class DomainResource extends Resource {
 //
 //	private List<PatientExtension> modifierExtension;
 	
-//	public BigInteger getDomainResourceId() {
-//		return domainResourceId;
-//	}
-//
-//	public void setDomainResourceId(BigInteger domainResourceId) {
-//		this.domainResourceId = domainResourceId;
-//	}
+	public BigInteger getDomainResourceId() {
+		return domainResourceId;
+	}
 
-//	public Resource getResource() {
-//		return resource;
-//	}
-//
-//	public void setResource(Resource resource) {
-//		this.resource = resource;
-//	}
+	public void setDomainResourceId(BigInteger domainResourceId) {
+		this.domainResourceId = domainResourceId;
+	}
 
 	public String getTxt() {
 		return txt;

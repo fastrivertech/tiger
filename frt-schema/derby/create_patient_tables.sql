@@ -29,19 +29,6 @@ CREATE TABLE SYSTEM_RESOURCE (
 );
 
 -- FHIR base resource table --- 
-/*
-CREATE TABLE RESOURCE (
-	resource_id	VARCHAR(64) NOT NULL,
-	system_id	VARCHAR(64), --NOT NULL, relax now since SYSTEM_RESOURCE is not implemented yet
-	id	VARCHAR(32), -- Σ   
-	meta CLOB, -- Σ, Meta object serialization and de-serialization
-	implicitRules VARCHAR(2048), -- ?!Σ, maximum uri length 
-	language VARCHAR(32), -- Σ, maximum code length
-	PRIMARY KEY (resource_id), 	
-	FOREIGN KEY (system_id) REFERENCES SYSTEM_RESOURCE(system_id)
-);
-*/
-
 CREATE TABLE RESOURCE (
 	resource_id BIGINT NOT NULL, -- implementation specific primary key
 	id	VARCHAR(64) NOT NULL, -- logical ID of the resource per FHIR, visible to end user
@@ -49,7 +36,7 @@ CREATE TABLE RESOURCE (
 	meta CLOB, -- Σ, Meta object serialization and de-serialization
 	implicitRules VARCHAR(2048), -- ?!Σ, maximum uri length 
 	language VARCHAR(32), -- Σ, maximum code length
-	resource_type VARCHAR(32),
+	resource_type VARCHAR(32), -- discriminator column
 	PRIMARY KEY (resource_id)
 );
 
@@ -57,20 +44,8 @@ CREATE SEQUENCE RESOURCE_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
 INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('RESOURCE_SEQ', 1);
 
 -- FHIR domain resource table, I and affected by constraints --- 
-/*
 CREATE TABLE DOMAIN_RESOURCE (
-	domain_resource_id	VARCHAR(64) NOT NULL,
-	resource_id VARCHAR(64) NOT NULL,
-	txt CLOB, -- I, Narrative object serialization and de-serialization
-	contained CLOB, -- A list of resource_id of resource table object serialization and de-serialization 	
-    -- extension -- A list of extension_id of extension table object serialization and de-serialization
-	-- modifierExtension -- ?!, A list of extension_id object of extension table serialization and de-serialization
-	PRIMARY KEY (domain_resource_id), 	
-	FOREIGN KEY (resource_id) REFERENCES RESOURCE(resource_id)
-);
-*/
-
-CREATE TABLE DOMAIN_RESOURCE (
+	domain_resource_id BIGINT, -- unique key for domain resource leave it here now for future use
 	resource_id BIGINT NOT NULL, -- implementation specific primary key
 	txt CLOB, -- I, Narrative object serialization and de-serialization
 	contained CLOB, -- A list of resource_id of resource table object serialization and de-serialization 	
@@ -85,35 +60,8 @@ CREATE SEQUENCE DOMAINRESOURCE_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCL
 INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('DOMAINRESOURCE_SEQ', 1);
 
 -- FHIR patient resource relevant tables --
-/*
 CREATE TABLE PATIENT (
-	patient_id	VARCHAR(64) NOT NULL,
-	domain_resource_id	VARCHAR(64),
-	-- identifier -- Σ, refer to PATIENT_IDENTIFIER table	
-	active	BOOLEAN NOT NULL, -- ?!Σ
-	-- name -- Σ, refer to PATIENT_HUMANNAME table
-	-- telecom -- Σ, refer to PATIENT_CONTACT table
-	gender VARCHAR(32), -- Σ
-	birthDate DATE, -- Σ
-	deceasedBoolean BOOLEAN, -- ?!Σ
-	deceasedDateTime TIMESTAMP, -- ?!Σ
-	-- address -- Σ, refer to PATIENT_ADDRESS table
-	-- maritalstatus -- refer to PATIENT_CODEABLECONCEPT table
-	multipleBirthBoolean BOOLEAN, 
-	multipleBirthInteger INTEGER,
-	-- photo -- refer to PATIENT_ATTACHMENT table
-	-- contact -- I, refer to PATIENT_CONTACT table
-	-- anumal -- ?!Σ, refer to PATIENT_ANIMAL table
-	-- communitcation -- refer to PATIENT_COMMUNICATION table
-	-- generalPractitioner -- refer to PATIENT_REFERENCE table
-	-- managingOrganization -- Σ, refer to PATIENT_REFERENCE table
-	-- link -- ?!Σ, refer to PATIENT_LINK table
-	PRIMARY KEY (patient_id), 	
-	FOREIGN KEY (domain_resource_id) REFERENCES DOMAIN_RESOURCE(domain_resource_id)
-);
-*/
-
-CREATE TABLE PATIENT (
+    patient_id	BIGINT, -- unique key for patient resource leave it here now for future use
 	resource_id BIGINT NOT NULL, -- implementation primary key
 	-- identifier -- Σ, refer to PATIENT_IDENTIFIER table	
 	active	BOOLEAN NOT NULL, -- ?!Σ

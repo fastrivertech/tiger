@@ -19,8 +19,6 @@ import java.sql.Timestamp;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -40,6 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @DiscriminatorValue("PATIENT_RESOURCE")
 @Table(name = "PATIENT")
+//FYI: uncomment Seq Generator will cause Resource insert does not accept NULL error
 //@SequenceGenerator(name = "PATIENT_SEQ", sequenceName = "PATIENT_SEQ", allocationSize=1)
 @NamedQueries({
     @NamedQuery(name = "getPatientById", query = "SELECT P FROM Patient P WHERE P.id = :id")
@@ -47,17 +46,11 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Patient extends DomainResource {
     private static final long serialVersionUID = -8321293485415818762L;
 	
-//    @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_SEQ")  
-//    @Basic(optional = false)
-//    @NotNull(message = "Patient primary key cannot be Null")
-//    @Column(name = "patient_id", nullable = false, updatable=false)
-//    private BigInteger patientId;
+    //FYI: uncomment Seq Generator will cause Resource insert does not accept NULL error
+    //@GeneratedValue(strategy = GenerationType.AUTO, generator = "PATIENT_SEQ")  
+    @Column(name = "patient_id", nullable = false, updatable=false)
+    private BigInteger patientId;
     
-//	@JoinColumn(name = "domainresource_id", referencedColumnName = "domainresource_id")
-//    @OneToOne(optional = false)
-//    private DomainResource domainResource;
-
 	@NotNull(message = "Active cannot be Null")
     @Column(name = "active", nullable = false, updatable = true)        
     private Boolean active =  Boolean.TRUE;
@@ -148,13 +141,13 @@ public class Patient extends DomainResource {
     public Patient() {    	
     }
     
-//    public BigInteger getPatientId() {
-//    	return this.patientId;
-//    }
-//    
-//    public void setPatientId(BigInteger patientId) {
-//    	this.patientId = patientId;
-//    }
+    public BigInteger getPatientId() {
+    	return this.patientId;
+    }
+    
+    public void setPatientId(BigInteger patientId) {
+    	this.patientId = patientId;
+    }
 
     public List<PatientIdentifier> getIdentifiers() {
     	if (this.identifiers==null) {
@@ -334,14 +327,6 @@ public class Patient extends DomainResource {
     public void setContacts(List<PatientContact> contacts) {
 		this.contacts = contacts;
 	}
-    
-//    public DomainResource getDomainResource() {
-//		return domainResource;
-//	}
-//
-//	public void setDomainResource(DomainResource domainResource) {
-//		this.domainResource = domainResource;
-//	}
     
     @XmlTransient
     public List<PatientExtension> getExtensions() {
