@@ -109,8 +109,7 @@ public class DomainResourceMapper extends BaseMapper {
 			ResourcePair pair = ResourceDictionary.get(RESOURCE);
 			drm = drm.from(pair.getFhir()).to(pair.getFrt());
 			drm.map(root, frt);
-			// we already work around before come here, so skip it
-			//frt.setContained(root.get("contained") != null?root.get("contained").toString():null);
+			frt.setContained(root.get("contained") != null?root.get("contained").toString():null);
 			frt.setTxt(root.get("text") != null?root.get("text").toString():null);
 
 			return (Object) frt;
