@@ -44,7 +44,7 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
 	@Column(name = "humanname_id")
 	private BigInteger humannameId;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
 	@ManyToOne(optional = false)
 	private Patient patient;
 

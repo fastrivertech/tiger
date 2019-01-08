@@ -40,81 +40,81 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @DiscriminatorValue("PATIENT_RESOURCE")
 @Table(name = "PATIENT")
-@SequenceGenerator(name = "PATIENT_SEQ", sequenceName = "PATIENT_SEQ", allocationSize=1)
+//@SequenceGenerator(name = "PATIENT_SEQ", sequenceName = "PATIENT_SEQ", allocationSize=1)
 @NamedQueries({
     @NamedQuery(name = "getPatientById", query = "SELECT P FROM Patient P WHERE P.id = :id")
 })
 public class Patient extends DomainResource {
     private static final long serialVersionUID = -8321293485415818762L;
 	
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_SEQ")  
-    @Basic(optional = false)
-    @NotNull(message = "Patient primary key cannot be Null")
-    @Column(name = "patient_id", nullable = false, updatable=false)
-    private BigInteger patientId;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "PATIENT_SEQ")  
+//    @Basic(optional = false)
+//    @NotNull(message = "Patient primary key cannot be Null")
+//    @Column(name = "patient_id", nullable = false, updatable=false)
+//    private BigInteger patientId;
     
-	@JoinColumn(name = "domainresource_id", referencedColumnName = "domainresource_id")
-    @OneToOne(optional = false)
-    private DomainResource domainResource;
+//	@JoinColumn(name = "domainresource_id", referencedColumnName = "domainresource_id")
+//    @OneToOne(optional = false)
+//    private DomainResource domainResource;
 
 	@NotNull(message = "Active cannot be Null")
     @Column(name = "active", nullable = false, updatable = true)        
     private Boolean active =  Boolean.TRUE;
     
-    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("humannameId ASC")
     private List<PatientHumanName> names;
     
-    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("identifierId ASC")
     private List<PatientIdentifier> identifiers;
 
-    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("addressId ASC")
     private List<PatientAddress> addresses;
 
-    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("contactId ASC")
     private List<PatientContact> contacts;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("attachmentId ASC")
     private List<PatientAttachment> photos;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("contactpointId ASC")
     private List<PatientContactPoint> telecoms;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private PatientCodeableConcept maritalStatus;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("referenceId ASC")
     private List<PatientReference> generalPractitioners;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private PatientReference managingOrganization;
 
-    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToOne(mappedBy = "patient", cascade = CascadeType.ALL)
     private PatientAnimal animal;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("communicationId ASC")
     private List<PatientCommunication> communications;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
     @OrderBy("linkId ASC")
     private List<PatientLink> links;
@@ -148,13 +148,13 @@ public class Patient extends DomainResource {
     public Patient() {    	
     }
     
-    public BigInteger getPatientId() {
-    	return this.patientId;
-    }
-    
-    public void setPatientId(BigInteger patientId) {
-    	this.patientId = patientId;
-    }
+//    public BigInteger getPatientId() {
+//    	return this.patientId;
+//    }
+//    
+//    public void setPatientId(BigInteger patientId) {
+//    	this.patientId = patientId;
+//    }
 
     public List<PatientIdentifier> getIdentifiers() {
     	if (this.identifiers==null) {
@@ -335,13 +335,13 @@ public class Patient extends DomainResource {
 		this.contacts = contacts;
 	}
     
-    public DomainResource getDomainResource() {
-		return domainResource;
-	}
-
-	public void setDomainResource(DomainResource domainResource) {
-		this.domainResource = domainResource;
-	}
+//    public DomainResource getDomainResource() {
+//		return domainResource;
+//	}
+//
+//	public void setDomainResource(DomainResource domainResource) {
+//		this.domainResource = domainResource;
+//	}
     
     @XmlTransient
     public List<PatientExtension> getExtensions() {

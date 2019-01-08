@@ -41,7 +41,7 @@ public class PatientExtension extends Extension {
     @Column(name = "patient_extension_id", nullable = false, updatable = true)    
 	private BigInteger patientExtensionId;
 	
-    @JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+    @JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
     @ManyToOne(optional = false)
     private Patient patient;
 	    

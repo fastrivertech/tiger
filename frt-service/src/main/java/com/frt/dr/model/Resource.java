@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
 @Entity
 @Table(name = "RESOURCE")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name="DOMAIN_RESOURCE_TYPE")
+@DiscriminatorColumn(name="RESOURCE_TYPE")
 @SequenceGenerator(name = "RESOURCE_SEQ", sequenceName = "RESOURCE_SEQ", allocationSize=1)
 @NamedQueries({
     @NamedQuery(name = "getResourceById", query = "SELECT R FROM Resource R WHERE R.id = :id")
@@ -40,7 +40,7 @@ public class Resource implements Serializable {
     private static final long serialVersionUID = -8321293485415818760L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "RESOURCE_SEQ") // need preallocate key  
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "RESOURCE_SEQ")  
     @Basic(optional = false)
     @NotNull(message = "Resource physical Id cannot be Null")
     @Column(name = "resource_id", nullable = false, updatable=false)
@@ -51,10 +51,26 @@ public class Resource implements Serializable {
 	@Column(name = "id", nullable = false, updatable=false)
 	private String id;
 
-	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
-    //@OneToOne(mappedBy = "resource", cascade = CascadeType.ALL)
-	private DomainResource domainResource;
+//	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
+//    @OneToOne(mappedBy = "resource", cascade = CascadeType.ALL)
+//	private DomainResource domainResource;
 	
+	public BigInteger getResourceId() {
+		return resourceId;
+	}
+
+	public void setResourceId(BigInteger resourceId) {
+		this.resourceId = resourceId;
+	}
+
+//	public DomainResource getDomainResource() {
+//		return domainResource;
+//	}
+//
+//	public void setDomainResource(DomainResource domainResource) {
+//		this.domainResource = domainResource;
+//	}
+
 	@Size(max = 64)    
     @Column(name = "system_id")            
 	private String systemId; 

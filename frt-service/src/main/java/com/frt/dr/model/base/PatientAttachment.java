@@ -63,7 +63,7 @@ public class PatientAttachment implements Serializable, ResourceComplexType {
 	@Column(name = "attachment_id")
 	private BigInteger attachmentId;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
 	@ManyToOne(optional = false)
 	private Patient patient;
 

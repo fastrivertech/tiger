@@ -43,7 +43,7 @@ public class PatientAnimal implements Serializable, ResourceComplexType, Backbon
 	@Column(name = "animal_id")
 	private BigInteger animalId;
 
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
 	@ManyToOne(optional = false)
 	private Patient patient;
 

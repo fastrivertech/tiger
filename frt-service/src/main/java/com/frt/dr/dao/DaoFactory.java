@@ -11,9 +11,7 @@
  */
 package com.frt.dr.dao;
 
-import com.frt.dr.dao.base.PatientDao;
 import com.frt.dr.dao.base.PatientHumanNameDao;
-import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientHumanName;
 
@@ -35,7 +33,8 @@ public class DaoFactory {
 	public <D extends BaseDao> D createResourceDao(Class resourceClazz) 
 		throws DaoException {
 		if (resourceClazz.equals(Patient.class) ) {
-			D resourceDao = (D)new PatientDao();
+//			D resourceDao = (D)new PatientDao();
+			D resourceDao = (D)new ResourceDao();
 			return resourceDao;
 		} else if (resourceClazz.equals(PatientHumanName.class)) {
 			D resourceDao = (D)new PatientHumanNameDao();

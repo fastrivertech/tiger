@@ -47,25 +47,26 @@ import com.frt.dr.model.base.PatientExtension;
 @DiscriminatorValue("DOMAIN_RESOURCE")
 @Table(name = "DOMAIN_RESOURCE")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name="CONCRETE_RESOURCE_TYPE")
-@SequenceGenerator(name = "DOMAINRESOURCE_SEQ", sequenceName = "DOMAINRESOURCE_SEQ", allocationSize=1)
+@DiscriminatorColumn(name="DOMAIN_RESOURCE_TYPE")
+//@SequenceGenerator(name = "DOMAINRESOURCE_SEQ", sequenceName = "DOMAINRESOURCE_SEQ", allocationSize=1)
 @NamedQueries({
     @NamedQuery(name = "getDomainResourceById", query = "SELECT DR FROM DomainResource DR WHERE DR.id = :id")
 })
 public class DomainResource extends Resource {
     private static final long serialVersionUID = -8321293485415818761L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "DOMAINRESOURCE_SEQ")  
-    @Basic(optional = false)
-    @NotNull(message = "DomainResource physical Id cannot be Null")
-    @Column(name = "domainresource_id", nullable = false, updatable=false)
-	private BigInteger domainResourceId;
-	
-    @NotNull(message = "Resource physical Id cannot be Null")
-	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
-    @OneToOne(optional=false)
-	private Resource resource;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "DOMAINRESOURCE_SEQ")  
+//    @Basic(optional = false)
+//    @NotNull(message = "DomainResource physical Id cannot be Null")
+//    @Column(name = "domainresource_id", nullable = false, updatable=false)
+//    @OneToOne(mappedBy="domainResource", cascade = CascadeType.ALL)
+//    private BigInteger domainResourceId;
+//	
+//    @NotNull(message = "DomainResource physical Id cannot be Null")
+//	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id", updatable=false)
+//    @OneToOne(optional=false)
+//	private Resource resource;
 	
     @Lob
     @Column(name = "txt")                        
@@ -79,21 +80,21 @@ public class DomainResource extends Resource {
 //
 //	private List<PatientExtension> modifierExtension;
 	
-	public BigInteger getDomainResourceId() {
-		return domainResourceId;
-	}
+//	public BigInteger getDomainResourceId() {
+//		return domainResourceId;
+//	}
+//
+//	public void setDomainResourceId(BigInteger domainResourceId) {
+//		this.domainResourceId = domainResourceId;
+//	}
 
-	public void setDomainResourceId(BigInteger domainResourceId) {
-		this.domainResourceId = domainResourceId;
-	}
-
-	public Resource getResource() {
-		return resource;
-	}
-
-	public void setResource(Resource resource) {
-		this.resource = resource;
-	}
+//	public Resource getResource() {
+//		return resource;
+//	}
+//
+//	public void setResource(Resource resource) {
+//		this.resource = resource;
+//	}
 
 	public String getTxt() {
 		return txt;

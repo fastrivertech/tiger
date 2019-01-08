@@ -43,7 +43,7 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
     @Column(name = "identifier_id")    
     private BigInteger identifierId;
     
-	@JoinColumn(name = "patient_id", referencedColumnName = "patient_id")
+	@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
 	@ManyToOne(optional = false)
 	private Patient patient;
 
