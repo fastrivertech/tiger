@@ -35,17 +35,17 @@ import javax.persistence.Table;
 @DiscriminatorValue("DOMAIN_RESOURCE")
 @Table(name = "DOMAIN_RESOURCE")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name="DOMAIN_RESOURCE_TYPE")
-//FYI: uncomment Seq Generator will cause Resource insert does not accept NULL error
-//@SequenceGenerator(name = "DOMAINRESOURCE_SEQ", sequenceName = "DOMAINRESOURCE_SEQ", allocationSize=1)
+@DiscriminatorColumn(name="DOMAIN_RESOURCE_TYPE") 
+//uncomment Seq Generator will cause Resource insert does not accept NULL error
+//@SequenceGenerator(name = "DOMAIN_RESOURCE_SEQ", sequenceName = "DOMAIN_RESOURCE_SEQ", allocationSize=1)
 @NamedQueries({
     @NamedQuery(name = "getDomainResourceById", query = "SELECT DR FROM DomainResource DR WHERE DR.id = :id")
 })
 public class DomainResource extends Resource {
     private static final long serialVersionUID = -8321293485415818761L;
 
-    //FYI: uncomment Seq Generator will cause Resource insert does not accept NULL error
-    //@GeneratedValue(strategy = GenerationType.AUTO, generator = "DOMAINRESOURCE_SEQ")  
+    //uncomment Seq Generator will cause Resource insert does not accept NULL error
+    //@GeneratedValue(strategy = GenerationType.AUTO, generator = "DOMAIN_RESOURCE_SEQ")  
     @Column(name = "domain_resource_id", nullable = false, updatable=false)
     private BigInteger domainResourceId;
 	

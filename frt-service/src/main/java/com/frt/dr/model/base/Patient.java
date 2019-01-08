@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlTransient;
 @Entity
 @DiscriminatorValue("PATIENT_RESOURCE")
 @Table(name = "PATIENT")
-//FYI: uncomment Seq Generator will cause Resource insert does not accept NULL error
+//uncomment Seq Generator will cause Resource insert does not accept NULL error
 //@SequenceGenerator(name = "PATIENT_SEQ", sequenceName = "PATIENT_SEQ", allocationSize=1)
 @NamedQueries({
     @NamedQuery(name = "getPatientById", query = "SELECT P FROM Patient P WHERE P.id = :id")
@@ -46,7 +46,7 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Patient extends DomainResource {
     private static final long serialVersionUID = -8321293485415818762L;
 	
-    //FYI: uncomment Seq Generator will cause Resource insert does not accept NULL error
+    //uncomment Seq Generator will cause Resource insert does not accept NULL error
     //@GeneratedValue(strategy = GenerationType.AUTO, generator = "PATIENT_SEQ")  
     @Column(name = "patient_id", nullable = false, updatable=false)
     private BigInteger patientId;
