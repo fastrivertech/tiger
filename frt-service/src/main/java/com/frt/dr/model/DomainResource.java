@@ -46,7 +46,7 @@ public class DomainResource extends Resource {
 
     //uncomment Seq Generator will cause Resource insert does not accept NULL error
     //@GeneratedValue(strategy = GenerationType.AUTO, generator = "DOMAIN_RESOURCE_SEQ")  
-    @Column(name = "domain_resource_id", nullable = false, updatable=false)
+    @Column(name = "domain_resource_id", insertable = false, updatable=false)
     private BigInteger domainResourceId;
 	
     @Lob

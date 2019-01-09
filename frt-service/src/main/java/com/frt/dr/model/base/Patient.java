@@ -48,7 +48,7 @@ public class Patient extends DomainResource {
 	
     //uncomment Seq Generator will cause Resource insert does not accept NULL error
     //@GeneratedValue(strategy = GenerationType.AUTO, generator = "PATIENT_SEQ")  
-    @Column(name = "patient_id", nullable = false, updatable=false)
+    @Column(name = "patient_id", insertable = false, updatable=false)
     private BigInteger patientId;
     
 	@NotNull(message = "Active cannot be Null")

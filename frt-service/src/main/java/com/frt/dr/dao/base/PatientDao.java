@@ -53,13 +53,16 @@ public class PatientDao extends BaseDao<Patient,String> {
 			transaction = em.getTransaction();
 			transaction.begin();
 			
-			if (patient.getNames()!=null&&patient.getNames().size()>0) {
+			if (patient.getNames()!=null && 
+				patient.getNames().size()>0) {
 				patient.getNames().forEach(name->name.setHumannameId(null));
 			}
-			if (patient.getIdentifiers()!=null&&patient.getIdentifiers().size()>0) {
+			if (patient.getIdentifiers()!=null &&
+				patient.getIdentifiers().size()>0) {
 				patient.getIdentifiers().forEach(identifier->identifier.setIdentifierId(null));
 			}
-			if (patient.getAddresses()!=null&&patient.getAddresses().size()>0) {
+			if (patient.getAddresses()!=null &&
+				patient.getAddresses().size()>0) {
 				patient.getAddresses().forEach(address->address.setAddressId(null));
 			}
 			if (patient.getMaritalStatus()!=null) {
@@ -96,10 +99,8 @@ public class PatientDao extends BaseDao<Patient,String> {
             List<Patient> patients = (List<Patient>) query.getResultList();          							
             Optional<Patient> patient = null;
             if (patients.size()>0) {
-            	
             	patient = Optional.ofNullable(patients.get(0));
-            }
-            else {
+            } else {
             	patient = Optional.empty();
             }
 			return patient;
