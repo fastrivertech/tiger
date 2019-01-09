@@ -62,6 +62,11 @@ public class CreateResourceOperation extends ResourceOperation {
 			parser = new JsonParser();
 			fhirService = new FhirService();
 			streamService = StreamService.getInstance() ;
+			if (streamService.enabled()) {
+				logger.info(localizer.x("fhir streaming enabled"));		
+			} else {
+				logger.info(localizer.x("fhir streaming disabled"));
+			}			
 		} catch (StreamServiceException ssex) {
 			throw new RuntimeException(ssex);
 		}
