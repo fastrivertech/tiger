@@ -23,7 +23,7 @@ public class Localization {
 
 	private static final String NAME = "messages";
 	private static final Pattern DEFAULT_PATTERN = Pattern.compile("([A-Z][A-Z][A-Z]_[A-Z]\\d\\d\\d)(: )(.*)");
-	private static final String MESSAGE_ID_PREFIX = "FRT_";
+	private static final String MESSAGE_ID_PREFIX = "FRT ";
 
 	private final PropertyResourceBundle bundle;
 	private final Pattern idPattern;

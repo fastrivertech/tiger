@@ -33,7 +33,8 @@ public class StreamServiceConfig {
 	private static StreamServiceConfig instance;
 	private Properties props;
 	
-	private StreamServiceConfig() throws StreamServiceException {
+	private StreamServiceConfig() 
+		throws StreamServiceException {
 		InputStream is = null;
 		try {
 			ClassLoader classLoader = this.getClass().getClassLoader();
@@ -78,10 +79,12 @@ public class StreamServiceConfig {
 		return props.getProperty(key);
 	}
 	
-	public static StreamServiceConfig getInstance() throws StreamServiceException {
+	public static StreamServiceConfig getInstance() 
+		throws StreamServiceException {
 		if (instance == null) {
 			instance = new StreamServiceConfig();
 		}
 		return instance;
 	}
+	
 }

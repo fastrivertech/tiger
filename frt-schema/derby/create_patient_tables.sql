@@ -31,7 +31,7 @@ CREATE TABLE SYSTEM_RESOURCE (
 -- FHIR base resource table --- 
 CREATE TABLE RESOURCE (
 	resource_id BIGINT NOT NULL, -- implementation specific primary key
-	id	VARCHAR(64) NOT NULL, -- logical ID of the resource per FHIR, visible to end user
+	id	VARCHAR(64) NOT NULL UNIQUE, -- logical ID of the resource per FHIR, visible to end user
 	system_id	VARCHAR(64), --NOT NULL, relax now since SYSTEM_RESOURCE is not implemented yet
 	meta CLOB, -- Σ, Meta object serialization and de-serialization
 	implicitRules VARCHAR(2048), -- ?!Σ, maximum uri length 

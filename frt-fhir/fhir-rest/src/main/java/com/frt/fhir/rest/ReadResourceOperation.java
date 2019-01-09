@@ -59,8 +59,7 @@ public class ReadResourceOperation extends ResourceOperation {
 		try {
 			parser = new JsonParser();
 			fhirService = new FhirService();
-			streamService = new StreamService();
-			streamService.initialize();
+			streamService = StreamService.getInstance();
 		} catch (StreamServiceException ssex) {
 			throw new RuntimeException(ssex);
 		}		
@@ -85,13 +84,16 @@ public class ReadResourceOperation extends ResourceOperation {
 			
 			String message;
 			if (streamService.enabled()) {
+				logger.info(localizer.x("write 'read " + type + " operation' message to fhir stream"));
 				streamService.write(id);
 				List<String> bodys = streamService.read();
+				logger.info(localizer.x("read 'read " + type + " operation' message from fhir stream"));				
 				message = bodys.get(0);
 			} else {
 				message = id;
 			}			
 			
+			logger.info(localizer.x("read a " + type + " by its id[" + message + "] ..."));		
 			Optional<R> found = fhirService.read(type, message);			
 			if (found.isPresent()) {
 				String resourceInJson = parser.serialize(found.get());      

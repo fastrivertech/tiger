@@ -61,8 +61,7 @@ public class CreateResourceOperation extends ResourceOperation {
 		try {
 			parser = new JsonParser();
 			fhirService = new FhirService();
-			streamService = new StreamService();
-			streamService.initialize();
+			streamService = StreamService.getInstance() ;
 		} catch (StreamServiceException ssex) {
 			throw new RuntimeException(ssex);
 		}
@@ -94,13 +93,16 @@ public class CreateResourceOperation extends ResourceOperation {
 			
 			String message;
 			if (streamService.enabled()) {
+				logger.info(localizer.x("write 'create " + type + " operation' message to fhir stream"));				
 				streamService.write(body);
 				List<String> bodys = streamService.read();
+				logger.info(localizer.x("read 'create " + type + " operation' message from fhir stream"));				
 				message = bodys.get(0);
 			} else {
 				message = body;
 			}
 			
+			logger.info(localizer.x("create a new " + type + " ..."));										
 			R resource = parser.deserialize(type, message);	
 			Optional<R> created = fhirService.create(type, resource);
 			if (created.isPresent()) {

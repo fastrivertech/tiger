@@ -26,7 +26,18 @@ public class StreamService {
 	private ParticipatingApplication producer;
 	private ParticipatingApplication consumer;	
 	
-	public StreamService() {			
+	private static StreamService instance;
+	
+	private StreamService() {			
+	}
+	
+	public static StreamService getInstance() 
+		throws StreamServiceException {
+		if (instance == null) {
+			instance = new StreamService();
+			instance.initialize();
+		}
+		return instance;
 	}
 	
 	public void initialize() 
