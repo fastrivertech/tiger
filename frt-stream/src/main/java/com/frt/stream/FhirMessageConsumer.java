@@ -46,7 +46,7 @@ public class FhirMessageConsumer {
 			ConsumerRecords<Long, String> consumerRecords = consumer.poll(1000);
 			if (consumerRecords.count() == 0) {
 				count++;
-				if (count > 10)
+				if (count > 300)
 					break;
 				else
 					continue;
