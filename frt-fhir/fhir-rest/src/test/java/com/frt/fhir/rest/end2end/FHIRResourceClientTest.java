@@ -286,9 +286,11 @@ public class FHIRResourceClientTest {
 	private Patient readPatient() {
 		WebTarget patientRS = webTarget.path(testPatientID);
 		Invocation.Builder invocationBuilder = patientRS.request(MediaType.APPLICATION_JSON);
-		Patient p = invocationBuilder.get(Patient.class);
-		System.out.println("Patient returned = " + p.getId());
-		return p;
+		//Patient p = invocationBuilder.get(Patient.class);
+		String p = invocationBuilder.get(String.class);
+		System.out.println("Patient returned = " + p);
+		Patient pt = (Patient)this.parser.parseResource(p);
+		return pt;
 	}
 
 	private static String readFromFile(String filePath) throws IOException {
