@@ -6,6 +6,7 @@ import static java.nio.file.StandardCopyOption.*;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -58,6 +59,9 @@ public class FHIRResourceClientTest {
 	
 	@Before
 	public void setUp() throws Exception {
+		System.setProperty("frt.persist.store.derby", "TRUE");
+		System.out.println("frt.persist.store.derby ==> TRUE");
+
 		setUpOk = true;
 		
 		FhirContext context = FhirContext.forDstu3();
@@ -119,8 +123,11 @@ public class FHIRResourceClientTest {
 		Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map(p);
 		assertTrue("End2End test failed: Expect HAPI Patient returned from request.",
 				target instanceof com.frt.dr.model.base.Patient);
+		com.frt.dr.model.base.Patient pt = (com.frt.dr.model.base.Patient) target;
+		pt.setId("8");
+		String frtStr = BaseMapper.resourceToJson(pt);
 
-		String frtStr = BaseMapper.resourceToJson((com.frt.dr.model.base.Patient) target);
+		writeFile("src/test/data/frt_patient_sample_gold.json", frtStr);
 		
 		try {
 			String gold = readFromFile("src/test/data/frt_patient_sample_gold.json");
@@ -374,5 +381,26 @@ public class FHIRResourceClientTest {
 			}
 		}
 		return timedOut;
+	}
+
+	private void writeFile(String filePath, String content) {
+		FileWriter fw=null;
+		try {
+			fw = new FileWriter(new File(filePath));
+			fw.write(content);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		finally {
+			if (fw!=null) {
+				try {
+					fw.close();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 }
