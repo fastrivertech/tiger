@@ -9,11 +9,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.frt.dr.model.base.PatientIdentifier;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.fhir.model.ResourceMapperInterface;
 import com.frt.fhir.model.ResourceMapperFactory;
@@ -64,6 +66,15 @@ public class PatientAndComponentMapperTest {
 		assertNotNull("Patient.identifier (FHIR Identifier[] expected.", frt.getIdentifiers());
 		assertEquals("Patient.identifier expected to have 2 elements.", frt.getIdentifiers().size(), 2);
 
+		List<PatientIdentifier> ids = frt.getIdentifiers();
+		int count = 0;
+		for (PatientIdentifier id: ids) {
+			assertNotNull("Patient.identifier[" + count + "] expect a 'type' field.", id.getType());
+			assertNotNull("Patient.identifier[" + count + "] expect a 'period' field.", id.getPeriod());
+			assertNotNull("Patient.identifier[" + count + "] expect a 'assigner' field.", id.getAssigner());
+			count++;
+		}
+		
 		assertNotNull("Patient.photo (FHIR Attachment[] expected.", frt.getPhotos());
 		assertEquals("Patient.photo expected to have 2 elements.", frt.getPhotos().size(), 2);
 

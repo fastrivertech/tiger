@@ -111,25 +111,26 @@ public class FHIRResourceClientTest {
 		}
 		// read the patient back
 		Patient p = readPatient();
-		if (p != null) {
-			System.out.println("Patient retrieved, patient:" + p.toString());
-			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("PATIENT");
-			ResourceMapperFactory factory = ResourceMapperFactory.getInstance();
-			ResourceMapperInterface mapper = factory.create("Patient");
-			Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map(p);
-			assertTrue("End2End test failed: Expect HAPI Patient returned from request.",
-					target instanceof com.frt.dr.model.base.Patient);
-			String frtStr = BaseMapper.resourceToJson((com.frt.dr.model.base.Patient) target);
-			try {
-				String gold = readFromFile("src/test/data/frt_patient_sample_gold.json");
-				System.out.println("frt=" + frtStr);
-				System.out.println("gold=" + gold);
-				assertEquals("FRT Patient json does not match the cannonical json string.", gold, frtStr);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-				fail("IOException when read gold file: src/test/data/frt_patient_sample_gold.json");
-			}
+		assertTrue("readPatient() expects return a HAPI Patient.", p!=null&&(p instanceof Patient));
+
+		ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("PATIENT");
+		ResourceMapperFactory factory = ResourceMapperFactory.getInstance();
+		ResourceMapperInterface mapper = factory.create("Patient");
+		Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map(p);
+		assertTrue("End2End test failed: Expect HAPI Patient returned from request.",
+				target instanceof com.frt.dr.model.base.Patient);
+
+		String frtStr = BaseMapper.resourceToJson((com.frt.dr.model.base.Patient) target);
+		
+		try {
+			String gold = readFromFile("src/test/data/frt_patient_sample_gold.json");
+			System.out.println("frt=" + frtStr);
+			System.out.println("gold=" + gold);
+			assertEquals("FRT Patient json does not match the cannonical json string.", gold, frtStr);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			fail("IOException when read gold file: src/test/data/frt_patient_sample_gold.json");
 		}
 	}
 
@@ -140,11 +141,11 @@ public class FHIRResourceClientTest {
 	}
 
 	private void shutDownTomcat() {
-		executeCommand(CATALINA_HOME + File.separator + "bin" + File.separator + "catalina.bat stop", null, 15000l);
+		executeCommand(CATALINA_HOME + File.separator + "bin" + File.separator + "catalina.bat stop", null, 5000l);
 	}
 
 	private void shutDownDerby() {
-		executeCommand(FRT_DERBY_DB_LOCATION + "shutdown-derby.bat", null, 15000l);
+		executeCommand(FRT_DERBY_DB_LOCATION + "shutdown-derby.bat", null, 5000l);
 	}
 
 	private boolean prepareDatabase() throws ClassNotFoundException, SQLException, IOException {
@@ -302,7 +303,7 @@ public class FHIRResourceClientTest {
 	}
 
 	private boolean startTomcat() {
-		return executeCommand(CATALINA_HOME + File.separator + "bin" + File.separator + "catalina.bat run", TOMCAT_READY_MARK, 100000l);
+		return executeCommand(CATALINA_HOME + File.separator + "bin" + File.separator + "catalina.bat run", TOMCAT_READY_MARK, 60000l);
 	}
 
 	private boolean executeCommand(String cmd, String[] ready_mark, long timeout) {
