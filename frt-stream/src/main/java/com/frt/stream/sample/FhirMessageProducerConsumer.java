@@ -1,4 +1,4 @@
-package com.frt.stream;
+package com.frt.stream.sample;
 
 public class FhirMessageProducerConsumer {
 

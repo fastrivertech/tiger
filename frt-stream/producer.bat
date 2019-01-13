@@ -1,1 +1,1 @@
-mvn exec:java -D"exec.mainClass"="com.frt.stream.FhirMessageProducer"
+mvn exec:java -D"exec.mainClass"="com.frt.stream.sample.FhirMessageProducer"

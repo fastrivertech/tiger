@@ -19,9 +19,11 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.errors.InterruptException;
-import org.apache.kafka.common.KafkaException;
+
 import com.frt.stream.service.StreamServiceConfig;
 import com.frt.stream.service.StreamServiceException;
+
+import org.apache.kafka.common.KafkaException;
 
 /*
  * FhirConsumer class
@@ -68,6 +70,7 @@ public class FhirConsumer implements ParticipatingApplication {
 		try {
 			if ( consumer != null) {				
 				consumer.close();
+				consumer.unsubscribe();
 			}
 		} catch (KafkaException ex) {			
 		}
