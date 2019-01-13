@@ -92,27 +92,7 @@ public class PatientResourceMapper extends BaseMapper {
 				addExtensions(frtPatient, extensions, "patient");
 			}
 
-			// HAPI bug? jp below missing DomainResource.contained
-			// HAPI parser expected behavior - trim contained resources that is not referenced
 			String jp = this.parser.encodeResourceToString(hapiPatient);
-//			List<org.hl7.fhir.dstu3.model.Resource> contained = hapiPatient.getContained();
-//			if (contained!=null&&contained.size()>0) {
-//				StringBuilder sb = new StringBuilder();
-//				boolean first = true;
-//				sb.append(ARRAY_BEGIN);
-//				for (org.hl7.fhir.dstu3.model.Resource r: contained) {
-//					if (first) {
-//						first = false;
-//					}
-//					else {
-//						sb.append(VAL_DEL);
-//					}
-//					sb.append(this.parser.encodeResourceToString(r));
-//				}
-//				sb.append(ARRAY_END);
-//				frtPatient.setContained(sb.toString());
-//			}
-
 			JsonElement el = gparser.parse(jp);
 			JsonObject root = el.getAsJsonObject();
 			

@@ -11,6 +11,8 @@
  */
 package com.frt.fhir.model.base;
 
+import java.lang.reflect.InvocationTargetException;
+
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.util.logging.Localization;
@@ -48,7 +50,7 @@ public class PatientReferenceMapper extends BaseMapper {
 		}
 		com.frt.dr.model.base.PatientReference frt = null;
 		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Reference")
-				&& targetClz.getName().equals("com.frt.dr.model.base.PatientReference")) {
+				&&targetClz.getName().equals("com.frt.dr.model.base.PatientReference")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_REFERENCE);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			frt.setReference(root.get("reference") != null ? root.get("reference").getAsString() : null);

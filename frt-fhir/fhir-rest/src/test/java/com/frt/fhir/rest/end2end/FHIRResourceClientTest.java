@@ -26,13 +26,14 @@ import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.lang3.StringUtils;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.frt.dr.model.base.PatientReference;
 import com.frt.fhir.model.ResourceDictionary;
-import com.frt.fhir.model.ResourceMapperFactory;
 import com.frt.fhir.model.ResourceMapperInterface;
 import com.frt.fhir.model.base.BaseMapper;
 
@@ -117,22 +118,33 @@ public class FHIRResourceClientTest {
 		Patient p = readPatient();
 		assertTrue("readPatient() expects return a HAPI Patient.", p!=null&&(p instanceof Patient));
 
-		ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("PATIENT");
-		ResourceMapperFactory factory = ResourceMapperFactory.getInstance();
-		ResourceMapperInterface mapper = factory.create("Patient");
+		ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(ResourceMapperInterface.PATIENT);
+		
+		ResourceMapperInterface mapper = ResourceDictionary.getMapper(ResourceMapperInterface.PATIENT);
 		Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map(p);
 		assertTrue("End2End test failed: Expect HAPI Patient returned from request.",
 				target instanceof com.frt.dr.model.base.Patient);
 		com.frt.dr.model.base.Patient pt = (com.frt.dr.model.base.Patient) target;
+		// check FRT Patient generalPractitioner and managingOrganization
+		PatientReference ptref = pt.getManagingOrganization();
+		assertNotNull("Expect Patient.managingOrganization present.", ptref);
+		// check FRT Patient gen practitioner
+		List<PatientReference> genPracs = pt.getGeneralPractitioners();
+		assertNotNull("Expect Patient.generalPractitioner present.", genPracs);
+		assertTrue("Expect Patient.generalPractitioner has one element.", genPracs.size()==1);
+
 		pt.setId("8");
+		
 		String frtStr = BaseMapper.resourceToJson(pt);
 
-		writeFile("src/test/data/frt_patient_sample_gold.json", frtStr);
+//		writeFile("src/test/data/frt_patient_sample_gold_gen.json" + System.currentTimeMillis(), frtStr);
 		
 		try {
 			String gold = readFromFile("src/test/data/frt_patient_sample_gold.json");
-			System.out.println("frt=" + frtStr);
-			System.out.println("gold=" + gold);
+//			System.out.println("frt=" + frtStr);
+//			System.out.println("gold=" + gold);
+			String diff = StringUtils.difference(gold, frtStr);
+			System.out.println("diff=" + diff);
 			assertEquals("FRT Patient json does not match the cannonical json string.", gold, frtStr);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -280,23 +292,18 @@ public class FHIRResourceClientTest {
 		File f = new File("src/test/data/fhir_patient_resource_sample_6k.json");
 		String json = new String(Files.readAllBytes(Paths.get("src/test/data/fhir_patient_resource_sample_6k.json")),
 				StandardCharsets.UTF_8);
-		System.out.println("Sample patient resource json file: " + f.getAbsolutePath());
-		System.out.println("Sample patient resource json : " + json);
 		// decode to HAPI Patient
 		Patient p = (Patient)parser.parseResource(json);
 		p.setId((testPatientID="IDFROMEND2ENDTEST"+System.currentTimeMillis()));
 		Invocation.Builder invocationBuilder = webTarget.request(MediaType.APPLICATION_JSON);
 		Response resp = invocationBuilder.post(Entity.json(this.parser.encodeResourceToString(p)));
-		System.out.println("RESP: " + resp.toString());
 		return resp;
 	}
 
 	private Patient readPatient() {
 		WebTarget patientRS = webTarget.path(testPatientID);
 		Invocation.Builder invocationBuilder = patientRS.request(MediaType.APPLICATION_JSON);
-		//Patient p = invocationBuilder.get(Patient.class);
 		String p = invocationBuilder.get(String.class);
-		System.out.println("Patient returned = " + p);
 		Patient pt = (Patient)this.parser.parseResource(p);
 		return pt;
 	}

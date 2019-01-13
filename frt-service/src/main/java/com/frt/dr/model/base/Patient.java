@@ -23,6 +23,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -35,7 +36,10 @@ import javax.validation.constraints.Size;
 import com.frt.dr.model.DomainResource;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.eclipse.persistence.annotations.Customizer;
+
 @Entity
+@Customizer(PTCustomizer.class)
 @DiscriminatorValue("PATIENT_RESOURCE")
 @Table(name = "PATIENT")
 //uncomment Seq Generator will cause Resource insert does not accept NULL error

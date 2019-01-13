@@ -33,10 +33,12 @@ public class PatientAndComponentMapperTest {
 		ca.uhn.fhir.context.FhirContext context = FhirContext.forDstu3();
 		ca.uhn.fhir.parser.JsonParser parser = (ca.uhn.fhir.parser.JsonParser) context.newJsonParser();
 
-		ResourceMapperFactory factory = ResourceMapperFactory.getInstance();
-		ResourceMapperInterface mapper = factory.create("Patient");
+		ResourceMapperInterface mapper = ResourceDictionary.getMapper(ResourceMapperInterface.PATIENT);
+
 		File f = new File("src/test/data/fhir_patient_resource_sample_6k.json");
+		
 		FileReader fr = null;
+		
 		try {
 			fr = new FileReader(f);
 		} catch (FileNotFoundException e1) {
@@ -46,7 +48,7 @@ public class PatientAndComponentMapperTest {
 		}
 
 		org.hl7.fhir.dstu3.model.Patient hapi = parser.doParseResource(org.hl7.fhir.dstu3.model.Patient.class, fr);
-		ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get("PATIENT");
+		ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(ResourceMapperInterface.PATIENT);
 		Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map(hapi);
 
 		assertTrue("Expecting FRT Patient.", (target instanceof com.frt.dr.model.base.Patient));
