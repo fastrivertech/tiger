@@ -99,7 +99,7 @@ public class CreateResourceOperation extends ResourceOperation {
 			String message;
 			if (streamService.enabled()) {
 				logger.info(localizer.x("write 'create " + type + " operation' message to fhir stream"));				
-				streamService.write(body);
+				streamService.write("fhir write a resource", body);
 				List<String> bodys = streamService.read();
 				logger.info(localizer.x("read 'create " + type + " operation' message from fhir stream"));				
 				message = bodys.get(0);

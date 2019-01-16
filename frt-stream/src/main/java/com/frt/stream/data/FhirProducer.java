@@ -42,11 +42,11 @@ public class FhirProducer implements ParticipatingApplication {
 		}
 	}
 
-	public void write(String message) 
+	public void write(String key, String message) 
 		throws StreamDataException {
 		try {
 			producer.beginTransaction();
-			producer.send(new ProducerRecord<String, String>(config.get(StreamServiceConfig.STREAM_TOPIC), message));
+			producer.send(new ProducerRecord<String, String>(config.get(StreamServiceConfig.STREAM_TOPIC), key, message));
 			producer.commitTransaction();
 		} catch (KafkaException ex) {
 			try {

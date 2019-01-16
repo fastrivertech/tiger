@@ -54,8 +54,8 @@ public class FhirConsumer implements ParticipatingApplication {
 		List<String> messages = new ArrayList<>();
 		try {
 			ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(1000));	
-			
 			consumerRecords.forEach(record -> {
+				System.out.println("received: " + record.key());
 				messages.add(record.value());
 			});									
 			consumer.commitSync();

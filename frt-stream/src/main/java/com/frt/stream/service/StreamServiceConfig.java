@@ -24,11 +24,14 @@ import java.io.FileNotFoundException;
 public class StreamServiceConfig {
 
 	public static final String STREAM_TOPIC="frt.stream.topic";
+	public static final String STREAM_DISCOVERY_TOPIC="frt.stream.discovery.topic";
 	public static final String STREAM_ENABLE="frt.stream.enable";	
 	
 	private final static String STREAMSERVICE_CONFIGURATION_PATH = "./config/frt_stream.properties";
 	private final static String PRODUCER_HEAD = "p.";
 	private final static String CONSUMER_HEAD = "c.";
+	
+	private final static String PARTICIPATING_APPLICATION_HEAD = "pp.";
 		
 	private static StreamServiceConfig instance;
 	private Properties props;
@@ -70,6 +73,16 @@ public class StreamServiceConfig {
 		props.forEach((k, v)-> {
 			if (((String)k).startsWith("c.")) {
 				config.put(((String)k).substring(2), v);
+			}
+		});
+		return config;		
+	}
+	
+	public Properties getApplicationConfig() {
+		Properties config = new Properties();
+		props.forEach((k, v)-> {
+			if (((String)k).startsWith("pp.")) {
+				config.put(((String)k).substring(3), v);
 			}
 		});
 		return config;		

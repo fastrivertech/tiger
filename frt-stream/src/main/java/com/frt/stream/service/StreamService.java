@@ -50,6 +50,7 @@ public class StreamService {
 				producer.initialize();
 				consumer = new FhirConsumer();
 				consumer.initialize();
+				
 			}
 		} catch(StreamDataException ex) {
 			throw new StreamServiceException(ex);
@@ -61,10 +62,10 @@ public class StreamService {
 		return Boolean.parseBoolean(enabled);
 	}
 
-	public void write(String message) 
+	public void write(String key, String message) 
 		throws StreamServiceException {
 		try {
-			((FhirProducer)producer).write(message);
+			((FhirProducer)producer).write(key, message);
 		} catch (StreamDataException ex) {
 			throw new StreamServiceException(ex);
 		}
