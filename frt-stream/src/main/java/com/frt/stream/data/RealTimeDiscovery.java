@@ -26,6 +26,7 @@ import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.Consumed;
 import org.apache.kafka.common.KafkaException;
+import org.apache.kafka.streams.Topology;
 import com.frt.stream.service.StreamServiceConfig;
 import com.frt.stream.service.StreamServiceException;
 
@@ -53,24 +54,23 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 			KStream<String, String> source = builder.stream(config.get(StreamServiceConfig.STREAM_TOPIC),
 														    Consumed.with(stringSerde, stringSerde));
 			
-			KTable<String, Long> counts = source.groupBy((key, value) -> value).count();
-			
-			counts.toStream().to(StreamServiceConfig.STREAM_DISCOVERY_TOPIC,
+			KTable<String, Long> counts = source.groupByKey().count();		
+			counts.toStream().to(config.get(StreamServiceConfig.STREAM_DISCOVERY_TOPIC),
 								 Produced.with(Serdes.String(), Serdes.Long()));
 			
 			Properties props = config.getApplicationConfig();
-			
 			props.setProperty(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 			props.setProperty(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
-			
-			
-			streams = new KafkaStreams(builder.build(), props);
+					
+			final Topology topology = builder.build();
+			streams = new KafkaStreams(topology, props);
 			latch = new CountDownLatch(1);
 
 			Runtime.getRuntime().addShutdownHook(new Thread("realtime-discovery-shutdown-hook") {
 				@Override
 				public void run() {
-					System.out.println("fhir stream discovery stop ...");
+					System.out.println("fhir stream discovery stopped ...");
+					streams.cleanUp();
 					streams.close();
 					latch.countDown();
 				}
@@ -86,6 +86,7 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 			streams.start();
 			System.out.println("fhir stream discovery ...");
 			latch.await();
+			System.out.println("fhir stream discovery stopped");			
 		} catch (KafkaException | IllegalStateException | InterruptedException ex) {
 			throw new StreamDataException(ex);
 		}
