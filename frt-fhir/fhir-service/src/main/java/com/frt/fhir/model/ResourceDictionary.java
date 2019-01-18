@@ -60,8 +60,6 @@ public class ResourceDictionary {
 		resourcePairs.put(ResourceMapperInterface.PATIENT_IDENTIFIER, new ResourcePair(org.hl7.fhir.dstu3.model.Identifier.class, com.frt.dr.model.base.PatientIdentifier.class));		
 		resourcePairs.put(ResourceMapperInterface.PATIENT_ADDRESS, new ResourcePair(org.hl7.fhir.dstu3.model.Address.class, com.frt.dr.model.base.PatientAddress.class));		
 		resourcePairs.put(ResourceMapperInterface.PATIENT_REFERENCE, new ResourcePair(org.hl7.fhir.dstu3.model.Reference.class, com.frt.dr.model.base.PatientReference.class));		
-//		resourcePairs.put(ResourceMapperInterface.PATIENT_REFERENCE_MNGORG, new ResourcePair(org.hl7.fhir.dstu3.model.Reference.class, com.frt.dr.model.base.PatientReferenceManagingOrganization.class));		
-//		resourcePairs.put(ResourceMapperInterface.PATIENT_REFERENCE_GENPRCTNR, new ResourcePair(org.hl7.fhir.dstu3.model.Reference.class, com.frt.dr.model.base.PatientReferenceGeneralPractitioner.class));		
 		resourcePairs.put(ResourceMapperInterface.PATIENT_CODEABLECONCEPT, new ResourcePair(org.hl7.fhir.dstu3.model.CodeableConcept.class, com.frt.dr.model.base.PatientCodeableConcept.class));		
 		resourcePairs.put(ResourceMapperInterface.PATIENT_ATTACHMENT, new ResourcePair(org.hl7.fhir.dstu3.model.Attachment.class, com.frt.dr.model.base.PatientAttachment.class));		
 		resourcePairs.put(ResourceMapperInterface.PATIENT_CONTACTPOINT, new ResourcePair(org.hl7.fhir.dstu3.model.ContactPoint.class, com.frt.dr.model.base.PatientContactPoint.class));		
@@ -86,14 +84,13 @@ public class ResourceDictionary {
 		complextypes.put(ResourceMapperInterface.PATIENT_IDENTIFIER, com.frt.dr.model.base.PatientIdentifier.class);		
 		complextypes.put(ResourceMapperInterface.PATIENT_ADDRESS, com.frt.dr.model.base.PatientAddress.class);		
 		complextypes.put(ResourceMapperInterface.PATIENT_REFERENCE, com.frt.dr.model.base.PatientReference.class);		
-//		complextypes.put(ResourceMapperInterface.PATIENT_REFERENCE_MNGORG, com.frt.dr.model.base.PatientReferenceManagingOrganization.class);		
-//		complextypes.put(ResourceMapperInterface.PATIENT_REFERENCE_GENPRCTNR, com.frt.dr.model.base.PatientReferenceGeneralPractitioner.class);		
 		complextypes.put(ResourceMapperInterface.PATIENT_CODEABLECONCEPT, com.frt.dr.model.base.PatientCodeableConcept.class);		
 		complextypes.put(ResourceMapperInterface.PATIENT_ATTACHMENT, com.frt.dr.model.base.PatientAttachment.class);		
 		complextypes.put(ResourceMapperInterface.PATIENT_CONTACTPOINT, com.frt.dr.model.base.PatientContactPoint.class);		
 		complextypes.put(ResourceMapperInterface.PATIENT_CONTACT, com.frt.dr.model.base.PatientContact.class);		
 		complextypes.put(ResourceMapperInterface.PATIENT_ANIMAL, com.frt.dr.model.base.PatientAnimal.class);		
 		complextypes.put(ResourceMapperInterface.PATIENT_COMMUNICATION, com.frt.dr.model.base.PatientCommunication.class);		
+		complextypes.put(ResourceMapperInterface.PATIENT_EXTENSION, com.frt.dr.model.base.PatientLink.class);		
 		complextypes.put(ResourceMapperInterface.PATIENT_LINK, com.frt.dr.model.base.PatientLink.class);		
 	}
 
@@ -107,8 +104,6 @@ public class ResourceDictionary {
 		mappers.put(ResourceMapperInterface.PATIENT_IDENTIFIER, com.frt.fhir.model.base.PatientIdentifierMapper.class);		
 		mappers.put(ResourceMapperInterface.PATIENT_ADDRESS, com.frt.fhir.model.base.PatientAddressMapper.class);		
 		mappers.put(ResourceMapperInterface.PATIENT_REFERENCE, com.frt.fhir.model.base.PatientReferenceMapper.class);		
-//		mappers.put(ResourceMapperInterface.PATIENT_REFERENCE_MNGORG, com.frt.fhir.model.base.PatientReferenceMapper.class);		
-//		mappers.put(ResourceMapperInterface.PATIENT_REFERENCE_GENPRCTNR, com.frt.fhir.model.base.PatientReferenceMapper.class);		
 		mappers.put(ResourceMapperInterface.PATIENT_CODEABLECONCEPT, com.frt.fhir.model.base.PatientCodeableConceptMapper.class);		
 		mappers.put(ResourceMapperInterface.PATIENT_ATTACHMENT, com.frt.fhir.model.base.PatientAttachmentMapper.class);		
 		mappers.put(ResourceMapperInterface.PATIENT_CONTACTPOINT, com.frt.fhir.model.base.PatientContactPointMapper.class);		

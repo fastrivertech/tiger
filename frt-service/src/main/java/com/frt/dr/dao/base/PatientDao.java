@@ -12,6 +12,7 @@
 package com.frt.dr.dao.base;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.sql.DataSource;
 import java.sql.Types;
@@ -113,5 +114,11 @@ public class PatientDao extends BaseDao<Patient,String> {
 		} catch (PersistenceException ex) {
 			throw new DaoException(ex);						
 		}
+	}
+
+	@Override
+	public Optional<List<Patient>> query(Map params) throws DaoException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

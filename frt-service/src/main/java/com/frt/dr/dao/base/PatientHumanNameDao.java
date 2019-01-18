@@ -12,6 +12,8 @@
 package com.frt.dr.dao.base;
 
 import java.sql.Types;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -71,5 +73,11 @@ public class PatientHumanNameDao extends BaseDao<PatientHumanName, Long> {
 		} catch (DataAccessException dex) {
 			throw new DaoException(dex);
 		}
+	}
+
+	@Override
+	public Optional<List<PatientHumanName>> query(Map params) throws DaoException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

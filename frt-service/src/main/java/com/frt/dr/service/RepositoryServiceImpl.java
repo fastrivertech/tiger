@@ -12,7 +12,10 @@
 package com.frt.dr.service;
 
 import javax.sql.DataSource;
+import javax.ws.rs.core.MultivaluedMap;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,6 +73,28 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 		
 	@Override
+	public <R extends DomainResource> List<R> query(Class<?> resourceClazz, Map params)
+			throws RepositoryServiceException {
+		try {
+			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
+			
+			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
+		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
+			dao.setEntityManager(em);
+			
+			Optional<List<R>> resources = dao.query(params);
+			if (resources.isPresent()) {
+				return resources.get();
+			}
+			else {
+				return null;
+			}
+		} catch (DaoException dex) {
+			throw new RepositoryServiceException(dex); 
+		}
+	}
+	
+	@Override
 	public <R extends DomainResource> R save(Class<?> resourceClazz, R resource)
 		   throws RepositoryServiceException {
 		try {
@@ -85,5 +110,5 @@ public class RepositoryServiceImpl implements RepositoryService {
 			throw new RepositoryServiceException(dex); 
 		}
 	}
-	
+
 }

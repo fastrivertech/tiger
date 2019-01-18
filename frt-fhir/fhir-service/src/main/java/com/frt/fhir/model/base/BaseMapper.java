@@ -5,9 +5,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.hl7.fhir.dstu3.model.StringType;
 
@@ -51,9 +49,9 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	protected static String NV_PAIR_FORMAT_ARRAY = "\"{0}\":{1}";
 	protected static String NV_PAIR_FORMAT_OBJ = "\"{0}\":{1}";
 	protected static String NV_SEP = ":";
-	protected static String VAL_DEL = ",";
-	protected static String ARRAY_BEGIN = "[";
-	protected static String ARRAY_END = "]";
+	public static String VAL_DEL = ",";
+	public static String ARRAY_BEGIN = "[";
+	public static String ARRAY_END = "]";
 	protected static String OBJ_BEGIN = "{";
 	protected static String OBJ_END = "}";
 

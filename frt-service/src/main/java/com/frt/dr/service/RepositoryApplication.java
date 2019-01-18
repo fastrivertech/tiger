@@ -11,6 +11,11 @@
  */
 package com.frt.dr.service;
 
+import java.util.List;
+import java.util.Map;
+
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -46,6 +51,12 @@ public class RepositoryApplication {
 		return resource;
 	}
 	
+	public <R extends DomainResource> List<R> read(Class resourceClazz, Map params)
+		throws RepositoryServiceException {
+    	List<R> resources = this.repositoryService.query(resourceClazz, params);    	
+		return resources;
+	}
+
 	public static void main(String[] args) {
 		try {
 			RepositoryContext context = new RepositoryContext(RepositoryApplication.class);			

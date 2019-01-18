@@ -11,6 +11,9 @@
  */
 package com.frt.fhir.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import org.hl7.fhir.dstu3.model.DomainResource;
@@ -18,7 +21,6 @@ import com.frt.fhir.model.ResourceMapperFactory;
 import com.frt.fhir.model.ResourceMapperInterface;
 import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
-import com.frt.dr.model.base.Patient;
 import com.frt.dr.service.RepositoryApplication;
 import com.frt.dr.service.RepositoryContext;
 import com.frt.dr.service.RepositoryContextException;
@@ -54,6 +56,26 @@ public class FhirService {
 			throw new FhirServiceException(ex);
 		}
 	}
+
+	public <R extends DomainResource> Optional<List<R>> read(@Nonnull String type, Map params) 
+			throws FhirServiceException {
+			Optional<List<R>> retVal = Optional.empty();
+			try {
+				ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
+				ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
+				List resources = repository.read(resourcePair.getFrt(), params);
+				List rlist = null;
+				if (resources!=null) {
+					rlist = new ArrayList();
+					for (Object r: resources) {
+						rlist.add(mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)r));
+					}
+				}
+				return Optional.of(rlist);
+			} catch (MapperException | RepositoryServiceException ex) {
+				throw new FhirServiceException(ex);
+			}		
+		}
 
 	public <R extends DomainResource> Optional<R> read(@Nonnull String type, @Nonnull String id) 
 		throws FhirServiceException {
