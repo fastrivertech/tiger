@@ -11,10 +11,9 @@
 package com.frt.fhir.rest.validation;
 
 import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
-
-import javax.ws.rs.core.MultivaluedMap;
 
 import com.frt.util.logging.Localization;
 
@@ -80,7 +79,7 @@ public class OperationValidator {
 		}
 	}
 
-	public static void validateParameters(String id, MultivaluedMap params) throws ValidationException {
+	public static void validateParameters(String id, Map params) throws ValidationException {
 		if (id == null&&(params==null||params.size()==0)) {
 				throw new ValidationException(localizer.x("invalid id " + id),
 										      ValidationException.ErrorCode.INVALID_QUERY_PARAMS);

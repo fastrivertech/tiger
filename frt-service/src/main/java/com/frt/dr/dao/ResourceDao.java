@@ -107,8 +107,15 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			Set<Parameter<?>> qparams = query.getParameters();
 			Iterator<Parameter<?>> pit = qparams.iterator();
 			while (pit.hasNext()) {
-				Parameter param = pit.next();
-				System.out.println("param: class:" + param.getClass() + ", name:" + param.getName() + ", position:" + param.getPosition() + ", type:" + param.getParameterType());
+				Parameter qparam = pit.next();
+				System.out.println("param: class:" + qparam.getClass() + ", name:" + qparam.getName() + ", position:" + qparam.getPosition() + ", type:" + qparam.getParameterType());
+				String value = (String)params.get(qparam.getName());
+				if (qparam.getParameterType().equals(String.class)) {
+					query.setParameter(qparam.getName(), value);
+				} 
+				else if (qparam.getParameterType().equals(Integer.class)) {
+					
+				}
 			}
 			//query.setParameter(pn, pv);
 			List<Resource> resources = (List<Resource>) query.getResultList();
@@ -185,13 +192,29 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	 * @param params
 	 * @return
 	 */
-	private Predicate genWhere(CriteriaQuery cq, CriteriaBuilder cb, Root root, Class clazz, Map params) {
-		List<Predicate> predicates = new ArrayList<Predicate>();
-		if (clazz.equals(com.frt.dr.model.base.Patient.class)) {
-			// attribute of Entity
-			captureParam(cb, root, predicates, params, "active", Boolean.class);
+	private Predicate genWhere(CriteriaQuery cq, CriteriaBuilder cb, Root rootEntity, Class ResourceClazz, Map<String, String> params) {
+		Predicate where = cb.conjunction();
+		if (ResourceClazz.equals(com.frt.dr.model.base.Patient.class)) {
+			// attribute of Entity: _id, Resource ID (logical) 64 VARCHAR
+			for (Map.Entry<String, String> e: params.entrySet()) {
+				String key = e.getKey();
+				String value = e.getValue();
+				if (key.equals("_id")) {
+					where = cb.and(where, cb.equal(rootEntity.get("id"), cb.parameter(String.class, "_id")));
+				}
+				if (key.equals("active")) {
+					where = cb.and(where, cb.equal(rootEntity.get("active"), cb.parameter(Boolean.class, "active")));
+				}
+				if (key.equals("birthdate")) {
+					where = cb.and(where, cb.equal(rootEntity.get("birthdate"), cb.parameter(Date.class, "birthdate")));
+				}
+				if (key.equals("gender")) {
+					where = cb.and(where, cb.equal(rootEntity.get("gender"), cb.parameter(String.class, "gender")));
+				}
+				
+			}
 			// attributes from associated entity : PatientAddress
-			captureParam(cq, cb, root, predicates, params, new String[] {"address", "address-city", "address-country", "address-postalcode", "address-state"}, new Class[] {String.class, String.class, String.class, String.class, String.class}, com.frt.dr.model.base.PatientAddress.class);
+//			captureParam(cq, cb, root, predicates, params, new String[] {"address", "address-city", "address-country", "address-postalcode", "address-state"}, new Class[] {String.class, String.class, String.class, String.class, String.class}, com.frt.dr.model.base.PatientAddress.class);
 			/**
 			 * [parameter]=eq2013-01-14 2013-01-14T00:00 matches (obviously)
 			 * 2013-01-14T10:00 matches 2013-01-15T00:00 does not match - it's not in the
@@ -217,32 +240,21 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			 * not included - as it is not near 14-Mar 2013. Note that the exact value here
 			 * is at the discretion of the system *
 			 */
-			// attribute of Entity
-			captureParam(cb, root, predicates, params, "birthdate", Date.class);
 
 			// name - string A server defined search that may match any of the string fields
 			// in the HumanName, including family, give, prefix, suffix, suffix, and/or text
 			// Patient.name
 			// attribute in associated Entity: e.g. PatientHumanName 
-			captureParam(cq, cb, root, predicates, params, new String[] {"name", "given", "family"}, new Class[] {String.class, String.class, String.class}, com.frt.dr.model.base.PatientHumanName.class);
+//			captureParam(cq, cb, root, predicates, params, new String[] {"name", "given", "family"}, new Class[] {String.class, String.class, String.class}, com.frt.dr.model.base.PatientHumanName.class);
 
-			// attribute of Entity
-			captureParam(cb, root, predicates, params, "gender", String.class);
-			
 			// attribute in associated Entity: e.g. PatientIdentifier
-			captureParam(cq, cb, root, predicates, params, new String[] {"identifier"}, new Class[] {String.class}, com.frt.dr.model.base.PatientIdentifier.class);
+//			captureParam(cq, cb, root, predicates, params, new String[] {"identifier"}, new Class[] {String.class}, com.frt.dr.model.base.PatientIdentifier.class);
 
 			// attribute in associated Entity: e.g. PatientContactPoint
-			captureParam(cq, cb, root, predicates, params, new String[] {"telecom"}, new Class[] {String.class}, com.frt.dr.model.base.PatientContactPoint.class);
+//			captureParam(cq, cb, root, predicates, params, new String[] {"telecom"}, new Class[] {String.class}, com.frt.dr.model.base.PatientContactPoint.class);
 		} else {
 			throw new UnsupportedOperationException("Query with parameters on resource: "
-					+ clazz.getClass().getCanonicalName() + " not implemented yet.");
-		}
-		Predicate where = cb.conjunction();
-		if (predicates!=null) {
-			for (Predicate p: predicates) {
-				where = cb.and(where, p);
-			}
+					+ ResourceClazz.getClass().getCanonicalName() + " not implemented yet.");
 		}
 		return where;
 	}
@@ -378,8 +390,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	 * @param paramType
 	 */
 	private void captureParam(CriteriaBuilder cb, Root root, List<Predicate> predicates, Map params, String paramName, Class paramType) {
-		LinkedList<?> valueList = (LinkedList<?>) params.get(paramName);
-		String value = (String)valueList.get(0);
+		String value = getParamValue(params, paramName);
 		if (value != null && !value.isEmpty()) {
 			
 			if (paramType.equals(Boolean.class)) {
@@ -455,6 +466,15 @@ public class ResourceDao extends BaseDao<Resource, String> {
 				}
 			}
 		}
+	}
+
+	private String getParamValue(Map params, String paramName) {
+		LinkedList<?> valueList = (LinkedList<?>) params.get(paramName);
+		String value = null;
+		if (valueList!=null) {
+			value = (String)valueList.get(0);
+		}
+		return value;
 	}
 
 }

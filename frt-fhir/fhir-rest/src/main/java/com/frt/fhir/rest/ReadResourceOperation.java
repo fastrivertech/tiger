@@ -10,7 +10,10 @@
  */
 package com.frt.fhir.rest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -102,15 +105,10 @@ public class ReadResourceOperation extends ResourceOperation {
 		try {
 			logger.info(localizer.x("ReadResourceOperation reads a current resource"));		
 			// Request
+			Map<String, String> parameters = null;
 			MultivaluedMap params = uriInfo!=null?uriInfo.getQueryParameters():null;
 			if (params!=null) {
-				Set keys = params.keySet();
-				Iterator it = keys.iterator();
-				while (it.hasNext()) {
-					Object key = it.next();
-					Object value = params.get(key);
-					logger.info("key=" + key + ", value=" + value);
-				}
+				parameters = trimParams(params);
 			}
 			// Response includes ETag with versionId and Last-Modified
 			// 410 Gone - Resource deleted 
@@ -120,7 +118,7 @@ public class ReadResourceOperation extends ResourceOperation {
 			// for now, id and params can not be both null/empty
 			// either id not null - a fetch by id, might with restriction expressed in params
 			// or params not empty - a search, might be with id in params : e.g. id=909901
-			OperationValidator.validateParameters(id, params);
+			OperationValidator.validateParameters(id, parameters);
 			
 			String message;
 			if (streamService.enabled()) {
@@ -144,7 +142,7 @@ public class ReadResourceOperation extends ResourceOperation {
 			}
 			else {
 				logger.info(localizer.x("search resource of type: " + type + " with parameters [" + params.toString() + "] ..."));		
-				Optional<List<R>> found = fhirService.read(type, params);
+				Optional<List<R>> found = fhirService.read(type, parameters);
 				if (found.isPresent()) {
 					StringBuilder sb = new StringBuilder();
 					List<R> rsl = found.get();
@@ -187,5 +185,23 @@ public class ReadResourceOperation extends ResourceOperation {
 			return ResourceOperationResponseBuilder.build(resourceInJson, Status.INTERNAL_SERVER_ERROR, "", MediaType.APPLICATION_JSON);							
 		}
 		
+	}
+
+	private Map<String, String> trimParams(MultivaluedMap params) {
+		Map<String, String> ret = new HashMap<String, String>();
+		Iterator pit = params.keySet().iterator();
+		while (pit.hasNext()) {
+			Object key = pit.next();
+			Object value = params.get(key);
+			if (value instanceof LinkedList<?>) {
+				// debugging shows value could be LinkedList
+				ret.put(key.toString(), ((LinkedList<?>)value).get(0).toString());
+			}
+			else {
+				// assume it is string or primitive
+				ret.put(key.toString(), value.toString());
+			}
+		}
+		return ret;
 	}
 }
