@@ -90,7 +90,7 @@ public class ReadResourceOperation extends ResourceOperation {
 			String message;
 			if (streamService.enabled()) {
 				logger.info(localizer.x("write 'read " + type + " operation' message to fhir stream"));
-				streamService.write("fhir read a resource by its id '" + id + "'",  id);
+				streamService.write( "GET " + uriInfo.getPath(),  id);
 				List<String> bodys = streamService.read();
 				logger.info(localizer.x("read 'read " + type + " operation' message from fhir stream"));				
 				message = bodys.get(0);
