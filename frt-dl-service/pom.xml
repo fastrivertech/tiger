@@ -28,6 +28,13 @@
   <name>FRT DATALKE SERVICE ${frt.dl.service.version}</name>
   <description>Fast River DATALAKE SERVICE ${frt.dl.service.version}</description>
   
+  <repositories>
+	<repository>
+	  <id>cloudera</id>
+      <url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
+    </repository>
+  </repositories>
+  
   <build>
     <plugins>
       <plugin>
@@ -41,6 +48,17 @@
   </build>
   	
   <dependencies>
+  
+	<dependency>
+		<groupId>org.apache.hadoop</groupId>
+		<artifactId>hadoop-common</artifactId>
+		<version>2.6.0-cdh5.13.3</version>
+	</dependency>	
+	<dependency>
+		<groupId>org.apache.hadoop</groupId>
+		<artifactId>hadoop-hdfs</artifactId>
+		<version>2.6.0-cdh5.13.3</version>
+	</dependency>		
 	<dependency>
 		<groupId>junit</groupId>
 		<artifactId>junit</artifactId>
