@@ -29,7 +29,8 @@
 	<frt.fhir.version>1.0.0-SNAPSHOT</frt.fhir.version>
 	<frt.stream.version>1.0.0-SNAPSHOT</frt.stream.version>	
 	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
-	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>	
+	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>
+	<frt.dl.service.version>1.0.0-SNAPSHOT</frt.dl.service.version>
 	<!-- splice machine -->
 	<com.splicemachine.version>2.7.0.1835</com.splicemachine.version>
     <!-- spring -->
@@ -55,6 +56,7 @@
   <modules>
     <module>frt-common</module>  
     <module>frt-stream</module>
+    <module>frt-dl-service</module>	
     <module>frt-service</module>    
 	<module>frt-fhir</module>	
   </modules>
