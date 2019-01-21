@@ -64,15 +64,18 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
 	@Column(name = "family")
 	private String family;
 
-	@Lob
+	//@Lob
+	@Size(max = 1024)
 	@Column(name = "given")
 	private String given;
 
-	@Lob
+	//@Lob
+	@Size(max = 1024)
 	@Column(name = "prefix")
 	private String prefix;
 
-	@Lob
+	//@Lob
+	@Size(max = 1024)
 	@Column(name = "suffix")
 	private String suffix;
 

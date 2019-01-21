@@ -42,7 +42,9 @@ import javax.persistence.criteria.Subquery;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
+import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Resource;
+import com.frt.dr.model.ResourceComplexType;
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientHumanName;
 import com.frt.dr.model.base.PatientIdentifier;
@@ -53,7 +55,6 @@ import com.frt.dr.model.base.PatientIdentifier;
  * @author jfu
  */
 public class ResourceDao extends BaseDao<Resource, String> {
-
 	@Override
 	public Optional<Resource> save(Resource entry) throws DaoException {
 		EntityTransaction transaction = null;
@@ -97,7 +98,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	}
 
 	@Override
-	public Optional<List<Resource>> query(Map params) throws DaoException {
+	public Optional<List<Resource>> query(Map<String, String> params) throws DaoException {
 		try {
 			Map<String, Object> whereParams = new HashMap<String, Object>();
 			CriteriaQuery cq = getWhereClause(em, com.frt.dr.model.base.Patient.class, params, whereParams);
@@ -270,14 +271,14 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	 * @param params
 	 * @return CriteriaQuery cq;
 	 */
-	private CriteriaQuery getWhereClause(EntityManager em, Class ResourceClazz, Map<String, String> params, Map<String, Object> whereParams) {
-		if (ResourceClazz.equals(com.frt.dr.model.base.Patient.class)) {
+	private <T extends DomainResource, U extends ResourceComplexType> CriteriaQuery<T> getWhereClause(EntityManager em, Class<T> resourceClazz, Map<String, String> params, Map<String, Object> whereParams) {
+		if (resourceClazz.equals(com.frt.dr.model.base.Patient.class)) {
 			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<com.frt.dr.model.base.Patient> cq = cb.createQuery(com.frt.dr.model.base.Patient.class);
-			Root<com.frt.dr.model.base.Patient> rootPatient = cq.from(com.frt.dr.model.base.Patient.class);
+			CriteriaQuery<T> cq = cb.createQuery(resourceClazz);
+			Root<T> rootPatient = cq.from(resourceClazz);
 			Predicate where = cb.conjunction();
-			// attribute of Entity: _id, Resource ID (logical) 64 VARCHAR
-			Map<Class, Boolean> processed = new HashMap<Class, Boolean>();
+			Class<? extends ResourceComplexType> associatedClazz = null;
+			Map<String, Boolean> processed = new HashMap<String, Boolean>();
 			for (Map.Entry<String, String> e : params.entrySet()) {
 				String key = e.getKey();
 				String value = e.getValue();
@@ -289,13 +290,13 @@ public class ResourceDao extends BaseDao<Resource, String> {
 				
 				if (key.equals("active")) {
 					where = cb.and(where, cb.equal(rootPatient.get("active"), cb.parameter(Boolean.class, "active")));
-					whereParams.put(key, Boolean.valueOf(value));
+					whereParams.put(key, Boolean.valueOf(value.toString()));
 				}
 				
 				if (key.equals("birthdate")) {
 					where = cb.and(where,
 							cb.equal(rootPatient.get("birthDate"), cb.parameter(Date.class, "birthdate")));
-					Date d = parseDate(value);
+					Date d = parseDate(value.toString());
 					if (d != null) {
 						whereParams.put(key, d);
 					} else {
@@ -315,7 +316,8 @@ public class ResourceDao extends BaseDao<Resource, String> {
 
 				if (key.startsWith("name") || key.startsWith("given") || key.startsWith("family")
 						|| key.startsWith("prefix") || key.startsWith("suffix")) {
-					Boolean b = processed.get(com.frt.dr.model.base.PatientHumanName.class);
+					associatedClazz = com.frt.dr.model.base.PatientHumanName.class;
+					Boolean b = processed.get(associatedClazz.getCanonicalName());
 					if (b==null||!b) {
 						Map<String, Boolean> attributes = new HashMap<String, Boolean>(); // <'param-name',
 																							// 'exact-flag'>
@@ -400,15 +402,17 @@ public class ResourceDao extends BaseDao<Resource, String> {
 							}
 						}
 						// mark name as processed
-						processed.put(com.frt.dr.model.base.PatientHumanName.class, true);
+						processed.put(associatedClazz.getCanonicalName(), true);
 						// extract all human name params
 						// humanName - PatientHumanName table
-						where = appendSubquery(em, cb, cq, rootPatient, where, com.frt.dr.model.base.Patient.class, com.frt.dr.model.base.PatientHumanName.class,
-								attributes, isConjunction);
+						where = appendSubquery(em, cb, cq, rootPatient, 
+								where, resourceClazz, associatedClazz,
+								attributes, "names", isConjunction);
 					}
 				}
 				if (key.startsWith("identifier")) {
-					Boolean b = processed.get(com.frt.dr.model.base.PatientIdentifier.class);
+					associatedClazz = com.frt.dr.model.base.PatientIdentifier.class;
+					Boolean b = processed.get(associatedClazz.getCanonicalName());
 					if (b==null||!b) {
 						// extract all identifier :
 						// further match use, system, value
@@ -424,13 +428,14 @@ public class ResourceDao extends BaseDao<Resource, String> {
 						// attribute in associated Entity: e.g. PatientIdentifier
 						// identifier - PatientIdentifier table
 						// mark identifier as processed
-						processed.put(com.frt.dr.model.base.PatientIdentifier.class, true);
-						where = appendSubquery(em, cb, cq, rootPatient, where, com.frt.dr.model.base.Patient.class,
-								com.frt.dr.model.base.PatientIdentifier.class, attributes, isConjunction);
+						processed.put(associatedClazz.getCanonicalName(), true);
+						where = appendSubquery(em, cb, cq, rootPatient, where,
+								resourceClazz, associatedClazz, attributes, "identifiers", isConjunction);
 					}
 				}
 				if (key.startsWith("address")) {
-					Boolean b = processed.get(com.frt.dr.model.base.PatientAddress.class);
+					associatedClazz = com.frt.dr.model.base.PatientAddress.class;
+					Boolean b = processed.get(associatedClazz.getCanonicalName());
 					if (b==null||!b) {
 						// extract all addressXXX parameters
 						Map<String, Boolean> attributes = new HashMap<String, Boolean>(); // <'param-name',
@@ -500,11 +505,10 @@ public class ResourceDao extends BaseDao<Resource, String> {
 								attributes.put("use", false);
 						}
 						// mark name as processed
-						processed.put(com.frt.dr.model.base.PatientHumanName.class, true);
+						processed.put(associatedClazz.getCanonicalName(), true);
 						// address - PatientAddress table
-						where = appendSubquery(em, cb, cq, rootPatient, where, com.frt.dr.model.base.Patient.class, 
-								com.frt.dr.model.base.PatientAddress.class,
-								attributes, isConjunction);
+						where = appendSubquery(em, cb, cq, rootPatient, where,
+								resourceClazz, associatedClazz, attributes, "addresses", isConjunction);
 					}
 				}
 
@@ -513,21 +517,21 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			return cq;
 		} else {
 			throw new UnsupportedOperationException("Query with parameters on resource: "
-					+ ResourceClazz.getClass().getCanonicalName() + " not implemented yet.");
+					+ resourceClazz.getClass().getCanonicalName() + " not implemented yet.");
 		}
 	}
 
-	private Predicate appendSubquery(EntityManager em, CriteriaBuilder cb, CriteriaQuery<Patient> cq, Root mainRoot, Predicate where,
-			Class mainClazz, Class refClazz, Map<String, Boolean> attributes, boolean isConjunction) {
-		//Subquery<BigInteger> subquery = cq.subquery(BigInteger.class);
-//		Root rootName = cq.from(refClazz);
+	private <T extends DomainResource, U extends ResourceComplexType> Predicate appendSubquery(
+			EntityManager em, CriteriaBuilder cb, CriteriaQuery<T> cq, 
+			Root<T> mainRoot, Predicate where, Class<T> mainClazz, Class<U> refClazz, 
+			Map<String, Boolean> attributes, String joinAttr, boolean isConjunction) {
 		Metamodel m = em.getMetamodel();
-		EntityType<Patient> Patient_ = m.entity(Patient.class);
-		EntityType<PatientHumanName> HumanName_ = m.entity(PatientHumanName.class);
-		Join<Patient, PatientHumanName> join = mainRoot.join(Patient_.getList("names", PatientHumanName.class));
+		EntityType<T> resourceEntity_ = m.entity(mainClazz);
+		//EntityType<U> HumanName_ = m.entity(refClazz);
+		Join<T, U> join = mainRoot.join(resourceEntity_.getList("names", refClazz));
 		
 		Predicate criteria = null;
-		Iterator it = null;
+		Iterator<String> it = null;
 		Boolean exactFlag = true;
 		String paramName = null;
 		if (isConjunction) {
@@ -537,10 +541,6 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			while (it.hasNext()) {
 				paramName = (String)it.next();
 				exactFlag = attributes.get(paramName);
-//				criteria = cb.and(criteria, 
-//						exactFlag ? 
-//							cb.equal(rootName.get(paramName), cb.parameter(String.class, paramName))
-//							: cb.like(rootName.get(paramName), cb.parameter(String.class, paramName)));
 				criteria = cb.and(criteria, 
 						exactFlag ? 
 							cb.equal(join.get(paramName), cb.parameter(String.class, paramName))
@@ -553,31 +553,13 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			while (it.hasNext()) {
 				paramName = (String)it.next();
 				exactFlag = attributes.get(paramName);
-//				criteria = cb.or(criteria, 
-//						exactFlag?
-//							cb.equal(rootName.get(paramName), cb.parameter(String.class, paramName))
-//							: cb.like(rootName.get(paramName), cb.parameter(String.class, paramName)));
 				criteria = cb.or(criteria, 
 						exactFlag?
 							cb.equal(join.get(paramName), cb.parameter(String.class, paramName))
 							: cb.like(join.get(paramName), cb.parameter(String.class, paramName)));
 			}
 		}
-//		criteria = cb.and(criteria, cb.equal(mainRoot.get("resourceId"), rootName.get("patient")));
-//		Join<Patient, PatientHumanName> y=mainRoot.join(Patient_.getList("names", PatientHumanName.class));
-		
-//		subquery.select(rootName.get("resource_id")).where(criteria);
-//		return cb.and(where, cb.in(mainRoot.<BigInteger>get("patientId")).value(subquery));
 		return cb.and(where, criteria);
-	}
-
-	private String getParamValue(Map params, String paramName) {
-		LinkedList<?> valueList = (LinkedList<?>) params.get(paramName);
-		String value = null;
-		if (valueList != null) {
-			value = (String) valueList.get(0);
-		}
-		return value;
 	}
 
 }

@@ -76,5 +76,5 @@ public abstract class BaseDao<T,ID> implements Repository {
 
     public abstract Optional<T> findById(ID id) throws DaoException;
     
-    public abstract Optional<List<T>> query(Map params) throws DaoException;
+    public abstract Optional<List<T>> query(Map<String, String> params) throws DaoException;
 }
