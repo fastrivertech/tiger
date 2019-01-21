@@ -163,7 +163,7 @@ public class ReadResourceOperation extends ResourceOperation {
 			}
 
 			// report error
-			String error = "invalid domain resource logical id '" + id + "'" ; 
+			String error = message!=null?"invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);

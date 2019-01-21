@@ -15,6 +15,7 @@ import java.math.BigInteger;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.LockTimeoutException;
 import javax.persistence.Parameter;
@@ -33,10 +35,17 @@ import javax.persistence.RollbackException;
 import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.criteria.Subquery;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.Metamodel;
+
 import com.frt.dr.model.Resource;
+import com.frt.dr.model.base.Patient;
+import com.frt.dr.model.base.PatientHumanName;
+import com.frt.dr.model.base.PatientIdentifier;
 
 /**
  * ResourceDao class
@@ -90,15 +99,8 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	@Override
 	public Optional<List<Resource>> query(Map params) throws DaoException {
 		try {
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery cq = cb.createQuery();
-			Root root = cq.from(com.frt.dr.model.base.Patient.class);
-			// Query query = em.createNamedQuery("getResourceById");
-			// query.setParameter("id", id);
-			Predicate where = genWhere(cq, cb, root, com.frt.dr.model.base.Patient.class, params);
-			if (where != null) {
-				cq.where(where);
-			}
+			Map<String, Object> whereParams = new HashMap<String, Object>();
+			CriteriaQuery cq = getWhereClause(em, com.frt.dr.model.base.Patient.class, params, whereParams);
 			Query query = em.createQuery(cq);
 			Set<Parameter<?>> qparams = query.getParameters();
 			Iterator<Parameter<?>> pit = qparams.iterator();
@@ -106,37 +108,31 @@ public class ResourceDao extends BaseDao<Resource, String> {
 				Parameter qparam = pit.next();
 				System.out.println("param: class:" + qparam.getClass() + ", name:" + qparam.getName() + ", position:"
 						+ qparam.getPosition() + ", type:" + qparam.getParameterType());
-				String value = (String) params.get(qparam.getName());
+				String value = (String) whereParams.get(qparam.getName());
 				if (value != null) {
 					if (qparam.getParameterType().equals(String.class)) {
 						query.setParameter(qparam.getName(), value);
 					} else if (qparam.getParameterType().equals(Date.class)) {
 						// date param
-						Date d = null;
-						for (int i=0; i<BaseDao.DF_FMT_SUPPORTED.length; i++) {
-							try {
-								d = BaseDao.DF_FMT_SUPPORTED[i].parse(value);
-								break;
-							} catch (ParseException e) {
-								continue;
-							}
-						}
-						if (d!=null) {
+						Date d = parseDate(value);
+						if (d != null) {
 							query.setParameter(qparam.getName(), d);
-						}
-						else {
-							throw new IllegalArgumentException("Query parameter:" + qparam.getName() + " expect date value in the format of: " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd + " or " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or " + BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or " + BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
+						} else {
+							throw new IllegalArgumentException("Query parameter:" + qparam.getName()
+									+ " expect date value in the format of: " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd
+									+ " or " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
+									+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
+									+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
 						}
 					} else if (qparam.getParameterType().equals(Boolean.class)) {
 						Boolean b = false;
 						if (value.equalsIgnoreCase("true")) {
 							b = true;
-						}
-						else if (value.equalsIgnoreCase("false")) {
+						} else if (value.equalsIgnoreCase("false")) {
 							b = false;
-						}
-						else {
-							throw new IllegalArgumentException("Query parameter:" + qparam.getName() + " expect true/false, value=" + value);
+						} else {
+							throw new IllegalArgumentException(
+									"Query parameter:" + qparam.getName() + " expect true/false, value=" + value);
 						}
 						query.setParameter(qparam.getName(), b);
 					} else if (Number.class.isAssignableFrom(qparam.getParameterType())) {
@@ -153,12 +149,14 @@ public class ResourceDao extends BaseDao<Resource, String> {
 						} else if (qparam.getParameterType().equals(Double.class)) {
 							query.setParameter(qparam.getName(), Double.valueOf(value));
 						} else {
-							throw new IllegalArgumentException("Numeric parameter of type :" + qparam.getParameterType().getClass().getCanonicalName() + " not supported yet, value=" + value);
+							throw new IllegalArgumentException("Numeric parameter of type :"
+									+ qparam.getParameterType().getClass().getCanonicalName()
+									+ " not supported yet, value=" + value);
 						}
 					}
-				}
-				else {
-					throw new IllegalStateException("Encountered query parameter: " + qparam.getName() + ", which is not among the request query parameters.");
+				} else {
+					throw new IllegalStateException("Encountered query parameter: " + qparam.getName()
+							+ ", which is not among the request query parameters.");
 				}
 			}
 			List<Resource> resources = (List<Resource>) query.getResultList();
@@ -175,6 +173,19 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		} catch (PersistenceException ex) {
 			throw new DaoException(ex);
 		}
+	}
+
+	private Date parseDate(String value) {
+		Date d = null;
+		for (int i = 0; i < BaseDao.DF_FMT_SUPPORTED.length; i++) {
+			try {
+				d = BaseDao.DF_FMT_SUPPORTED[i].parse(value);
+				break;
+			} catch (ParseException e) {
+				continue;
+			}
+		}
+		return d;
 	}
 
 	/*********************************
@@ -205,7 +216,33 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	 * approximation is 10% of the stated value (or for a date, 10% of the gap
 	 * between now and the date), but systems may choose other values where
 	 * appropriate the range of the search value overlaps with the range of the
-	 * target value
+	 * target value;
+	 * 
+	 * 
+	 * [parameter]=eq2013-01-14 2013-01-14T00:00 matches (obviously)
+	 * 2013-01-14T10:00 matches 2013-01-15T00:00 does not match - it's not in the
+	 * range [parameter]=ne2013-01-14 2013-01-15T00:00 matches - it's not in the
+	 * range 2013-01-14T00:00 does not match - it's in the range 2013-01-14T10:00
+	 * does not match - it's in the range [parameter]=lt2013-01-14T10:00 2013-01-14
+	 * matches, because it includes the part of 14-Jan 2013 before 10am
+	 * [parameter]=gt2013-01-14T10:00 2013-01-14 matches, because it includes the
+	 * part of 14-Jan 2013 after 10am [parameter]=ge2013-03-14 "from 21-Jan 2013
+	 * onwards" is included because that period may include times after 14-Mar 2013
+	 * [parameter]=le2013-03-14 "from 21-Jan 2013 onwards" is included because that
+	 * period may include times before 14-Mar 2013 [parameter]=sa2013-03-14 "from
+	 * 15-Mar 2013 onwards" is included because that period starts after 14-Mar 2013
+	 * "from 21-Jan 2013 onwards" is not included because that period starts before
+	 * 14-Mar 2013 "before and including 21-Jan 2013" is not included because that
+	 * period starts (and ends) before 14-Mar 2013 [parameter]=eb2013-03-14 "from
+	 * 15-Mar 2013 onwards" is not included because that period starts after 14-Mar
+	 * 2013 "from 21-Jan 2013 onwards" is not included because that period starts
+	 * before 14-Mar 2013, but does not end before it "before and including 21-Jan
+	 * 2013" is included because that period ends before 14-Mar 2013
+	 * [parameter]=ap2013-03-14 14-Mar 2013 is included - as it exactly matches
+	 * 21-Jan 2013 is not included because that is near 14-Mar 2013 15-Jun 2015 is
+	 * not included - as it is not near 14-Mar 2013. Note that the exact value here
+	 * is at the discretion of the system *
+	 * 
 	 *********************************************************/
 	/**
 	 * support below patient parameters: Patient.id Patient.identifier
@@ -227,282 +264,300 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	 *
 	 * *********************************
 	 * 
-	 * @param cq
-	 * @param cb
-	 * @param root
+	 * @param em
+	 *            EntityManager
 	 * @param clazz
 	 * @param params
-	 * @return
+	 * @return CriteriaQuery cq;
 	 */
-	private Predicate genWhere(CriteriaQuery cq, CriteriaBuilder cb, Root rootEntity, Class ResourceClazz,
-			Map<String, String> params) {
-		Predicate where = cb.conjunction();
+	private CriteriaQuery getWhereClause(EntityManager em, Class ResourceClazz, Map<String, String> params, Map<String, Object> whereParams) {
 		if (ResourceClazz.equals(com.frt.dr.model.base.Patient.class)) {
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<com.frt.dr.model.base.Patient> cq = cb.createQuery(com.frt.dr.model.base.Patient.class);
+			Root<com.frt.dr.model.base.Patient> rootPatient = cq.from(com.frt.dr.model.base.Patient.class);
+			Predicate where = cb.conjunction();
 			// attribute of Entity: _id, Resource ID (logical) 64 VARCHAR
+			Map<Class, Boolean> processed = new HashMap<Class, Boolean>();
 			for (Map.Entry<String, String> e : params.entrySet()) {
 				String key = e.getKey();
 				String value = e.getValue();
+				
 				if (key.equals("_id")) {
-					where = cb.and(where, cb.equal(rootEntity.get("id"), cb.parameter(String.class, "_id")));
+					where = cb.and(where, cb.equal(rootPatient.get("id"), cb.parameter(String.class, "_id")));
+					whereParams.put(key, value);
 				}
+				
 				if (key.equals("active")) {
-					where = cb.and(where, cb.equal(rootEntity.get("active"), cb.parameter(Boolean.class, "active")));
+					where = cb.and(where, cb.equal(rootPatient.get("active"), cb.parameter(Boolean.class, "active")));
+					whereParams.put(key, Boolean.valueOf(value));
 				}
+				
 				if (key.equals("birthdate")) {
-					where = cb.and(where, cb.equal(rootEntity.get("birthDate"), cb.parameter(Date.class, "birthdate")));
+					where = cb.and(where,
+							cb.equal(rootPatient.get("birthDate"), cb.parameter(Date.class, "birthdate")));
+					Date d = parseDate(value);
+					if (d != null) {
+						whereParams.put(key, d);
+					} else {
+						throw new IllegalArgumentException("Query parameter:" + key
+								+ " expect date value in the format of: " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd
+								+ " or " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
+								+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
+								+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
+					}
+
 				}
+				
 				if (key.equals("gender")) {
-					where = cb.and(where, cb.equal(rootEntity.get("gender"), cb.parameter(String.class, "gender")));
+					where = cb.and(where, cb.equal(rootPatient.get("gender"), cb.parameter(String.class, "gender")));
+					whereParams.put(key, value);
+				}
+
+				if (key.startsWith("name") || key.startsWith("given") || key.startsWith("family")
+						|| key.startsWith("prefix") || key.startsWith("suffix")) {
+					Boolean b = processed.get(com.frt.dr.model.base.PatientHumanName.class);
+					if (b==null||!b) {
+						Map<String, Boolean> attributes = new HashMap<String, Boolean>(); // <'param-name',
+																							// 'exact-flag'>
+						boolean isConjunction = true; // all predicates AND'd
+						if (key.startsWith("name")) {
+							// do not support name:exact
+							// any of 'given', 'family', 'prefix', 'suffix' contains param value
+							// all take 'contains' semantics
+							attributes.put("given", false);
+							whereParams.put("given", key);
+							attributes.put("family", false);
+							whereParams.put("family", key);
+							attributes.put("prefix", false);
+							whereParams.put("prefix", key);
+							attributes.put("suffix", false);
+							whereParams.put("suffix", key);
+							// all predicates OR'd
+							isConjunction = false;
+						} else {
+
+							String given = params.get("given");
+							if (given != null) {
+								attributes.put("given", false);
+								whereParams.put("given", params.get("given"));
+							}
+							String family = params.get("family");
+							if (family != null) {
+								attributes.put("family", false);
+								whereParams.put("family", params.get("family"));
+							}
+							String prefix = params.get("prefix");
+							if (prefix != null) {
+								attributes.put("prefix", false);
+								whereParams.put("prefix", params.get("prefix"));
+							}
+							String suffix = params.get("suffix");
+							if (suffix != null) {
+								attributes.put("suffix", false);
+								whereParams.put("suffix", params.get("suffix"));
+							}
+
+							String givenE = params.get("given:exact");
+							if (givenE != null) {
+								attributes.put("given", true);
+								whereParams.put("given", params.get("given:exact"));
+							}
+							String familyE = params.get("family:exact");
+							if (familyE != null) {
+								attributes.put("family", true);
+								whereParams.put("family", params.get("family:exact"));
+							}
+							String prefixE = params.get("prefix:exact");
+							if (prefixE != null) {
+								attributes.put("prefix", true);
+								whereParams.put("prefix", params.get("prefix:exact"));
+							}
+							String suffixE = params.get("suffix:exact");
+							if (suffixE != null) {
+								attributes.put("suffix", true);
+								whereParams.put("suffix", params.get("suffix:exact"));
+							}
+
+							String givenC = params.get("given:contain");
+							if (givenC != null) {
+								attributes.put("given", false);
+								whereParams.put("given", params.get("given:contain"));
+							}
+							String familyC = params.get("family:contain");
+							if (familyC != null) {
+								attributes.put("family", false);
+								whereParams.put("family", params.get("family:contain"));
+							}
+							String prefixC = params.get("prefix:contain");
+							if (prefixC != null) {
+								attributes.put("prefix", false);
+								whereParams.put("prefix", params.get("prefix:contain"));
+							}
+							String suffixC = params.get("suffix:contain");
+							if (suffixC != null) {
+								attributes.put("suffix", false);
+								whereParams.put("suffix", params.get("suffix:contain"));
+							}
+						}
+						// mark name as processed
+						processed.put(com.frt.dr.model.base.PatientHumanName.class, true);
+						// extract all human name params
+						// humanName - PatientHumanName table
+						where = appendSubquery(em, cb, cq, rootPatient, where, com.frt.dr.model.base.Patient.class, com.frt.dr.model.base.PatientHumanName.class,
+								attributes, isConjunction);
+					}
+				}
+				if (key.startsWith("identifier")) {
+					Boolean b = processed.get(com.frt.dr.model.base.PatientIdentifier.class);
+					if (b==null||!b) {
+						// extract all identifier :
+						// further match use, system, value
+						Map<String, Boolean> attributes = new HashMap<String, Boolean>(); // <'param-name',
+																							// 'exact-flag'>
+						boolean isConjunction = false; // all predicates OR'd
+						// do not support identifier:exact
+						// any of 'use', 'system', 'value' contains param value
+						// all take 'contains' semantics
+						attributes.put("use", false);
+						attributes.put("system", false);
+						attributes.put("value", false);
+						// attribute in associated Entity: e.g. PatientIdentifier
+						// identifier - PatientIdentifier table
+						// mark identifier as processed
+						processed.put(com.frt.dr.model.base.PatientIdentifier.class, true);
+						where = appendSubquery(em, cb, cq, rootPatient, where, com.frt.dr.model.base.Patient.class,
+								com.frt.dr.model.base.PatientIdentifier.class, attributes, isConjunction);
+					}
+				}
+				if (key.startsWith("address")) {
+					Boolean b = processed.get(com.frt.dr.model.base.PatientAddress.class);
+					if (b==null||!b) {
+						// extract all addressXXX parameters
+						Map<String, Boolean> attributes = new HashMap<String, Boolean>(); // <'param-name',
+																							// 'exact-flag'>
+						boolean isConjunction = true; // all predicates AND'd
+						if (key.equals("address")) {
+							// do not support address:exact
+							// any of 'city', 'state', 'country', 'postalcode', 'use' contains param value
+							// all take 'contains' semantics
+							attributes.put("city", false);
+							attributes.put("state", false);
+							attributes.put("country", false);
+							attributes.put("postalcode", false);
+							attributes.put("use", false);
+							// all predicates OR'd
+							isConjunction = false;
+						} else {
+							
+							String city = params.get("address-city");
+							if (city != null)
+								attributes.put("city", false);
+							String state = params.get("address-state");
+							if (state != null)
+								attributes.put("state", false);
+							String country = params.get("address-country");
+							if (country != null)
+								attributes.put("country", false);
+							String postalcode = params.get("address-postalcode");
+							if (postalcode != null)
+								attributes.put("postalcode", false);
+							String use = params.get("address-use");
+							if (use != null)
+								attributes.put("use", false);
+
+							// any exact match params?
+							String cityE = params.get("address-city:exact");
+							if (cityE != null)
+								attributes.put("city", true);
+							String stateE = params.get("address-state:exact");
+							if (stateE != null)
+								attributes.put("state", true);
+							String countryE = params.get("address-country:exact");
+							if (countryE != null)
+								attributes.put("country", true);
+							String postalcodeE = params.get("address-postalcode:exact");
+							if (postalcodeE != null)
+								attributes.put("postalcode", true);
+							String useE = params.get("address-use:exact");
+							if (useE != null)
+								attributes.put("use", true);
+							
+							// any contains search params?
+							String cityC = params.get("address-city:contains");
+							if (cityC != null)
+								attributes.put("city", false);
+							String stateC = params.get("address-state:contains");
+							if (stateC != null)
+								attributes.put("state", false);
+							String countryC = params.get("address-country:contains");
+							if (countryC != null)
+								attributes.put("country", false);
+							String postalcodeC = params.get("address-postalcode:contains");
+							if (postalcodeC != null)
+								attributes.put("postalcode", false);
+							String useC = params.get("address-use:contains");
+							if (useC != null)
+								attributes.put("use", false);
+						}
+						// mark name as processed
+						processed.put(com.frt.dr.model.base.PatientHumanName.class, true);
+						// address - PatientAddress table
+						where = appendSubquery(em, cb, cq, rootPatient, where, com.frt.dr.model.base.Patient.class, 
+								com.frt.dr.model.base.PatientAddress.class,
+								attributes, isConjunction);
+					}
 				}
 
 			}
-			// attributes from associated entity : PatientAddress
-			// captureParam(cq, cb, root, predicates, params, new String[] {"address",
-			// "address-city", "address-country", "address-postalcode", "address-state"},
-			// new Class[] {String.class, String.class, String.class, String.class,
-			// String.class}, com.frt.dr.model.base.PatientAddress.class);
-			/**
-			 * [parameter]=eq2013-01-14 2013-01-14T00:00 matches (obviously)
-			 * 2013-01-14T10:00 matches 2013-01-15T00:00 does not match - it's not in the
-			 * range [parameter]=ne2013-01-14 2013-01-15T00:00 matches - it's not in the
-			 * range 2013-01-14T00:00 does not match - it's in the range 2013-01-14T10:00
-			 * does not match - it's in the range [parameter]=lt2013-01-14T10:00 2013-01-14
-			 * matches, because it includes the part of 14-Jan 2013 before 10am
-			 * [parameter]=gt2013-01-14T10:00 2013-01-14 matches, because it includes the
-			 * part of 14-Jan 2013 after 10am [parameter]=ge2013-03-14 "from 21-Jan 2013
-			 * onwards" is included because that period may include times after 14-Mar 2013
-			 * [parameter]=le2013-03-14 "from 21-Jan 2013 onwards" is included because that
-			 * period may include times before 14-Mar 2013 [parameter]=sa2013-03-14 "from
-			 * 15-Mar 2013 onwards" is included because that period starts after 14-Mar 2013
-			 * "from 21-Jan 2013 onwards" is not included because that period starts before
-			 * 14-Mar 2013 "before and including 21-Jan 2013" is not included because that
-			 * period starts (and ends) before 14-Mar 2013 [parameter]=eb2013-03-14 "from
-			 * 15-Mar 2013 onwards" is not included because that period starts after 14-Mar
-			 * 2013 "from 21-Jan 2013 onwards" is not included because that period starts
-			 * before 14-Mar 2013, but does not end before it "before and including 21-Jan
-			 * 2013" is included because that period ends before 14-Mar 2013
-			 * [parameter]=ap2013-03-14 14-Mar 2013 is included - as it exactly matches
-			 * 21-Jan 2013 is not included because that is near 14-Mar 2013 15-Jun 2015 is
-			 * not included - as it is not near 14-Mar 2013. Note that the exact value here
-			 * is at the discretion of the system *
-			 */
-
-			// name - string A server defined search that may match any of the string fields
-			// in the HumanName, including family, give, prefix, suffix, suffix, and/or text
-			// Patient.name
-			// attribute in associated Entity: e.g. PatientHumanName
-			// captureParam(cq, cb, root, predicates, params, new String[] {"name", "given",
-			// "family"}, new Class[] {String.class, String.class, String.class},
-			// com.frt.dr.model.base.PatientHumanName.class);
-
-			// attribute in associated Entity: e.g. PatientIdentifier
-			// captureParam(cq, cb, root, predicates, params, new String[] {"identifier"},
-			// new Class[] {String.class}, com.frt.dr.model.base.PatientIdentifier.class);
-
-			// attribute in associated Entity: e.g. PatientContactPoint
-			// captureParam(cq, cb, root, predicates, params, new String[] {"telecom"}, new
-			// Class[] {String.class}, com.frt.dr.model.base.PatientContactPoint.class);
+			cq.where(where);
+			return cq;
 		} else {
 			throw new UnsupportedOperationException("Query with parameters on resource: "
 					+ ResourceClazz.getClass().getCanonicalName() + " not implemented yet.");
 		}
-		return where;
 	}
 
-	private <T extends com.frt.dr.model.ResourceComplexType> void captureParam(CriteriaQuery cq, CriteriaBuilder cb,
-			Root root, List<Predicate> predicates, Map params, String[] paramNames, Class[] paramTypes,
-			Class<T> refClazz) {
-		Subquery<BigInteger> subQuery = cq.subquery(BigInteger.class);
-		List<Predicate> subCond = new ArrayList<Predicate>();
-		if (refClazz.equals(com.frt.dr.model.base.PatientAddress.class)) {
-			Root<com.frt.dr.model.base.PatientAddress> subRoot = subQuery
-					.from(com.frt.dr.model.base.PatientAddress.class);
-			subQuery.select(subRoot.<BigInteger>get("patient"));
-			for (int i = 0; i < paramNames.length; i++) {
-				if (paramNames[i].equals("address")) {
-					Predicate p1 = cb.like(subRoot.get("city"), cb.parameter(String.class, "city"));
-					Predicate p2 = cb.like(subRoot.get("country"), cb.parameter(String.class, "country"));
-					Predicate p3 = cb.like(subRoot.get("postalcode"), cb.parameter(String.class, "postalcode"));
-					Predicate p4 = cb.like(subRoot.get("state"), cb.parameter(String.class, "state"));
-					subCond.add((cb.or(cb.or(cb.or(p1, p2), p3), p4)));
-				} else if (paramNames[i].endsWith("-city")) {
-					subCond.add(cb.like(subRoot.get("city"), cb.parameter(String.class, "city")));
-				} else if (paramNames[i].endsWith("-country")) {
-					subCond.add(cb.like(subRoot.get("country"), cb.parameter(String.class, "country")));
-				} else if (paramNames[i].endsWith("-postalcode")) {
-					subCond.add(cb.like(subRoot.get("postalcode"), cb.parameter(String.class, "postalcode")));
-				} else if (paramNames[i].endsWith("-state")) {
-					subCond.add(cb.like(subRoot.get("state"), cb.parameter(String.class, "state")));
-				} else {
-					throw new IllegalArgumentException("Invalid parameter: " + paramNames[i] + ", for sub query on : "
-							+ refClazz.getCanonicalName());
-				}
+	private Predicate appendSubquery(EntityManager em, CriteriaBuilder cb, CriteriaQuery<Patient> cq, Root mainRoot, Predicate where,
+			Class mainClazz, Class refClazz, Map<String, Boolean> attributes, boolean isConjunction) {
+		//Subquery<BigInteger> subquery = cq.subquery(BigInteger.class);
+		Root rootName = cq.from(refClazz);
+		Metamodel m = em.getMetamodel();
+		EntityType<Patient> Patient_ = m.entity(Patient.class);
+		EntityType<PatientHumanName> HumanName_ = m.entity(PatientHumanName.class);
+		
+		Predicate criteria = null;
+		Iterator it = null;
+		Boolean exactFlag = true;
+		String paramName = null;
+		if (isConjunction) {
+			// AND'd
+			criteria = cb.conjunction();
+			it = attributes.keySet().iterator();
+			while (it.hasNext()) {
+				paramName = (String)it.next();
+				exactFlag = attributes.get(paramName);
+				criteria = cb.and(criteria, 
+						exactFlag ? 
+							cb.equal(rootName.get(paramName), cb.parameter(String.class, paramName))
+							: cb.like(rootName.get(paramName), cb.parameter(String.class, paramName)));
 			}
-			Predicate subWhere = cb.conjunction();
-			for (Predicate p : subCond) {
-				subWhere = cb.and(subWhere, p);
-			}
-			subQuery.where(subWhere);
-			predicates.add(root.get("resourceId").in(subQuery));
-		} else if (refClazz.equals(com.frt.dr.model.base.PatientIdentifier.class)) {
-			Root<com.frt.dr.model.base.PatientIdentifier> subRoot = subQuery
-					.from(com.frt.dr.model.base.PatientIdentifier.class);
-			subQuery.select(subRoot.<BigInteger>get("patient"));
-			for (int i = 0; i < paramNames.length; i++) {
-				if (paramNames[i].equals("identifier")) {
-					Predicate p1 = cb.like(subRoot.get("use"), cb.parameter(String.class, "use"));
-					Predicate p2 = cb.like(subRoot.get("system"), cb.parameter(String.class, "system"));
-					Predicate p3 = cb.like(subRoot.get("value"), cb.parameter(String.class, "value"));
-					subCond.add(cb.or(cb.or(cb.or(p1, p2), p3)));
-				} else {
-					throw new IllegalArgumentException("Invalid parameter: " + paramNames[i] + ", for sub query on : "
-							+ refClazz.getCanonicalName());
-				}
-			}
-			Predicate subWhere = cb.conjunction();
-			for (Predicate p : subCond) {
-				subWhere = cb.and(subWhere, p);
-			}
-			subQuery.where(subWhere);
-			predicates.add(root.get("resourceId").in(subQuery));
-		} else if (refClazz.equals(com.frt.dr.model.base.PatientHumanName.class)) {
-			Root<com.frt.dr.model.base.PatientHumanName> subRoot = subQuery
-					.from(com.frt.dr.model.base.PatientHumanName.class);
-			subQuery.select(subRoot.<BigInteger>get("patient"));
-			for (int i = 0; i < paramNames.length; i++) {
-				if (paramNames[i].equals("name")) {
-					Predicate p1 = cb.like(subRoot.get("family"), cb.parameter(String.class, "family"));
-					Predicate p2 = cb.like(subRoot.get("given"), cb.parameter(String.class, "given"));
-					Predicate p3 = cb.like(subRoot.get("prefix"), cb.parameter(String.class, "prefix"));
-					Predicate p4 = cb.like(subRoot.get("suffix"), cb.parameter(String.class, "suffix"));
-					subCond.add((cb.or(cb.or(cb.or(p1, p2), p3), p4)));
-				} else if (paramNames[i].equals("family")) {
-					subCond.add(cb.like(subRoot.get("family"), cb.parameter(String.class, "family")));
-				} else if (paramNames[i].endsWith("given")) {
-					subCond.add(cb.like(subRoot.get("given"), cb.parameter(String.class, "given")));
-				} else if (paramNames[i].endsWith("prefix")) {
-					subCond.add(cb.like(subRoot.get("prefix"), cb.parameter(String.class, "prefix")));
-				} else if (paramNames[i].endsWith("suffix")) {
-					subCond.add(cb.like(subRoot.get("suffix"), cb.parameter(String.class, "suffix")));
-				} else {
-					throw new IllegalArgumentException("Invalid parameter: " + paramNames[i] + ", for sub query on : "
-							+ refClazz.getCanonicalName());
-				}
-			}
-			Predicate subWhere = cb.conjunction();
-			for (Predicate p : subCond) {
-				subWhere = cb.and(subWhere, p);
-			}
-			subQuery.where(subWhere);
-			predicates.add(root.get("resourceId").in(subQuery));
-		} else if (refClazz.equals(com.frt.dr.model.base.PatientContactPoint.class)) {
-			Root<com.frt.dr.model.base.PatientContactPoint> subRoot = subQuery
-					.from(com.frt.dr.model.base.PatientContactPoint.class);
-			subQuery.select(subRoot.<BigInteger>get("patient"));
-			for (int i = 0; i < paramNames.length; i++) {
-				if (paramNames[i].equals("telecom")) {
-					Predicate p1 = cb.like(subRoot.get("system"), cb.parameter(String.class, "system"));
-					Predicate p2 = cb.like(subRoot.get("value"), cb.parameter(String.class, "value"));
-					subCond.add(cb.or(p1, p2));
-				} else {
-					throw new IllegalArgumentException("Invalid parameter: " + paramNames[i] + ", for sub query on : "
-							+ refClazz.getCanonicalName());
-				}
-			}
-			Predicate subWhere = cb.conjunction();
-			for (Predicate p : subCond) {
-				subWhere = cb.and(subWhere, p);
-			}
-			subQuery.where(subWhere);
-			predicates.add(root.get("resourceId").in(subQuery));
 		} else {
-			throw new IllegalArgumentException("Invalid Complex type for the search : " + refClazz.getCanonicalName());
-		}
-	}
-
-	/**
-	 * add predicate of a field of scalar type
-	 * 
-	 * @param cb
-	 * @param root
-	 * @param predicates
-	 * @param params
-	 * @param paramName
-	 * @param paramType
-	 */
-	private void captureParam(CriteriaBuilder cb, Root root, List<Predicate> predicates, Map params, String paramName,
-			Class paramType) {
-		String value = getParamValue(params, paramName);
-		if (value != null && !value.isEmpty()) {
-
-			if (paramType.equals(Boolean.class)) {
-				if (value.startsWith(PARAM_PREFIX_NE)) {
-					predicates.add(cb.notEqual(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else {
-					predicates.add(cb.equal(root.get(paramName), cb.parameter(paramType, paramName)));
-				}
-			}
-
-			if (paramType.equals(Integer.class) || paramType.equals(Long.class) || paramType.equals(Double.class)
-					|| paramType.equals(Number.class) || paramType.equals(BigInteger.class)) {
-				if (value.startsWith(PARAM_PREFIX_NE)) {
-					predicates.add(cb.notEqual(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else if (value.startsWith(PARAM_PREFIX_EQ)) {
-					predicates.add(cb.equal(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else if (value.startsWith(PARAM_PREFIX_GE)) {
-					predicates.add(cb.greaterThanOrEqualTo(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else if (value.startsWith(PARAM_PREFIX_GT)) {
-					predicates.add(cb.greaterThan(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else if (value.startsWith(PARAM_PREFIX_LE)) {
-					predicates.add(cb.lessThanOrEqualTo(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else if (value.startsWith(PARAM_PREFIX_LT)) {
-					predicates.add(cb.lessThan(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else {
-					predicates.add(cb.equal(root.get(paramName), cb.parameter(paramType, paramName)));
-				}
-			}
-
-			if (paramType.equals(Date.class)) {
-				if (value.startsWith(PARAM_PREFIX_NE)) {
-					predicates.add(cb.notEqual(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else if (value.startsWith(PARAM_PREFIX_EQ)) {
-					predicates.add(cb.equal(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else if (value.startsWith(PARAM_PREFIX_GE)) {
-					predicates.add(cb.greaterThanOrEqualTo(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else if (value.startsWith(PARAM_PREFIX_GT)) {
-					predicates.add(cb.greaterThan(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else if (value.startsWith(PARAM_PREFIX_LE)) {
-					predicates.add(cb.lessThanOrEqualTo(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else if (value.startsWith(PARAM_PREFIX_LT)) {
-					predicates.add(cb.lessThan(root.get(paramName), cb.parameter(paramType, paramName)));
-				} else {
-					predicates.add(cb.like(root.get(paramName), cb.parameter(paramType, paramName)));
-				}
-			}
-
-			if (paramType.equals(String.class)) {
-				// name=eve - start with 'eve'
-				// name:exact=steven
-				// name:contains=eve
-				String[] names = paramName.split(":");
-				String realName = names[0];
-				if (value.startsWith(PARAM_PREFIX_NE)) {
-					predicates.add(cb.notLike(root.get(realName), cb.parameter(paramType, realName)));
-				} else if (value.startsWith(PARAM_PREFIX_EQ)) {
-					predicates.add(cb.like(root.get(realName), cb.parameter(paramType, realName)));
-				} else if (value.startsWith(PARAM_PREFIX_GE)) {
-					predicates.add(cb.greaterThanOrEqualTo(root.get(realName), cb.parameter(paramType, realName)));
-				} else if (value.startsWith(PARAM_PREFIX_GT)) {
-					predicates.add(cb.greaterThan(root.get(realName), cb.parameter(paramType, realName)));
-				} else if (value.startsWith(PARAM_PREFIX_LE)) {
-					predicates.add(cb.lessThanOrEqualTo(root.get(realName), cb.parameter(paramType, realName)));
-				} else if (value.startsWith(PARAM_PREFIX_LT)) {
-					predicates.add(cb.lessThan(root.get(realName), cb.parameter(paramType, realName)));
-				} else {
-					predicates.add(cb.like(root.get(realName), cb.parameter(paramType, realName)));
-				}
+			// OR'd
+			criteria = cb.disjunction();
+			it = attributes.keySet().iterator();
+			while (it.hasNext()) {
+				paramName = (String)it.next();
+				exactFlag = attributes.get(paramName);
+				criteria = cb.or(criteria, 
+						exactFlag?
+							cb.equal(rootName.get(paramName), cb.parameter(String.class, paramName))
+							: cb.like(rootName.get(paramName), cb.parameter(String.class, paramName)));
 			}
 		}
+		Join<Patient, PatientHumanName> y=mainRoot.join(Patient_.getList("names", PatientHumanName.class));
+//		subquery.select(rootName.get("resource_id")).where(criteria);
+//		return cb.and(where, cb.in(mainRoot.<BigInteger>get("patientId")).value(subquery));
+		return cb.and(where, criteria);
 	}
 
 	private String getParamValue(Map params, String paramName) {

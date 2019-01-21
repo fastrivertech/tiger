@@ -71,7 +71,7 @@ public class FhirService {
 						rlist.add(mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)r));
 					}
 				}
-				return Optional.of(rlist);
+				return (rlist==null?Optional.empty():Optional.of(rlist));
 			} catch (MapperException | RepositoryServiceException ex) {
 				throw new FhirServiceException(ex);
 			}		
