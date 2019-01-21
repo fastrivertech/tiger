@@ -520,10 +520,11 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	private Predicate appendSubquery(EntityManager em, CriteriaBuilder cb, CriteriaQuery<Patient> cq, Root mainRoot, Predicate where,
 			Class mainClazz, Class refClazz, Map<String, Boolean> attributes, boolean isConjunction) {
 		//Subquery<BigInteger> subquery = cq.subquery(BigInteger.class);
-		Root rootName = cq.from(refClazz);
+//		Root rootName = cq.from(refClazz);
 		Metamodel m = em.getMetamodel();
 		EntityType<Patient> Patient_ = m.entity(Patient.class);
 		EntityType<PatientHumanName> HumanName_ = m.entity(PatientHumanName.class);
+		Join<Patient, PatientHumanName> join = mainRoot.join(Patient_.getList("names", PatientHumanName.class));
 		
 		Predicate criteria = null;
 		Iterator it = null;
@@ -536,10 +537,14 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			while (it.hasNext()) {
 				paramName = (String)it.next();
 				exactFlag = attributes.get(paramName);
+//				criteria = cb.and(criteria, 
+//						exactFlag ? 
+//							cb.equal(rootName.get(paramName), cb.parameter(String.class, paramName))
+//							: cb.like(rootName.get(paramName), cb.parameter(String.class, paramName)));
 				criteria = cb.and(criteria, 
 						exactFlag ? 
-							cb.equal(rootName.get(paramName), cb.parameter(String.class, paramName))
-							: cb.like(rootName.get(paramName), cb.parameter(String.class, paramName)));
+							cb.equal(join.get(paramName), cb.parameter(String.class, paramName))
+							: cb.like(join.get(paramName), cb.parameter(String.class, paramName)));
 			}
 		} else {
 			// OR'd
@@ -548,13 +553,19 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			while (it.hasNext()) {
 				paramName = (String)it.next();
 				exactFlag = attributes.get(paramName);
+//				criteria = cb.or(criteria, 
+//						exactFlag?
+//							cb.equal(rootName.get(paramName), cb.parameter(String.class, paramName))
+//							: cb.like(rootName.get(paramName), cb.parameter(String.class, paramName)));
 				criteria = cb.or(criteria, 
 						exactFlag?
-							cb.equal(rootName.get(paramName), cb.parameter(String.class, paramName))
-							: cb.like(rootName.get(paramName), cb.parameter(String.class, paramName)));
+							cb.equal(join.get(paramName), cb.parameter(String.class, paramName))
+							: cb.like(join.get(paramName), cb.parameter(String.class, paramName)));
 			}
 		}
-		Join<Patient, PatientHumanName> y=mainRoot.join(Patient_.getList("names", PatientHumanName.class));
+//		criteria = cb.and(criteria, cb.equal(mainRoot.get("resourceId"), rootName.get("patient")));
+//		Join<Patient, PatientHumanName> y=mainRoot.join(Patient_.getList("names", PatientHumanName.class));
+		
 //		subquery.select(rootName.get("resource_id")).where(criteria);
 //		return cb.and(where, cb.in(mainRoot.<BigInteger>get("patientId")).value(subquery));
 		return cb.and(where, criteria);
