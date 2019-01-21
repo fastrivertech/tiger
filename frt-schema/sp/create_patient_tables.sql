@@ -124,9 +124,9 @@ CREATE TABLE PATIENT_HUMANNAME (
 	use VARCHAR(32), -- ?!Σ
 	txt VARCHAR(2048), -- Σ
 	family VARCHAR(32), -- Σ
-	given	CLOB, -- Σ, A list of string object serialization and de-serialization 
-	prefix	CLOB, -- Σ, A list of string object serialization and de-serialization
-	suffix	CLOB, -- Σ, A list of string object serialization and de-serialization
+	given	VARCHAAR(1024), -- Σ, A list of string object serialization and de-serialization 
+	prefix	VARCHAAR(1024), -- Σ, A list of string object serialization and de-serialization
+	suffix	VARCHAAR(1024), -- Σ, A list of string object serialization and de-serialization
 	period	CLOB, -- Σ, Extension object serialization and de-serialization
 	PRIMARY KEY (humanname_id), 	
 	FOREIGN KEY (resource_id) REFERENCES PATIENT(resource_id)	
