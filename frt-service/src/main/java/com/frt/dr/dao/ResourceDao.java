@@ -11,13 +11,10 @@
  */
 package com.frt.dr.dao;
 
-import java.math.BigInteger;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,16 +35,12 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.criteria.Subquery;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
-import com.frt.dr.model.base.Patient;
-import com.frt.dr.model.base.PatientHumanName;
-import com.frt.dr.model.base.PatientIdentifier;
 
 /**
  * ResourceDao class
@@ -319,87 +312,19 @@ public class ResourceDao extends BaseDao<Resource, String> {
 					associatedClazz = com.frt.dr.model.base.PatientHumanName.class;
 					Boolean b = processed.get(associatedClazz.getCanonicalName());
 					if (b==null||!b) {
-						Map<String, Boolean> attributes = new HashMap<String, Boolean>(); // <'param-name',
-																							// 'exact-flag'>
+						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
 						boolean isConjunction = true; // all predicates AND'd
-						if (key.startsWith("name")) {
-							// do not support name:exact
-							// any of 'given', 'family', 'prefix', 'suffix' contains param value
-							// all take 'contains' semantics
-							attributes.put("given", false);
-							whereParams.put("given", key);
-							attributes.put("family", false);
-							whereParams.put("family", key);
-							attributes.put("prefix", false);
-							whereParams.put("prefix", key);
-							attributes.put("suffix", false);
-							whereParams.put("suffix", key);
-							// all predicates OR'd
+						// do not support name:exact
+						// any of 'given', 'family', 'prefix', 'suffix' contains param value
+						// all take 'contains' semantics - the param match value (string) should be
+						// converted to LIKE pattern '%<value>%"
+						// all predicates OR'd
+						if (key.equals("name")) {
+							// field group OR'd like matching
+							setParamsForMatch(JOIN_PARAMETERS.get("name"), attributes, whereParams, value);
 							isConjunction = false;
 						} else {
-
-							String given = params.get("given");
-							if (given != null) {
-								attributes.put("given", false);
-								whereParams.put("given", params.get("given"));
-							}
-							String family = params.get("family");
-							if (family != null) {
-								attributes.put("family", false);
-								whereParams.put("family", params.get("family"));
-							}
-							String prefix = params.get("prefix");
-							if (prefix != null) {
-								attributes.put("prefix", false);
-								whereParams.put("prefix", params.get("prefix"));
-							}
-							String suffix = params.get("suffix");
-							if (suffix != null) {
-								attributes.put("suffix", false);
-								whereParams.put("suffix", params.get("suffix"));
-							}
-
-							String givenE = params.get("given:exact");
-							if (givenE != null) {
-								attributes.put("given", true);
-								whereParams.put("given", params.get("given:exact"));
-							}
-							String familyE = params.get("family:exact");
-							if (familyE != null) {
-								attributes.put("family", true);
-								whereParams.put("family", params.get("family:exact"));
-							}
-							String prefixE = params.get("prefix:exact");
-							if (prefixE != null) {
-								attributes.put("prefix", true);
-								whereParams.put("prefix", params.get("prefix:exact"));
-							}
-							String suffixE = params.get("suffix:exact");
-							if (suffixE != null) {
-								attributes.put("suffix", true);
-								whereParams.put("suffix", params.get("suffix:exact"));
-							}
-
-							String givenC = params.get("given:contain");
-							if (givenC != null) {
-								attributes.put("given", false);
-								whereParams.put("given", params.get("given:contain"));
-							}
-							String familyC = params.get("family:contain");
-							if (familyC != null) {
-								attributes.put("family", false);
-								whereParams.put("family", params.get("family:contain"));
-							}
-							String prefixC = params.get("prefix:contain");
-							if (prefixC != null) {
-								attributes.put("prefix", false);
-								whereParams.put("prefix", params.get("prefix:contain"));
-							}
-							String suffixC = params.get("suffix:contain");
-							if (suffixC != null) {
-								attributes.put("suffix", false);
-								whereParams.put("suffix", params.get("suffix:contain"));
-							}
+							setParamsForMatch(JOIN_PARAMETERS.get("name"), attributes, whereParams, params);
 						}
 						// mark name as processed
 						processed.put(associatedClazz.getCanonicalName(), true);
@@ -416,15 +341,19 @@ public class ResourceDao extends BaseDao<Resource, String> {
 					if (b==null||!b) {
 						// extract all identifier :
 						// further match use, system, value
-						Map<String, Boolean> attributes = new HashMap<String, Boolean>(); // <'param-name',
-																							// 'exact-flag'>
+						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
 						boolean isConjunction = false; // all predicates OR'd
 						// do not support identifier:exact
 						// any of 'use', 'system', 'value' contains param value
 						// all take 'contains' semantics
-						attributes.put("use", false);
-						attributes.put("system", false);
-						attributes.put("value", false);
+						if (key.equals("identifier")) {
+							// field group OR'd like matching
+							setParamsForMatch(JOIN_PARAMETERS.get("identifier"), attributes, whereParams, value);
+							isConjunction = false;
+						} else {
+							throw new IllegalArgumentException("Query parameter:" + key
+									+ " does not suppport match indicator (suffix), value=" + value);
+						}
 						// attribute in associated Entity: e.g. PatientIdentifier
 						// identifier - PatientIdentifier table
 						// mark identifier as processed
@@ -438,71 +367,72 @@ public class ResourceDao extends BaseDao<Resource, String> {
 					Boolean b = processed.get(associatedClazz.getCanonicalName());
 					if (b==null||!b) {
 						// extract all addressXXX parameters
-						Map<String, Boolean> attributes = new HashMap<String, Boolean>(); // <'param-name',
-																							// 'exact-flag'>
+						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
 						boolean isConjunction = true; // all predicates AND'd
 						if (key.equals("address")) {
 							// do not support address:exact
 							// any of 'city', 'state', 'country', 'postalcode', 'use' contains param value
 							// all take 'contains' semantics
-							attributes.put("city", false);
-							attributes.put("state", false);
-							attributes.put("country", false);
-							attributes.put("postalcode", false);
-							attributes.put("use", false);
+							setParamsForMatch(JOIN_PARAMETERS.get("address"), attributes, whereParams, value);
+//							attributes.put("city", false);
+//							attributes.put("state", false);
+//							attributes.put("country", false);
+//							attributes.put("postalcode", false);
+//							attributes.put("use", false);
 							// all predicates OR'd
 							isConjunction = false;
 						} else {
-							
-							String city = params.get("address-city");
-							if (city != null)
-								attributes.put("city", false);
-							String state = params.get("address-state");
-							if (state != null)
-								attributes.put("state", false);
-							String country = params.get("address-country");
-							if (country != null)
-								attributes.put("country", false);
-							String postalcode = params.get("address-postalcode");
-							if (postalcode != null)
-								attributes.put("postalcode", false);
-							String use = params.get("address-use");
-							if (use != null)
-								attributes.put("use", false);
-
-							// any exact match params?
-							String cityE = params.get("address-city:exact");
-							if (cityE != null)
-								attributes.put("city", true);
-							String stateE = params.get("address-state:exact");
-							if (stateE != null)
-								attributes.put("state", true);
-							String countryE = params.get("address-country:exact");
-							if (countryE != null)
-								attributes.put("country", true);
-							String postalcodeE = params.get("address-postalcode:exact");
-							if (postalcodeE != null)
-								attributes.put("postalcode", true);
-							String useE = params.get("address-use:exact");
-							if (useE != null)
-								attributes.put("use", true);
-							
-							// any contains search params?
-							String cityC = params.get("address-city:contains");
-							if (cityC != null)
-								attributes.put("city", false);
-							String stateC = params.get("address-state:contains");
-							if (stateC != null)
-								attributes.put("state", false);
-							String countryC = params.get("address-country:contains");
-							if (countryC != null)
-								attributes.put("country", false);
-							String postalcodeC = params.get("address-postalcode:contains");
-							if (postalcodeC != null)
-								attributes.put("postalcode", false);
-							String useC = params.get("address-use:contains");
-							if (useC != null)
-								attributes.put("use", false);
+							setParamsForMatch(JOIN_PARAMETERS.get("address"), attributes, whereParams, params);
+//							
+//							String city = params.get("address-city");
+//							if (city != null)
+//								attributes.put("city", false);
+//							String state = params.get("address-state");
+//							if (state != null)
+//								attributes.put("state", false);
+//							String country = params.get("address-country");
+//							if (country != null)
+//								attributes.put("country", false);
+//							String postalcode = params.get("address-postalcode");
+//							if (postalcode != null)
+//								attributes.put("postalcode", false);
+//							String use = params.get("address-use");
+//							if (use != null)
+//								attributes.put("use", false);
+//
+//							// any exact match params?
+//							String cityE = params.get("address-city:exact");
+//							if (cityE != null)
+//								attributes.put("city", true);
+//							String stateE = params.get("address-state:exact");
+//							if (stateE != null)
+//								attributes.put("state", true);
+//							String countryE = params.get("address-country:exact");
+//							if (countryE != null)
+//								attributes.put("country", true);
+//							String postalcodeE = params.get("address-postalcode:exact");
+//							if (postalcodeE != null)
+//								attributes.put("postalcode", true);
+//							String useE = params.get("address-use:exact");
+//							if (useE != null)
+//								attributes.put("use", true);
+//							
+//							// any contains search params?
+//							String cityC = params.get("address-city:contains");
+//							if (cityC != null)
+//								attributes.put("city", false);
+//							String stateC = params.get("address-state:contains");
+//							if (stateC != null)
+//								attributes.put("state", false);
+//							String countryC = params.get("address-country:contains");
+//							if (countryC != null)
+//								attributes.put("country", false);
+//							String postalcodeC = params.get("address-postalcode:contains");
+//							if (postalcodeC != null)
+//								attributes.put("postalcode", false);
+//							String useC = params.get("address-use:contains");
+//							if (useC != null)
+//								attributes.put("use", false);
 						}
 						// mark name as processed
 						processed.put(associatedClazz.getCanonicalName(), true);
@@ -521,13 +451,41 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		}
 	}
 
+	// for fields AND'd match that could be : exact or contains
+	private void setParamsForMatch(List<String> fields, Map<String, Boolean> attributes, Map<String, Object> whereParams,
+			Map<String, String> params) {
+		String pv = null;
+		for (String f: fields) {
+			if ((pv = params.get(f)) != null) {
+				attributes.put(f, false);
+				whereParams.put(f, convertToLikePattern(pv));
+			}
+			if ((pv = params.get(f+":exact")) != null) {
+				attributes.put(f, true);
+				whereParams.put(f, pv);
+			}
+			if ((pv = params.get(f+":contains")) != null) {
+				attributes.put(f, false);
+				whereParams.put(f, convertToLikePattern(pv));
+			}
+		}
+	}
+
+	// for field group OR'd like match
+	private void setParamsForMatch(List<String> fields, Map<String, Boolean> attributes,
+			Map<String, Object> whereParams, String value) {
+		for (String f:fields) {
+			attributes.put(f, false);
+			whereParams.put(f, convertToLikePattern(value));
+		}
+	}
+
 	private <T extends DomainResource, U extends ResourceComplexType> Predicate appendSubquery(
 			EntityManager em, CriteriaBuilder cb, CriteriaQuery<T> cq, 
 			Root<T> mainRoot, Predicate where, Class<T> mainClazz, Class<U> refClazz, 
 			Map<String, Boolean> attributes, String joinAttr, boolean isConjunction) {
 		Metamodel m = em.getMetamodel();
 		EntityType<T> resourceEntity_ = m.entity(mainClazz);
-		//EntityType<U> HumanName_ = m.entity(refClazz);
 		Join<T, U> join = mainRoot.join(resourceEntity_.getList("names", refClazz));
 		
 		Predicate criteria = null;
@@ -560,6 +518,19 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			}
 		}
 		return cb.and(where, criteria);
+	}
+
+	/**
+	 * helper - gen SQL String column LIKE pattern
+	 * @param value
+	 * @return
+	 */
+	private String convertToLikePattern(String value) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("%");
+		sb.append(value);
+		sb.append("%");
+		return sb.toString();
 	}
 
 }

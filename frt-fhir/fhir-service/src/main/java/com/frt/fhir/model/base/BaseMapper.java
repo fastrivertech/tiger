@@ -55,8 +55,6 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	protected static String OBJ_BEGIN = "{";
 	protected static String OBJ_END = "}";
 
-	protected static Gson gconverter = new Gson();
-
 	protected ca.uhn.fhir.parser.JsonParser parser; // per mapper HAPI parser for json to object of HAPI type convert
 	protected JsonParser gparser = new JsonParser();
 

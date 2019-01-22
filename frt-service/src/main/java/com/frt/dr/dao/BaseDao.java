@@ -13,6 +13,8 @@ package com.frt.dr.dao;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -58,6 +60,19 @@ public abstract class BaseDao<T,ID> implements Repository {
 	public static final DateFormat DF_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	public static final DateFormat[] DF_FMT_SUPPORTED = new DateFormat[] {DF_DATE_FMT_yyyy_MM_dd, DF_DATE_FMT_yyyy_s_MM_s_dd, DF_DATE_FMT_dd_s_MM_s_yyyy, DF_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss};
 
+	// temp search parameter registry
+	protected static Map<String, List<String>> JOIN_PARAMETERS = new HashMap<String, List<String>>();
+	protected static Map<String, Class<?>> JOIN_PARAMETER_ENTITY = new HashMap<String, Class<?>>();
+
+	static {
+		JOIN_PARAMETERS.put("name", Arrays.asList("given", "family", "prefix", "suffix"));
+		JOIN_PARAMETERS.put("identifier", Arrays.asList("use", "system", "value"));
+		JOIN_PARAMETERS.put("address", Arrays.asList("address-city", "address-state", "address-country", "address-postalcode", "address-use"));
+		JOIN_PARAMETER_ENTITY.put("name", com.frt.dr.model.base.PatientHumanName.class);
+		JOIN_PARAMETER_ENTITY.put("identifier", com.frt.dr.model.base.PatientIdentifier.class);
+		JOIN_PARAMETER_ENTITY.put("address", com.frt.dr.model.base.PatientAddress.class);
+	}
+	
 	protected JdbcTemplate jdbcTemplate;
 	
     @Autowired
