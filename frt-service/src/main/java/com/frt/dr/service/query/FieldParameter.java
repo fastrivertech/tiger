@@ -1,10 +1,5 @@
 package com.frt.dr.service.query;
 
-import java.util.List;
-
-import com.frt.dr.service.SearchParameter.Comparator;
-import com.frt.dr.service.SearchParameter.Modifier;
-
 public class FieldParameter implements SearchParameter {
 	private String name; // parameter name - end user visible
 	private String fldname; // JPA POJO attribute name

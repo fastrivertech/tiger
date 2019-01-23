@@ -117,10 +117,10 @@ public class ResourceDao extends BaseDao<Resource, String> {
 							query.setParameter(qparam.getName(), d);
 						} else {
 							throw new IllegalArgumentException("Query parameter:" + qparam.getName()
-									+ " expect date value in the format of: " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd
-									+ " or " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
-									+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
-									+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
+									+ " expect date value in the format of: " + SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd
+									+ " or " + SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
+									+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
+									+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
 						}
 					} else if (qparam.getParameterType().equals(Boolean.class)) {
 						Boolean b = false;
@@ -175,9 +175,9 @@ public class ResourceDao extends BaseDao<Resource, String> {
 
 	private Date parseDate(String value) {
 		Date d = null;
-		for (int i = 0; i < BaseDao.DF_FMT_SUPPORTED.length; i++) {
+		for (int i = 0; i < SearchParameterRegistry.DF_FMT_SUPPORTED.length; i++) {
 			try {
-				d = BaseDao.DF_FMT_SUPPORTED[i].parse(value);
+				d = SearchParameterRegistry.DF_FMT_SUPPORTED[i].parse(value);
 				break;
 			} catch (ParseException e) {
 				continue;
@@ -507,7 +507,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	}
 
 	private String[] parseParamName(String pn) {
-		String[] parts = pn.split(BaseDao.PARAM_MODIFIER_DELIMETER);
+		String[] parts = pn.split(SearchParameterRegistry.PARAM_MODIFIER_DELIMETER);
 		if (parts.length!=1&&parts.length!=2) {
 			throw new IllegalArgumentException("Malformed parameter name: " + pn + ", parameter name format: <name> or <name>:<modifier>.");
 		} 
