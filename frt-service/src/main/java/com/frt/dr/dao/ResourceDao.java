@@ -41,6 +41,9 @@ import javax.persistence.metamodel.Metamodel;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
+import com.frt.dr.service.FieldParameter;
+import com.frt.dr.service.GroupParameter;
+import com.frt.dr.service.SearchParameter;
 
 /**
  * ResourceDao class
@@ -275,172 +278,141 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			for (Map.Entry<String, String> e : params.entrySet()) {
 				String key = e.getKey();
 				String value = e.getValue();
-				
-				if (key.equals("_id")) {
-					where = cb.and(where, cb.equal(rootPatient.get("id"), cb.parameter(String.class, "_id")));
-					whereParams.put(key, value);
-				}
-				
-				if (key.equals("active")) {
-					where = cb.and(where, cb.equal(rootPatient.get("active"), cb.parameter(Boolean.class, "active")));
-					whereParams.put(key, Boolean.valueOf(value.toString()));
-				}
-				
-				if (key.equals("birthdate")) {
-					where = cb.and(where,
-							cb.equal(rootPatient.get("birthDate"), cb.parameter(Date.class, "birthdate")));
-					Date d = parseDate(value.toString());
-					if (d != null) {
-						whereParams.put(key, d);
-					} else {
-						throw new IllegalArgumentException("Query parameter:" + key
-								+ " expect date value in the format of: " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd
-								+ " or " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
-								+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
-								+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
-					}
+				String[] parts = parseParamName(key);
+				String pname = parts[0];
+				String modifier = parts.length==2?parts[1]:null;
 
-				}
+				SearchParameter sp = SUPPORTED_PARAMETERS.get(pname);
 				
-				if (key.equals("gender")) {
-					where = cb.and(where, cb.equal(rootPatient.get("gender"), cb.parameter(String.class, "gender")));
-					whereParams.put(key, value);
+				if (sp==null) {
+					throw new IllegalArgumentException("Parameter : " + pname + " is not supported.");
 				}
 
-				if (key.startsWith("name") || key.startsWith("given") || key.startsWith("family")
-						|| key.startsWith("prefix") || key.startsWith("suffix")) {
-					associatedClazz = com.frt.dr.model.base.PatientHumanName.class;
-					Boolean b = processed.get(associatedClazz.getCanonicalName());
-					if (b==null||!b) {
-						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
-						boolean isConjunction = true; // all predicates AND'd
-						// do not support name:exact
-						// any of 'given', 'family', 'prefix', 'suffix' contains param value
-						// all take 'contains' semantics - the param match value (string) should be
-						// converted to LIKE pattern '%<value>%"
-						// all predicates OR'd
-						if (key.equals("name")) {
-							// field group OR'd like matching
-							setParamsForMatch(JOIN_PARAMETERS.get("name"), attributes, whereParams, value);
-							isConjunction = false;
-						} else {
-							setParamsForMatch(JOIN_PARAMETERS.get("name"), attributes, whereParams, params);
-						}
-						// mark name as processed
-						processed.put(associatedClazz.getCanonicalName(), true);
-						// extract all human name params
-						// humanName - PatientHumanName table
-						where = appendSubquery(em, cb, cq, rootPatient, 
-								where, resourceClazz, associatedClazz,
-								attributes, "names", isConjunction);
-					}
+				if (sp instanceof FieldParameter) {
+					where = cb.and(where, cb.equal(rootPatient.get(sp.getFieldName()), cb.parameter(((FieldParameter) sp).getType(), sp.getName())));
+					whereParams.put(key, value);
 				}
-				if (key.startsWith("identifier")) {
-					associatedClazz = com.frt.dr.model.base.PatientIdentifier.class;
-					Boolean b = processed.get(associatedClazz.getCanonicalName());
-					if (b==null||!b) {
-						// extract all identifier :
-						// further match use, system, value
-						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
-						boolean isConjunction = false; // all predicates OR'd
-						// do not support identifier:exact
-						// any of 'use', 'system', 'value' contains param value
-						// all take 'contains' semantics
-						if (key.equals("identifier")) {
-							// field group OR'd like matching
-							setParamsForMatch(JOIN_PARAMETERS.get("identifier"), attributes, whereParams, value);
-							isConjunction = false;
-						} else {
-							throw new IllegalArgumentException("Query parameter:" + key
-									+ " does not suppport match indicator (suffix), value=" + value);
-						}
-						// attribute in associated Entity: e.g. PatientIdentifier
-						// identifier - PatientIdentifier table
-						// mark identifier as processed
-						processed.put(associatedClazz.getCanonicalName(), true);
-						where = appendSubquery(em, cb, cq, rootPatient, where,
-								resourceClazz, associatedClazz, attributes, "identifiers", isConjunction);
-					}
-				}
-				if (key.startsWith("address")) {
-					associatedClazz = com.frt.dr.model.base.PatientAddress.class;
-					Boolean b = processed.get(associatedClazz.getCanonicalName());
-					if (b==null||!b) {
-						// extract all addressXXX parameters
-						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
-						boolean isConjunction = true; // all predicates AND'd
-						if (key.equals("address")) {
-							// do not support address:exact
-							// any of 'city', 'state', 'country', 'postalcode', 'use' contains param value
-							// all take 'contains' semantics
-							setParamsForMatch(JOIN_PARAMETERS.get("address"), attributes, whereParams, value);
-//							attributes.put("city", false);
-//							attributes.put("state", false);
-//							attributes.put("country", false);
-//							attributes.put("postalcode", false);
-//							attributes.put("use", false);
-							// all predicates OR'd
-							isConjunction = false;
-						} else {
-							setParamsForMatch(JOIN_PARAMETERS.get("address"), attributes, whereParams, params);
-//							
-//							String city = params.get("address-city");
-//							if (city != null)
-//								attributes.put("city", false);
-//							String state = params.get("address-state");
-//							if (state != null)
-//								attributes.put("state", false);
-//							String country = params.get("address-country");
-//							if (country != null)
-//								attributes.put("country", false);
-//							String postalcode = params.get("address-postalcode");
-//							if (postalcode != null)
-//								attributes.put("postalcode", false);
-//							String use = params.get("address-use");
-//							if (use != null)
-//								attributes.put("use", false);
+//				if (key.equals("_id")) {
+//					where = cb.and(where, cb.equal(rootPatient.get("id"), cb.parameter(String.class, "_id")));
+//					whereParams.put(key, value);
+//				}
+				
+//				if (key.equals("active")) {
+//					where = cb.and(where, cb.equal(rootPatient.get("active"), cb.parameter(Boolean.class, "active")));
+//					whereParams.put(key, Boolean.valueOf(value.toString()));
+//				}
+//				
+//				if (key.equals("birthdate")) {
+//					where = cb.and(where,
+//							cb.equal(rootPatient.get("birthDate"), cb.parameter(Date.class, "birthdate")));
+//					Date d = parseDate(value.toString());
+//					if (d != null) {
+//						whereParams.put(key, d);
+//					} else {
+//						throw new IllegalArgumentException("Query parameter:" + key
+//								+ " expect date value in the format of: " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd
+//								+ " or " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
+//								+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
+//								+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
+//					}
 //
-//							// any exact match params?
-//							String cityE = params.get("address-city:exact");
-//							if (cityE != null)
-//								attributes.put("city", true);
-//							String stateE = params.get("address-state:exact");
-//							if (stateE != null)
-//								attributes.put("state", true);
-//							String countryE = params.get("address-country:exact");
-//							if (countryE != null)
-//								attributes.put("country", true);
-//							String postalcodeE = params.get("address-postalcode:exact");
-//							if (postalcodeE != null)
-//								attributes.put("postalcode", true);
-//							String useE = params.get("address-use:exact");
-//							if (useE != null)
-//								attributes.put("use", true);
-//							
-//							// any contains search params?
-//							String cityC = params.get("address-city:contains");
-//							if (cityC != null)
-//								attributes.put("city", false);
-//							String stateC = params.get("address-state:contains");
-//							if (stateC != null)
-//								attributes.put("state", false);
-//							String countryC = params.get("address-country:contains");
-//							if (countryC != null)
-//								attributes.put("country", false);
-//							String postalcodeC = params.get("address-postalcode:contains");
-//							if (postalcodeC != null)
-//								attributes.put("postalcode", false);
-//							String useC = params.get("address-use:contains");
-//							if (useC != null)
-//								attributes.put("use", false);
-						}
-						// mark name as processed
-						processed.put(associatedClazz.getCanonicalName(), true);
-						// address - PatientAddress table
-						where = appendSubquery(em, cb, cq, rootPatient, where,
-								resourceClazz, associatedClazz, attributes, "addresses", isConjunction);
+//				}
+				
+//				if (key.equals("gender")) {
+//					where = cb.and(where, cb.equal(rootPatient.get("gender"), cb.parameter(String.class, "gender")));
+//					whereParams.put(key, value);
+//				}
+
+				if (sp instanceof GroupParameter) {
+					Boolean b = processed.get(sp.getEntityClass().getCanonicalName());
+					if (b==null||!b) {
+						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
+						boolean isConjunction = true; // all predicates AND'd
+						setParamsForMatch((GroupParameter)sp, attributes, whereParams, value);
 					}
 				}
+//				if (key.startsWith("name") || key.startsWith("given") || key.startsWith("family")
+//						|| key.startsWith("prefix") || key.startsWith("suffix")) {
+//					associatedClazz = com.frt.dr.model.base.PatientHumanName.class;
+//					Boolean b = processed.get(associatedClazz.getCanonicalName());
+//					if (b==null||!b) {
+//						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
+//						boolean isConjunction = true; // all predicates AND'd
+//						// do not support name:exact
+//						// any of 'given', 'family', 'prefix', 'suffix' contains param value
+//						// all take 'contains' semantics - the param match value (string) should be
+//						// converted to LIKE pattern '%<value>%"
+//						// all predicates OR'd
+//						if (key.equals("name")) {
+//							// field group OR'd like matching
+//							
+//							setParamsForMatch(SUPPORTED_PARAMETERS.get("name"), attributes, whereParams, value);
+//							isConjunction = false;
+//						} else {
+//							setParamsForMatch(SUPPORTED_PARAMETERS.get("name"), attributes, whereParams, params);
+//						}
+//						// mark name as processed
+//						processed.put(associatedClazz.getCanonicalName(), true);
+//						// extract all human name params
+//						// humanName - PatientHumanName table
+//						where = appendSubquery(em, cb, cq, rootPatient, 
+//								where, resourceClazz, associatedClazz,
+//								attributes, "names", isConjunction);
+//					}
+//				}
+				
+//				if (key.startsWith("identifier")) {
+//					associatedClazz = com.frt.dr.model.base.PatientIdentifier.class;
+//					Boolean b = processed.get(associatedClazz.getCanonicalName());
+//					if (b==null||!b) {
+//						// extract all identifier :
+//						// further match use, system, value
+//						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
+//						boolean isConjunction = false; // all predicates OR'd
+//						// do not support identifier:exact
+//						// any of 'use', 'system', 'value' contains param value
+//						// all take 'contains' semantics
+//						if (key.equals("identifier")) {
+//							// field group OR'd like matching
+//							setParamsForMatch(JOIN_PARAMETERS.get("identifier"), attributes, whereParams, value);
+//							isConjunction = false;
+//						} else {
+//							throw new IllegalArgumentException("Query parameter:" + key
+//									+ " does not suppport match indicator (suffix), value=" + value);
+//						}
+//						// attribute in associated Entity: e.g. PatientIdentifier
+//						// identifier - PatientIdentifier table
+//						// mark identifier as processed
+//						processed.put(associatedClazz.getCanonicalName(), true);
+//						where = appendSubquery(em, cb, cq, rootPatient, where,
+//								resourceClazz, associatedClazz, attributes, "identifiers", isConjunction);
+//					}
+//				}
+				
+//				if (key.startsWith("address")) {
+//					associatedClazz = com.frt.dr.model.base.PatientAddress.class;
+//					Boolean b = processed.get(associatedClazz.getCanonicalName());
+//					if (b==null||!b) {
+//						// extract all addressXXX parameters
+//						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
+//						boolean isConjunction = true; // all predicates AND'd
+//						if (key.equals("address")) {
+//							// do not support address:exact
+//							// any of 'city', 'state', 'country', 'postalcode', 'use' contains param value
+//							// all take 'contains' semantics
+//							setParamsForMatch(key, attributes, whereParams, value);
+//							// all predicates OR'd
+//							isConjunction = false;
+//						} else {
+//							setParamsForMatch("address", attributes, whereParams, params);
+//						}
+//						// mark name as processed
+//						processed.put(associatedClazz.getCanonicalName(), true);
+//						// address - PatientAddress table
+//						where = appendSubquery(em, cb, cq, rootPatient, where,
+//								resourceClazz, associatedClazz, attributes, "address", isConjunction);
+//					}
+//				}
 
 			}
 			cq.where(where);
@@ -452,10 +424,10 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	}
 
 	// for fields AND'd match that could be : exact or contains
-	private void setParamsForMatch(List<String> fields, Map<String, Boolean> attributes, Map<String, Object> whereParams,
+	private void setParamsForMatch(GroupParameter gp, Map<String, Boolean> attributes, Map<String, Object> whereParams,
 			Map<String, String> params) {
 		String pv = null;
-		for (String f: fields) {
+		for (String f: gp.getFields()) {
 			if ((pv = params.get(f)) != null) {
 				attributes.put(f, false);
 				whereParams.put(f, convertToLikePattern(pv));
@@ -472,9 +444,9 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	}
 
 	// for field group OR'd like match
-	private void setParamsForMatch(List<String> fields, Map<String, Boolean> attributes,
+	private void setParamsForMatch(GroupParameter gp, Map<String, Boolean> attributes,
 			Map<String, Object> whereParams, String value) {
-		for (String f:fields) {
+		for (String f:gp.getFields()) {
 			attributes.put(f, false);
 			whereParams.put(f, convertToLikePattern(value));
 		}
@@ -531,6 +503,14 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		sb.append(value);
 		sb.append("%");
 		return sb.toString();
+	}
+
+	private String[] parseParamName(String pn) {
+		String[] parts = pn.split(BaseDao.PARAM_MODIFIER_DELIMETER);
+		if (parts.length!=1&&parts.length!=2) {
+			throw new IllegalArgumentException("Malformed parameter name: " + pn + ", parameter name format: <name> or <name>:<modifier>.");
+		} 
+		return parts;
 	}
 
 }

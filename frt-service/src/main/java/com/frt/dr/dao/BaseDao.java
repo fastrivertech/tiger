@@ -14,6 +14,7 @@ package com.frt.dr.dao;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+
+import com.frt.dr.service.FieldParameter;
+import com.frt.dr.service.GroupParameter;
+import com.frt.dr.service.SearchParameter;
 
 import java.util.logging.*;
 import org.springframework.data.repository.Repository;
@@ -60,17 +65,36 @@ public abstract class BaseDao<T,ID> implements Repository {
 	public static final DateFormat DF_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	public static final DateFormat[] DF_FMT_SUPPORTED = new DateFormat[] {DF_DATE_FMT_yyyy_MM_dd, DF_DATE_FMT_yyyy_s_MM_s_dd, DF_DATE_FMT_dd_s_MM_s_yyyy, DF_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss};
 
+	protected static final String PARAM_MODIFIER_DELIMETER = ":";
 	// temp search parameter registry
-	protected static Map<String, List<String>> JOIN_PARAMETERS = new HashMap<String, List<String>>();
-	protected static Map<String, Class<?>> JOIN_PARAMETER_ENTITY = new HashMap<String, Class<?>>();
+	protected static Map<String, SearchParameter> SUPPORTED_PARAMETERS = new HashMap<String, SearchParameter>();
 
 	static {
-		JOIN_PARAMETERS.put("name", Arrays.asList("given", "family", "prefix", "suffix"));
-		JOIN_PARAMETERS.put("identifier", Arrays.asList("use", "system", "value"));
-		JOIN_PARAMETERS.put("address", Arrays.asList("address-city", "address-state", "address-country", "address-postalcode", "address-use"));
-		JOIN_PARAMETER_ENTITY.put("name", com.frt.dr.model.base.PatientHumanName.class);
-		JOIN_PARAMETER_ENTITY.put("identifier", com.frt.dr.model.base.PatientIdentifier.class);
-		JOIN_PARAMETER_ENTITY.put("address", com.frt.dr.model.base.PatientAddress.class);
+		SearchParameter pd = new GroupParameter("name", 
+				Arrays.asList("given", "family", "prefix", "suffix"),
+				"names", new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class);
+		SUPPORTED_PARAMETERS.put("name", pd);
+		SUPPORTED_PARAMETERS.put("given", pd);
+		SUPPORTED_PARAMETERS.put("family", pd);
+		SUPPORTED_PARAMETERS.put("prefix", pd);
+		SUPPORTED_PARAMETERS.put("suffix", pd);
+		pd = new GroupParameter("identifier", 
+				Arrays.asList("use", "system", "value"), 
+				"identifiers", new String[] {"Patient"}, com.frt.dr.model.base.PatientIdentifier.class);
+		SUPPORTED_PARAMETERS.put("identifier", pd);
+		pd = new GroupParameter("address", 
+				Arrays.asList("address-city", "address-state", "address-country", "addresse-postalcode", "addresse-use"), 
+				"addresses", new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class);
+		SUPPORTED_PARAMETERS.put("address", pd);
+		SUPPORTED_PARAMETERS.put("address-city", pd);
+		SUPPORTED_PARAMETERS.put("address-state", pd);
+		SUPPORTED_PARAMETERS.put("address-country", pd);
+		SUPPORTED_PARAMETERS.put("address-postalcode", pd);
+		SUPPORTED_PARAMETERS.put("address-use", pd);
+		SUPPORTED_PARAMETERS.put("_id", new FieldParameter("_id", "id", String.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
+		SUPPORTED_PARAMETERS.put("active", new FieldParameter("active", "active", Boolean.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
+		SUPPORTED_PARAMETERS.put("birthdate", new FieldParameter("birthdate", "birthdate", Date.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
+		SUPPORTED_PARAMETERS.put("gender", new FieldParameter("gender", "gender", String.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
 	}
 	
 	protected JdbcTemplate jdbcTemplate;
@@ -92,4 +116,8 @@ public abstract class BaseDao<T,ID> implements Repository {
     public abstract Optional<T> findById(ID id) throws DaoException;
     
     public abstract Optional<List<T>> query(Map<String, String> params) throws DaoException;
+    
+    public SearchParameter getParamDesc(String name) {
+    	return SUPPORTED_PARAMETERS.get(name);
+    }
 }
