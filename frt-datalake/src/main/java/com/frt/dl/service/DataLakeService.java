@@ -69,6 +69,7 @@ public class DataLakeService {
 			String fileName = config.get(DataLakeServiceConfig.DATALAKE_PATH) + date;
 			Path path = new Path(fileName);
 	        OutputStream outputStream = fs.create(path);
+			fs.setPermission(path, new FsPermission("777"));        	        
 	        BufferedWriter br = new BufferedWriter(new OutputStreamWriter(outputStream));
 	        
 	        System.out.println("started to write " + fileName + " ...");	

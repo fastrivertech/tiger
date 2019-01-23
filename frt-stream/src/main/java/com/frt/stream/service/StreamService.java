@@ -12,10 +12,10 @@ package com.frt.stream.service;
 
 import java.util.List;
 
-import com.frt.stream.data.FhirConsumer;
-import com.frt.stream.data.FhirProducer;
-import com.frt.stream.data.ParticipatingApplication;
-import com.frt.stream.data.StreamDataException;
+import com.frt.stream.app.FhirConsumer;
+import com.frt.stream.app.FhirProducer;
+import com.frt.stream.app.ParticipatingApplication;
+import com.frt.stream.app.StreamDataException;
 
 /*
  * StreamService class

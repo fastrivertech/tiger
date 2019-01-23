@@ -8,7 +8,7 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.stream.data;
+package com.frt.stream.app;
 
 import java.util.Arrays;
 import java.util.Locale;
