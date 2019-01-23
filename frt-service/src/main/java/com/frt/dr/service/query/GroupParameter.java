@@ -1,28 +1,26 @@
-package com.frt.dr.service;
+package com.frt.dr.service.query;
 
 import java.util.List;
 
-import com.frt.dr.service.SearchParameter.Comparator;
-import com.frt.dr.service.SearchParameter.Modifier;
-
-public class FieldParameter implements SearchParameter {
-	private String name; // parameter name - end user visible
-	private String fldname; // JPA POJO attribute name
-	private Class<?> type;
-	private String[] base;
+public class GroupParameter implements SearchParameter {
+	private String name;
+	private Class<?> type; // java type of the parameter
+	private List<String> fields; // list of concrete fields
+	private String fldName; // corresponding attribute name in the resource JPA POJO
+	private String[] base; 
+	private Class<?> entityClazz; // the JPA entity POJO class
 	private String expression;
 	private Modifier[] modifiersApplicable;
 	private Comparator[] comparatorsApplicable;
 	private Boolean multipleAnd;
 	private Boolean multipleOr;
-	private Class<?> entityClazz;
 	
-	public FieldParameter(String name, String fldName, Class<?> type, String[] base, Class<?> entityClazz) {
+	public GroupParameter(String name, List<String> fields, String fldName, String[] base, Class<?> entityClazz) {
 		super();
 		this.name = name;
-		this.fldname = fldName;
+		this.fields = fields;
+		this.fldName = fldName;
 		this.base = base;
-		this.type = type;
 		this.entityClazz = entityClazz;
 	}
 
@@ -34,20 +32,12 @@ public class FieldParameter implements SearchParameter {
 		this.name = name;
 	}
 	
-	public String getFieldName() {
-		return fldname;
+	public List<String> getFields() {
+		return fields;
 	}
-
-	public void setFieldName(String fldname) {
-		this.fldname = fldname;
-	}
-
-	public Class<?> getType() {
-		return type;
-	}
-
-	public void setType(Class<?> type) {
-		this.type = type;
+	
+	public void setFields(List<String> fields) {
+		this.fields = fields;
 	}
 
 	public String[] getBase() {
@@ -56,6 +46,14 @@ public class FieldParameter implements SearchParameter {
 
 	public void setBase(String[] base) {
 		this.base = base;
+	}
+
+	public String getFieldName() {
+		return fldName;
+	}
+	
+	public void setFieldName(String fldName) {
+		this.fldName = fldName;
 	}
 
 	@Override

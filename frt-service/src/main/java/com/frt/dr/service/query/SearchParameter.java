@@ -1,4 +1,4 @@
-package com.frt.dr.service;
+package com.frt.dr.service.query;
 
 import java.util.List;
 import java.util.Map;

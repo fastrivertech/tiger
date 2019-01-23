@@ -1,40 +1,24 @@
-/*
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
- *
- * Copyright (c) 2018 Fast River Technologies Inc. Irvine, CA, USA 
- * All Rights Reserved.
- * 
- * $Id:					$: Id of last commit                
- * $Revision:			$: Revision of last commit 
- * $Author: cye			$: Author of last commit       
- * $Date:	10-10-2018	$: Date of last commit
- */
-package com.frt.dr.dao;
+package com.frt.dr.service.query;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.frt.dr.service.query.FieldParameter;
-import com.frt.dr.service.query.GroupParameter;
-import com.frt.dr.service.query.SearchParameter;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
-import org.springframework.data.repository.Repository;
-
-/**
- * BaseDao class
- * @author chaye
- */
-public abstract class BaseDao<T,ID> implements Repository {
+public class SearchParameterRegistry {
+	private static final String FHIR_SEARCH_PARAMETERS_JSON="search-parameters.json";
+	private static final JsonParser parser = new JsonParser();
+	private static volatile SearchParameterRegistry instance = null;
+	private static JsonElement bunndle = null;
+	
 	public static final String PARAM_PREFIX_EQ = "eq";
 	//	 * eq	the value for the parameter in the resource is equal to the provided value	the range of the search value fully contains the range of the target value
 	public static final String PARAM_PREFIX_NE = "ne";
@@ -95,27 +79,35 @@ public abstract class BaseDao<T,ID> implements Repository {
 		SUPPORTED_PARAMETERS.put("gender", new FieldParameter("gender", "gender", String.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
 	}
 	
-	protected JdbcTemplate jdbcTemplate;
+	private SearchParameterRegistry() {
+	}
 	
-    @Autowired
-    public void setJdbcTemplate(JdbcTemplate jdbcTemplate) {
-    	this.jdbcTemplate = jdbcTemplate;
+	private void load() throws FileNotFoundException {
+		//get json file from resources folder
+		FileReader fr = new FileReader(new File(getClass().getClassLoader().getResource(FHIR_SEARCH_PARAMETERS_JSON).getFile()));
+		this.bunndle = this.parser.parse(fr);
+		// below code traverse bundle hierarchy and build parameter registry
+		// to be added
+	}
+
+	public static SearchParameterRegistry getInstance() {
+		if (instance == null) {
+            synchronized (SearchParameterRegistry.class) {
+                if (instance == null) {
+                    instance = new SearchParameterRegistry();
+                    try {
+						instance.load();
+					} catch (FileNotFoundException e) {
+						throw new IllegalStateException("FHIR search parameters definition file: " + FHIR_SEARCH_PARAMETERS_JSON + " not found.");
+					}
+                }
+            }
+        }
+        return instance;
     }
 
-	@PersistenceContext
-	protected EntityManager em;
-    
-    public void setEntityManager(EntityManager em) {
-    	this.em = em;
-    }
+	public static com.frt.dr.service.query.SearchParameter getParameterDescriptor(String pname) {
+		return SUPPORTED_PARAMETERS.get(pname);
+	}
 	
-    public abstract Optional<T> save(T entry) throws DaoException;
-
-    public abstract Optional<T> findById(ID id) throws DaoException;
-    
-    public abstract Optional<List<T>> query(Map<String, String> params) throws DaoException;
-    
-    public SearchParameter getParamDesc(String name) {
-    	return SUPPORTED_PARAMETERS.get(name);
-    }
 }

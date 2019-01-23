@@ -41,9 +41,10 @@ import javax.persistence.metamodel.Metamodel;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
-import com.frt.dr.service.FieldParameter;
-import com.frt.dr.service.GroupParameter;
-import com.frt.dr.service.SearchParameter;
+import com.frt.dr.service.query.FieldParameter;
+import com.frt.dr.service.query.GroupParameter;
+import com.frt.dr.service.query.SearchParameter;
+import com.frt.dr.service.query.SearchParameterRegistry;
 
 /**
  * ResourceDao class
@@ -282,7 +283,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 				String pname = parts[0];
 				String modifier = parts.length==2?parts[1]:null;
 
-				SearchParameter sp = SUPPORTED_PARAMETERS.get(pname);
+				SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(pname);
 				
 				if (sp==null) {
 					throw new IllegalArgumentException("Parameter : " + pname + " is not supported.");
