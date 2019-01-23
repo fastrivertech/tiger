@@ -9,7 +9,7 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.dl;
+package com.frt.dl.service.sample;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -27,6 +27,8 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.UserGroupInformation;
 
+import com.frt.dl.service.DataLakeServiceException;
+
 /**
  * DataLakeService class
  * 
@@ -41,7 +43,7 @@ public class DataLakeService {
 	public void initialize() throws DataLakeServiceException {
 		try {
 			System.setProperty("HADOOP_USER_NAME", "cloudera");
-			String hdfsUrl = "hdfs://10.0.0.15:8020";
+			String hdfsUrl = "hdfs://10.0.0.21:8020";
 			Configuration config = new Configuration();
 			config.set("fs.hdfs.impl", org.apache.hadoop.hdfs.DistributedFileSystem.class.getName());
 			config.set("fs.file.impl", org.apache.hadoop.fs.LocalFileSystem.class.getName());		
