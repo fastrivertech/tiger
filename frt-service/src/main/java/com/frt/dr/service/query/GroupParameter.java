@@ -5,7 +5,6 @@ import java.util.List;
 public class GroupParameter implements SearchParameter {
 	private String name;
 	private Class<?> type; // java type of the parameter
-	private List<String> fields; // list of concrete fields
 	private String fldName; // corresponding attribute name in the resource JPA POJO
 	private String[] base; 
 	private Class<?> entityClazz; // the JPA entity POJO class
@@ -15,10 +14,9 @@ public class GroupParameter implements SearchParameter {
 	private Boolean multipleAnd;
 	private Boolean multipleOr;
 	
-	public GroupParameter(String name, List<String> fields, String fldName, String[] base, Class<?> entityClazz) {
+	public GroupParameter(String name, String fldName, String[] base, Class<?> entityClazz) {
 		super();
 		this.name = name;
-		this.fields = fields;
 		this.fldName = fldName;
 		this.base = base;
 		this.entityClazz = entityClazz;
@@ -30,14 +28,6 @@ public class GroupParameter implements SearchParameter {
 	
 	public void setName(String name) {
 		this.name = name;
-	}
-	
-	public List<String> getFields() {
-		return fields;
-	}
-	
-	public void setFields(List<String> fields) {
-		this.fields = fields;
 	}
 
 	public String[] getBase() {

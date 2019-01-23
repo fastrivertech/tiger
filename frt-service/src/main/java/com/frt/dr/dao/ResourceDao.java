@@ -276,6 +276,8 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			Predicate where = cb.conjunction();
 			Class<? extends ResourceComplexType> associatedClazz = null;
 			Map<String, Boolean> processed = new HashMap<String, Boolean>();
+			SearchParameter sp = null;
+			Map<String, Boolean> attributes = null;
 			for (Map.Entry<String, String> e : params.entrySet()) {
 				String key = e.getKey();
 				String value = e.getValue();
@@ -283,15 +285,17 @@ public class ResourceDao extends BaseDao<Resource, String> {
 				String pname = parts[0];
 				String modifier = parts.length==2?parts[1]:null;
 
-				SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(pname);
-				
-				if (sp==null) {
+				if ((sp = SearchParameterRegistry.getParameterDescriptor(pname))==null) {
 					throw new IllegalArgumentException("Parameter : " + pname + " is not supported.");
 				}
 
 				if (sp instanceof FieldParameter) {
-					where = cb.and(where, cb.equal(rootPatient.get(sp.getFieldName()), cb.parameter(((FieldParameter) sp).getType(), sp.getName())));
-					whereParams.put(key, value);
+					if (!isProcessed(sp, processed)) {
+						attributes = new HashMap<String, Boolean>();
+						where = cb.and(where, cb.equal(rootPatient.get(sp.getFieldName()), cb.parameter(((FieldParameter) sp).getType(), sp.getName())));
+						whereParams.put(key, value);
+						processEntityParameters((GroupParameter)sp, attributes, whereParams, params);
+					}
 				}
 //				if (key.equals("_id")) {
 //					where = cb.and(where, cb.equal(rootPatient.get("id"), cb.parameter(String.class, "_id")));
@@ -327,9 +331,12 @@ public class ResourceDao extends BaseDao<Resource, String> {
 				if (sp instanceof GroupParameter) {
 					Boolean b = processed.get(sp.getEntityClass().getCanonicalName());
 					if (b==null||!b) {
-						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
+						attributes = new HashMap<String, Boolean>();
 						boolean isConjunction = true; // all predicates AND'd
-						setParamsForMatch((GroupParameter)sp, attributes, whereParams, value);
+						processEntityParameters((GroupParameter)sp, attributes, whereParams, params);
+						where = addEntityCriteria(em, cb, cq, rootPatient, 
+						where, resourceClazz, associatedClazz,
+						attributes, "names", isConjunction);
 					}
 				}
 //				if (key.startsWith("name") || key.startsWith("given") || key.startsWith("family")
@@ -424,11 +431,18 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		}
 	}
 
-	// for fields AND'd match that could be : exact or contains
-	private void setParamsForMatch(GroupParameter gp, Map<String, Boolean> attributes, Map<String, Object> whereParams,
-			Map<String, String> params) {
+	private void processEntityParameters(GroupParameter gp, Map<String, Boolean> attributes,
+			Map<String, Object> whereParams, Map<String, String> params) {
+		// for entity fields AND'd match that could be : exact or contains etc. other modifiers
+		// for entity group parameter : need to generate OR'd predicates with string like match (if the fields are string)
+		// or any other modifier specified and applicable to the field
+		String value = "";
+		for (String f: SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.get(gp.getEntityClass())) {
+			attributes.put(f, false);
+			whereParams.put(f, convertToLikePattern(value));
+		}
 		String pv = null;
-		for (String f: gp.getFields()) {
+		for (String f: SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.get(gp.getEntityClass())) {
 			if ((pv = params.get(f)) != null) {
 				attributes.put(f, false);
 				whereParams.put(f, convertToLikePattern(pv));
@@ -444,16 +458,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		}
 	}
 
-	// for field group OR'd like match
-	private void setParamsForMatch(GroupParameter gp, Map<String, Boolean> attributes,
-			Map<String, Object> whereParams, String value) {
-		for (String f:gp.getFields()) {
-			attributes.put(f, false);
-			whereParams.put(f, convertToLikePattern(value));
-		}
-	}
-
-	private <T extends DomainResource, U extends ResourceComplexType> Predicate appendSubquery(
+	private <T extends DomainResource, U extends ResourceComplexType> Predicate addEntityCriteria(
 			EntityManager em, CriteriaBuilder cb, CriteriaQuery<T> cq, 
 			Root<T> mainRoot, Predicate where, Class<T> mainClazz, Class<U> refClazz, 
 			Map<String, Boolean> attributes, String joinAttr, boolean isConjunction) {
@@ -512,6 +517,17 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			throw new IllegalArgumentException("Malformed parameter name: " + pn + ", parameter name format: <name> or <name>:<modifier>.");
 		} 
 		return parts;
+	}
+
+	private boolean isProcessed(SearchParameter sp, Map<String, Boolean> processed) {
+		boolean isProcessed = true;
+		Boolean b = (processed.get(sp.getEntityClass().getCanonicalName())!=null);
+		if (b==null||!b) {
+			isProcessed=false;
+			// mark as processed
+			processed.put(sp.getEntityClass().getCanonicalName(), true);
+		}
+		return isProcessed;
 	}
 
 }

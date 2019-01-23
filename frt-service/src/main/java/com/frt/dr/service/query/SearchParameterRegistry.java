@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.google.gson.JsonElement;
@@ -46,33 +47,35 @@ public class SearchParameterRegistry {
 	public static final DateFormat DF_DATE_FMT_dd_s_MM_s_yyyy = new SimpleDateFormat("dd/MM/yyyy");
 	public static final DateFormat DF_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 	public static final DateFormat[] DF_FMT_SUPPORTED = new DateFormat[] {DF_DATE_FMT_yyyy_MM_dd, DF_DATE_FMT_yyyy_s_MM_s_dd, DF_DATE_FMT_dd_s_MM_s_yyyy, DF_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss};
-
 	public static final String PARAM_MODIFIER_DELIMETER = ":";
-	// temp search parameter registry
-	protected static Map<String, SearchParameter> SUPPORTED_PARAMETERS = new HashMap<String, SearchParameter>();
+
+	// entity to parameters lookup
+	public static final Map<Class<?>, List<String>> ENTITY_SEARCH_PARAMETERS = Map.ofEntries(
+				Map.entry(com.frt.dr.model.base.Patient.class, Arrays.asList("_id", "active", "birthdate", "gender", "_text")),
+				Map.entry(com.frt.dr.model.base.PatientHumanName.class, Arrays.asList("given", "family", "prefix", "suffix")),
+				Map.entry(com.frt.dr.model.base.PatientIdentifier.class, Arrays.asList("use", "system", "value")),
+				Map.entry(com.frt.dr.model.base.PatientAddress.class, Arrays.asList("address-city", "address-state", "address-country", "addresse-postalcode", "addresse-use"))
+			);
+	// search parameter look up
+	public static Map<String, SearchParameter> SUPPORTED_PARAMETERS = new HashMap<String, SearchParameter>();
 
 	static {
-		SearchParameter pd = new GroupParameter("name", 
-				Arrays.asList("given", "family", "prefix", "suffix"),
-				"names", new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class);
-		SUPPORTED_PARAMETERS.put("name", pd);
-		SUPPORTED_PARAMETERS.put("given", pd);
-		SUPPORTED_PARAMETERS.put("family", pd);
-		SUPPORTED_PARAMETERS.put("prefix", pd);
-		SUPPORTED_PARAMETERS.put("suffix", pd);
-		pd = new GroupParameter("identifier", 
-				Arrays.asList("use", "system", "value"), 
-				"identifiers", new String[] {"Patient"}, com.frt.dr.model.base.PatientIdentifier.class);
-		SUPPORTED_PARAMETERS.put("identifier", pd);
-		pd = new GroupParameter("address", 
-				Arrays.asList("address-city", "address-state", "address-country", "addresse-postalcode", "addresse-use"), 
-				"addresses", new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class);
-		SUPPORTED_PARAMETERS.put("address", pd);
-		SUPPORTED_PARAMETERS.put("address-city", pd);
-		SUPPORTED_PARAMETERS.put("address-state", pd);
-		SUPPORTED_PARAMETERS.put("address-country", pd);
-		SUPPORTED_PARAMETERS.put("address-postalcode", pd);
-		SUPPORTED_PARAMETERS.put("address-use", pd);
+		// human name
+		SUPPORTED_PARAMETERS.put("name", new GroupParameter("name", "names", new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		SUPPORTED_PARAMETERS.put("given", new FieldParameter("given", "given", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		SUPPORTED_PARAMETERS.put("family", new FieldParameter("family", "family", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		SUPPORTED_PARAMETERS.put("prefix", new FieldParameter("prefix", "prefix", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		SUPPORTED_PARAMETERS.put("suffix", new FieldParameter("suffix", "suffix", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		// identifier
+		SUPPORTED_PARAMETERS.put("identifier", new GroupParameter("identifier", "identifiers", new String[] {"Patient"}, com.frt.dr.model.base.PatientIdentifier.class));
+		// address
+		SUPPORTED_PARAMETERS.put("address", new GroupParameter("address", "addresses", new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-city", new FieldParameter("city", "city", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-state", new FieldParameter("state", "state", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-country", new FieldParameter("country", "country", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-postalcode", new FieldParameter("postalcode", "postalcode", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-use", new FieldParameter("use", "use", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		// resource level parameters
 		SUPPORTED_PARAMETERS.put("_id", new FieldParameter("_id", "id", String.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
 		SUPPORTED_PARAMETERS.put("active", new FieldParameter("active", "active", Boolean.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
 		SUPPORTED_PARAMETERS.put("birthdate", new FieldParameter("birthdate", "birthdate", Date.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
