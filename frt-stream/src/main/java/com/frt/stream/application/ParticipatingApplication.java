@@ -8,20 +8,17 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.stream.app;
+package com.frt.stream.application;
 
-public class DataLakeIngestion implements ParticipatingApplication {
+/*
+ * ParticipatingApplicatio interface
+ * @author chaye
+ */
+public interface ParticipatingApplication extends Runnable {
+			
+	void initialize() 
+		throws StreamApplicationException;
 
-	public DataLakeIngestion(){		
-	}
-	
-	@Override
-	public void initialize() 
-		throws StreamDataException {		
-	}
-
-	@Override
-	public void close() {			
-	}
+	void close();
 	
 }

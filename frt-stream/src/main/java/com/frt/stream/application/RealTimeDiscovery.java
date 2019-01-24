@@ -8,7 +8,7 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.stream.app;
+package com.frt.stream.application;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -25,6 +25,7 @@ import org.apache.kafka.streams.kstream.KStream;
 import org.apache.kafka.streams.kstream.KTable;
 import org.apache.kafka.streams.kstream.Produced;
 import org.apache.kafka.streams.kstream.Consumed;
+import org.apache.kafka.streams.errors.StreamsException;
 import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.streams.Topology;
 import com.frt.stream.service.StreamServiceConfig;
@@ -44,7 +45,8 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 	public void RealTimeDiscovery() {
 	}
 
-	public void initialize() throws StreamDataException {
+	public void initialize() 
+		throws StreamApplicationException {
 		try {
 			Serde<String> stringSerde = Serdes.String();
 			Serde<Long> longSerde = Serdes.Long();
@@ -58,18 +60,18 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 			counts.toStream().to(config.get(StreamServiceConfig.STREAM_DISCOVERY_TOPIC),
 								 Produced.with(Serdes.String(), Serdes.Long()));
 			
-			Properties props = config.getApplicationConfig();
+			Properties props = config.getApplicationConfig(StreamServiceConfig.REALTIME_DISCOVERY_APPLICATION);
 			props.setProperty(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 			props.setProperty(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 					
 			final Topology topology = builder.build();
 			streams = new KafkaStreams(topology, props);
+			
 			latch = new CountDownLatch(1);
-
 			Runtime.getRuntime().addShutdownHook(new Thread("realtime-discovery-shutdown-hook") {
 				@Override
 				public void run() {
-					System.out.println("fhir stream discovery stopped ...");
+					System.out.println("fhir stream realtime discovery stopped ...");
 					streams.cleanUp();
 					streams.close();
 					latch.countDown();
@@ -77,18 +79,29 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 			});
 
 		} catch (StreamServiceException ssex) {
-			throw new StreamDataException(ssex);
+			throw new StreamApplicationException(ssex);
 		}
 	}
 
-	public void start() throws StreamDataException {
+	@Override 
+	public void run() {
 		try {
 			streams.start();
-			System.out.println("fhir stream discovery ...");
+		} catch (StreamsException | 
+				 IllegalStateException ex) {	
+			throw ex;
+		}
+	}
+	
+	public void start() 
+		throws StreamApplicationException {
+		try {
+			run();
+			System.out.println("fhir stream realtime discovery running ...");
 			latch.await();
-			System.out.println("fhir stream discovery stopped");			
+			System.out.println("fhir stream realtime discovery stopped ...");			
 		} catch (KafkaException | IllegalStateException | InterruptedException ex) {
-			throw new StreamDataException(ex);
+			throw new StreamApplicationException(ex);
 		}
 	}
 
@@ -108,7 +121,7 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 			discovery.start();
 			System.exit(0);
 			System.out.println("discovery application exit(0)");
-		} catch (StreamDataException ex) {
+		} catch (StreamApplicationException ex) {
 			System.exit(1);
 			System.out.println("discovery application exit(1)");
 		}

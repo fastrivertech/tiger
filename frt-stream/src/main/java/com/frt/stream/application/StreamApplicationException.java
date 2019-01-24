@@ -8,18 +8,18 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.stream.app;
+package com.frt.stream.application;
 
 /*
  * StreamDataException class
  * @author chaye
  */
-public class StreamDataException extends Exception {
+public class StreamApplicationException extends RuntimeException {
 
 	/**
 	 * StreamDataException Constructor
 	 */
-	public StreamDataException() {
+	public StreamApplicationException() {
 		super();
 	}
 
@@ -28,7 +28,7 @@ public class StreamDataException extends Exception {
 	 * 
 	 * @param m Message string
 	 */
-	public StreamDataException(String m) {
+	public StreamApplicationException(String m) {
 		super(m);
 	}
 
@@ -38,7 +38,7 @@ public class StreamDataException extends Exception {
 	 * @param m Message string
 	 * @param t Throwable inherited
 	 */
-	public StreamDataException(String m, Throwable t) {
+	public StreamApplicationException(String m, Throwable t) {
 		super(m, t);
 	}
 
@@ -47,7 +47,7 @@ public class StreamDataException extends Exception {
 	 * 
 	 * @param t Throwable inherited
 	 */
-	public StreamDataException(Throwable t) {
+	public StreamApplicationException(Throwable t) {
 		super(t);
 	}
 

@@ -12,10 +12,10 @@ package com.frt.stream.service;
 
 import java.util.List;
 
-import com.frt.stream.app.FhirConsumer;
-import com.frt.stream.app.FhirProducer;
-import com.frt.stream.app.ParticipatingApplication;
-import com.frt.stream.app.StreamDataException;
+import com.frt.stream.application.FhirConsumer;
+import com.frt.stream.application.FhirProducer;
+import com.frt.stream.application.ParticipatingApplication;
+import com.frt.stream.application.StreamApplicationException;
 
 /*
  * StreamService class
@@ -52,7 +52,7 @@ public class StreamService {
 				consumer.initialize();
 				
 			}
-		} catch(StreamDataException ex) {
+		} catch(StreamApplicationException ex) {
 			throw new StreamServiceException(ex);
 		}
 	}
@@ -66,7 +66,7 @@ public class StreamService {
 		throws StreamServiceException {
 		try {
 			((FhirProducer)producer).write(key, message);
-		} catch (StreamDataException ex) {
+		} catch (StreamApplicationException ex) {
 			throw new StreamServiceException(ex);
 		}
 	}
@@ -75,7 +75,7 @@ public class StreamService {
 		throws StreamServiceException {
 		try {
 			return ((FhirConsumer)consumer).read();
-		} catch (StreamDataException ex) {
+		} catch (StreamApplicationException ex) {
 			throw new StreamServiceException(ex);
 		}
 	}

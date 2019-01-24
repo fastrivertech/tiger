@@ -8,7 +8,7 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.stream.app;
+package com.frt.stream.application;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -32,18 +32,18 @@ public class FhirProducer implements ParticipatingApplication {
 
 	@Override
 	public void initialize() 
-		throws StreamDataException {
+		throws StreamApplicationException {
 		try {
 			config = StreamServiceConfig.getInstance();
 			producer = new KafkaProducer<String, String>(config.getProducerConfig());
 			producer.initTransactions();			
 		} catch (StreamServiceException ssex) {
-			throw new StreamDataException(ssex);
+			throw new StreamApplicationException(ssex);
 		}
 	}
 
 	public void write(String key, String message) 
-		throws StreamDataException {
+		throws StreamApplicationException {
 		try {
 			producer.beginTransaction();
 			producer.send(new ProducerRecord<String, String>(config.get(StreamServiceConfig.STREAM_TOPIC), key, message));
@@ -54,6 +54,10 @@ public class FhirProducer implements ParticipatingApplication {
 			} catch (KafkaException ignore) {				
 			}
 		}		
+	}
+	
+	@Override
+	public void run() {	
 	}
 	
 	@Override

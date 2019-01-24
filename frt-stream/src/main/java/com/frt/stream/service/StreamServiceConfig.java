@@ -28,10 +28,11 @@ public class StreamServiceConfig {
 	public static final String STREAM_ENABLE="frt.stream.enable";	
 	
 	private final static String STREAMSERVICE_CONFIGURATION_PATH = "./config/frt_stream.properties";
-	private final static String PRODUCER_HEAD = "p.";
-	private final static String CONSUMER_HEAD = "c.";
+	private final static String PRODUCER_APPLICATION = "p.";
+	private final static String CONSUMER_APPLICATION = "c.";
 	
-	private final static String PARTICIPATING_APPLICATION_HEAD = "pp.";
+	public final static String REALTIME_DISCOVERY_APPLICATION = "realtime.discovery.";
+	public final static String DATALAKE_INGESTION_APPLICATION = "datalake.ingestion.";
 		
 	private static StreamServiceConfig instance;
 	private Properties props;
@@ -61,7 +62,7 @@ public class StreamServiceConfig {
 	public Properties getProducerConfig() {
 		Properties config = new Properties();
 		props.forEach((k, v)-> {
-			if (((String)k).startsWith("p.")) {
+			if (((String)k).startsWith(PRODUCER_APPLICATION)) {
 				config.put(((String)k).substring(2), v);
 			}
 		});
@@ -71,18 +72,18 @@ public class StreamServiceConfig {
 	public Properties getConsumerConfig() {
 		Properties config = new Properties();
 		props.forEach((k, v)-> {
-			if (((String)k).startsWith("c.")) {
+			if (((String)k).startsWith(CONSUMER_APPLICATION)) {
 				config.put(((String)k).substring(2), v);
 			}
 		});
 		return config;		
 	}
 	
-	public Properties getApplicationConfig() {
+	public Properties getApplicationConfig(String appName) {
 		Properties config = new Properties();
 		props.forEach((k, v)-> {
-			if (((String)k).startsWith("pp.")) {
-				config.put(((String)k).substring(3), v);
+			if (((String)k).startsWith(appName)) {
+				config.put(((String)k).substring(appName.length()), v);
 			}
 		});
 		return config;		

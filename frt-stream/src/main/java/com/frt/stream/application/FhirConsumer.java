@@ -8,7 +8,7 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.stream.app;
+package com.frt.stream.application;
 
 import java.util.List;
 import java.util.ArrayList;
@@ -39,18 +39,18 @@ public class FhirConsumer implements ParticipatingApplication {
 	
 	@Override
 	public void initialize() 
-		throws StreamDataException {
+		throws StreamApplicationException {
 		try {
 			config = StreamServiceConfig.getInstance();
 			consumer = new KafkaConsumer<>(config.getConsumerConfig());
 			consumer.subscribe(Collections.singletonList(config.get(StreamServiceConfig.STREAM_TOPIC)));
 		} catch (StreamServiceException ssex) {
-			throw new StreamDataException(ssex);
+			throw new StreamApplicationException(ssex);
 		}
 	}
 	
 	public List<String> read() 
-		throws StreamDataException {
+		throws StreamApplicationException {
 		List<String> messages = new ArrayList<>();
 		try {
 			ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(1000));	
@@ -61,8 +61,12 @@ public class FhirConsumer implements ParticipatingApplication {
 			consumer.commitSync();
 			return messages;
 		} catch (KafkaException ex) {
-			throw new StreamDataException(ex);
+			throw new StreamApplicationException(ex);
 		}
+	}
+	
+	@Override
+	public void run() {
 	}
 	
 	@Override
