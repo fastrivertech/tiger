@@ -52,6 +52,7 @@
 			<version>${maven.war.plugin.version}</version>
 			<configuration>
 				<classesClassifier>classes</classesClassifier>
+				<packagingExcludes>WEB-INF/lib/jersey-server-1.9.jar</packagingExcludes>				
 			</configuration>
 		</plugin>
 		<!-- swagger REST API doc
