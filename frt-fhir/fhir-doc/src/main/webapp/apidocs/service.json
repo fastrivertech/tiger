@@ -1,9 +1,9 @@
 {
   "swaggerVersion" : "1.2",
   "apiVersion" : "1.0",
-  "basePath" : "/fhir-doc/apidocs",
+  "basePath" : "/frt-fhir-doc/apidocs",
   "apis" : [ {
-    "path" : "/1.0.{format}"
+    "path" : "/Operations.{format}"
   } ],
   "info" : {
     "title" : "Fast River FHIR REST APIs v1.0.0",

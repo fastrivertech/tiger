@@ -1,5 +1,5 @@
 {
-	"title": "Fast River FHIR REST APIs v1.0.0",
-    "description": "Provides FHIR compliant REST APIs https://www.hl7.org/fhir",
-    "termsOfServiceUrl": "http://www.fastrivertech.com"
+		"title": "Fast River FHIR REST APIs v1.0.0",
+		"description": "Provides FHIR compliant REST APIs https://www.hl7.org/fhir",
+		"termsOfServiceUrl": "http://www.fastrivertech.com"
 }
