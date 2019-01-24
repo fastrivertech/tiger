@@ -79,17 +79,40 @@ public class ReadResourceOperation extends ResourceOperation {
 			throw new RuntimeException(ssex);
 		}		
 	}	
+	
+	/**
+	 * Get FHIR Resource by its Id
+	 * GET [base]/frt-fhir-rest/1.0/Patient?_id=[id]
+	 * @param type Resource type, e.g., Patient
+	 * @param _id Resource logical id, e.g., 1356
+	 * @param _format json or xml, json supported
+	 * @param _summary true for retrieving summary of Resource, false for retrieving entire Resource; default false
+	 * @return FHIR Resource retrieved
+	 * @status 200 Retrieved Success
+     * @status 400 Bad Request - Resource could not be parsed or failed basic FHIR validation rules
+	 */
 	@GET
 	@Path(ResourcePath.TYPE_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
 	public <R extends DomainResource> Response read(@PathParam("type") final String type,
-			  @PathParam("id") final String id,
+			  @PathParam("_id") final String _id,
 			  @QueryParam("_format") @DefaultValue("json") final String _format,
 			  @QueryParam("_summary") @DefaultValue("false") final String _summary,
 			  @Context UriInfo uriInfo) {
-		return readResource(type, id, _format, _summary, uriInfo);
+		return readResource(type, _id, _format, _summary, uriInfo);
 	}
 	
+	/**
+	 * Get FHIR Resource by its Id
+	 * GET [base]/frt-fhir-rest/1.0/Patient/[id]
+	 * @param type Resource type, e.g., Patient
+	 * @param id Resource logical id, e.g., 1356
+	 * @param _format json or xml, default josn and json supported
+	 * @param _summary true for retrieving summary of Resource, false for retrieving entire Resource; default false
+	 * @return FHIR Resource retrieved
+	 * @status 200 Retrieved Success
+     * @status 400 Bad Request - Resource could not be parsed or failed basic FHIR validation rules
+	 */	
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Produces(MediaType.APPLICATION_JSON)

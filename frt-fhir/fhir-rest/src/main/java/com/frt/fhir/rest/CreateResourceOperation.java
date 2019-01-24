@@ -72,6 +72,16 @@ public class CreateResourceOperation extends ResourceOperation {
 		}
 	}
 	
+	/**
+	 * Create FHIR Resource
+	 * POST [base]/frt-fhir-rest/1.0/Patient 
+	 * @param type Resource type, e.g., Patient
+	 * @param _format json or xml, default josn and json supported
+	 * @param body FHIR Resource
+	 * @return FHIR Resource created
+	 * @status 201 Created Success
+     * @status 400 Bad Request - Resource could not be parsed or failed basic FHIR validation rules
+	 */
 	@POST
 	@Path(ResourcePath.TYPE_PATH)
 	@Consumes(MediaType.APPLICATION_JSON)	
