@@ -3,7 +3,7 @@
   "apiVersion" : "1.0",
   "basePath" : "/frt-fhir-doc/apidocs",
   "apis" : [ {
-    "path" : "/Operations.{format}"
+    "path" : "/fhir-operations.{format}"
   } ],
   "info" : {
     "title" : "Fast River FHIR REST APIs v1.0.0",

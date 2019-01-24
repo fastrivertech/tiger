@@ -11,24 +11,36 @@
       "type" : "Response",
       "parameters" : [ {
         "type" : "string",
+        "description" : "Resource type, e.g., Patient",
         "paramType" : "path",
         "name" : "type",
         "required" : true
       }, {
         "type" : "string",
+        "description" : "Resource logical id, e.g., 1356",
         "paramType" : "path",
-        "name" : "id",
+        "name" : "_id",
         "required" : true
       }, {
         "type" : "string",
+        "description" : "json or xml, json supported",
         "defaultValue" : "json",
         "paramType" : "query",
         "name" : "_format"
       }, {
         "type" : "string",
+        "description" : "true for retrieving summary of Resource, false for retrieving entire Resource; default false",
         "defaultValue" : "false",
         "paramType" : "query",
         "name" : "_summary"
+      } ],
+      "summary" : "Get FHIR Resource by its Id\n GET [base]/frt-fhir-rest/1.0/Patient?_id=[id]",
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "Retrieved Success"
+      }, {
+        "code" : 400,
+        "message" : "Bad Request - Resource could not be parsed or failed basic FHIR validation rules"
       } ],
       "produces" : [ "application/json" ]
     }, {
@@ -37,19 +49,30 @@
       "type" : "Response",
       "parameters" : [ {
         "type" : "string",
+        "description" : "Resource type, e.g., Patient",
         "paramType" : "path",
         "name" : "type",
         "required" : true
       }, {
         "type" : "string",
+        "description" : "json or xml, default josn and json supported",
         "defaultValue" : "json",
         "paramType" : "query",
         "name" : "_format"
       }, {
         "type" : "string",
+        "description" : "FHIR Resource",
         "paramType" : "body",
         "name" : "body",
         "required" : true
+      } ],
+      "summary" : "Create FHIR Resource\n POST [base]/frt-fhir-rest/1.0/Patient",
+      "responseMessages" : [ {
+        "code" : 201,
+        "message" : "Created Success"
+      }, {
+        "code" : 400,
+        "message" : "Bad Request - Resource could not be parsed or failed basic FHIR validation rules"
       } ],
       "consumes" : [ "application/json" ],
       "produces" : [ "application/json" ]
@@ -62,24 +85,36 @@
       "type" : "Response",
       "parameters" : [ {
         "type" : "string",
+        "description" : "Resource type, e.g., Patient",
         "paramType" : "path",
         "name" : "type",
         "required" : true
       }, {
         "type" : "string",
+        "description" : "Resource logical id, e.g., 1356",
         "paramType" : "path",
         "name" : "id",
         "required" : true
       }, {
         "type" : "string",
+        "description" : "json or xml, default josn and json supported",
         "defaultValue" : "json",
         "paramType" : "query",
         "name" : "_format"
       }, {
         "type" : "string",
+        "description" : "true for retrieving summary of Resource, false for retrieving entire Resource; default false",
         "defaultValue" : "false",
         "paramType" : "query",
         "name" : "_summary"
+      } ],
+      "summary" : "Get FHIR Resource by its Id\n GET [base]/frt-fhir-rest/1.0/Patient/[id]",
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "Retrieved Success"
+      }, {
+        "code" : 400,
+        "message" : "Bad Request - Resource could not be parsed or failed basic FHIR validation rules"
       } ],
       "produces" : [ "application/json" ]
     } ]
