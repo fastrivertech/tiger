@@ -30,7 +30,7 @@
 	<frt.stream.version>1.0.0-SNAPSHOT</frt.stream.version>	
 	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
 	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>
-	<frt.dl.service.version>1.0.0-SNAPSHOT</frt.dl.service.version>
+	<frt.datalake.version>1.0.0-SNAPSHOT</frt.datalake.version>
 	<!-- splice machine -->
 	<com.splicemachine.version>2.7.0.1835</com.splicemachine.version>
     <!-- spring -->
@@ -76,7 +76,12 @@
 			<groupId>com.frt</groupId>
 			<artifactId>frt-common</artifactId>
 			<version>${frt.common.version}</version>
-		</dependency>  	
+		</dependency>  
+		<dependency>
+			<groupId>com.frt</groupId>
+			<artifactId>frt-datalake</artifactId>
+			<version>${frt.datalake.version}</version>			
+		</dependency>		
 		<!-- splice machine -->
 		<dependency>
 			<groupId>com.splicemachine</groupId>

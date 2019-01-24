@@ -44,7 +44,8 @@ public class DataLakeService {
 	public DataLakeService() {
 	}
 
-	public void initialize() throws DataLakeServiceException {
+	public void initialize() 
+		throws DataLakeServiceException {
 		
 		dateFormat = new SimpleDateFormat("yyyyMMdd");
 		config = DataLakeServiceConfig.getInstance();
@@ -61,6 +62,9 @@ public class DataLakeService {
 
 	}
 
+	public void close() {
+	}
+	
 	public void write(String message) 
 		throws DataLakeServiceException {
 		try { 
