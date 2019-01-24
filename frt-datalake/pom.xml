@@ -25,7 +25,7 @@
   <artifactId>frt-datalake</artifactId>
   <packaging>jar</packaging>
   <version>${frt.datalake.version}</version>
-  <name>FRT DATALKE SERVICE ${frt.datalake.version}</name>
+  <name>FRT DATALAKE SERVICE ${frt.datalake.version}</name>
   <description>Fast River DATALAKE SERVICE ${frt.datalake.version}</description>
    
   <build>
