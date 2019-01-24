@@ -1,7 +1,8 @@
 package com.frt.dr.service.query;
 
-import java.util.List;
 import java.util.Map;
+
+import com.frt.dr.service.query.SearchParameter.Comparator;
 
 public interface SearchParameter {
 	public static final Map<String, Modifier> MODIFIERMAP = Map.ofEntries(
@@ -29,18 +30,21 @@ public interface SearchParameter {
 			Map.entry("ne", Comparator.NE),
 			Map.entry("eq", Comparator.EQ)
 		); 
-	public enum Modifier {MISSING, BELOW, ABOVE, EXACT, CONTAINS, TEXT, NOT, IN, NOT_IN, OFTYPE, TYPE, IDENTIFIER};
-	public enum Comparator {EQ, NE, GT, GE, LT, LE, SA, EB, AP};
-	public String[] getBase(); // name of related resources: Patient, Practitioner
-	public void setBase(String[] base);
+	public static enum Modifier {MISSING, BELOW, ABOVE, EXACT, CONTAINS, TEXT, NOT, IN, NOT_IN, OFTYPE, TYPE, IDENTIFIER};
+	// for FHIR type: date, number, quantity
+	public static enum Comparator {EQ, NE, GT, GE, LT, LE, SA, EB, AP};
 	public String getName();
 	public void setName(String name);
+	public Class<?> getType();
+	public void setType(Class<?> type);
 	public Class<?> getEntityClass();
 	public void setEntityClass(Class<?> clazz);
 	public String getFieldName();
 	public void setFieldName(String fldName);
 	public String getExpression();
 	public void setExpression(String expression);
+	public String[] getBase(); // name of related resources: Patient, Practitioner
+	public void setBase(String[] base);
 	public boolean isMultipleAnd();
 	public void setMultipleAnd(boolean b);
 	public boolean isMultipleOr();
@@ -53,6 +57,7 @@ public interface SearchParameter {
 
 	public Modifier getModifier(String sm);
 	public Comparator getComparator(String sc);
+	public Comparator checkComparator(String value, String[] comparator);
 	public boolean accept(Modifier m);
 	public boolean accept(Comparator c);
 }

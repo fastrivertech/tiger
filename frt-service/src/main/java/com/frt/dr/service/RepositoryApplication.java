@@ -51,7 +51,7 @@ public class RepositoryApplication {
 		return resource;
 	}
 	
-	public <R extends DomainResource> List<R> read(Class resourceClazz, Map params)
+	public <R extends DomainResource> List<R> read(Class<?> resourceClazz, Map params)
 		throws RepositoryServiceException {
     	List<R> resources = this.repositoryService.query(resourceClazz, params);    	
 		return resources;

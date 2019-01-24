@@ -1,8 +1,6 @@
 package com.frt.dr.service.query;
 
-import java.util.List;
-
-public class GroupParameter implements SearchParameter {
+public class GroupParameter extends AbstractParameter {
 	private String name;
 	private Class<?> type; // java type of the parameter
 	private String fldName; // corresponding attribute name in the resource JPA POJO
@@ -14,12 +12,69 @@ public class GroupParameter implements SearchParameter {
 	private Boolean multipleAnd;
 	private Boolean multipleOr;
 	
-	public GroupParameter(String name, String fldName, String[] base, Class<?> entityClazz) {
+	public GroupParameter(String name, String fldName, Class<?> type, String[] base, Class<?> entityClazz) {
 		super();
 		this.name = name;
+		this.type = type;
 		this.fldName = fldName;
 		this.base = base;
 		this.entityClazz = entityClazz;
+	}
+
+	public Class<?> getType() {
+		return type;
+	}
+
+	public void setType(Class<?> type) {
+		this.type = type;
+	}
+
+	public String getFldName() {
+		return fldName;
+	}
+
+	public void setFldName(String fldName) {
+		this.fldName = fldName;
+	}
+
+	public Class<?> getEntityClazz() {
+		return entityClazz;
+	}
+
+	public void setEntityClazz(Class<?> entityClazz) {
+		this.entityClazz = entityClazz;
+	}
+
+	public Modifier[] getModifiersApplicable() {
+		return modifiersApplicable;
+	}
+
+	public void setModifiersApplicable(Modifier[] modifiersApplicable) {
+		this.modifiersApplicable = modifiersApplicable;
+	}
+
+	public Comparator[] getComparatorsApplicable() {
+		return comparatorsApplicable;
+	}
+
+	public void setComparatorsApplicable(Comparator[] comparatorsApplicable) {
+		this.comparatorsApplicable = comparatorsApplicable;
+	}
+
+	public Boolean getMultipleAnd() {
+		return multipleAnd;
+	}
+
+	public void setMultipleAnd(Boolean multipleAnd) {
+		this.multipleAnd = multipleAnd;
+	}
+
+	public Boolean getMultipleOr() {
+		return multipleOr;
+	}
+
+	public void setMultipleOr(Boolean multipleOr) {
+		this.multipleOr = multipleOr;
 	}
 
 	public String getName() {

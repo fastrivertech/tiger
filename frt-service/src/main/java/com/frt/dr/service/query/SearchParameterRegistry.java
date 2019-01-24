@@ -49,6 +49,10 @@ public class SearchParameterRegistry {
 	public static final DateFormat[] DF_FMT_SUPPORTED = new DateFormat[] {DF_DATE_FMT_yyyy_MM_dd, DF_DATE_FMT_yyyy_s_MM_s_dd, DF_DATE_FMT_dd_s_MM_s_yyyy, DF_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss};
 	public static final String PARAM_MODIFIER_DELIMETER = ":";
 
+	// resource type to JPA entity
+	public static final Map<String, Class<?>> RESOURCE_ENTITY_MAP = Map.ofEntries(
+			Map.entry("Patient", com.frt.dr.model.base.PatientHumanName.class)
+			);
 	// entity to parameters lookup
 	public static final Map<Class<?>, List<String>> ENTITY_SEARCH_PARAMETERS = Map.ofEntries(
 				Map.entry(com.frt.dr.model.base.Patient.class, Arrays.asList("_id", "active", "birthdate", "gender", "_text")),
@@ -61,15 +65,15 @@ public class SearchParameterRegistry {
 
 	static {
 		// human name
-		SUPPORTED_PARAMETERS.put("name", new GroupParameter("name", "names", new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		SUPPORTED_PARAMETERS.put("name", new GroupParameter("name", "names", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
 		SUPPORTED_PARAMETERS.put("given", new FieldParameter("given", "given", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
 		SUPPORTED_PARAMETERS.put("family", new FieldParameter("family", "family", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
 		SUPPORTED_PARAMETERS.put("prefix", new FieldParameter("prefix", "prefix", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
 		SUPPORTED_PARAMETERS.put("suffix", new FieldParameter("suffix", "suffix", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
 		// identifier
-		SUPPORTED_PARAMETERS.put("identifier", new GroupParameter("identifier", "identifiers", new String[] {"Patient"}, com.frt.dr.model.base.PatientIdentifier.class));
+		SUPPORTED_PARAMETERS.put("identifier", new GroupParameter("identifier", "identifiers", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientIdentifier.class));
 		// address
-		SUPPORTED_PARAMETERS.put("address", new GroupParameter("address", "addresses", new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address", new GroupParameter("address", "addresses", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
 		SUPPORTED_PARAMETERS.put("address-city", new FieldParameter("city", "city", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
 		SUPPORTED_PARAMETERS.put("address-state", new FieldParameter("state", "state", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
 		SUPPORTED_PARAMETERS.put("address-country", new FieldParameter("country", "country", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
@@ -109,6 +113,10 @@ public class SearchParameterRegistry {
         return instance;
     }
 
+	public static Class<?> getResourceEntity(String type) {
+		return RESOURCE_ENTITY_MAP.get(type);
+	}
+	
 	public static com.frt.dr.service.query.SearchParameter getParameterDescriptor(String pname) {
 		return SUPPORTED_PARAMETERS.get(pname);
 	}

@@ -12,6 +12,7 @@
 package com.frt.dr.dao;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,12 +34,13 @@ import javax.persistence.TransactionRequiredException;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Join;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 
-import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
 import com.frt.dr.service.query.FieldParameter;
@@ -95,10 +97,11 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	}
 
 	@Override
-	public Optional<List<Resource>> query(Map<String, String> params) throws DaoException {
+	public Optional<List<Resource>> query(Class<Resource> resourceClazz, Map<String, String> params)
+			throws DaoException {
 		try {
 			Map<String, Object> whereParams = new HashMap<String, Object>();
-			CriteriaQuery cq = getWhereClause(em, com.frt.dr.model.base.Patient.class, params, whereParams);
+			CriteriaQuery cq = getQueryCriteria(em, resourceClazz, params, whereParams);
 			Query query = em.createQuery(cq);
 			Set<Parameter<?>> qparams = query.getParameters();
 			Iterator<Parameter<?>> pit = qparams.iterator();
@@ -117,8 +120,9 @@ public class ResourceDao extends BaseDao<Resource, String> {
 							query.setParameter(qparam.getName(), d);
 						} else {
 							throw new IllegalArgumentException("Query parameter:" + qparam.getName()
-									+ " expect date value in the format of: " + SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd
-									+ " or " + SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
+									+ " expect date value in the format of: "
+									+ SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd + " or "
+									+ SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
 									+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
 									+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
 						}
@@ -268,204 +272,181 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	 * @param params
 	 * @return CriteriaQuery cq;
 	 */
-	private <T extends DomainResource, U extends ResourceComplexType> CriteriaQuery<T> getWhereClause(EntityManager em, Class<T> resourceClazz, Map<String, String> params, Map<String, Object> whereParams) {
-		if (resourceClazz.equals(com.frt.dr.model.base.Patient.class)) {
-			CriteriaBuilder cb = em.getCriteriaBuilder();
-			CriteriaQuery<T> cq = cb.createQuery(resourceClazz);
-			Root<T> rootPatient = cq.from(resourceClazz);
-			Predicate where = cb.conjunction();
-			Class<? extends ResourceComplexType> associatedClazz = null;
-			Map<String, Boolean> processed = new HashMap<String, Boolean>();
-			SearchParameter sp = null;
-			Map<String, Boolean> attributes = null;
-			for (Map.Entry<String, String> e : params.entrySet()) {
-				String key = e.getKey();
-				String value = e.getValue();
-				String[] parts = parseParamName(key);
-				String pname = parts[0];
-				String modifier = parts.length==2?parts[1]:null;
+	private <T extends Resource, U extends ResourceComplexType> CriteriaQuery<T> getQueryCriteria(EntityManager em,
+			Class<T> resourceClazz, Map<String, String> params, Map<String, Object> whereParams) {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<T> cq = cb.createQuery(resourceClazz);
+		Root<T> rootResource = cq.from(resourceClazz);
+		Predicate where = cb.conjunction();
+		Class<? extends ResourceComplexType> associatedClazz = null;
+		Map<String, Boolean> processed = new HashMap<String, Boolean>();
+		SearchParameter sp = null;
+		Map<String, Boolean> attributes = null;
 
-				if ((sp = SearchParameterRegistry.getParameterDescriptor(pname))==null) {
-					throw new IllegalArgumentException("Parameter : " + pname + " is not supported.");
+		for (Map.Entry<Class<?>, List<String>> entityParamNames : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS
+				.entrySet()) {
+			Class<?> entity = entityParamNames.getKey();
+			List<String> epnames = entityParamNames.getValue();
+			List<ActualParameter> actualParams = extractParameter(params, epnames);
+			if (actualParams != null) {
+				attributes = new HashMap<String, Boolean>();
+				if (entity.equals(resourceClazz)) {
+					// parameter that is the resource's attribute
+					where = addCriteria(where, cb, rootResource, actualParams);
+					processEntityParameters((GroupParameter) sp, attributes, whereParams, params);
+				} else {
+					boolean isConjunction = true; // all predicates AND'd
+					where = cb.and(where, cb.equal(rootResource.get(sp.getFieldName()),
+							cb.parameter(((FieldParameter) sp).getType(), sp.getName())));
+					processEntityParameters((GroupParameter) sp, attributes, whereParams, params);
+					// parameter that is in a ref class - join needed
+					where = addEntityCriteria(em, cb, cq, rootResource, where, resourceClazz, associatedClazz,
+							attributes, sp.getFieldName(), isConjunction);
 				}
-
-				if (sp instanceof FieldParameter) {
-					if (!isProcessed(sp, processed)) {
-						attributes = new HashMap<String, Boolean>();
-						where = cb.and(where, cb.equal(rootPatient.get(sp.getFieldName()), cb.parameter(((FieldParameter) sp).getType(), sp.getName())));
-						whereParams.put(key, value);
-						processEntityParameters((GroupParameter)sp, attributes, whereParams, params);
-					}
-				}
-//				if (key.equals("_id")) {
-//					where = cb.and(where, cb.equal(rootPatient.get("id"), cb.parameter(String.class, "_id")));
-//					whereParams.put(key, value);
-//				}
-				
-//				if (key.equals("active")) {
-//					where = cb.and(where, cb.equal(rootPatient.get("active"), cb.parameter(Boolean.class, "active")));
-//					whereParams.put(key, Boolean.valueOf(value.toString()));
-//				}
-//				
-//				if (key.equals("birthdate")) {
-//					where = cb.and(where,
-//							cb.equal(rootPatient.get("birthDate"), cb.parameter(Date.class, "birthdate")));
-//					Date d = parseDate(value.toString());
-//					if (d != null) {
-//						whereParams.put(key, d);
-//					} else {
-//						throw new IllegalArgumentException("Query parameter:" + key
-//								+ " expect date value in the format of: " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd
-//								+ " or " + BaseDao.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
-//								+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
-//								+ BaseDao.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
-//					}
-//
-//				}
-				
-//				if (key.equals("gender")) {
-//					where = cb.and(where, cb.equal(rootPatient.get("gender"), cb.parameter(String.class, "gender")));
-//					whereParams.put(key, value);
-//				}
-
-				if (sp instanceof GroupParameter) {
-					Boolean b = processed.get(sp.getEntityClass().getCanonicalName());
-					if (b==null||!b) {
-						attributes = new HashMap<String, Boolean>();
-						boolean isConjunction = true; // all predicates AND'd
-						processEntityParameters((GroupParameter)sp, attributes, whereParams, params);
-						where = addEntityCriteria(em, cb, cq, rootPatient, 
-						where, resourceClazz, associatedClazz,
-						attributes, "names", isConjunction);
-					}
-				}
-//				if (key.startsWith("name") || key.startsWith("given") || key.startsWith("family")
-//						|| key.startsWith("prefix") || key.startsWith("suffix")) {
-//					associatedClazz = com.frt.dr.model.base.PatientHumanName.class;
-//					Boolean b = processed.get(associatedClazz.getCanonicalName());
-//					if (b==null||!b) {
-//						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
-//						boolean isConjunction = true; // all predicates AND'd
-//						// do not support name:exact
-//						// any of 'given', 'family', 'prefix', 'suffix' contains param value
-//						// all take 'contains' semantics - the param match value (string) should be
-//						// converted to LIKE pattern '%<value>%"
-//						// all predicates OR'd
-//						if (key.equals("name")) {
-//							// field group OR'd like matching
-//							
-//							setParamsForMatch(SUPPORTED_PARAMETERS.get("name"), attributes, whereParams, value);
-//							isConjunction = false;
-//						} else {
-//							setParamsForMatch(SUPPORTED_PARAMETERS.get("name"), attributes, whereParams, params);
-//						}
-//						// mark name as processed
-//						processed.put(associatedClazz.getCanonicalName(), true);
-//						// extract all human name params
-//						// humanName - PatientHumanName table
-//						where = appendSubquery(em, cb, cq, rootPatient, 
-//								where, resourceClazz, associatedClazz,
-//								attributes, "names", isConjunction);
-//					}
-//				}
-				
-//				if (key.startsWith("identifier")) {
-//					associatedClazz = com.frt.dr.model.base.PatientIdentifier.class;
-//					Boolean b = processed.get(associatedClazz.getCanonicalName());
-//					if (b==null||!b) {
-//						// extract all identifier :
-//						// further match use, system, value
-//						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
-//						boolean isConjunction = false; // all predicates OR'd
-//						// do not support identifier:exact
-//						// any of 'use', 'system', 'value' contains param value
-//						// all take 'contains' semantics
-//						if (key.equals("identifier")) {
-//							// field group OR'd like matching
-//							setParamsForMatch(JOIN_PARAMETERS.get("identifier"), attributes, whereParams, value);
-//							isConjunction = false;
-//						} else {
-//							throw new IllegalArgumentException("Query parameter:" + key
-//									+ " does not suppport match indicator (suffix), value=" + value);
-//						}
-//						// attribute in associated Entity: e.g. PatientIdentifier
-//						// identifier - PatientIdentifier table
-//						// mark identifier as processed
-//						processed.put(associatedClazz.getCanonicalName(), true);
-//						where = appendSubquery(em, cb, cq, rootPatient, where,
-//								resourceClazz, associatedClazz, attributes, "identifiers", isConjunction);
-//					}
-//				}
-				
-//				if (key.startsWith("address")) {
-//					associatedClazz = com.frt.dr.model.base.PatientAddress.class;
-//					Boolean b = processed.get(associatedClazz.getCanonicalName());
-//					if (b==null||!b) {
-//						// extract all addressXXX parameters
-//						Map<String, Boolean> attributes = new HashMap<String, Boolean>();
-//						boolean isConjunction = true; // all predicates AND'd
-//						if (key.equals("address")) {
-//							// do not support address:exact
-//							// any of 'city', 'state', 'country', 'postalcode', 'use' contains param value
-//							// all take 'contains' semantics
-//							setParamsForMatch(key, attributes, whereParams, value);
-//							// all predicates OR'd
-//							isConjunction = false;
-//						} else {
-//							setParamsForMatch("address", attributes, whereParams, params);
-//						}
-//						// mark name as processed
-//						processed.put(associatedClazz.getCanonicalName(), true);
-//						// address - PatientAddress table
-//						where = appendSubquery(em, cb, cq, rootPatient, where,
-//								resourceClazz, associatedClazz, attributes, "address", isConjunction);
-//					}
-//				}
-
 			}
-			cq.where(where);
-			return cq;
-		} else {
-			throw new UnsupportedOperationException("Query with parameters on resource: "
-					+ resourceClazz.getClass().getCanonicalName() + " not implemented yet.");
 		}
+		cq.where(where);
+		return cq;
+	}
+
+	private <T extends Resource> Predicate addCriteria(Predicate where, CriteriaBuilder cb, Root<T> rootResource,
+			List<ActualParameter> actualParams) {
+		SearchParameter sp = null;
+		for (ActualParameter ap : actualParams) {
+			String baseName = ap.getBaseName();
+			sp = SearchParameterRegistry.getParameterDescriptor(baseName);
+			if (ap.getType().equals(String.class)) {
+				if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
+					where = cb.and(where,
+							cb.equal(rootResource.get(sp.getFieldName()), cb.parameter(String.class, baseName)));
+				} else if (ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
+					where = cb.and(where,
+							cb.like(rootResource.get(sp.getFieldName()), cb.parameter(String.class, baseName)));
+				} else {
+					throw new IllegalArgumentException(
+							"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
+				}
+			} else if (ap.getType().equals(Date.class)) {
+				Path<Object> path = rootResource.get(sp.getFieldName());
+				ParameterExpression<Date> p = cb.parameter(Date.class, baseName);
+				if (ap.getEnumComparator() == null) {
+					where = cb.and(where, cb.equal(path, p));
+				} else {
+					switch (ap.getEnumComparator()) {
+					case EQ:
+						where = cb.and(where, cb.equal(path, p));
+						break;
+					case NE:
+						where = cb.and(where, cb.notEqual(path, p));
+						break;
+					case GT:
+						where = cb.and(where, cb.greaterThan(path.as(Date.class), p));
+						break;
+					case GE:
+						where = cb.and(where, cb.greaterThanOrEqualTo(path.as(Date.class), p));
+						break;
+					case LT:
+						where = cb.and(where, cb.lessThan(path.as(Date.class), p));
+						break;
+					case LE:
+						where = cb.and(where, cb.lessThanOrEqualTo(path.as(Date.class), p));
+						break;
+					case SA:
+						where = cb.and(where, cb.greaterThan(path.as(Date.class), p));
+						break;
+					case EB:
+						where = cb.and(where, cb.lessThan(path.as(Date.class), p));
+						break;
+					case AP:
+					default:
+						throw new IllegalArgumentException(
+								"Unsupported comparator : " + ap.getComparator() + ", for parameter: " + baseName);
+					}
+				}
+			} else if (Number.class.isAssignableFrom(ap.getType())) {
+				Path<Object> path = rootResource.get(sp.getFieldName());
+				ParameterExpression<Number> p = cb.parameter(Number.class, baseName);
+				if (ap.getEnumComparator() == null) {
+					where = cb.and(where, cb.equal(path, p));
+				} else {
+					switch (ap.getEnumComparator()) {
+					case EQ:
+						where = cb.and(where, cb.equal(path, p));
+						break;
+					case NE:
+						where = cb.and(where, cb.notEqual(path, p));
+						break;
+					case GT:
+						where = cb.and(where, cb.gt(path.as(Number.class), p));
+						break;
+					case GE:
+						where = cb.and(where, cb.ge(path.as(Number.class), p));
+						break;
+					case LT:
+						where = cb.and(where, cb.lt(path.as(Number.class), p));
+						break;
+					case LE:
+						where = cb.and(where, cb.le(path.as(Number.class), p));
+						break;
+					case SA:
+						where = cb.and(where, cb.gt(path.as(Number.class), p));
+						break;
+					case EB:
+						where = cb.and(where, cb.lt(path.as(Number.class), p));
+						break;
+					case AP:
+					default:
+						throw new IllegalArgumentException(
+								"Unsupported comparator : " + ap.getComparator() + ", for parameter: " + baseName);
+					}
+				}
+			} else {
+				throw new IllegalArgumentException("Unsupported parameter type: " + ap.getType().getCanonicalName()
+						+ " for [" + baseName + "], supported types: string, date, numeric.");
+			}
+
+			where = cb.and(where, cb.equal(rootResource.get(sp.getFieldName()),
+					cb.parameter(((FieldParameter) sp).getType(), sp.getName())));
+		}
+		return where;
 	}
 
 	private void processEntityParameters(GroupParameter gp, Map<String, Boolean> attributes,
 			Map<String, Object> whereParams, Map<String, String> params) {
-		// for entity fields AND'd match that could be : exact or contains etc. other modifiers
-		// for entity group parameter : need to generate OR'd predicates with string like match (if the fields are string)
+		// for entity fields AND'd match that could be : exact or contains etc. other
+		// modifiers
+		// for entity group parameter : need to generate OR'd predicates with string
+		// like match (if the fields are string)
 		// or any other modifier specified and applicable to the field
 		String value = "";
-		for (String f: SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.get(gp.getEntityClass())) {
+		for (String f : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.get(gp.getEntityClass())) {
 			attributes.put(f, false);
 			whereParams.put(f, convertToLikePattern(value));
 		}
 		String pv = null;
-		for (String f: SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.get(gp.getEntityClass())) {
+		for (String f : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.get(gp.getEntityClass())) {
 			if ((pv = params.get(f)) != null) {
 				attributes.put(f, false);
 				whereParams.put(f, convertToLikePattern(pv));
 			}
-			if ((pv = params.get(f+":exact")) != null) {
+			if ((pv = params.get(f + ":exact")) != null) {
 				attributes.put(f, true);
 				whereParams.put(f, pv);
 			}
-			if ((pv = params.get(f+":contains")) != null) {
+			if ((pv = params.get(f + ":contains")) != null) {
 				attributes.put(f, false);
 				whereParams.put(f, convertToLikePattern(pv));
 			}
 		}
 	}
 
-	private <T extends DomainResource, U extends ResourceComplexType> Predicate addEntityCriteria(
-			EntityManager em, CriteriaBuilder cb, CriteriaQuery<T> cq, 
-			Root<T> mainRoot, Predicate where, Class<T> mainClazz, Class<U> refClazz, 
-			Map<String, Boolean> attributes, String joinAttr, boolean isConjunction) {
+	private <T extends Resource, U extends ResourceComplexType> Predicate addEntityCriteria(EntityManager em,
+			CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> mainRoot, Predicate where, Class<T> resourceClazz,
+			Class<U> refClazz, Map<String, Boolean> attributes, String joinAttr, boolean isConjunction) {
 		Metamodel m = em.getMetamodel();
-		EntityType<T> resourceEntity_ = m.entity(mainClazz);
-		Join<T, U> join = mainRoot.join(resourceEntity_.getList("names", refClazz));
-		
+		EntityType<T> resourceEntity_ = m.entity(resourceClazz);
+		Join<T, U> join = mainRoot.join(resourceEntity_.getList(joinAttr, refClazz));
+
 		Predicate criteria = null;
 		Iterator<String> it = null;
 		Boolean exactFlag = true;
@@ -475,24 +456,22 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			criteria = cb.conjunction();
 			it = attributes.keySet().iterator();
 			while (it.hasNext()) {
-				paramName = (String)it.next();
+				paramName = (String) it.next();
 				exactFlag = attributes.get(paramName);
-				criteria = cb.and(criteria, 
-						exactFlag ? 
-							cb.equal(join.get(paramName), cb.parameter(String.class, paramName))
-							: cb.like(join.get(paramName), cb.parameter(String.class, paramName)));
+				criteria = cb.and(criteria,
+						exactFlag ? cb.equal(join.get(paramName), cb.parameter(String.class, paramName))
+								: cb.like(join.get(paramName), cb.parameter(String.class, paramName)));
 			}
 		} else {
 			// OR'd
 			criteria = cb.disjunction();
 			it = attributes.keySet().iterator();
 			while (it.hasNext()) {
-				paramName = (String)it.next();
+				paramName = (String) it.next();
 				exactFlag = attributes.get(paramName);
-				criteria = cb.or(criteria, 
-						exactFlag?
-							cb.equal(join.get(paramName), cb.parameter(String.class, paramName))
-							: cb.like(join.get(paramName), cb.parameter(String.class, paramName)));
+				criteria = cb.or(criteria,
+						exactFlag ? cb.equal(join.get(paramName), cb.parameter(String.class, paramName))
+								: cb.like(join.get(paramName), cb.parameter(String.class, paramName)));
 			}
 		}
 		return cb.and(where, criteria);
@@ -500,6 +479,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 
 	/**
 	 * helper - gen SQL String column LIKE pattern
+	 * 
 	 * @param value
 	 * @return
 	 */
@@ -513,21 +493,234 @@ public class ResourceDao extends BaseDao<Resource, String> {
 
 	private String[] parseParamName(String pn) {
 		String[] parts = pn.split(SearchParameterRegistry.PARAM_MODIFIER_DELIMETER);
-		if (parts.length!=1&&parts.length!=2) {
-			throw new IllegalArgumentException("Malformed parameter name: " + pn + ", parameter name format: <name> or <name>:<modifier>.");
-		} 
+		if (parts.length != 1 && parts.length != 2) {
+			throw new IllegalArgumentException(
+					"Malformed parameter name: " + pn + ", parameter name format: <name> or <name>:<modifier>.");
+		}
 		return parts;
 	}
 
-	private boolean isProcessed(SearchParameter sp, Map<String, Boolean> processed) {
-		boolean isProcessed = true;
-		Boolean b = (processed.get(sp.getEntityClass().getCanonicalName())!=null);
-		if (b==null||!b) {
-			isProcessed=false;
-			// mark as processed
-			processed.put(sp.getEntityClass().getCanonicalName(), true);
+	// private boolean isProcessed(SearchParameter sp, Map<String, Boolean>
+	// processed) {
+	// boolean isProcessed = true;
+	// Boolean b = (processed.get(sp.getEntityClass().getCanonicalName())!=null);
+	// if (b==null||!b) {
+	// isProcessed=false;
+	// // mark as processed
+	// processed.put(sp.getEntityClass().getCanonicalName(), true);
+	// }
+	// return isProcessed;
+	// }
+
+	private List<ActualParameter> extractParameter(Map<String, String> queryParams, List<String> entityParamNames) {
+		List<ActualParameter> actualParams = null;
+		ActualParameter actualParam = null;
+		for (String epname : entityParamNames) {
+			for (Map.Entry<String, String> e : queryParams.entrySet()) {
+				String key = e.getKey();
+				String value = e.getValue();
+				if (key.startsWith(epname)) {
+					SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(epname);
+					if (sp == null) {
+						throw new IllegalStateException("Parameter definition not found for: " + epname);
+					}
+					actualParam = new ActualParameter(key, value);
+					actualParam = parse(sp, actualParam);
+					if (actualParams == null) {
+						actualParams = new ArrayList<ActualParameter>();
+					}
+					actualParams.add(actualParam);
+				}
+			}
 		}
-		return isProcessed;
+		return actualParams;
 	}
 
+	// private ActualParameter extractParameter(Map<String, String> params, String
+	// pbase) {
+	// ActualParameter param = null;
+	// for (Map.Entry<String, String> e: params.entrySet()) {
+	// String key = e.getKey();
+	// String value = e.getValue();
+	// if (key.startsWith(pbase)) {
+	// SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(pbase);
+	// if (sp==null) {
+	// throw new IllegalStateException("Parameter definition not found for: " +
+	// pbase);
+	// }
+	// param = new ActualParameter(key, value);
+	// param = parse(sp, param);
+	// }
+	// }
+	// return param;
+	// }
+
+	private ActualParameter parse(SearchParameter sp, ActualParameter param) {
+		String rawName = param.getRawName();
+		String[] parts = parseParamName(rawName);
+		String bn = parts[0];
+		bn = bn.trim();
+		String md = null;
+		if (parts.length != 1 && parts.length != 2) {
+			throw new IllegalArgumentException(
+					"Malformed query parameter: " + rawName + ", expects: <name> or <name>:<modifier>");
+		}
+		if (parts.length == 2) {
+			md = parts[1];
+			md = md.trim();
+			SearchParameter.Modifier m = sp.getModifier(md);
+			if (m == null) {
+				throw new IllegalArgumentException("Invalid modifier[" + md + "] in query parameter: " + rawName);
+			}
+			param.setModifier(md);
+			param.setEnumModifier(m);
+			if (!sp.accept(m)) {
+				throw new IllegalArgumentException("Invalid modifier[" + md + "] in query parameter: " + rawName
+						+ ", parameter:" + bn + ", does not accept [" + md + "]");
+			}
+		}
+		param.setBaseName(bn.trim());
+		// process comparator on value side
+		Class<?> t = sp.getType();
+		String value = param.getValue();
+		String[] value_parts = new String[2];
+		Object valObj = value;
+		if (Number.class.isAssignableFrom(t)) {
+			// for now only number and date can have comparator
+			SearchParameter.Comparator c = sp.checkComparator(value, value_parts);
+			if (c != null) {
+				param.setEnumComparator(c);
+			}
+			param.setValueObject(parseNumeric(t, c != null ? value_parts[1] : value));
+		} else if (Date.class.isAssignableFrom(t)) {
+			SearchParameter.Comparator c = sp.checkComparator(value, value_parts);
+			if (c != null) {
+				param.setEnumComparator(c);
+			}
+			Date d = parseDate(c != null ? value_parts[1] : value);
+			if (d == null) {
+				throw new IllegalArgumentException("Query parameter:" + param.getBaseName()
+						+ " expect date value in the format of: " + SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd
+						+ " or " + SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
+						+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
+						+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
+			}
+			param.setValueObject(d);
+		} else {
+			// for now assume it is a string - no comparator
+			param.setValueObject(valObj);
+		}
+		return param;
+	}
+
+	private Object parseNumeric(Class<?> type, String value) {
+		Object parsedValue = null;
+		// number parameter
+		// BigInteger, Byte, Double, Float, Integer, Long, Short
+		if (type.equals(Integer.class)) {
+			parsedValue = Integer.valueOf(value);
+		} else if (type.equals(Long.class)) {
+			parsedValue = Long.valueOf(value);
+		} else if (type.equals(Short.class)) {
+			parsedValue = Short.valueOf(value);
+		} else if (type.equals(Float.class)) {
+			parsedValue = Float.valueOf(value);
+		} else if (type.equals(Double.class)) {
+			parsedValue = Double.valueOf(value);
+		} else {
+			throw new IllegalArgumentException(
+					"Numeric parameter of type :" + type.getCanonicalName() + " not supported yet, value=" + value);
+		}
+		return parsedValue;
+	}
+
+	class ActualParameter {
+		private String rawName;
+		private String baseName;
+		private String modifier;
+		private SearchParameter.Modifier enumModifier;
+		private String comparator;
+		private SearchParameter.Comparator enumComparator;
+		private String value;
+		private Class<?> type;
+		private Object valObj;
+
+		public ActualParameter(String rawName, String value) {
+			super();
+			this.rawName = rawName;
+			this.value = value;
+		}
+
+		public String getBaseName() {
+			return baseName;
+		}
+
+		public void setBaseName(String baseName) {
+			this.baseName = baseName;
+		}
+
+		public String getModifier() {
+			return modifier;
+		}
+
+		public void setModifier(String modifier) {
+			this.modifier = modifier;
+		}
+
+		public SearchParameter.Modifier getEnumModifier() {
+			return enumModifier;
+		}
+
+		public void setEnumModifier(SearchParameter.Modifier enumModifier) {
+			this.enumModifier = enumModifier;
+		}
+
+		public String getComparator() {
+			return comparator;
+		}
+
+		public void setComparator(String comparator) {
+			this.comparator = comparator;
+		}
+
+		public SearchParameter.Comparator getEnumComparator() {
+			return enumComparator;
+		}
+
+		public void setEnumComparator(SearchParameter.Comparator enumComparator) {
+			this.enumComparator = enumComparator;
+		}
+
+		public String getValue() {
+			return value;
+		}
+
+		public void setValue(String value) {
+			this.value = value;
+		}
+
+		public Object getValueObject() {
+			return this.valObj;
+		}
+
+		public void setValueObject(Object value) {
+			this.valObj = value;
+		}
+
+		public Class<?> getType() {
+			return type;
+		}
+
+		public void setType(Class<?> type) {
+			this.type = type;
+		}
+
+		public String getRawName() {
+			return rawName;
+		}
+
+		public void setRawName(String rawName) {
+			this.rawName = rawName;
+		}
+	}
 }

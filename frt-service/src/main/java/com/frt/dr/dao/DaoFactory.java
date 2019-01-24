@@ -11,9 +11,9 @@
  */
 package com.frt.dr.dao;
 
-import com.frt.dr.dao.base.PatientHumanNameDao;
+//import com.frt.dr.dao.base.PatientHumanNameDao;
+//import com.frt.dr.model.base.PatientHumanName;
 import com.frt.dr.model.base.Patient;
-import com.frt.dr.model.base.PatientHumanName;
 
 /**
  * DaoFactory class
@@ -30,15 +30,15 @@ public class DaoFactory {
 		return instance;
 	}
 	
-	public <D extends BaseDao> D createResourceDao(Class resourceClazz) 
+	public <D extends BaseDao> D createResourceDao(Class<?> resourceClazz) 
 		throws DaoException {
 		if (resourceClazz.equals(Patient.class) ) {
 //			D resourceDao = (D)new PatientDao();
 			D resourceDao = (D)new ResourceDao();
 			return resourceDao;
-		} else if (resourceClazz.equals(PatientHumanName.class)) {
-			D resourceDao = (D)new PatientHumanNameDao();
-			return resourceDao;
+//		} else if (resourceClazz.equals(PatientHumanName.class)) {
+//			D resourceDao = (D)new PatientHumanNameDao();
+//			return resourceDao;
 		} else {
 			throw new DaoException(resourceClazz.getName() + "Dao Not Implemented Yet");
 		}

@@ -41,83 +41,85 @@ import com.frt.dr.dao.DaoException;
  */
 @Transactional
 @Repository
-public class PatientDao extends BaseDao<Patient,String> {
+public class PatientDao /**extends BaseDao<Patient,String>*/ {
 		
 	public PatientDao() {	
 	}
 	
-	@Override	
+	//@Override	
 	public Optional<Patient> save(Patient patient) 
-		throws DaoException {	
-		EntityTransaction transaction = null;
-		try {
-			transaction = em.getTransaction();
-			transaction.begin();
-			
-			if (patient.getNames()!=null && 
-				patient.getNames().size()>0) {
-				patient.getNames().forEach(name->name.setHumannameId(null));
-			}
-			if (patient.getIdentifiers()!=null &&
-				patient.getIdentifiers().size()>0) {
-				patient.getIdentifiers().forEach(identifier->identifier.setIdentifierId(null));
-			}
-			if (patient.getAddresses()!=null &&
-				patient.getAddresses().size()>0) {
-				patient.getAddresses().forEach(address->address.setAddressId(null));
-			}
-			if (patient.getMaritalStatus()!=null) {
-				patient.getMaritalStatus().setCodeableconceptId(null);
-				patient.getMaritalStatus().setPath("patient.maritalStatus");
-			}
-
-			if (patient.getManagingOrganization()!=null) {
-				patient.getManagingOrganization().setReferenceId(null);
-				patient.getManagingOrganization().setPath("patient.managingOrganization");
-			}
-	
-			em.persist(patient);
-			transaction.commit();
-			return Optional.of(patient);
-		} catch (IllegalStateException |
-				 RollbackException ex) {
-			try {
-				if (transaction != null) {
-					transaction.rollback();
-				}
-			} catch (IllegalStateException | RollbackException ignore) {
-			}
-			throw new DaoException(ex);
-		}
+		throws DaoException {
+		return null;
+//		EntityTransaction transaction = null;
+//		try {
+//			transaction = em.getTransaction();
+//			transaction.begin();
+//			
+//			if (patient.getNames()!=null && 
+//				patient.getNames().size()>0) {
+//				patient.getNames().forEach(name->name.setHumannameId(null));
+//			}
+//			if (patient.getIdentifiers()!=null &&
+//				patient.getIdentifiers().size()>0) {
+//				patient.getIdentifiers().forEach(identifier->identifier.setIdentifierId(null));
+//			}
+//			if (patient.getAddresses()!=null &&
+//				patient.getAddresses().size()>0) {
+//				patient.getAddresses().forEach(address->address.setAddressId(null));
+//			}
+//			if (patient.getMaritalStatus()!=null) {
+//				patient.getMaritalStatus().setCodeableconceptId(null);
+//				patient.getMaritalStatus().setPath("patient.maritalStatus");
+//			}
+//
+//			if (patient.getManagingOrganization()!=null) {
+//				patient.getManagingOrganization().setReferenceId(null);
+//				patient.getManagingOrganization().setPath("patient.managingOrganization");
+//			}
+//	
+//			em.persist(patient);
+//			transaction.commit();
+//			return Optional.of(patient);
+//		} catch (IllegalStateException |
+//				 RollbackException ex) {
+//			try {
+//				if (transaction != null) {
+//					transaction.rollback();
+//				}
+//			} catch (IllegalStateException | RollbackException ignore) {
+//			}
+//			throw new DaoException(ex);
+//		}
 	}
 	 	
-	@Override
+	//@Override
 	public Optional<Patient> findById(String id) 
 		throws DaoException {
-		try {
-	   	    Query query = em.createNamedQuery("getPatientById");
-            query.setParameter("id", id);
-            List<Patient> patients = (List<Patient>) query.getResultList();          							
-            Optional<Patient> patient = null;
-            if (patients.size()>0) {
-            	patient = Optional.ofNullable(patients.get(0));
-            } else {
-            	patient = Optional.empty();
-            }
-			return patient;
-		} catch (IllegalArgumentException | 
-				 QueryTimeoutException |
-				 TransactionRequiredException |
-				 PessimisticLockException |
-				 LockTimeoutException ex) {
-			throw new DaoException(ex);			
-		} catch (PersistenceException ex) {
-			throw new DaoException(ex);						
-		}
+//		try {
+//	   	    Query query = em.createNamedQuery("getPatientById");
+//            query.setParameter("id", id);
+//            List<Patient> patients = (List<Patient>) query.getResultList();          							
+//            Optional<Patient> patient = null;
+//            if (patients.size()>0) {
+//            	patient = Optional.ofNullable(patients.get(0));
+//            } else {
+//            	patient = Optional.empty();
+//            }
+//			return patient;
+//		} catch (IllegalArgumentException | 
+//				 QueryTimeoutException |
+//				 TransactionRequiredException |
+//				 PessimisticLockException |
+//				 LockTimeoutException ex) {
+//			throw new DaoException(ex);			
+//		} catch (PersistenceException ex) {
+//			throw new DaoException(ex);						
+//		}
+		return null;
 	}
 
-	@Override
-	public Optional<List<Patient>> query(Map params) throws DaoException {
+	//@Override
+	public Optional<List<Patient>> query(Class<?> resourceClazz, Map params) throws DaoException {
 		// TODO Auto-generated method stub
 		return null;
 	}

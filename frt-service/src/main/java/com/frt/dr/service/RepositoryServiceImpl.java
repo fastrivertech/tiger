@@ -82,7 +82,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
 			dao.setEntityManager(em);
 			
-			Optional<List<R>> resources = dao.query(params);
+			Optional<List<R>> resources = dao.query(resourceClazz, params);
 			if (resources.isPresent()) {
 				return resources.get();
 			}

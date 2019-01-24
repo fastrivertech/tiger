@@ -1,6 +1,6 @@
 package com.frt.dr.service.query;
 
-public class FieldParameter implements SearchParameter {
+public class FieldParameter extends AbstractParameter {
 	private String name; // parameter name - end user visible
 	private String fldname; // JPA POJO attribute name
 	private Class<?> type;
@@ -148,4 +148,52 @@ public class FieldParameter implements SearchParameter {
 		// TODO Auto-generated method stub
 		
 	}
+	public String getFldname() {
+		return fldname;
+	}
+
+	public void setFldname(String fldname) {
+		this.fldname = fldname;
+	}
+
+	public Modifier[] getModifiersApplicable() {
+		return modifiersApplicable;
+	}
+
+	public void setModifiersApplicable(Modifier[] modifiersApplicable) {
+		this.modifiersApplicable = modifiersApplicable;
+	}
+
+	public Comparator[] getComparatorsApplicable() {
+		return comparatorsApplicable;
+	}
+
+	public void setComparatorsApplicable(Comparator[] comparatorsApplicable) {
+		this.comparatorsApplicable = comparatorsApplicable;
+	}
+
+	public Boolean getMultipleAnd() {
+		return multipleAnd;
+	}
+
+	public void setMultipleAnd(Boolean multipleAnd) {
+		this.multipleAnd = multipleAnd;
+	}
+
+	public Boolean getMultipleOr() {
+		return multipleOr;
+	}
+
+	public void setMultipleOr(Boolean multipleOr) {
+		this.multipleOr = multipleOr;
+	}
+
+	public Class<?> getEntityClazz() {
+		return entityClazz;
+	}
+
+	public void setEntityClazz(Class<?> entityClazz) {
+		this.entityClazz = entityClazz;
+	}
+
 }

@@ -11,11 +11,6 @@
  */
 package com.frt.dr.dao;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -23,10 +18,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import com.frt.dr.service.query.FieldParameter;
-import com.frt.dr.service.query.GroupParameter;
-import com.frt.dr.service.query.SearchParameter;
 
 import org.springframework.data.repository.Repository;
 
@@ -53,6 +44,6 @@ public abstract class BaseDao<T,ID> implements Repository {
 
     public abstract Optional<T> findById(ID id) throws DaoException;
     
-    public abstract Optional<List<T>> query(Map<String, String> params) throws DaoException;
+    public abstract Optional<List<T>> query(Class<T> resourceClazz, Map<String, String> params) throws DaoException;
     
 }
