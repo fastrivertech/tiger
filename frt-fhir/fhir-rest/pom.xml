@@ -26,7 +26,7 @@
   <artifactId>frt-fhir-rest</artifactId>
   <packaging>war</packaging>
   <version>${frt.fhir.rest.version}</version>
-  <name>FRT FHIR REST API</name>
+  <name>FRT FHIR REST API ${frt.fhir.rest.version}</name>
   <description>Fast River FHIR REST API ${frt.fhir.rest.version}</description>
   
   <properties>
@@ -40,20 +40,52 @@
   <build>
     <finalName>frt-fhir-rest</finalName>
     <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin.version}</version>
-        <configuration>
-          <release>${maven.compiler.plugin.version.release}</release>
-        </configuration>
-      </plugin>	  
-      <plugin>
-        <artifactId>maven-war-plugin</artifactId>
-        <version>${maven.war.plugin.version}</version>
-        <configuration>
-          <classesClassifier>classes</classesClassifier>
-        </configuration>
-      </plugin>
+		<plugin>
+			<artifactId>maven-compiler-plugin</artifactId>
+			<version>${maven.compiler.plugin.version}</version>
+			<configuration>
+				<release>${maven.compiler.plugin.version.release}</release>
+			</configuration>
+		</plugin>	  
+		<plugin>
+			<artifactId>maven-war-plugin</artifactId>
+			<version>${maven.war.plugin.version}</version>
+			<configuration>
+				<classesClassifier>classes</classesClassifier>
+			</configuration>
+		</plugin>
+		<!-- swagger REST API doc
+	    <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-javadoc-plugin</artifactId>
+            <version>2.9.1</version>
+            <executions>
+                <execution>
+                    <id>generate-service-docs</id>
+                    <phase>generate-resources</phase>
+                    <configuration>
+                        <doclet>com.carma.swagger.doclet.ServiceDoclet</doclet>
+                        <docletArtifact>
+                            <groupId>com.carma</groupId>
+                            <artifactId>swagger-doclet</artifactId>
+                            <version>1.0.5</version>
+                        </docletArtifact>
+                        <reportOutputDirectory>../fhir-doc/src/main/webapp</reportOutputDirectory>
+                        <useStandardDocletOptions>false</useStandardDocletOptions>
+                        <additionalparam>-apiVersion 1.0                                 
+										 -docBasePath /fhir-doc/apidocs
+										 -apiBasePath /fhir
+										 -apiInfoFile apiinfo.json
+										 -swaggerUiPath ${project.build.directory}/
+                        </additionalparam>
+                    </configuration>
+                    <goals>
+                        <goal>javadoc</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>	
+		-->	
     </plugins>
   </build>
   

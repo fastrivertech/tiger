@@ -1,0 +1,87 @@
+{
+  "apiVersion" : "1.0",
+  "swaggerVersion" : "1.2",
+  "basePath" : "/fhir",
+  "resourcePath" : "/1.0",
+  "apis" : [ {
+    "path" : "/1.0/{type}",
+    "operations" : [ {
+      "method" : "GET",
+      "nickname" : "read",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "paramType" : "path",
+        "name" : "type",
+        "required" : true
+      }, {
+        "type" : "string",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      }, {
+        "type" : "string",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "defaultValue" : "false",
+        "paramType" : "query",
+        "name" : "_summary"
+      } ],
+      "produces" : [ "application/json" ]
+    }, {
+      "method" : "POST",
+      "nickname" : "create",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "paramType" : "path",
+        "name" : "type",
+        "required" : true
+      }, {
+        "type" : "string",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "paramType" : "body",
+        "name" : "body",
+        "required" : true
+      } ],
+      "consumes" : [ "application/json" ],
+      "produces" : [ "application/json" ]
+    } ]
+  }, {
+    "path" : "/1.0/{type}/{id}",
+    "operations" : [ {
+      "method" : "GET",
+      "nickname" : "read",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "paramType" : "path",
+        "name" : "type",
+        "required" : true
+      }, {
+        "type" : "string",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      }, {
+        "type" : "string",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "defaultValue" : "false",
+        "paramType" : "query",
+        "name" : "_summary"
+      } ],
+      "produces" : [ "application/json" ]
+    } ]
+  } ]
+}
