@@ -1,5 +1,6 @@
 package com.frt.dr.service.query;
 
+import java.util.List;
 import java.util.Map;
 
 import com.frt.dr.service.query.SearchParameter.Comparator;
@@ -49,15 +50,12 @@ public interface SearchParameter {
 	public void setMultipleAnd(boolean b);
 	public boolean isMultipleOr();
 	public void setMultipleOr(boolean b);
-	public Modifier[] getModifiers();
-	public void setModifiers(Modifier[] modifiers);
+	public List<Modifier> getModifiersApplicable();
+	public void setModifiersApplicable(List<Modifier> modifiers);
 	
-	public Comparator[] getComparators();
-	public void setComparators(Comparator[] comparators);
+	public List<Comparator> getComparatorsApplicable();
+	public void setComparatorsApplicable(List<Comparator> comparators);
 
-	public Modifier getModifier(String sm);
-	public Comparator getComparator(String sc);
-	public Comparator checkComparator(String value, String[] comparator);
 	public boolean accept(Modifier m);
 	public boolean accept(Comparator c);
 }

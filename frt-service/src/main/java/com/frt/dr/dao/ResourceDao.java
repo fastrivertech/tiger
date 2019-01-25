@@ -14,8 +14,6 @@ package com.frt.dr.dao;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -43,7 +41,6 @@ import javax.persistence.metamodel.Metamodel;
 
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
-import com.frt.dr.service.query.FieldParameter;
 import com.frt.dr.service.query.GroupParameter;
 import com.frt.dr.service.query.SearchParameter;
 import com.frt.dr.service.query.SearchParameterRegistry;
@@ -99,75 +96,36 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	@Override
 	public Optional<List<Resource>> query(Class<Resource> resourceClazz, Map<String, String> params)
 			throws DaoException {
+
 		try {
-			Map<String, Object> whereParams = new HashMap<String, Object>();
-			CriteriaQuery cq = getQueryCriteria(em, resourceClazz, params, whereParams);
+		
+			List<ActualParameter> actualParams = new ArrayList<ActualParameter>();
+			CriteriaQuery<Resource> cq = getQueryCriteria(em, resourceClazz, params, actualParams);
 			Query query = em.createQuery(cq);
+			
 			Set<Parameter<?>> qparams = query.getParameters();
-			Iterator<Parameter<?>> pit = qparams.iterator();
-			while (pit.hasNext()) {
-				Parameter qparam = pit.next();
-				System.out.println("param: class:" + qparam.getClass() + ", name:" + qparam.getName() + ", position:"
-						+ qparam.getPosition() + ", type:" + qparam.getParameterType());
-				String value = (String) whereParams.get(qparam.getName());
-				if (value != null) {
-					if (qparam.getParameterType().equals(String.class)) {
-						query.setParameter(qparam.getName(), value);
-					} else if (qparam.getParameterType().equals(Date.class)) {
-						// date param
-						Date d = parseDate(value);
-						if (d != null) {
-							query.setParameter(qparam.getName(), d);
-						} else {
-							throw new IllegalArgumentException("Query parameter:" + qparam.getName()
-									+ " expect date value in the format of: "
-									+ SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd + " or "
-									+ SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
-									+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
-									+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
-						}
-					} else if (qparam.getParameterType().equals(Boolean.class)) {
-						Boolean b = false;
-						if (value.equalsIgnoreCase("true")) {
-							b = true;
-						} else if (value.equalsIgnoreCase("false")) {
-							b = false;
-						} else {
-							throw new IllegalArgumentException(
-									"Query parameter:" + qparam.getName() + " expect true/false, value=" + value);
-						}
-						query.setParameter(qparam.getName(), b);
-					} else if (Number.class.isAssignableFrom(qparam.getParameterType())) {
-						// number parameter
-						// BigInteger, Byte, Double, Float, Integer, Long, Short
-						if (qparam.getParameterType().equals(Integer.class)) {
-							query.setParameter(qparam.getName(), Integer.valueOf(value));
-						} else if (qparam.getParameterType().equals(Long.class)) {
-							query.setParameter(qparam.getName(), Long.valueOf(value));
-						} else if (qparam.getParameterType().equals(Short.class)) {
-							query.setParameter(qparam.getName(), Short.valueOf(value));
-						} else if (qparam.getParameterType().equals(Float.class)) {
-							query.setParameter(qparam.getName(), Float.valueOf(value));
-						} else if (qparam.getParameterType().equals(Double.class)) {
-							query.setParameter(qparam.getName(), Double.valueOf(value));
-						} else {
-							throw new IllegalArgumentException("Numeric parameter of type :"
-									+ qparam.getParameterType().getClass().getCanonicalName()
-									+ " not supported yet, value=" + value);
-						}
-					}
-				} else {
-					throw new IllegalStateException("Encountered query parameter: " + qparam.getName()
-							+ ", which is not among the request query parameters.");
-				}
+			
+			if (qparams.size()>actualParams.size()) {
+				System.out.println("Query parameters count: " + qparams.size() + " > actual parameters count: " + actualParams.size());
 			}
+			else if (qparams.size()<actualParams.size()) {
+				System.out.println("Query parameters count: " + qparams.size() + " < actual parameters count: " + actualParams.size());
+			}
+			
+			for (ActualParameter ap: actualParams) {
+				query.setParameter(ap.getBaseName(), ap.getValueObject());
+			}
+
 			List<Resource> resources = (List<Resource>) query.getResultList();
+
 			Optional<List<Resource>> result = null;
+			
 			if (resources.size() > 0) {
 				result = Optional.ofNullable(resources);
 			} else {
 				result = Optional.empty();
 			}
+			
 			return result;
 		} catch (IllegalArgumentException | QueryTimeoutException | TransactionRequiredException
 				| PessimisticLockException | LockTimeoutException ex) {
@@ -273,35 +231,45 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	 * @return CriteriaQuery cq;
 	 */
 	private <T extends Resource, U extends ResourceComplexType> CriteriaQuery<T> getQueryCriteria(EntityManager em,
-			Class<T> resourceClazz, Map<String, String> params, Map<String, Object> whereParams) {
+			Class<T> resourceClazz, Map<String, String> params, List<ActualParameter> actualParamValues) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(resourceClazz);
 		Root<T> rootResource = cq.from(resourceClazz);
 		Predicate where = cb.conjunction();
-		Class<? extends ResourceComplexType> associatedClazz = null;
-		Map<String, Boolean> processed = new HashMap<String, Boolean>();
-		SearchParameter sp = null;
-		Map<String, Boolean> attributes = null;
 
 		for (Map.Entry<Class<?>, List<String>> entityParamNames : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS
 				.entrySet()) {
 			Class<?> entity = entityParamNames.getKey();
-			List<String> epnames = entityParamNames.getValue();
-			List<ActualParameter> actualParams = extractParameter(params, epnames);
-			if (actualParams != null) {
-				attributes = new HashMap<String, Boolean>();
+			ActualParameter[] groupParam = new ActualParameter[1]; // used to bring out the only group param if present
+			List<ActualParameter> actualParams = extractParameter(params, entityParamNames.getValue(), groupParam);
+			if (actualParams!=null||groupParam[0]!=null) {
 				if (entity.equals(resourceClazz)) {
 					// parameter that is the resource's attribute
-					where = addCriteria(where, cb, rootResource, actualParams);
-					processEntityParameters((GroupParameter) sp, attributes, whereParams, params);
+					if (actualParams!=null) {
+						// there are parameters on resource (main table)
+						where = addCriteria(where, cb, rootResource, null, actualParams, true);
+						actualParamValues.addAll(actualParams);
+					}
+					else {
+						// no parameter on resource
+					}
 				} else {
-					boolean isConjunction = true; // all predicates AND'd
-					where = cb.and(where, cb.equal(rootResource.get(sp.getFieldName()),
-							cb.parameter(((FieldParameter) sp).getType(), sp.getName())));
-					processEntityParameters((GroupParameter) sp, attributes, whereParams, params);
-					// parameter that is in a ref class - join needed
-					where = addEntityCriteria(em, cb, cq, rootResource, where, resourceClazz, associatedClazz,
-							attributes, sp.getFieldName(), isConjunction);
+					// the predicate is on columns of refClass (secondary table)
+					// a join is needed plus other expression
+					String[] joinAttrs = SearchParameterRegistry.getJoinAttributes(resourceClazz, (Class<U>)entity);
+					Metamodel m = em.getMetamodel();
+					EntityType<T> resourceEntity_ = m.entity(resourceClazz);
+					// handle one foreign key for now
+					// think about chained join later if there are use cases
+					Join<T, U> join = rootResource.join(resourceEntity_.getList(joinAttrs[0], (Class<U>)entity));
+					// group parameter will be handled also if presents 
+					if (groupParam[0]!=null) {
+						where = addCriteriaForGroup(where, cb, join, actualParamValues, groupParam[0]); 
+					}
+					if (actualParams!=null) {
+						where = addCriteria(where, cb, null, join, actualParams, true);
+						actualParamValues.addAll(actualParams);
+					}
 				}
 			}
 		}
@@ -309,53 +277,111 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		return cq;
 	}
 
-	private <T extends Resource> Predicate addCriteria(Predicate where, CriteriaBuilder cb, Root<T> rootResource,
-			List<ActualParameter> actualParams) {
+	private <T extends Resource, U extends ResourceComplexType> Predicate addCriteriaForGroup(
+			Predicate where, CriteriaBuilder cb, Join<T, U> join,
+			List<ActualParameter> actualParams, ActualParameter actualParameter) {
+		SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(actualParameter.getBaseName());
+		String[] grpParams = ((GroupParameter)sp).getParameters();
+		List<ActualParameter> grpActualParams = new ArrayList<ActualParameter>();
+		ActualParameter ap = null;
+		for (int i=0; i<grpParams.length; i++) {
+			ap = new ActualParameter(grpParams[i], actualParameter.getValue());
+			// mangle the param names coming from grp param expansion
+			// to avoid query param placeholder conflict
+			ap.setBaseName(actualParameter.getBaseName()+"_"+grpParams[i]); 
+			ap.setComparator(actualParameter.getComparator());
+			ap.setModifier(actualParameter.getModifier());
+			ap.setEnumComparator(actualParameter.getEnumComparator());
+			ap.setEnumModifier(actualParameter.getEnumModifier());
+			ap.setType(actualParameter.getType());
+			ap.setValueObject(actualParameter.getValueObject());
+			grpActualParams.add(ap);
+		}
+		// append newly expanded params
+		actualParams.addAll(grpActualParams);
+		// generate expression for the group param (OR'd predicates)
+		Predicate expression = cb.disjunction();
+		expression = addCriteria(expression, cb, null, join, grpActualParams, false);
+		// AND'd to the main where expression
+		return cb.and(where, expression);
+	}
+
+	/**
+	 * 
+	 * @param where
+	 * @param cb
+	 * @param join
+	 * @param actualParams
+	 * @param isConjunction
+	 * @return root predicate - root node of AND/OR expression 
+	 */
+	private <T extends Resource, U extends ResourceComplexType> Predicate addCriteria(
+			Predicate where, CriteriaBuilder cb, 
+			Root<T> rootResource, Join<T, U> join,
+			List<ActualParameter> actualParams, boolean isConjunction) {
 		SearchParameter sp = null;
+		Predicate term = null;
 		for (ActualParameter ap : actualParams) {
 			String baseName = ap.getBaseName();
 			sp = SearchParameterRegistry.getParameterDescriptor(baseName);
+			Path<Object> path = null;
+			if (rootResource!=null) {
+				path = rootResource.get(sp.getFieldName());
+			} else if (join!=null) {
+				path = join.get(sp.getFieldName());
+			}
+			else {
+				throw new IllegalArgumentException("Missing required parameters when generating query expression.");
+			}
 			if (ap.getType().equals(String.class)) {
+				ParameterExpression<String> p = cb.parameter(String.class, baseName);
 				if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
-					where = cb.and(where,
-							cb.equal(rootResource.get(sp.getFieldName()), cb.parameter(String.class, baseName)));
+					term = cb.equal(path, p);
 				} else if (ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
-					where = cb.and(where,
-							cb.like(rootResource.get(sp.getFieldName()), cb.parameter(String.class, baseName)));
+					term = cb.like(path.as(String.class), p);
+				} else {
+					throw new IllegalArgumentException(
+							"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
+				}
+			} else if (ap.getType().equals(Boolean.class)) {
+				ParameterExpression<Boolean> p = cb.parameter(Boolean.class, baseName);
+				if (ap.getEnumModifier() == null) {
+					term = cb.equal(path, p);
+				} else if (ap.getEnumModifier() == SearchParameter.Modifier.NOT) {
+					term = cb.not(cb.equal(path.as(String.class), p));
 				} else {
 					throw new IllegalArgumentException(
 							"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
 				}
 			} else if (ap.getType().equals(Date.class)) {
-				Path<Object> path = rootResource.get(sp.getFieldName());
 				ParameterExpression<Date> p = cb.parameter(Date.class, baseName);
 				if (ap.getEnumComparator() == null) {
-					where = cb.and(where, cb.equal(path, p));
+					term = cb.equal(path, p);
 				} else {
 					switch (ap.getEnumComparator()) {
 					case EQ:
-						where = cb.and(where, cb.equal(path, p));
+						term = cb.equal(path, p);
 						break;
 					case NE:
-						where = cb.and(where, cb.notEqual(path, p));
+						term = cb.notEqual(path, p);
 						break;
 					case GT:
-						where = cb.and(where, cb.greaterThan(path.as(Date.class), p));
+						term = cb.greaterThan(path.as(Date.class), p);
 						break;
 					case GE:
-						where = cb.and(where, cb.greaterThanOrEqualTo(path.as(Date.class), p));
+						term = cb.greaterThanOrEqualTo(path.as(Date.class), p);
 						break;
 					case LT:
-						where = cb.and(where, cb.lessThan(path.as(Date.class), p));
+						term = cb.lessThan(path.as(Date.class), p);
 						break;
 					case LE:
-						where = cb.and(where, cb.lessThanOrEqualTo(path.as(Date.class), p));
+						term = cb.lessThanOrEqualTo(path.as(Date.class), p);
 						break;
 					case SA:
-						where = cb.and(where, cb.greaterThan(path.as(Date.class), p));
+						term = cb.greaterThan(path.as(Date.class), p);
 						break;
 					case EB:
-						where = cb.and(where, cb.lessThan(path.as(Date.class), p));
+						term = cb.lessThan(path.as(Date.class), p);
 						break;
 					case AP:
 					default:
@@ -364,35 +390,34 @@ public class ResourceDao extends BaseDao<Resource, String> {
 					}
 				}
 			} else if (Number.class.isAssignableFrom(ap.getType())) {
-				Path<Object> path = rootResource.get(sp.getFieldName());
 				ParameterExpression<Number> p = cb.parameter(Number.class, baseName);
 				if (ap.getEnumComparator() == null) {
-					where = cb.and(where, cb.equal(path, p));
+					term = cb.equal(path, p);
 				} else {
 					switch (ap.getEnumComparator()) {
 					case EQ:
-						where = cb.and(where, cb.equal(path, p));
+						term = cb.equal(path, p);
 						break;
 					case NE:
-						where = cb.and(where, cb.notEqual(path, p));
+						term = cb.notEqual(path, p);
 						break;
 					case GT:
-						where = cb.and(where, cb.gt(path.as(Number.class), p));
+						term = cb.gt(path.as(Number.class), p);
 						break;
 					case GE:
-						where = cb.and(where, cb.ge(path.as(Number.class), p));
+						term = cb.ge(path.as(Number.class), p);
 						break;
 					case LT:
-						where = cb.and(where, cb.lt(path.as(Number.class), p));
+						term = cb.lt(path.as(Number.class), p);
 						break;
 					case LE:
-						where = cb.and(where, cb.le(path.as(Number.class), p));
+						term = cb.le(path.as(Number.class), p);
 						break;
 					case SA:
-						where = cb.and(where, cb.gt(path.as(Number.class), p));
+						term = cb.gt(path.as(Number.class), p);
 						break;
 					case EB:
-						where = cb.and(where, cb.lt(path.as(Number.class), p));
+						term = cb.lt(path.as(Number.class), p);
 						break;
 					case AP:
 					default:
@@ -404,77 +429,9 @@ public class ResourceDao extends BaseDao<Resource, String> {
 				throw new IllegalArgumentException("Unsupported parameter type: " + ap.getType().getCanonicalName()
 						+ " for [" + baseName + "], supported types: string, date, numeric.");
 			}
-
-			where = cb.and(where, cb.equal(rootResource.get(sp.getFieldName()),
-					cb.parameter(((FieldParameter) sp).getType(), sp.getName())));
+			where = isConjunction?cb.and(where, term):cb.or(where, term);
 		}
 		return where;
-	}
-
-	private void processEntityParameters(GroupParameter gp, Map<String, Boolean> attributes,
-			Map<String, Object> whereParams, Map<String, String> params) {
-		// for entity fields AND'd match that could be : exact or contains etc. other
-		// modifiers
-		// for entity group parameter : need to generate OR'd predicates with string
-		// like match (if the fields are string)
-		// or any other modifier specified and applicable to the field
-		String value = "";
-		for (String f : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.get(gp.getEntityClass())) {
-			attributes.put(f, false);
-			whereParams.put(f, convertToLikePattern(value));
-		}
-		String pv = null;
-		for (String f : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.get(gp.getEntityClass())) {
-			if ((pv = params.get(f)) != null) {
-				attributes.put(f, false);
-				whereParams.put(f, convertToLikePattern(pv));
-			}
-			if ((pv = params.get(f + ":exact")) != null) {
-				attributes.put(f, true);
-				whereParams.put(f, pv);
-			}
-			if ((pv = params.get(f + ":contains")) != null) {
-				attributes.put(f, false);
-				whereParams.put(f, convertToLikePattern(pv));
-			}
-		}
-	}
-
-	private <T extends Resource, U extends ResourceComplexType> Predicate addEntityCriteria(EntityManager em,
-			CriteriaBuilder cb, CriteriaQuery<T> cq, Root<T> mainRoot, Predicate where, Class<T> resourceClazz,
-			Class<U> refClazz, Map<String, Boolean> attributes, String joinAttr, boolean isConjunction) {
-		Metamodel m = em.getMetamodel();
-		EntityType<T> resourceEntity_ = m.entity(resourceClazz);
-		Join<T, U> join = mainRoot.join(resourceEntity_.getList(joinAttr, refClazz));
-
-		Predicate criteria = null;
-		Iterator<String> it = null;
-		Boolean exactFlag = true;
-		String paramName = null;
-		if (isConjunction) {
-			// AND'd
-			criteria = cb.conjunction();
-			it = attributes.keySet().iterator();
-			while (it.hasNext()) {
-				paramName = (String) it.next();
-				exactFlag = attributes.get(paramName);
-				criteria = cb.and(criteria,
-						exactFlag ? cb.equal(join.get(paramName), cb.parameter(String.class, paramName))
-								: cb.like(join.get(paramName), cb.parameter(String.class, paramName)));
-			}
-		} else {
-			// OR'd
-			criteria = cb.disjunction();
-			it = attributes.keySet().iterator();
-			while (it.hasNext()) {
-				paramName = (String) it.next();
-				exactFlag = attributes.get(paramName);
-				criteria = cb.or(criteria,
-						exactFlag ? cb.equal(join.get(paramName), cb.parameter(String.class, paramName))
-								: cb.like(join.get(paramName), cb.parameter(String.class, paramName)));
-			}
-		}
-		return cb.and(where, criteria);
 	}
 
 	/**
@@ -500,19 +457,15 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		return parts;
 	}
 
-	// private boolean isProcessed(SearchParameter sp, Map<String, Boolean>
-	// processed) {
-	// boolean isProcessed = true;
-	// Boolean b = (processed.get(sp.getEntityClass().getCanonicalName())!=null);
-	// if (b==null||!b) {
-	// isProcessed=false;
-	// // mark as processed
-	// processed.put(sp.getEntityClass().getCanonicalName(), true);
-	// }
-	// return isProcessed;
-	// }
-
-	private List<ActualParameter> extractParameter(Map<String, String> queryParams, List<String> entityParamNames) {
+	/**
+	 * parse query parameters into actual parameters where name, type, value, comparator, modifier etc are validated and 
+	 * transformed into form that is easy to be consumed 
+	 * @param queryParams
+	 * @param entityParamNames
+	 * @param groupParam
+	 * @return
+	 */
+	private List<ActualParameter> extractParameter(Map<String, String> queryParams, List<String> entityParamNames, ActualParameter[] groupParam) {
 		List<ActualParameter> actualParams = null;
 		ActualParameter actualParam = null;
 		for (String epname : entityParamNames) {
@@ -529,31 +482,17 @@ public class ResourceDao extends BaseDao<Resource, String> {
 					if (actualParams == null) {
 						actualParams = new ArrayList<ActualParameter>();
 					}
-					actualParams.add(actualParam);
+					if (sp instanceof GroupParameter) {
+						groupParam[0] = actualParam;
+					}
+					else {
+						actualParams.add(actualParam);
+					}
 				}
 			}
 		}
 		return actualParams;
 	}
-
-	// private ActualParameter extractParameter(Map<String, String> params, String
-	// pbase) {
-	// ActualParameter param = null;
-	// for (Map.Entry<String, String> e: params.entrySet()) {
-	// String key = e.getKey();
-	// String value = e.getValue();
-	// if (key.startsWith(pbase)) {
-	// SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(pbase);
-	// if (sp==null) {
-	// throw new IllegalStateException("Parameter definition not found for: " +
-	// pbase);
-	// }
-	// param = new ActualParameter(key, value);
-	// param = parse(sp, param);
-	// }
-	// }
-	// return param;
-	// }
 
 	private ActualParameter parse(SearchParameter sp, ActualParameter param) {
 		String rawName = param.getRawName();
@@ -568,7 +507,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		if (parts.length == 2) {
 			md = parts[1];
 			md = md.trim();
-			SearchParameter.Modifier m = sp.getModifier(md);
+			SearchParameter.Modifier m = SearchParameterRegistry.getModifier(md);
 			if (m == null) {
 				throw new IllegalArgumentException("Invalid modifier[" + md + "] in query parameter: " + rawName);
 			}
@@ -587,13 +526,13 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		Object valObj = value;
 		if (Number.class.isAssignableFrom(t)) {
 			// for now only number and date can have comparator
-			SearchParameter.Comparator c = sp.checkComparator(value, value_parts);
+			SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
 			if (c != null) {
 				param.setEnumComparator(c);
 			}
 			param.setValueObject(parseNumeric(t, c != null ? value_parts[1] : value));
 		} else if (Date.class.isAssignableFrom(t)) {
-			SearchParameter.Comparator c = sp.checkComparator(value, value_parts);
+			SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
 			if (c != null) {
 				param.setEnumComparator(c);
 			}

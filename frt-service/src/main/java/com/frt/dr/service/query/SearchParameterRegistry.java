@@ -11,6 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.frt.dr.model.Resource;
+import com.frt.dr.model.ResourceComplexType;
+import com.frt.dr.service.query.SearchParameter.Comparator;
+import com.frt.dr.service.query.SearchParameter.Modifier;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
@@ -53,37 +57,120 @@ public class SearchParameterRegistry {
 	public static final Map<String, Class<?>> RESOURCE_ENTITY_MAP = Map.ofEntries(
 			Map.entry("Patient", com.frt.dr.model.base.PatientHumanName.class)
 			);
+	// join column(s) between resource table and complex type tables
+	public static final Map<Class<?>, Map<Class<?>, String[]>> ENTITY_ENTITY_JOINATTS = Map.ofEntries(
+			Map.entry(com.frt.dr.model.base.Patient.class, 
+				Map.ofEntries(
+					Map.entry(com.frt.dr.model.base.PatientHumanName.class, new String[] {"names"}),
+					Map.entry(com.frt.dr.model.base.PatientIdentifier.class, new String[] {"identifiers"}),
+					Map.entry(com.frt.dr.model.base.PatientAddress.class, new String[] {"addresses"})
+				)
+			)
+		);
 	// entity to parameters lookup
 	public static final Map<Class<?>, List<String>> ENTITY_SEARCH_PARAMETERS = Map.ofEntries(
-				Map.entry(com.frt.dr.model.base.Patient.class, Arrays.asList("_id", "active", "birthdate", "gender", "_text")),
-				Map.entry(com.frt.dr.model.base.PatientHumanName.class, Arrays.asList("given", "family", "prefix", "suffix")),
-				Map.entry(com.frt.dr.model.base.PatientIdentifier.class, Arrays.asList("use", "system", "value")),
-				Map.entry(com.frt.dr.model.base.PatientAddress.class, Arrays.asList("address-city", "address-state", "address-country", "addresse-postalcode", "addresse-use"))
-			);
+			// convention: the first name, if present, is the group parameter name, an empty string "" - indicate a missing of group search parameter
+			// for the entity
+			Map.entry(com.frt.dr.model.base.Patient.class, Arrays.asList("", "_id", "active", "birthdate", "gender", "_text")),
+			Map.entry(com.frt.dr.model.base.PatientHumanName.class, Arrays.asList("name", "given", "family", "prefix", "suffix")),
+			Map.entry(com.frt.dr.model.base.PatientIdentifier.class, Arrays.asList("identifier", "use", "system", "value")),
+			Map.entry(com.frt.dr.model.base.PatientAddress.class, Arrays.asList("address", "address-city", "address-state", "address-country", "addresse-postalcode", "addresse-use"))
+		);
+
 	// search parameter look up
 	public static Map<String, SearchParameter> SUPPORTED_PARAMETERS = new HashMap<String, SearchParameter>();
 
 	static {
 		// human name
-		SUPPORTED_PARAMETERS.put("name", new GroupParameter("name", "names", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
-		SUPPORTED_PARAMETERS.put("given", new FieldParameter("given", "given", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
-		SUPPORTED_PARAMETERS.put("family", new FieldParameter("family", "family", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
-		SUPPORTED_PARAMETERS.put("prefix", new FieldParameter("prefix", "prefix", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
-		SUPPORTED_PARAMETERS.put("suffix", new FieldParameter("suffix", "suffix", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		SUPPORTED_PARAMETERS.put("name", new GroupParameter("name", "names", String.class, new String[] {"given", "family", "prefix", "suffix"},
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		SUPPORTED_PARAMETERS.put("given", new FieldParameter("given", "given", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		SUPPORTED_PARAMETERS.put("family", new FieldParameter("family", "family", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		SUPPORTED_PARAMETERS.put("prefix", new FieldParameter("prefix", "prefix", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
+		SUPPORTED_PARAMETERS.put("suffix", new FieldParameter("suffix", "suffix", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientHumanName.class));
 		// identifier
-		SUPPORTED_PARAMETERS.put("identifier", new GroupParameter("identifier", "identifiers", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientIdentifier.class));
+		SUPPORTED_PARAMETERS.put("identifier", new GroupParameter("identifier", "identifiers", String.class, new String[] {"use", "system", "value"}, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientIdentifier.class));
 		// address
-		SUPPORTED_PARAMETERS.put("address", new GroupParameter("address", "addresses", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
-		SUPPORTED_PARAMETERS.put("address-city", new FieldParameter("city", "city", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
-		SUPPORTED_PARAMETERS.put("address-state", new FieldParameter("state", "state", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
-		SUPPORTED_PARAMETERS.put("address-country", new FieldParameter("country", "country", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
-		SUPPORTED_PARAMETERS.put("address-postalcode", new FieldParameter("postalcode", "postalcode", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
-		SUPPORTED_PARAMETERS.put("address-use", new FieldParameter("use", "use", String.class, new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address", new GroupParameter("address", "addresses", String.class, new String[] {"address-city", "address-state", "address-country", "addresse-postalcode", "addresse-use"}, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-city", new FieldParameter("city", "city", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-state", new FieldParameter("state", "state", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-country", new FieldParameter("country", "country", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-postalcode", new FieldParameter("postalcode", "postalcode", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-use", new FieldParameter("use", "use", String.class, 
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
 		// resource level parameters
-		SUPPORTED_PARAMETERS.put("_id", new FieldParameter("_id", "id", String.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
-		SUPPORTED_PARAMETERS.put("active", new FieldParameter("active", "active", Boolean.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
-		SUPPORTED_PARAMETERS.put("birthdate", new FieldParameter("birthdate", "birthdate", Date.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
-		SUPPORTED_PARAMETERS.put("gender", new FieldParameter("gender", "gender", String.class, new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
+		SUPPORTED_PARAMETERS.put("_id", new FieldParameter("_id", "id", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
+		SUPPORTED_PARAMETERS.put("active", new FieldParameter("active", "active", Boolean.class, 
+				Arrays.asList(
+						SearchParameter.Modifier.TEXT, 
+						SearchParameter.Modifier.ABOVE, 
+						SearchParameter.Modifier.BELOW, 
+						SearchParameter.Modifier.NOT, 
+						SearchParameter.Modifier.IN, 
+						SearchParameter.Modifier.NOT_IN, 
+						SearchParameter.Modifier.OFTYPE),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
+		SUPPORTED_PARAMETERS.put("birthdate", new FieldParameter("birthdate", "birthdate", Date.class, 
+				Arrays.asList(),
+				Arrays.asList(
+						SearchParameter.Comparator.AP, 
+						SearchParameter.Comparator.EB, 
+						SearchParameter.Comparator.SA, 
+						SearchParameter.Comparator.EQ, 
+						SearchParameter.Comparator.NE, 
+						SearchParameter.Comparator.LE, 
+						SearchParameter.Comparator.LT, 
+						SearchParameter.Comparator.GE, 
+						SearchParameter.Comparator.GT 
+						),
+				new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
+		SUPPORTED_PARAMETERS.put("gender", new FieldParameter("gender", "gender", String.class, 
+				Arrays.asList(
+						SearchParameter.Modifier.TEXT, 
+						SearchParameter.Modifier.ABOVE, 
+						SearchParameter.Modifier.BELOW, 
+						SearchParameter.Modifier.NOT, 
+						SearchParameter.Modifier.IN, 
+						SearchParameter.Modifier.NOT_IN, 
+						SearchParameter.Modifier.OFTYPE),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
 	}
 	
 	private SearchParameterRegistry() {
@@ -113,12 +200,36 @@ public class SearchParameterRegistry {
         return instance;
     }
 
+	public static <T extends Resource, U extends ResourceComplexType> String[] getJoinAttributes(Class<T> resourceClazz, Class<U> refClazz) {
+		return ENTITY_ENTITY_JOINATTS.get(resourceClazz).get(refClazz);
+	}
+
 	public static Class<?> getResourceEntity(String type) {
 		return RESOURCE_ENTITY_MAP.get(type);
 	}
 	
-	public static com.frt.dr.service.query.SearchParameter getParameterDescriptor(String pname) {
+	public static SearchParameter getParameterDescriptor(String pname) {
 		return SUPPORTED_PARAMETERS.get(pname);
 	}
 	
+	public static Modifier getModifier(String sm) {
+		return SearchParameter.MODIFIERMAP.get(sm);
+	}
+	
+	public static Comparator getComparator(String sc) {
+		return SearchParameter.COMPARATORMAP.get(sc);
+	}
+	
+	public static Comparator checkComparator(String value, String[] comparator) {
+		Comparator c = null;
+		for (Map.Entry<String, Comparator> e: SearchParameter.COMPARATORMAP.entrySet()) {
+			if (value.startsWith(e.getKey())) {
+				comparator[0] = e.getKey();
+				comparator[1] = value.substring(e.getKey().length());
+				c = e.getValue();
+				break;
+			}
+		}
+		return c;
+	}
 }
