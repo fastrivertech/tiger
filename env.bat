@@ -9,8 +9,8 @@ set ANT_OPTS=-Xmx512m
 set MAVEN_OPTS=-Xmx512m
 
 REM Apache Tomcat Home
-set CATALINA_HOME=C:\fastrivertech-dev\apache-tomcat-9.0.12
-set CATALINA_BASE=C:\fastrivertech-dev\apache-tomcat-9.0.12
+set CATALINA_HOME=C:\apache\tomcat\apache-tomcat-9.0.12
+set CATALINA_BASE=C:\apache\tomcat\apache-tomcat-9.0.12
 set CATALINA_OPTS="-Dfrt.persist.store.derby=true"
 
 REM Apache Derby Home
