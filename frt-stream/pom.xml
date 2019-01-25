@@ -45,9 +45,19 @@
   </build>
   
   <dependencies>
+ 	<dependency>
+	  <groupId>com.frt</groupId>
+      <artifactId>frt-common</artifactId>
+	  <version>${frt.common.version}</version>
+	  <scope>system</scope>
+	  <systemPath>${basedir}/../frt-common/target/frt-common-${frt.common.version}.jar</systemPath>
+    </dependency> 
 	<dependency>
-	   <groupId>com.frt</groupId>
+	  <groupId>com.frt</groupId>
       <artifactId>frt-datalake</artifactId>
+	  <version>${frt.datalake.version}</version>
+	  <scope>system</scope>
+	  <systemPath>${basedir}/../frt-datalake/target/frt-datalake-${frt.datalake.version}.jar</systemPath>
     </dependency>
 	<dependency>
       <groupId>org.apache.kafka</groupId>
