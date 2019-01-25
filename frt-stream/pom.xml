@@ -45,6 +45,7 @@
   </build>
   
   <dependencies>
+    <!-- stream -->
 	<dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-streams</artifactId>   
@@ -53,6 +54,7 @@
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
     </dependency>
+	<!-- kafka -->
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-log4j-appender</artifactId>
