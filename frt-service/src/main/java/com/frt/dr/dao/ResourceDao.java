@@ -500,6 +500,8 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		String bn = parts[0];
 		bn = bn.trim();
 		String md = null;
+		param.setType(sp.getType());
+		
 		if (parts.length != 1 && parts.length != 2) {
 			throw new IllegalArgumentException(
 					"Malformed query parameter: " + rawName + ", expects: <name> or <name>:<modifier>");
@@ -511,12 +513,12 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			if (m == null) {
 				throw new IllegalArgumentException("Invalid modifier[" + md + "] in query parameter: " + rawName);
 			}
-			param.setModifier(md);
-			param.setEnumModifier(m);
 			if (!sp.accept(m)) {
 				throw new IllegalArgumentException("Invalid modifier[" + md + "] in query parameter: " + rawName
 						+ ", parameter:" + bn + ", does not accept [" + md + "]");
 			}
+			param.setModifier(md);
+			param.setEnumModifier(m);
 		}
 		param.setBaseName(bn.trim());
 		// process comparator on value side
@@ -527,16 +529,36 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		if (Number.class.isAssignableFrom(t)) {
 			// for now only number and date can have comparator
 			SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
+			String realValStr = value;
 			if (c != null) {
-				param.setEnumComparator(c);
+				String comparatorStr = value_parts[0];
+				if (sp.accept(c)) {
+					param.setComparator(comparatorStr);
+					param.setEnumComparator(c);
+					realValStr = value_parts[1];
+				}
+				else {
+					throw new IllegalArgumentException("Invalid comparator[" + comparatorStr + "] in query parameter: " + rawName
+							+ ", parameter:" + bn + ", does not accept [" + comparatorStr + "]");
+				}
 			}
-			param.setValueObject(parseNumeric(t, c != null ? value_parts[1] : value));
+			param.setValueObject(parseNumeric(t, realValStr));
 		} else if (Date.class.isAssignableFrom(t)) {
 			SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
+			String realValStr = value;
 			if (c != null) {
-				param.setEnumComparator(c);
+				String comparatorStr = value_parts[0];
+				if (sp.accept(c)) {
+					param.setComparator(comparatorStr);
+					param.setEnumComparator(c);
+					realValStr = value_parts[1];
+				}
+				else {
+					throw new IllegalArgumentException("Invalid comparator[" + comparatorStr + "] in query parameter: " + rawName
+							+ ", parameter:" + bn + ", does not accept [" + comparatorStr + "]");
+				}
 			}
-			Date d = parseDate(c != null ? value_parts[1] : value);
+			Date d = parseDate(realValStr);
 			if (d == null) {
 				throw new IllegalArgumentException("Query parameter:" + param.getBaseName()
 						+ " expect date value in the format of: " + SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd

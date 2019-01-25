@@ -71,7 +71,7 @@ public class SearchParameterRegistry {
 	public static final Map<Class<?>, List<String>> ENTITY_SEARCH_PARAMETERS = Map.ofEntries(
 			// convention: the first name, if present, is the group parameter name, an empty string "" - indicate a missing of group search parameter
 			// for the entity
-			Map.entry(com.frt.dr.model.base.Patient.class, Arrays.asList("", "_id", "active", "birthdate", "gender", "_text")),
+			Map.entry(com.frt.dr.model.base.Patient.class, Arrays.asList("___", "id", "active", "birthdate", "gender", "_text")),
 			Map.entry(com.frt.dr.model.base.PatientHumanName.class, Arrays.asList("name", "given", "family", "prefix", "suffix")),
 			Map.entry(com.frt.dr.model.base.PatientIdentifier.class, Arrays.asList("identifier", "use", "system", "value")),
 			Map.entry(com.frt.dr.model.base.PatientAddress.class, Arrays.asList("address", "address-city", "address-state", "address-country", "addresse-postalcode", "addresse-use"))
@@ -131,7 +131,7 @@ public class SearchParameterRegistry {
 		SUPPORTED_PARAMETERS.put("address-use", new FieldParameter("use", "use", String.class, 
 				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
 		// resource level parameters
-		SUPPORTED_PARAMETERS.put("_id", new FieldParameter("_id", "id", String.class, 
+		SUPPORTED_PARAMETERS.put("id", new FieldParameter("id", "id", String.class, 
 				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
 				Arrays.asList(),
 				new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
@@ -146,7 +146,7 @@ public class SearchParameterRegistry {
 						SearchParameter.Modifier.OFTYPE),
 				Arrays.asList(),
 				new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
-		SUPPORTED_PARAMETERS.put("birthdate", new FieldParameter("birthdate", "birthdate", Date.class, 
+		SUPPORTED_PARAMETERS.put("birthdate", new FieldParameter("birthdate", "birthDate", Date.class, 
 				Arrays.asList(),
 				Arrays.asList(
 						SearchParameter.Comparator.AP, 

@@ -108,7 +108,7 @@ public class FHIRResourceClientTest {
 		} else {
 			if (response != null) {
 				System.err.println("Patient create failed, return code: " + response.getStatus() + ", response: "
-						+ response.getStatusInfo().toString());
+						+ response.getStatus());
 			} else {
 				System.err.println("Patient create error, createPatient() return null");
 			}
