@@ -145,10 +145,10 @@ public class ReadResourceOperation extends ResourceOperation {
 			
 			String message;
 			if (streamService.enabled()) {
-				logger.info(localizer.x("write 'read " + type + " operation' message to fhir stream"));
-				streamService.write( "GET " + uriInfo.getPath(),  id);
+				logger.info(localizer.x("write [" + type + "] ReadOperation message to fhir stream"));
+			    streamService.write( "GET [base]/" + type + "/" + id,  id);
 				List<String> bodys = streamService.read();
-				logger.info(localizer.x("read 'read " + type + " operation' message from fhir stream"));				
+				logger.info(localizer.x("read [" + type + "] ReadOperation message from fhir stream"));				
 				message = bodys.get(0);
 			} else {
 				message = id;
@@ -162,8 +162,7 @@ public class ReadResourceOperation extends ResourceOperation {
 					resourceInJson = parser.serialize(found.get());      
 					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 				}
-			}
-			else {
+			} else {
 				logger.info(localizer.x("search resource of type: " + type + " with parameters [" + params.toString() + "] ..."));		
 				Optional<List<R>> found = fhirService.read(type, parameters);
 				if (found.isPresent()) {
