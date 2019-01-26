@@ -6,8 +6,8 @@
     "path" : "/fhir-operations.{format}"
   } ],
   "info" : {
-    "title" : "  Fast River Technologies FHIR REST APIs v1.0.0",
-    "description" : "  FHIR Specification Compliant REST APIs https://www.hl7.org/fhir",
+    "title" : "  Fast River Technologies FHIR REST API v1.0.0",
+    "description" : "  FHIR Compliant and Streaminf-Enabled REST API https://www.hl7.org/fhir",
     "termsOfServiceUrl" : "  http://www.fastrivertech.com"
   }
 }

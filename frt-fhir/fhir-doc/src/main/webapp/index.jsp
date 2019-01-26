@@ -5,9 +5,9 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Fast River Technologies</title>
     </head>
     <body>
-        <h1>Fast River FHIR Compliant REST APIs</h1>
+        <h1>Fast River Technologies FHIR Compliant and Streaming-Enabled REST API</h1>
     </body>
 </html>
