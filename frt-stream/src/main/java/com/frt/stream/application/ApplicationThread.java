@@ -57,8 +57,11 @@ public class ApplicationThread extends Thread {
 		
 	@Override
 	public void run() {
-		while (appState == ApplicationState.RUNNING) {
-			participatingApplication.run();
+		if (appState ==  ApplicationState.CREATED) { 
+			setState(ApplicationState.RUNNING);
+			while (appState == ApplicationState.RUNNING) {
+				participatingApplication.run();
+			}
 		}
 	}
 	

@@ -73,8 +73,6 @@ public class DataLakeIngestion implements ParticipatingApplication {
 			Runtime.getRuntime().addShutdownHook(new Thread("datalake-ingestion-shutdown-hook") {
 				@Override
 				public void run() {
-					System.out.println("fhir datalake ingestion stopped ...");
-					close();
 					latch.countDown();
 				}
 			});
@@ -90,12 +88,12 @@ public class DataLakeIngestion implements ParticipatingApplication {
 		try {
 			ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(1000));
 			consumerRecords.forEach(record -> {
+				System.out.println("received fhir message<k>: " + record.key());
 				if (record.key().contains("POST")) {
 					try {
-						System.out.println("received fhir message: " + record.key());
 						dataLakeService.write(record.value());
 					} catch (DataLakeServiceException ex) {
-					}
+				 }
 				}
 			});									
 			consumer.commitSync();
@@ -119,6 +117,7 @@ public class DataLakeIngestion implements ParticipatingApplication {
 			System.out.println("fhir datalake ingestion running ...");
 			applicationThread.start();
 			latch.await();
+			close();
 			System.out.println("fhir datalake ingestion stopped ...");			
 		} catch (KafkaException | IllegalStateException | InterruptedException ex) {
 			throw new StreamApplicationException(ex);
