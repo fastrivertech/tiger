@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CountDownLatch;
 import org.apache.kafka.clients.consumer.Consumer;
+import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.KafkaException;
@@ -58,6 +59,12 @@ public class DataLakeIngestion implements ParticipatingApplication {
 			consumer = new KafkaConsumer<>(config.getApplicationConfig(StreamServiceConfig.DATALAKE_INGESTION_APPLICATION));
 			consumer.subscribe(Collections.singletonList(config.get(StreamServiceConfig.STREAM_TOPIC)));
 			
+			
+			System.out.println("application connecting to fhir stream [" + 
+								config.get(StreamServiceConfig.STREAM_TOPIC) + 
+								"] from stream broker [" +
+								config.getApplicationConfig(StreamServiceConfig.DATALAKE_INGESTION_APPLICATION).get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
+			
 			dataLakeService = new DataLakeService();
 			dataLakeService.initialize();
 			applicationThread = new ApplicationThread(this);
@@ -83,8 +90,9 @@ public class DataLakeIngestion implements ParticipatingApplication {
 		try {
 			ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(1000));
 			consumerRecords.forEach(record -> {
-				if (record.key().contains("write")) {
+				if (record.key().contains("POST")) {
 					try {
+						System.out.println("received fhir message: " + record.key());
 						dataLakeService.write(record.value());
 					} catch (DataLakeServiceException ex) {
 					}

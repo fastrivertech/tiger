@@ -27,7 +27,7 @@ public class FhirMessageConsumer {
 	public FhirMessageConsumer() {
 
 		String TOPIC = "FhirTopic";
-		String BOOTSTRAP_SERVERS = "localhost:9092";
+		String BOOTSTRAP_SERVERS = "10.0.0.16:9092";
 		Properties props = new Properties();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, "FhirMessageConsumer");

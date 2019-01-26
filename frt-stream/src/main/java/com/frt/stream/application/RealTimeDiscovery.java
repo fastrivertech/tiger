@@ -61,6 +61,12 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 								 Produced.with(Serdes.String(), Serdes.Long()));
 			
 			Properties props = config.getApplicationConfig(StreamServiceConfig.REALTIME_DISCOVERY_APPLICATION);
+			
+			System.out.println("connecting to fhir stream [" + 
+								config.get(StreamServiceConfig.STREAM_TOPIC) + 
+								"] from stream broker [" +
+							    props.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
+			
 			props.setProperty(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 			props.setProperty(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 					
@@ -72,7 +78,6 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 				@Override
 				public void run() {
 					System.out.println("fhir stream realtime discovery stopped ...");
-					streams.cleanUp();
 					streams.close();
 					latch.countDown();
 				}

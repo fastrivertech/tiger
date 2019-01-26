@@ -33,7 +33,7 @@ public class FhirMessageProducer {
 //			props.put("batch.size", 16384);
 //			props.put("linger.ms", 1);
 //			props.put("buffer.memory", 33554432);						
-			String BOOTSTRAP_SERVERS = "localhost:9092";
+			String BOOTSTRAP_SERVERS = "10.0.0.16:9092";
 		    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
 	        props.put(ProducerConfig.CLIENT_ID_CONFIG, "FhirMessageProducer");
 	        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());

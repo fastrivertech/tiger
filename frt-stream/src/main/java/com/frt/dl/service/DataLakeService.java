@@ -91,7 +91,7 @@ public class DataLakeService {
 		throws DataLakeServiceException {
 		try {
 			FileSystem fs = FileSystem.get(new URI(config.get(DataLakeServiceConfig.DATALAKE_URL)), hdfsConfig);			
-			String fileName = config.get(DataLakeServiceConfig.DATALAKE_PATH) + message;
+			String fileName = config.get(DataLakeServiceConfig.DATALAKE_PATH) + message + ".json";
 			Path path = new Path(fileName);
 	        InputStream inputStream = fs.open(path);
 	        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
