@@ -62,7 +62,7 @@ public class DataLakeIngestion implements ParticipatingApplication {
 			
 			System.out.println("application connecting to fhir stream [" + 
 								config.get(StreamServiceConfig.STREAM_TOPIC) + 
-								"] from stream broker [" +
+								"] on stream broker [" +
 								config.getApplicationConfig(StreamServiceConfig.DATALAKE_INGESTION_APPLICATION).get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
 			
 			dataLakeService = new DataLakeService();

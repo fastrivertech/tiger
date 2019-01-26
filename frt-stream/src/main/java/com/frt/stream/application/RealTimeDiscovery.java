@@ -67,9 +67,9 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 			final Topology topology = builder.build();
 			streams = new KafkaStreams(topology, props);
 			
-			System.out.println("connecting to fhir stream [" + 
+			System.out.println("application connecting to fhir stream [" + 
 					config.get(StreamServiceConfig.STREAM_TOPIC) + 
-					"] from stream broker [" +
+					"] on stream broker [" +
 				    props.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
 			
 			latch = new CountDownLatch(1);
