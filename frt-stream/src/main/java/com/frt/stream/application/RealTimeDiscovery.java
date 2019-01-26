@@ -60,25 +60,22 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 			counts.toStream().to(config.get(StreamServiceConfig.STREAM_DISCOVERY_TOPIC),
 								 Produced.with(Serdes.String(), Serdes.Long()));
 			
-			Properties props = config.getApplicationConfig(StreamServiceConfig.REALTIME_DISCOVERY_APPLICATION);
-			
-			System.out.println("connecting to fhir stream [" + 
-								config.get(StreamServiceConfig.STREAM_TOPIC) + 
-								"] from stream broker [" +
-							    props.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
-			
+			Properties props = config.getApplicationConfig(StreamServiceConfig.REALTIME_DISCOVERY_APPLICATION);					
 			props.setProperty(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 			props.setProperty(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 					
 			final Topology topology = builder.build();
 			streams = new KafkaStreams(topology, props);
 			
+			System.out.println("connecting to fhir stream [" + 
+					config.get(StreamServiceConfig.STREAM_TOPIC) + 
+					"] from stream broker [" +
+				    props.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
+			
 			latch = new CountDownLatch(1);
 			Runtime.getRuntime().addShutdownHook(new Thread("realtime-discovery-shutdown-hook") {
 				@Override
 				public void run() {
-					System.out.println("fhir stream realtime discovery stopped ...");
-					streams.close();
 					latch.countDown();
 				}
 			});
@@ -104,6 +101,7 @@ public class RealTimeDiscovery implements ParticipatingApplication {
 			run();
 			System.out.println("fhir stream realtime discovery running ...");
 			latch.await();
+			close();
 			System.out.println("fhir stream realtime discovery stopped ...");			
 		} catch (KafkaException | IllegalStateException | InterruptedException ex) {
 			throw new StreamApplicationException(ex);
