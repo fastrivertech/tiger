@@ -70,17 +70,17 @@ public class DataLakeService {
 		try { 
 			String date = dateFormat.format(new Date()) + "-" + System.currentTimeMillis();
 			FileSystem fs = FileSystem.get(new URI(config.get(DataLakeServiceConfig.DATALAKE_URL)), hdfsConfig);
-			String fileName = config.get(DataLakeServiceConfig.DATALAKE_PATH) + date;
+			String fileName = config.get(DataLakeServiceConfig.DATALAKE_PATH) + date + ".json";
 			Path path = new Path(fileName);
 	        OutputStream outputStream = fs.create(path);
 			fs.setPermission(path, new FsPermission("777"));        	        
 	        BufferedWriter br = new BufferedWriter(new OutputStreamWriter(outputStream));
 	        
-	        System.out.println("started to write " + fileName + " ...");	
+	        System.out.println("started to ingest " + fileName + " to fhir datalake ...");	
 	        br.write(message);
 	        br.close();		
 			fs.close();
-			System.out.println("finished writting ...");
+			System.out.println("finished ingesting " + fileName + " to fhir datalake ...");
 			
 		} catch (Exception ex) {
 			throw new DataLakeServiceException(ex);
@@ -91,7 +91,7 @@ public class DataLakeService {
 		throws DataLakeServiceException {
 		try {
 			FileSystem fs = FileSystem.get(new URI(config.get(DataLakeServiceConfig.DATALAKE_URL)), hdfsConfig);			
-			String fileName = config.get(DataLakeServiceConfig.DATALAKE_PATH) + message;
+			String fileName = config.get(DataLakeServiceConfig.DATALAKE_PATH) + message + ".json";
 			Path path = new Path(fileName);
 	        InputStream inputStream = fs.open(path);
 	        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
