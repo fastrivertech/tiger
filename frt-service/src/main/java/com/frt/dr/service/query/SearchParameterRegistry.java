@@ -74,7 +74,7 @@ public class SearchParameterRegistry {
 			Map.entry(com.frt.dr.model.base.Patient.class, Arrays.asList("___", "id", "active", "birthdate", "gender", "_text")),
 			Map.entry(com.frt.dr.model.base.PatientHumanName.class, Arrays.asList("name", "given", "family", "prefix", "suffix")),
 			Map.entry(com.frt.dr.model.base.PatientIdentifier.class, Arrays.asList("identifier", "use", "system", "value")),
-			Map.entry(com.frt.dr.model.base.PatientAddress.class, Arrays.asList("address", "address-city", "address-state", "address-country", "address-postalcode", "address-use"))
+			Map.entry(com.frt.dr.model.base.PatientAddress.class, Arrays.asList("address", "address-city", "address-state", "address-country", "address-postalcode", "address-district", "address-use"))
 		);
 
 	// search parameter look up
@@ -120,7 +120,7 @@ public class SearchParameterRegistry {
 				Arrays.asList(),
 				new String[] {"Patient"}, com.frt.dr.model.base.PatientIdentifier.class));
 		// address
-		SUPPORTED_PARAMETERS.put("address", new GroupParameter("address", "addresses", String.class, new String[] {"address-city", "address-state", "address-country", "address-postalcode", "address-use"}, 
+		SUPPORTED_PARAMETERS.put("address", new GroupParameter("address", "addresses", String.class, new String[] {"address-city", "address-state", "address-country", "address-postalcode", "address-district", "address-use"}, 
 				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
 				Arrays.asList(),
 				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
@@ -140,7 +140,13 @@ public class SearchParameterRegistry {
 				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
 				Arrays.asList(),
 				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
+		SUPPORTED_PARAMETERS.put("address-district", new FieldParameter("district", "district", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
 		SUPPORTED_PARAMETERS.put("address-use", new FieldParameter("use", "use", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
 				new String[] {"Patient"}, com.frt.dr.model.base.PatientAddress.class));
 		// resource level parameters
 		SUPPORTED_PARAMETERS.put("id", new FieldParameter("id", "id", String.class, 

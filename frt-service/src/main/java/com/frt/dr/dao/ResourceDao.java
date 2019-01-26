@@ -485,8 +485,10 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		for (String epname : entityParamNames) {
 			for (Map.Entry<String, String> e : queryParams.entrySet()) {
 				String key = e.getKey();
+				String[] name_parts = parseParamName(key);
+				String baseName = name_parts[0];
 				String value = e.getValue();
-				if (key.startsWith(epname)) {
+				if (key.equals(epname)) {
 					SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(epname);
 					if (sp == null) {
 						throw new IllegalStateException("Parameter definition not found for: " + epname);
