@@ -113,7 +113,12 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			}
 			
 			for (ActualParameter ap: actualParams) {
-				query.setParameter(ap.getBaseName(), ap.getValueObject());
+				if (ap.getType().equals(String.class)&&ap.getEnumModifier()==SearchParameter.Modifier.CONTAINS) {
+					query.setParameter(ap.getBaseName(), this.convertToLikePattern(ap.getValueObject().toString()));
+				}
+				else {
+					query.setParameter(ap.getBaseName(), ap.getValueObject());
+				}
 			}
 
 			List<Resource> resources = (List<Resource>) query.getResultList();
@@ -288,13 +293,21 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			ap = new ActualParameter(grpParams[i], actualParameter.getValue());
 			// mangle the param names coming from grp param expansion
 			// to avoid query param placeholder conflict
-			ap.setBaseName(actualParameter.getBaseName()+"_"+grpParams[i]); 
+			ap.setBaseName(actualParameter.getBaseName()+"_"+grpParams[i]);
+			ap.setRawName(grpParams[i]);
+			ap.setGroupName(actualParameter.getBaseName());
 			ap.setComparator(actualParameter.getComparator());
 			ap.setModifier(actualParameter.getModifier());
 			ap.setEnumComparator(actualParameter.getEnumComparator());
 			ap.setEnumModifier(actualParameter.getEnumModifier());
 			ap.setType(actualParameter.getType());
 			ap.setValueObject(actualParameter.getValueObject());
+			if (sp.accept(SearchParameter.Modifier.CONTAINS)) {
+				ap.setEnumModifier(SearchParameter.Modifier.CONTAINS); // for now all group search is string based, and use contains semantics
+			}
+			else {
+				throw new IllegalArgumentException("Group search parameter : " + sp.getName() + " does not accept string match CONTAINS semantics.");
+			}
 			grpActualParams.add(ap);
 		}
 		// append newly expanded params
@@ -322,7 +335,8 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		SearchParameter sp = null;
 		Predicate term = null;
 		for (ActualParameter ap : actualParams) {
-			String baseName = ap.getBaseName();
+			String baseName = ap.isPartOfGroup()?ap.getRawName():ap.getBaseName();
+			String paramPlaceHolder = ap.getBaseName();
 			sp = SearchParameterRegistry.getParameterDescriptor(baseName);
 			Path<Object> path = null;
 			if (rootResource!=null) {
@@ -334,7 +348,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 				throw new IllegalArgumentException("Missing required parameters when generating query expression.");
 			}
 			if (ap.getType().equals(String.class)) {
-				ParameterExpression<String> p = cb.parameter(String.class, baseName);
+				ParameterExpression<String> p = cb.parameter(String.class, paramPlaceHolder);
 				if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
 					term = cb.equal(path, p);
 				} else if (ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
@@ -344,7 +358,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 							"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
 				}
 			} else if (ap.getType().equals(Boolean.class)) {
-				ParameterExpression<Boolean> p = cb.parameter(Boolean.class, baseName);
+				ParameterExpression<Boolean> p = cb.parameter(Boolean.class, paramPlaceHolder);
 				if (ap.getEnumModifier() == null) {
 					term = cb.equal(path, p);
 				} else if (ap.getEnumModifier() == SearchParameter.Modifier.NOT) {
@@ -354,7 +368,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 							"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
 				}
 			} else if (ap.getType().equals(Date.class)) {
-				ParameterExpression<Date> p = cb.parameter(Date.class, baseName);
+				ParameterExpression<Date> p = cb.parameter(Date.class, paramPlaceHolder);
 				if (ap.getEnumComparator() == null) {
 					term = cb.equal(path, p);
 				} else {
@@ -390,7 +404,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 					}
 				}
 			} else if (Number.class.isAssignableFrom(ap.getType())) {
-				ParameterExpression<Number> p = cb.parameter(Number.class, baseName);
+				ParameterExpression<Number> p = cb.parameter(Number.class, paramPlaceHolder);
 				if (ap.getEnumComparator() == null) {
 					term = cb.equal(path, p);
 				} else {
@@ -596,8 +610,10 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	}
 
 	class ActualParameter {
-		private String rawName;
-		private String baseName;
+		private String rawName; // name from web query, name can be with modifier etc
+		// if ActualParameter is created in group param expansion, the raw name is the bare param name 
+		private String baseName; // name with modifiers etc stripped off, this can be prefixed with grp param
+		private String grpName;
 		private String modifier;
 		private SearchParameter.Modifier enumModifier;
 		private String comparator;
@@ -682,6 +698,22 @@ public class ResourceDao extends BaseDao<Resource, String> {
 
 		public void setRawName(String rawName) {
 			this.rawName = rawName;
+		}
+
+		public String getGroupName() {
+			return grpName;
+		}
+
+		public void setGroupName(String grpName) {
+			this.grpName = grpName;
+		}
+
+		public boolean isPartOfGroup() {
+			boolean ret = false;
+			if (this.grpName!=null) {
+				ret = true;
+			}
+			return ret;
 		}
 	}
 }
