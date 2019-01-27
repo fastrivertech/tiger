@@ -14,6 +14,7 @@ package com.frt.dr.dao;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -38,6 +39,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
+import javax.ws.rs.core.MultivaluedMap;
 
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
@@ -94,43 +96,47 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	}
 
 	@Override
-	public Optional<List<Resource>> query(Class<Resource> resourceClazz, Map<String, String> params)
-			throws DaoException {
+	public Optional<List<Resource>> query(Class<Resource> resourceClazz, MultivaluedMap params) throws DaoException {
 
 		try {
-		
+
 			List<ActualParameter> actualParams = new ArrayList<ActualParameter>();
 			CriteriaQuery<Resource> cq = getQueryCriteria(em, resourceClazz, params, actualParams);
 			Query query = em.createQuery(cq);
-			
+
 			Set<Parameter<?>> qparams = query.getParameters();
-			
-			if (qparams.size()>actualParams.size()) {
-				System.out.println("Query parameters count: " + qparams.size() + " > actual parameters count: " + actualParams.size());
+
+			if (qparams.size() > actualParams.size()) {
+				System.out.println("Query parameters count: " + qparams.size() + " > actual parameters count: "
+						+ actualParams.size());
+			} else if (qparams.size() < actualParams.size()) {
+				System.out.println("Query parameters count: " + qparams.size() + " < actual parameters count: "
+						+ actualParams.size());
 			}
-			else if (qparams.size()<actualParams.size()) {
-				System.out.println("Query parameters count: " + qparams.size() + " < actual parameters count: " + actualParams.size());
-			}
-			
-			for (ActualParameter ap: actualParams) {
-				if (ap.getType().equals(String.class)&&ap.getEnumModifier()==SearchParameter.Modifier.CONTAINS) {
-					query.setParameter(ap.getBaseName(), this.convertToLikePattern(ap.getValueObject().toString()));
-				}
-				else {
-					query.setParameter(ap.getBaseName(), ap.getValueObject());
+
+			for (ActualParameter ap : actualParams) {
+				List valObjs = ap.getValueObject();
+				if (ap.getType().equals(String.class) && ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
+					for (int i=0; i<valObjs.size(); i++) {
+						query.setParameter(getPlaceHolder(i, ap), this.convertToLikePattern(ap.getValueObject().get(i).toString()));
+					}
+				} else {
+					for (int i=0; i<valObjs.size(); i++) {
+						query.setParameter(getPlaceHolder(i, ap), ap.getValueObject().get(i));
+					}
 				}
 			}
 
 			List<Resource> resources = (List<Resource>) query.getResultList();
 
 			Optional<List<Resource>> result = null;
-			
+
 			if (resources.size() > 0) {
 				result = Optional.ofNullable(resources);
 			} else {
 				result = Optional.empty();
 			}
-			
+
 			return result;
 		} catch (IllegalArgumentException | QueryTimeoutException | TransactionRequiredException
 				| PessimisticLockException | LockTimeoutException ex) {
@@ -236,7 +242,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	 * @return CriteriaQuery cq;
 	 */
 	private <T extends Resource, U extends ResourceComplexType> CriteriaQuery<T> getQueryCriteria(EntityManager em,
-			Class<T> resourceClazz, Map<String, String> params, List<ActualParameter> actualParamValues) {
+			Class<T> resourceClazz, MultivaluedMap params, List<ActualParameter> actualParamValues) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(resourceClazz);
 		Root<T> rootResource = cq.from(resourceClazz);
@@ -247,31 +253,30 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			Class<?> entity = entityParamNames.getKey();
 			ActualParameter[] groupParam = new ActualParameter[1]; // used to bring out the only group param if present
 			List<ActualParameter> actualParams = extractParameter(params, entityParamNames.getValue(), groupParam);
-			if (actualParams!=null||groupParam[0]!=null) {
+			if (actualParams != null || groupParam[0] != null) {
 				if (entity.equals(resourceClazz)) {
 					// parameter that is the resource's attribute
-					if (actualParams!=null) {
+					if (actualParams != null) {
 						// there are parameters on resource (main table)
 						where = addCriteria(where, cb, rootResource, null, actualParams, true);
 						actualParamValues.addAll(actualParams);
-					}
-					else {
+					} else {
 						// no parameter on resource
 					}
 				} else {
 					// the predicate is on columns of refClass (secondary table)
 					// a join is needed plus other expression
-					String[] joinAttrs = SearchParameterRegistry.getJoinAttributes(resourceClazz, (Class<U>)entity);
+					String[] joinAttrs = SearchParameterRegistry.getJoinAttributes(resourceClazz, (Class<U>) entity);
 					Metamodel m = em.getMetamodel();
 					EntityType<T> resourceEntity_ = m.entity(resourceClazz);
 					// handle one foreign key for now
 					// think about chained join later if there are use cases
-					Join<T, U> join = rootResource.join(resourceEntity_.getList(joinAttrs[0], (Class<U>)entity));
-					// group parameter will be handled also if presents 
-					if (groupParam[0]!=null) {
-						where = addCriteriaForGroup(where, cb, join, actualParamValues, groupParam[0]); 
+					Join<T, U> join = rootResource.join(resourceEntity_.getList(joinAttrs[0], (Class<U>) entity));
+					// group parameter will be handled also if presents
+					if (groupParam[0] != null) {
+						where = addCriteriaForGroup(where, cb, join, actualParamValues, groupParam[0]);
 					}
-					if (actualParams!=null) {
+					if (actualParams != null) {
 						where = addCriteria(where, cb, null, join, actualParams, true);
 						actualParamValues.addAll(actualParams);
 					}
@@ -282,18 +287,17 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		return cq;
 	}
 
-	private <T extends Resource, U extends ResourceComplexType> Predicate addCriteriaForGroup(
-			Predicate where, CriteriaBuilder cb, Join<T, U> join,
-			List<ActualParameter> actualParams, ActualParameter actualParameter) {
+	private <T extends Resource, U extends ResourceComplexType> Predicate addCriteriaForGroup(Predicate where,
+			CriteriaBuilder cb, Join<T, U> join, List<ActualParameter> actualParams, ActualParameter actualParameter) {
 		SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(actualParameter.getBaseName());
-		String[] grpParams = ((GroupParameter)sp).getParameters();
+		String[] grpParams = ((GroupParameter) sp).getParameters();
 		List<ActualParameter> grpActualParams = new ArrayList<ActualParameter>();
 		ActualParameter ap = null;
-		for (int i=0; i<grpParams.length; i++) {
-			ap = new ActualParameter(grpParams[i], actualParameter.getValue());
+		for (int i = 0; i < grpParams.length; i++) {
+			ap = new ActualParameter(grpParams[i], actualParameter.getValues());
 			// mangle the param names coming from grp param expansion
 			// to avoid query param placeholder conflict
-			ap.setBaseName(actualParameter.getBaseName()+"_"+grpParams[i]);
+			ap.setBaseName(actualParameter.getBaseName() + "_" + grpParams[i]);
 			ap.setRawName(grpParams[i]);
 			ap.setGroupName(actualParameter.getBaseName());
 			ap.setComparator(actualParameter.getComparator());
@@ -303,10 +307,11 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			ap.setType(actualParameter.getType());
 			ap.setValueObject(actualParameter.getValueObject());
 			if (sp.accept(SearchParameter.Modifier.CONTAINS)) {
-				ap.setEnumModifier(SearchParameter.Modifier.CONTAINS); // for now all group search is string based, and use contains semantics
-			}
-			else {
-				throw new IllegalArgumentException("Group search parameter : " + sp.getName() + " does not accept string match CONTAINS semantics.");
+				ap.setEnumModifier(SearchParameter.Modifier.CONTAINS); // for now all group search is string based, and
+																		// use contains semantics
+			} else {
+				throw new IllegalArgumentException("Group search parameter : " + sp.getName()
+						+ " does not accept string match CONTAINS semantics.");
 			}
 			grpActualParams.add(ap);
 		}
@@ -326,126 +331,152 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	 * @param join
 	 * @param actualParams
 	 * @param isConjunction
-	 * @return root predicate - root node of AND/OR expression 
+	 * @return root predicate - root node of AND/OR expression
 	 */
-	private <T extends Resource, U extends ResourceComplexType> Predicate addCriteria(
-			Predicate where, CriteriaBuilder cb, 
-			Root<T> rootResource, Join<T, U> join,
-			List<ActualParameter> actualParams, boolean isConjunction) {
+	private <T extends Resource, U extends ResourceComplexType> Predicate addCriteria(Predicate where,
+			CriteriaBuilder cb, Root<T> rootResource, Join<T, U> join, List<ActualParameter> actualParams,
+			boolean isConjunction) {
 		SearchParameter sp = null;
 		Predicate term = null;
 		for (ActualParameter ap : actualParams) {
-			String baseName = ap.isPartOfGroup()?ap.getRawName():ap.getBaseName();
-			String paramPlaceHolder = ap.getBaseName();
+			String baseName = ap.isPartOfGroup() ? ap.getRawName() : ap.getBaseName();
 			sp = SearchParameterRegistry.getParameterDescriptor(baseName);
 			Path<Object> path = null;
-			if (rootResource!=null) {
+			if (rootResource != null) {
 				path = rootResource.get(sp.getFieldName());
-			} else if (join!=null) {
+			} else if (join != null) {
 				path = join.get(sp.getFieldName());
-			}
-			else {
+			} else {
 				throw new IllegalArgumentException("Missing required parameters when generating query expression.");
 			}
 			if (ap.getType().equals(String.class)) {
-				ParameterExpression<String> p = cb.parameter(String.class, paramPlaceHolder);
-				if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
-					term = cb.equal(path, p);
-				} else if (ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
-					term = cb.like(path.as(String.class), p);
-				} else {
-					throw new IllegalArgumentException(
-							"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
+				// value can be multiple
+				List valObjs = ap.getValueObject();
+				term = cb.conjunction();
+				for (int i = 0; i < valObjs.size(); i++) {
+					ParameterExpression<String> p = cb.parameter(String.class, getPlaceHolder(i, ap));
+					if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
+						term = cb.and(term, cb.equal(path, p));
+					} else if (ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
+						term = cb.and(term, cb.like(path.as(String.class), p));
+					} else {
+						throw new IllegalArgumentException(
+								"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
+					}
 				}
 			} else if (ap.getType().equals(Boolean.class)) {
-				ParameterExpression<Boolean> p = cb.parameter(Boolean.class, paramPlaceHolder);
-				if (ap.getEnumModifier() == null) {
-					term = cb.equal(path, p);
-				} else if (ap.getEnumModifier() == SearchParameter.Modifier.NOT) {
-					term = cb.not(cb.equal(path.as(String.class), p));
-				} else {
-					throw new IllegalArgumentException(
-							"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
+				List valObjs = ap.getValueObject();
+				term = cb.conjunction();
+				for (int i = 0; i < valObjs.size(); i++) {
+					ParameterExpression<Boolean> p = cb.parameter(Boolean.class, getPlaceHolder(i, ap));
+					if (ap.getEnumModifier() == null) {
+						term = cb.equal(path, p);
+					} else if (ap.getEnumModifier() == SearchParameter.Modifier.NOT) {
+						term = cb.not(cb.equal(path.as(String.class), p));
+					} else {
+						throw new IllegalArgumentException(
+								"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
+					}
 				}
 			} else if (ap.getType().equals(Date.class)) {
-				ParameterExpression<Date> p = cb.parameter(Date.class, paramPlaceHolder);
-				if (ap.getEnumComparator() == null) {
-					term = cb.equal(path, p);
-				} else {
-					switch (ap.getEnumComparator()) {
-					case EQ:
-						term = cb.equal(path, p);
-						break;
-					case NE:
-						term = cb.notEqual(path, p);
-						break;
-					case GT:
-						term = cb.greaterThan(path.as(Date.class), p);
-						break;
-					case GE:
-						term = cb.greaterThanOrEqualTo(path.as(Date.class), p);
-						break;
-					case LT:
-						term = cb.lessThan(path.as(Date.class), p);
-						break;
-					case LE:
-						term = cb.lessThanOrEqualTo(path.as(Date.class), p);
-						break;
-					case SA:
-						term = cb.greaterThan(path.as(Date.class), p);
-						break;
-					case EB:
-						term = cb.lessThan(path.as(Date.class), p);
-						break;
-					case AP:
-					default:
-						throw new IllegalArgumentException(
-								"Unsupported comparator : " + ap.getComparator() + ", for parameter: " + baseName);
+				List valObjs = ap.getValueObject();
+				term = cb.conjunction();
+				for (int i = 0; i < valObjs.size(); i++) {
+					ParameterExpression<Date> p = null;
+					if (ap.getEnumComparator() == null) {
+						p = cb.parameter(Date.class, getPlaceHolder(i, ap));
+						term = cb.and(term, cb.equal(path, p));
+					} else {
+						p = cb.parameter(Date.class, getPlaceHolder(i, ap));
+						switch (ap.getEnumComparator().get(i)) {
+						case EQ:
+							term = cb.and(term, cb.equal(path, p));
+							break;
+						case NE:
+							term = cb.and(term, cb.notEqual(path, p));
+							break;
+						case GT:
+							term = cb.and(term, cb.greaterThan(path.as(Date.class), p));
+							break;
+						case GE:
+							term = cb.and(term, cb.greaterThanOrEqualTo(path.as(Date.class), p));
+							break;
+						case LT:
+							term = cb.and(term, cb.lessThan(path.as(Date.class), p));
+							break;
+						case LE:
+							term = cb.and(term, cb.lessThanOrEqualTo(path.as(Date.class), p));
+							break;
+						case SA:
+							term = cb.and(term, cb.greaterThan(path.as(Date.class), p));
+							break;
+						case EB:
+							term = cb.and(term, cb.lessThan(path.as(Date.class), p));
+							break;
+						case AP:
+						default:
+							throw new IllegalArgumentException(
+									"Unsupported comparator : " + ap.getComparator() + ", for parameter: " + baseName);
+						}
 					}
 				}
 			} else if (Number.class.isAssignableFrom(ap.getType())) {
-				ParameterExpression<Number> p = cb.parameter(Number.class, paramPlaceHolder);
-				if (ap.getEnumComparator() == null) {
-					term = cb.equal(path, p);
-				} else {
-					switch (ap.getEnumComparator()) {
-					case EQ:
-						term = cb.equal(path, p);
-						break;
-					case NE:
-						term = cb.notEqual(path, p);
-						break;
-					case GT:
-						term = cb.gt(path.as(Number.class), p);
-						break;
-					case GE:
-						term = cb.ge(path.as(Number.class), p);
-						break;
-					case LT:
-						term = cb.lt(path.as(Number.class), p);
-						break;
-					case LE:
-						term = cb.le(path.as(Number.class), p);
-						break;
-					case SA:
-						term = cb.gt(path.as(Number.class), p);
-						break;
-					case EB:
-						term = cb.lt(path.as(Number.class), p);
-						break;
-					case AP:
-					default:
-						throw new IllegalArgumentException(
-								"Unsupported comparator : " + ap.getComparator() + ", for parameter: " + baseName);
+				List valObjs = ap.getValueObject();
+				term = cb.conjunction();
+				for (int i = 0; i < valObjs.size(); i++) {
+					ParameterExpression<Number> p = null;
+					if (ap.getEnumComparator() == null) {
+						p = cb.parameter(Number.class, getPlaceHolder(i, ap));
+						term = cb.and(term, cb.equal(path, p));
+					} else {
+						p = cb.parameter(Number.class, getPlaceHolder(i, ap));
+						switch (ap.getEnumComparator().get(i)) {
+						case EQ:
+							term = cb.and(term, cb.equal(path, p));
+							break;
+						case NE:
+							term = cb.and(term, cb.notEqual(path, p));
+							break;
+						case GT:
+							term = cb.and(term, cb.gt(path.as(Number.class), p));
+							break;
+						case GE:
+							term = cb.and(term, cb.ge(path.as(Number.class), p));
+							break;
+						case LT:
+							term = cb.and(term, cb.lt(path.as(Number.class), p));
+							break;
+						case LE:
+							term = cb.and(term, cb.le(path.as(Number.class), p));
+							break;
+						case SA:
+							term = cb.and(term, cb.gt(path.as(Number.class), p));
+							break;
+						case EB:
+							term = cb.and(term, cb.lt(path.as(Number.class), p));
+							break;
+						case AP:
+						default:
+							throw new IllegalArgumentException(
+									"Unsupported comparator : " + ap.getComparator() + ", for parameter: " + baseName);
+						}
 					}
 				}
 			} else {
 				throw new IllegalArgumentException("Unsupported parameter type: " + ap.getType().getCanonicalName()
 						+ " for [" + baseName + "], supported types: string, date, numeric.");
 			}
-			where = isConjunction?cb.and(where, term):cb.or(where, term);
+			where = isConjunction ? cb.and(where, term) : cb.or(where, term);
 		}
 		return where;
+	}
+
+	private String getPlaceHolder(int i, ActualParameter ap) {
+		StringBuilder sb = new StringBuilder(ap.getBaseName());
+		String m = ap.getModifier()!=null?ap.getModifier():"";
+		String c = ap.getComparator()!=null&&ap.getComparator().size()>0?ap.getComparator().get(i):"";
+		sb.append("_").append(m).append(c).append("_").append(i);
+		return sb.toString();
 	}
 
 	/**
@@ -472,36 +503,43 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	}
 
 	/**
-	 * parse query parameters into actual parameters where name, type, value, comparator, modifier etc are validated and 
-	 * transformed into form that is easy to be consumed 
+	 * parse query parameters into actual parameters where name, type, value,
+	 * comparator, modifier etc are validated and transformed into form that is easy
+	 * to be consumed
+	 * 
 	 * @param queryParams
 	 * @param entityParamNames
 	 * @param groupParam
 	 * @return
 	 */
-	private List<ActualParameter> extractParameter(Map<String, String> queryParams, List<String> entityParamNames, ActualParameter[] groupParam) {
+	private List<ActualParameter> extractParameter(MultivaluedMap queryParams, List<String> entityParamNames,
+			ActualParameter[] groupParam) {
 		List<ActualParameter> actualParams = null;
 		ActualParameter actualParam = null;
 		for (String epname : entityParamNames) {
-			for (Map.Entry<String, String> e : queryParams.entrySet()) {
-				String key = e.getKey();
+			Iterator it = queryParams.keySet().iterator();
+			while (it.hasNext()) {
+				String key = (String) it.next();
+				List<String> mValues = (List<String>) queryParams.get(key);
+				// }
+				// for (Map.Entry<String, String> e : queryParams.entrySet()) {
+				// String key = e.getKey();
 				String[] name_parts = parseParamName(key);
 				String baseName = name_parts[0];
-				String value = e.getValue();
-				if (key.equals(epname)) {
+				String value = mValues.get(0); // get first value
+				if (baseName.equals(epname)) {
 					SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(epname);
 					if (sp == null) {
 						throw new IllegalStateException("Parameter definition not found for: " + epname);
 					}
-					actualParam = new ActualParameter(key, value);
+					actualParam = new ActualParameter(key, mValues);
 					actualParam = parse(sp, actualParam);
 					if (actualParams == null) {
 						actualParams = new ArrayList<ActualParameter>();
 					}
 					if (sp instanceof GroupParameter) {
 						groupParam[0] = actualParam;
-					}
-					else {
+					} else {
 						actualParams.add(actualParam);
 					}
 				}
@@ -517,7 +555,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		bn = bn.trim();
 		String md = null;
 		param.setType(sp.getType());
-		
+
 		if (parts.length != 1 && parts.length != 2) {
 			throw new IllegalArgumentException(
 					"Malformed query parameter: " + rawName + ", expects: <name> or <name>:<modifier>");
@@ -539,53 +577,94 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		param.setBaseName(bn.trim());
 		// process comparator on value side
 		Class<?> t = sp.getType();
-		String value = param.getValue();
+		List values = param.getValues();
 		String[] value_parts = new String[2];
-		Object valObj = value;
+		List valObjs = values;
+		List<String> comparatorStrs = new ArrayList<String>();
+		List<SearchParameter.Comparator> comparators = new ArrayList<SearchParameter.Comparator>();
 		if (Number.class.isAssignableFrom(t)) {
-			// for now only number and date can have comparator
-			SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
-			String realValStr = value;
-			if (c != null) {
-				String comparatorStr = value_parts[0];
-				if (sp.accept(c)) {
-					param.setComparator(comparatorStr);
-					param.setEnumComparator(c);
-					realValStr = value_parts[1];
+			valObjs = new ArrayList();
+			for (int i = 0; i < values.size(); i++) {
+				String value = (String) values.get(i);
+				// for now only number and date can have comparator
+				SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
+				String realValStr = value;
+				if (c != null) {
+					String comparatorStr = value_parts[0];
+					if (sp.accept(c)) {
+						comparatorStrs.add(comparatorStr);
+						comparators.add(c);
+						realValStr = value_parts[1];
+					} else {
+						throw new IllegalArgumentException(
+								"Invalid comparator[" + comparatorStr + "] in query parameter: " + rawName
+										+ ", parameter:" + bn + ", does not accept [" + comparatorStr + "]");
+					}
 				}
-				else {
-					throw new IllegalArgumentException("Invalid comparator[" + comparatorStr + "] in query parameter: " + rawName
-							+ ", parameter:" + bn + ", does not accept [" + comparatorStr + "]");
-				}
+				valObjs.add(parseNumeric(t, realValStr));
 			}
-			param.setValueObject(parseNumeric(t, realValStr));
+			param.setComparator(comparatorStrs);
+			param.setEnumComparator(comparators);
+			param.setValueObject(valObjs);
+		} else if (Boolean.class.isAssignableFrom(t)) {
+			valObjs = new ArrayList();
+			for (int i = 0; i < values.size(); i++) {
+				String value = (String) values.get(i);
+				// for now only number and date can have comparator
+				SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
+				String realValStr = value;
+				if (c != null) {
+					String comparatorStr = value_parts[0];
+					if (sp.accept(c)) {
+						comparatorStrs.add(comparatorStr);
+						comparators.add(c);
+						realValStr = value_parts[1];
+					} else {
+						throw new IllegalArgumentException(
+								"Invalid comparator[" + comparatorStr + "] in query parameter: " + rawName
+										+ ", parameter:" + bn + ", does not accept [" + comparatorStr + "]");
+					}
+				}
+				valObjs.add(Boolean.valueOf(realValStr));
+			}
+			param.setComparator(comparatorStrs);
+			param.setEnumComparator(comparators);
+			param.setValueObject(valObjs);
 		} else if (Date.class.isAssignableFrom(t)) {
-			SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
-			String realValStr = value;
-			if (c != null) {
-				String comparatorStr = value_parts[0];
-				if (sp.accept(c)) {
-					param.setComparator(comparatorStr);
-					param.setEnumComparator(c);
-					realValStr = value_parts[1];
+			valObjs = new ArrayList();
+			for (int i = 0; i < values.size(); i++) {
+				String value = (String) values.get(i);
+				SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
+				String realValStr = value;
+				if (c != null) {
+					String comparatorStr = value_parts[0];
+					if (sp.accept(c)) {
+						comparatorStrs.add(comparatorStr);
+						comparators.add(c);
+						realValStr = value_parts[1];
+					} else {
+						throw new IllegalArgumentException(
+								"Invalid comparator[" + comparatorStr + "] in query parameter: " + rawName
+										+ ", parameter:" + bn + ", does not accept [" + comparatorStr + "]");
+					}
 				}
-				else {
-					throw new IllegalArgumentException("Invalid comparator[" + comparatorStr + "] in query parameter: " + rawName
-							+ ", parameter:" + bn + ", does not accept [" + comparatorStr + "]");
+				Date d = parseDate(realValStr);
+				if (d == null) {
+					throw new IllegalArgumentException(
+							"Query parameter:" + param.getBaseName() + " expect date value in the format of: "
+									+ SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd + " or "
+									+ SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
+									+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
+									+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
 				}
+				valObjs.add(d);
 			}
-			Date d = parseDate(realValStr);
-			if (d == null) {
-				throw new IllegalArgumentException("Query parameter:" + param.getBaseName()
-						+ " expect date value in the format of: " + SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd
-						+ " or " + SearchParameterRegistry.PARAM_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss + " or "
-						+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + " or "
-						+ SearchParameterRegistry.PARAM_DATE_FMT_dd_s_MM_s_yyyy + ", value=" + value);
-			}
-			param.setValueObject(d);
+			param.setComparator(comparatorStrs);
+			param.setEnumComparator(comparators);
+			param.setValueObject(valObjs);
 		} else {
 			// for now assume it is a string - no comparator
-			param.setValueObject(valObj);
+			param.setValueObject(valObjs);
 		}
 		return param;
 	}
@@ -613,21 +692,22 @@ public class ResourceDao extends BaseDao<Resource, String> {
 
 	class ActualParameter {
 		private String rawName; // name from web query, name can be with modifier etc
-		// if ActualParameter is created in group param expansion, the raw name is the bare param name 
+		// if ActualParameter is created in group param expansion, the raw name is the
+		// bare param name
 		private String baseName; // name with modifiers etc stripped off, this can be prefixed with grp param
 		private String grpName;
 		private String modifier;
 		private SearchParameter.Modifier enumModifier;
-		private String comparator;
-		private SearchParameter.Comparator enumComparator;
-		private String value;
+		private List<String> comparator;
+		private List<SearchParameter.Comparator> enumComparator;
+		private List<String> values; // original values from query : may with comparator
 		private Class<?> type;
-		private Object valObj;
+		private List valObjs; // value(s) in java objet as indocated by type
 
-		public ActualParameter(String rawName, String value) {
+		public ActualParameter(String rawName, List<String> values) {
 			super();
 			this.rawName = rawName;
-			this.value = value;
+			this.values = values;
 		}
 
 		public String getBaseName() {
@@ -654,36 +734,36 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			this.enumModifier = enumModifier;
 		}
 
-		public String getComparator() {
+		public List<String> getComparator() {
 			return comparator;
 		}
 
-		public void setComparator(String comparator) {
+		public void setComparator(List<String> comparator) {
 			this.comparator = comparator;
 		}
 
-		public SearchParameter.Comparator getEnumComparator() {
+		public List<SearchParameter.Comparator> getEnumComparator() {
 			return enumComparator;
 		}
 
-		public void setEnumComparator(SearchParameter.Comparator enumComparator) {
+		public void setEnumComparator(List<SearchParameter.Comparator> enumComparator) {
 			this.enumComparator = enumComparator;
 		}
 
-		public String getValue() {
-			return value;
+		public List<String> getValues() {
+			return values;
 		}
 
-		public void setValue(String value) {
-			this.value = value;
+		public void setValue(List<String> values) {
+			this.values = values;
 		}
 
-		public Object getValueObject() {
-			return this.valObj;
+		public List getValueObject() {
+			return this.valObjs;
 		}
 
-		public void setValueObject(Object value) {
-			this.valObj = value;
+		public void setValueObject(List values) {
+			this.valObjs = values;
 		}
 
 		public Class<?> getType() {
@@ -712,7 +792,7 @@ public class ResourceDao extends BaseDao<Resource, String> {
 
 		public boolean isPartOfGroup() {
 			boolean ret = false;
-			if (this.grpName!=null) {
+			if (this.grpName != null) {
 				ret = true;
 			}
 			return ret;

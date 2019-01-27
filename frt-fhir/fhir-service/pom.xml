@@ -64,6 +64,12 @@
 	  <groupId>ca.uhn.hapi.fhir</groupId>
        <artifactId>hapi-fhir-structures-dstu3</artifactId>
 	</dependency>
+	<!-- javaee -->
+	<dependency>
+		<groupId>javax</groupId>
+		<artifactId>javaee-api</artifactId>
+		<scope>provided</scope>
+    </dependency>
 	<!-- junit -->
 	<dependency>
 		<groupId>junit</groupId>

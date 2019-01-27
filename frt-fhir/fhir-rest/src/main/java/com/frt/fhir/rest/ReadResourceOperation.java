@@ -10,14 +10,12 @@
  */
 package com.frt.fhir.rest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
@@ -128,11 +126,10 @@ public class ReadResourceOperation extends ResourceOperation {
 		try {
 			logger.info(localizer.x("ReadResourceOperation reads a current resource"));		
 			// Request
-			Map<String, String> parameters = null;
-			MultivaluedMap params = uriInfo!=null?uriInfo.getQueryParameters():null;
-			if (params!=null) {
-				parameters = trimParams(params);
-			}
+			MultivaluedMap parameters = uriInfo!=null?uriInfo.getQueryParameters():null;
+//			if (params!=null) {
+//				parameters = trimParams(params);
+//			}
 			// Response includes ETag with versionId and Last-Modified
 			// 410 Gone - Resource deleted 
 			// 404 Not Found - Unknown resource 
@@ -163,7 +160,7 @@ public class ReadResourceOperation extends ResourceOperation {
 					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 				}
 			} else {
-				logger.info(localizer.x("search resource of type: " + type + " with parameters [" + params.toString() + "] ..."));		
+				logger.info(localizer.x("search resource of type: " + type + " with parameters [" + parameters.toString() + "] ..."));		
 				Optional<List<R>> found = fhirService.read(type, parameters);
 				if (found.isPresent()) {
 					StringBuilder sb = new StringBuilder();

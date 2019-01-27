@@ -73,7 +73,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 		
 	@Override
-	public <R extends DomainResource> List<R> query(Class<?> resourceClazz, Map params)
+	public <R extends DomainResource> List<R> query(Class<?> resourceClazz, MultivaluedMap params)
 			throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);

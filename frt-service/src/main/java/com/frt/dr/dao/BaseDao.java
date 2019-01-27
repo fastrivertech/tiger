@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
@@ -44,6 +46,6 @@ public abstract class BaseDao<T,ID> implements Repository {
 
     public abstract Optional<T> findById(ID id) throws DaoException;
     
-    public abstract Optional<List<T>> query(Class<T> resourceClazz, Map<String, String> params) throws DaoException;
+    public abstract Optional<List<T>> query(Class<T> resourceClazz, MultivaluedMap params) throws DaoException;
     
 }

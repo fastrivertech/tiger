@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
+import javax.ws.rs.core.MultivaluedMap;
+
 import org.hl7.fhir.dstu3.model.DomainResource;
 import com.frt.fhir.model.ResourceMapperFactory;
 import com.frt.fhir.model.ResourceMapperInterface;
@@ -57,7 +59,7 @@ public class FhirService {
 		}
 	}
 
-	public <R extends DomainResource> Optional<List<R>> read(@Nonnull String type, Map params) 
+	public <R extends DomainResource> Optional<List<R>> read(@Nonnull String type,  MultivaluedMap params) 
 			throws FhirServiceException {
 			Optional<List<R>> retVal = Optional.empty();
 			try {

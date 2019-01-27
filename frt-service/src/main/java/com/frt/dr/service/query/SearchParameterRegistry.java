@@ -74,13 +74,119 @@ public class SearchParameterRegistry {
 			Map.entry(com.frt.dr.model.base.Patient.class, Arrays.asList("___", "id", "active", "birthdate", "gender", "_text")),
 			Map.entry(com.frt.dr.model.base.PatientHumanName.class, Arrays.asList("name", "given", "family", "prefix", "suffix")),
 			Map.entry(com.frt.dr.model.base.PatientIdentifier.class, Arrays.asList("identifier", "use", "system", "value")),
-			Map.entry(com.frt.dr.model.base.PatientAddress.class, Arrays.asList("address", "address-city", "address-state", "address-country", "address-postalcode", "address-district", "address-use"))
+			Map.entry(com.frt.dr.model.base.PatientAddress.class, Arrays.asList("address", "address-city", "address-state", "address-country", "address-postalcode", "address-district", "address-use")),
+			Map.entry(com.frt.dr.model.base.PatientCodeableConcept.class, Arrays.asList("codeable-text")), // now only 'txt' column is varchar other coulumns are clob
+			Map.entry(com.frt.dr.model.base.PatientCommunication.class, Arrays.asList("communication-language", "communication-preferred")),
+			Map.entry(com.frt.dr.model.base.PatientContact.class, Arrays.asList("contact-name", "contact-relationship", "contact-gender", "contact-address", "contact-telecom")),
+			Map.entry(com.frt.dr.model.base.PatientContactPoint.class, Arrays.asList("contactpoint-system", "contactpoint-value", "contactpoint-use", "contactpoint-rank")),
+			Map.entry(com.frt.dr.model.base.PatientReference.class, Arrays.asList("reference-reference", "reference-display"))
 		);
 
 	// search parameter look up
 	public static Map<String, SearchParameter> SUPPORTED_PARAMETERS = new HashMap<String, SearchParameter>();
 
 	static {
+		// contactpoint (patient telecom)
+		SUPPORTED_PARAMETERS.put("telecom", new GroupParameter("telecom", "telecoms", String.class, new String[] {"contactpoint-system", "contactpoint-value", "contactpoint-use"},
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContactPoint.class));
+		SUPPORTED_PARAMETERS.put("contactpoint-system", new FieldParameter("contactpoint-system", "system", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContactPoint.class));
+		SUPPORTED_PARAMETERS.put("contactpoint-value", new FieldParameter("contactpoint-value", "value", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContactPoint.class));
+		SUPPORTED_PARAMETERS.put("contactpoint-use", new FieldParameter("contactpoint-use", "use", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContactPoint.class));
+		SUPPORTED_PARAMETERS.put("contactpoint-rank", new FieldParameter("contactpoint-rank", "rank", Integer.class, 
+				Arrays.asList(),
+				Arrays.asList(
+						SearchParameter.Comparator.AP, 
+						SearchParameter.Comparator.EB, 
+						SearchParameter.Comparator.SA, 
+						SearchParameter.Comparator.EQ, 
+						SearchParameter.Comparator.NE, 
+						SearchParameter.Comparator.LE, 
+						SearchParameter.Comparator.LT, 
+						SearchParameter.Comparator.GE, 
+						SearchParameter.Comparator.GT 
+						),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContactPoint.class));
+		// contact - patient contacts (guardian, friends, parteners etc)
+		SUPPORTED_PARAMETERS.put("contact", new GroupParameter("contact", "contacts", String.class, 
+				new String[] {"contact-name", "contact-relationship", "contact-gender", "contact-address", "contact-telecom"},
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContact.class));
+		SUPPORTED_PARAMETERS.put("contact-name", new FieldParameter("contact-name", "name", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContact.class));
+		SUPPORTED_PARAMETERS.put("contact-relationship", new FieldParameter("contact-relationship", "relationship", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContact.class));
+		SUPPORTED_PARAMETERS.put("contact-gender", new FieldParameter("contact-gender", "gender", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContact.class));
+		SUPPORTED_PARAMETERS.put("contact-address", new FieldParameter("contact-address", "address", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContact.class));
+		SUPPORTED_PARAMETERS.put("contact-telecom", new FieldParameter("contact-telecom", "telecom", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientContact.class));
+		// codeable concept
+		SUPPORTED_PARAMETERS.put("codeable", new GroupParameter("codeable", "maritalStatus", String.class, new String[] {"codeable-text"},
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientCodeableConcept.class));
+		SUPPORTED_PARAMETERS.put("codeable-text", new FieldParameter("codeable-text", "txt", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientCodeableConcept.class));
+		// reference
+		SUPPORTED_PARAMETERS.put("reference", new GroupParameter("reference", "maritalStatus", String.class,
+				new String[] {"reference-reference", "reference-display"},
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientReference.class));
+		SUPPORTED_PARAMETERS.put("reference-reference", new FieldParameter("reference", "reference", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientReference.class));
+		SUPPORTED_PARAMETERS.put("reference-display", new FieldParameter("display", "display", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientReference.class));
+		// communication
+		SUPPORTED_PARAMETERS.put("communication", new GroupParameter("communication", "communications", String.class,
+				new String[] {"communication-language", "communication-preferred"},
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientCommunication.class));
+		SUPPORTED_PARAMETERS.put("communication-language", new FieldParameter("communication-language", "language", String.class, 
+				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientCommunication.class));
+		SUPPORTED_PARAMETERS.put("communication-preferred", new FieldParameter("communication-preferred", "preferred", Boolean.class, 
+				Arrays.asList(
+						SearchParameter.Modifier.TEXT, 
+						SearchParameter.Modifier.ABOVE, 
+						SearchParameter.Modifier.BELOW, 
+						SearchParameter.Modifier.NOT, 
+						SearchParameter.Modifier.IN, 
+						SearchParameter.Modifier.NOT_IN, 
+						SearchParameter.Modifier.OFTYPE),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.PatientCommunication.class));
 		// human name
 		SUPPORTED_PARAMETERS.put("name", new GroupParameter("name", "names", String.class, new String[] {"given", "family", "prefix", "suffix"},
 				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
@@ -151,6 +257,10 @@ public class SearchParameterRegistry {
 		// resource level parameters
 		SUPPORTED_PARAMETERS.put("id", new FieldParameter("id", "id", String.class, 
 				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
+				Arrays.asList(),
+				new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
+		SUPPORTED_PARAMETERS.put("_text", new FieldParameter("txt", "txt", String.class, 
+				Arrays.asList(SearchParameter.Modifier.CONTAINS),
 				Arrays.asList(),
 				new String[] {"Patient"}, com.frt.dr.model.base.Patient.class));
 		SUPPORTED_PARAMETERS.put("active", new FieldParameter("active", "active", Boolean.class, 
