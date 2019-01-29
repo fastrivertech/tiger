@@ -60,7 +60,8 @@ public class Resource implements Serializable {
     @Column(name = "system_id")            
 	private String systemId; 
 
-	@Lob
+	//@Lob
+	@Size(max=1024)
     @Column(name = "meta")                        
 	private String meta;
 	

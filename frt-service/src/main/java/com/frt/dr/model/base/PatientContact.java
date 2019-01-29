@@ -52,19 +52,23 @@ public class PatientContact implements Serializable, ResourceComplexType {
 	@Column(name = "gender")
 	private String gender;
 
-	@Lob
+	//@Lob
+	@Size(max = 256)
 	@Column(name = "relationship")
 	private String relationship;
 
-	@Lob
+	//@Lob
+	@Size(max = 1024)
 	@Column(name = "name")
 	private String name;
 
-	@Lob
+	//@Lob
+	@Size(max = 2048)
 	@Column(name = "telecom")
 	private String telecom;
 
-	@Lob
+	//@Lob
+	@Size(max = 2048)
 	@Column(name = "address")
 	private String address;
 

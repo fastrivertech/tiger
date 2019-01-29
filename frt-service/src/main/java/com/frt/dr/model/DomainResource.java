@@ -26,6 +26,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.validation.constraints.Size;
 
 /**
  *  DomainResource class
@@ -49,7 +50,8 @@ public class DomainResource extends Resource {
     @Column(name = "domain_resource_id", insertable = false, updatable=false)
     private BigInteger domainResourceId;
 	
-    @Lob
+    //@Lob
+    @Size(max=2048)
     @Column(name = "txt")                        
 	private String txt;
 	

@@ -206,21 +206,4 @@ public class ReadResourceOperation extends ResourceOperation {
 		
 	}
 
-	private Map<String, String> trimParams(MultivaluedMap params) {
-		Map<String, String> ret = new HashMap<String, String>();
-		Iterator pit = params.keySet().iterator();
-		while (pit.hasNext()) {
-			Object key = pit.next();
-			Object value = params.get(key);
-			if (value instanceof LinkedList<?>) {
-				// debugging shows value could be LinkedList
-				ret.put(key.toString(), ((LinkedList<?>)value).get(0).toString());
-			}
-			else {
-				// assume it is string or primitive
-				ret.put(key.toString(), value.toString());
-			}
-		}
-		return ret;
-	}
 }

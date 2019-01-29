@@ -56,7 +56,8 @@ public class PatientReference implements Serializable, ResourceComplexType {
 	@Column(name = "reference")
 	private String reference;
 
-	@Lob
+//	@Lob
+	@Size(max = 4096)
 	@Column(name = "identifier")
 	private String identifier;
 

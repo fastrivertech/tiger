@@ -26,6 +26,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import com.frt.dr.model.BackboneElement;
@@ -52,7 +53,8 @@ public class PatientCommunication implements Serializable, ResourceComplexType, 
 	@Column(name = "preferred")
 	private Boolean preferred;
 
-	@Lob
+	//@Lob
+	@Size(max=256)
 	@Column(name = "language")
 	private String language;
 

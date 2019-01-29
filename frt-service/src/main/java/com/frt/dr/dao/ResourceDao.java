@@ -471,37 +471,6 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		return where;
 	}
 
-	private String getPlaceHolder(int i, ActualParameter ap) {
-		StringBuilder sb = new StringBuilder(ap.getBaseName());
-		String m = ap.getModifier()!=null?ap.getModifier():"";
-		String c = ap.getComparator()!=null&&ap.getComparator().size()>0?ap.getComparator().get(i):"";
-		sb.append("_").append(m).append(c).append("_").append(i);
-		return sb.toString();
-	}
-
-	/**
-	 * helper - gen SQL String column LIKE pattern
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private String convertToLikePattern(String value) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("%");
-		sb.append(value);
-		sb.append("%");
-		return sb.toString();
-	}
-
-	private String[] parseParamName(String pn) {
-		String[] parts = pn.split(SearchParameterRegistry.PARAM_MODIFIER_DELIMETER);
-		if (parts.length != 1 && parts.length != 2) {
-			throw new IllegalArgumentException(
-					"Malformed parameter name: " + pn + ", parameter name format: <name> or <name>:<modifier>.");
-		}
-		return parts;
-	}
-
 	/**
 	 * parse query parameters into actual parameters where name, type, value,
 	 * comparator, modifier etc are validated and transformed into form that is easy
@@ -517,13 +486,10 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		List<ActualParameter> actualParams = null;
 		ActualParameter actualParam = null;
 		for (String epname : entityParamNames) {
-			Iterator it = queryParams.keySet().iterator();
+			Iterator<String> it = queryParams.keySet().iterator();
 			while (it.hasNext()) {
 				String key = (String) it.next();
 				List<String> mValues = (List<String>) queryParams.get(key);
-				// }
-				// for (Map.Entry<String, String> e : queryParams.entrySet()) {
-				// String key = e.getKey();
 				String[] name_parts = parseParamName(key);
 				String baseName = name_parts[0];
 				String value = mValues.get(0); // get first value
@@ -688,6 +654,37 @@ public class ResourceDao extends BaseDao<Resource, String> {
 					"Numeric parameter of type :" + type.getCanonicalName() + " not supported yet, value=" + value);
 		}
 		return parsedValue;
+	}
+
+	private String getPlaceHolder(int i, ActualParameter ap) {
+		StringBuilder sb = new StringBuilder(ap.getBaseName());
+		String m = ap.getModifier()!=null?ap.getModifier():"";
+		String c = ap.getComparator()!=null&&ap.getComparator().size()>0?ap.getComparator().get(i):"";
+		sb.append("_").append(m).append(c).append("_").append(i);
+		return sb.toString();
+	}
+
+	/**
+	 * helper - gen SQL String column LIKE pattern
+	 * 
+	 * @param value
+	 * @return
+	 */
+	private String convertToLikePattern(String value) {
+		StringBuilder sb = new StringBuilder();
+		sb.append("%");
+		sb.append(value);
+		sb.append("%");
+		return sb.toString();
+	}
+
+	private String[] parseParamName(String pn) {
+		String[] parts = pn.split(SearchParameterRegistry.PARAM_MODIFIER_DELIMETER);
+		if (parts.length != 1 && parts.length != 2) {
+			throw new IllegalArgumentException(
+					"Malformed parameter name: " + pn + ", parameter name format: <name> or <name>:<modifier>.");
+		}
+		return parts;
 	}
 
 	class ActualParameter {

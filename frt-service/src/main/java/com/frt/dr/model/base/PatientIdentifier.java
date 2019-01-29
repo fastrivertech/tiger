@@ -57,7 +57,6 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
 
     @Lob
     @Column(name = "type")                                    
-  //private Clob type;
     private String type;
 
     @Size(max = 128)    
@@ -70,7 +69,6 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
 
     @Lob
     @Column(name = "period")                        
-  //private Clob period;
     private String period;
     
     @Lob
