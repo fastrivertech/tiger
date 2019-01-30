@@ -116,10 +116,6 @@ public class HAPIDataTypeParserTest {
 	
 	@Before
 	public void setUp() {
-		System.setProperty("frt.persist.store.derby", "TRUE");
-		System.out.println("frt.persist.store.derby ==> TRUE");
-//		FhirContext context = FhirContext.forDstu3();
-//		parser = (ca.uhn.fhir.parser.JsonParser) context.newJsonParser();
 		mapper = new BaseMapper() {
 
 			@Override

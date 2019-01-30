@@ -54,12 +54,9 @@ public class PatientIdentifierMapper extends BaseMapper {
 			frt.setUse(root.get("use")!=null?root.get("use").getAsString():null);
 			frt.setValue(root.get("value")!=null?root.get("value").getAsString():null);
 			frt.setSystem(root.get("system")!=null?root.get("system").getAsString():null);
-
-			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
-				frt.setPeriod(root.getAsJsonObject("period")!=null?root.getAsJsonObject("period").toString():null);
-				frt.setType(root.getAsJsonObject("type")!=null?root.getAsJsonObject("type").toString():null);
-				frt.setAssigner(root.getAsJsonObject("assigner")!=null?root.getAsJsonObject("assigner").toString():null);
-			}
+			frt.setPeriod(root.getAsJsonObject("period")!=null?root.getAsJsonObject("period").toString():null);
+			frt.setType(root.getAsJsonObject("type")!=null?root.getAsJsonObject("type").toString():null);
+			frt.setAssigner(root.getAsJsonObject("assigner")!=null?root.getAsJsonObject("assigner").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Identifier")) {
 			throw new IllegalStateException("PatientIdentifierMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());

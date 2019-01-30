@@ -77,6 +77,7 @@
 	<dependency>
         <groupId>com.splicemachine</groupId>
         <artifactId>db-client</artifactId>
+    	<version>2.7.0.1852</version>
     </dependency>       	
 	<!-- gson for loading search_parameters.json -->
 	<dependency>

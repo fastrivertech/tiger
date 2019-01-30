@@ -58,13 +58,10 @@ public class PatientHumanNameMapper extends BaseMapper {
 			frt.setUse(root.get("use")!=null?root.get("use").getAsString():null);
 			frt.setFamily(root.get("family")!=null?root.get("family").getAsString():null);
 			frt.setTxt(root.get("text")!=null?root.get("text").getAsString():null);
-
-			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
-				frt.setGiven(root.get("given")!=null?root.get("given").toString():null);
-				frt.setPrefix(root.get("prefix")!=null?root.get("prefix").toString():null);
-				frt.setSuffix(root.get("suffix")!=null?root.get("suffix").toString():null);
-				frt.setPeriod(root.get("period")!=null?root.get("period").toString():null);
-			}
+			frt.setGiven(root.get("given")!=null?root.get("given").toString():null);
+			frt.setPrefix(root.get("prefix")!=null?root.get("prefix").toString():null);
+			frt.setSuffix(root.get("suffix")!=null?root.get("suffix").toString():null);
+			frt.setPeriod(root.get("period")!=null?root.get("period").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientHumanName")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.HumanName")) {
 			throw new IllegalStateException("PatientHumanNameMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());

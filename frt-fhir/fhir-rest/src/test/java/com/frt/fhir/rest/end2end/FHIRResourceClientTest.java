@@ -60,9 +60,6 @@ public class FHIRResourceClientTest {
 	
 	@Before
 	public void setUp() throws Exception {
-		System.setProperty("frt.persist.store.derby", "TRUE");
-		System.out.println("frt.persist.store.derby ==> TRUE");
-
 		setUpOk = true;
 		
 		FhirContext context = FhirContext.forDstu3();

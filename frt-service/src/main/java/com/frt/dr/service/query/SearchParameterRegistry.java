@@ -53,17 +53,16 @@ public class SearchParameterRegistry {
 	public static final DateFormat[] DF_FMT_SUPPORTED = new DateFormat[] {DF_DATE_FMT_yyyy_MM_dd, DF_DATE_FMT_yyyy_s_MM_s_dd, DF_DATE_FMT_dd_s_MM_s_yyyy, DF_DATE_FMT_yyyy_MM_dd_T_HH_mm_ss};
 	public static final String PARAM_MODIFIER_DELIMETER = ":";
 
-	// resource type to JPA entity
-	public static final Map<String, Class<?>> RESOURCE_ENTITY_MAP = Map.ofEntries(
-			Map.entry("Patient", com.frt.dr.model.base.PatientHumanName.class)
-			);
 	// join column(s) between resource table and complex type tables
 	public static final Map<Class<?>, Map<Class<?>, String[]>> ENTITY_ENTITY_JOINATTS = Map.ofEntries(
 			Map.entry(com.frt.dr.model.base.Patient.class, 
 				Map.ofEntries(
 					Map.entry(com.frt.dr.model.base.PatientHumanName.class, new String[] {"names"}),
 					Map.entry(com.frt.dr.model.base.PatientIdentifier.class, new String[] {"identifiers"}),
-					Map.entry(com.frt.dr.model.base.PatientAddress.class, new String[] {"addresses"})
+					Map.entry(com.frt.dr.model.base.PatientAddress.class, new String[] {"addresses"}),
+					Map.entry(com.frt.dr.model.base.PatientContact.class, new String[] {"contacts"}),
+					Map.entry(com.frt.dr.model.base.PatientCommunication.class, new String[] {"communications"}),
+					Map.entry(com.frt.dr.model.base.PatientContactPoint.class, new String[] {"telecoms"})
 				)
 			)
 		);
@@ -91,7 +90,7 @@ public class SearchParameterRegistry {
 				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
 				Arrays.asList(),
 				new String[] {"Patient"}, com.frt.dr.model.base.PatientContactPoint.class));
-		SUPPORTED_PARAMETERS.put("contactpoint-system", new FieldParameter("contactpoint-system", "system", String.class, 
+		SUPPORTED_PARAMETERS.put("contactpoint-system", new FieldParameter("contactpoint-system", "cp_system", String.class, 
 				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
 				Arrays.asList(),
 				new String[] {"Patient"}, com.frt.dr.model.base.PatientContactPoint.class));
@@ -103,7 +102,7 @@ public class SearchParameterRegistry {
 				Arrays.asList(SearchParameter.Modifier.EXACT, SearchParameter.Modifier.CONTAINS),
 				Arrays.asList(),
 				new String[] {"Patient"}, com.frt.dr.model.base.PatientContactPoint.class));
-		SUPPORTED_PARAMETERS.put("contactpoint-rank", new FieldParameter("contactpoint-rank", "rank", Integer.class, 
+		SUPPORTED_PARAMETERS.put("contactpoint-rank", new FieldParameter("contactpoint-rank", "cp_rank", Integer.class, 
 				Arrays.asList(),
 				Arrays.asList(
 						SearchParameter.Comparator.AP, 
@@ -332,10 +331,6 @@ public class SearchParameterRegistry {
 		return ENTITY_ENTITY_JOINATTS.get(resourceClazz).get(refClazz);
 	}
 
-	public static Class<?> getResourceEntity(String type) {
-		return RESOURCE_ENTITY_MAP.get(type);
-	}
-	
 	public static SearchParameter getParameterDescriptor(String pname) {
 		return SUPPORTED_PARAMETERS.get(pname);
 	}

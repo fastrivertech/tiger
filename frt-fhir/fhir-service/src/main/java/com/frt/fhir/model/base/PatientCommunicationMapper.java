@@ -53,9 +53,7 @@ public class PatientCommunicationMapper extends BaseMapper {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_COMMUNICATION);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			frt.setPreferred(root.get("preferred")!=null?root.get("preferred").getAsBoolean():null);
-			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
-				frt.setLanguage(root.getAsJsonObject("language")!=null?root.getAsJsonObject("language").toString():null);
-			}
+			frt.setLanguage(root.getAsJsonObject("language")!=null?root.getAsJsonObject("language").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientCommunication")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.BackboneElement")) {
 			throw new IllegalStateException("PatientCommunicationMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());

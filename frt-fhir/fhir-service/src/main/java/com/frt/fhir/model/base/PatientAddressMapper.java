@@ -62,10 +62,7 @@ public class PatientAddressMapper extends BaseMapper {
 			frt.setType(root.get("type")!=null?root.get("type").getAsString():null);
 			frt.setUse(root.get("use")!=null?root.get("use").getAsString():null);
 			frt.setTxt(root.get("txt")!=null?root.get("txt").getAsString():null);
-
-			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
-				frt.setPeriod(root.getAsJsonObject("period")!=null?root.getAsJsonObject("period").toString():null);
-			}
+			frt.setPeriod(root.getAsJsonObject("period")!=null?root.getAsJsonObject("period").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientAddress")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Address")) {
 			throw new IllegalStateException("PatientAddressMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());

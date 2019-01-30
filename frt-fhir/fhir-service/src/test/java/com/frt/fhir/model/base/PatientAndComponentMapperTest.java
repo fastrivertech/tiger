@@ -25,8 +25,6 @@ import ca.uhn.fhir.context.FhirContext;
 public class PatientAndComponentMapperTest {
 	@Before
 	public void setUp() {
-		System.setProperty("frt.persist.store.derby", "TRUE");
-		System.out.println("frt.persist.store.derby ==> TRUE");
 	}
 	@Test
 	public void test() {

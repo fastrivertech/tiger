@@ -55,11 +55,9 @@ public class PatientReferenceMapper extends BaseMapper {
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			frt.setReference(root.get("reference") != null ? root.get("reference").getAsString() : null);
 			frt.setDisplay(root.get("display") != null ? root.get("display").getAsString() : null);
-			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
-				frt.setIdentifier(
-						root.getAsJsonObject("identifier") != null ? root.getAsJsonObject("identifier").toString()
-								: null);
-			}
+			frt.setIdentifier(
+					root.getAsJsonObject("identifier") != null ? root.getAsJsonObject("identifier").toString()
+							: null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientReference")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Reference")) {
 			throw new IllegalStateException("PatientReference.map() called source=" + sourceClz.getCanonicalName()

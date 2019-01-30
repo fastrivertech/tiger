@@ -55,14 +55,12 @@ public class PatientContactMapper extends BaseMapper {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_CONTACT);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			frt.setGender(root.get("gender")!=null?root.get("gender").getAsString():null);
-			if (System.getProperty("frt.persist.store.derby", "false").equalsIgnoreCase("TRUE")) {
-				frt.setRelationship(root.get("relationship")!=null?root.get("relationship").toString():null);
-				frt.setName(root.get("name")!=null?root.get("name").toString():null);
-				frt.setTelecom(root.get("telecom")!=null?root.get("telecom").toString():null);
-				frt.setAddress(root.get("address")!=null?root.get("address").toString():null);
-				frt.setPeriod(root.get("period")!=null?root.get("period").toString():null);
-				frt.setOrganization(root.get("organization")!=null?root.get("organization").toString():null);
-			}
+			frt.setRelationship(root.get("relationship")!=null?root.get("relationship").toString():null);
+			frt.setName(root.get("name")!=null?root.get("name").toString():null);
+			frt.setTelecom(root.get("telecom")!=null?root.get("telecom").toString():null);
+			frt.setAddress(root.get("address")!=null?root.get("address").toString():null);
+			frt.setPeriod(root.get("period")!=null?root.get("period").toString():null);
+			frt.setOrganization(root.get("organization")!=null?root.get("organization").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientContact")
 				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.BackboneElement")) {
 			throw new IllegalStateException("PatientContactMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
