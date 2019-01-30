@@ -11,7 +11,6 @@ set MAVEN_OPTS=-Xmx512m
 REM Apache Tomcat Home
 set CATALINA_HOME=C:\apache\tomcat\apache-tomcat-9.0.12
 set CATALINA_BASE=C:\apache\tomcat\apache-tomcat-9.0.12
-set CATALINA_OPTS="-Dfrt.persist.store.derby=true"
 
 REM Apache Derby Home
 set DERBY_HOME=C:\apache\derby\db-derby-10.14.2.0
