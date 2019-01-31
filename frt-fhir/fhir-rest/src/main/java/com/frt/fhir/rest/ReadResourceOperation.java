@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -32,7 +31,6 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
-
 import com.frt.fhir.model.base.BaseMapper;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.rest.validation.OperationValidator;
@@ -79,12 +77,13 @@ public class ReadResourceOperation extends ResourceOperation {
 	}	
 	
 	/**
-	 * Get FHIR Resource by its Id
-	 * GET [base]/frt-fhir-rest/1.0/Patient?_id=[id]
+	 * Get FHIR Resource by its Id and search string 
+	 * GET [base]/Patient?_id=[id] or [base]/Patient/given=eve
 	 * @param type Resource type, e.g., Patient
 	 * @param _id Resource logical id, e.g., 1356
 	 * @param _format json or xml, json supported
 	 * @param _summary true for retrieving summary of Resource, false for retrieving entire Resource; default false
+	 * @param uriInfo search string, [base]/Patient?given=eve, [base]/Patient?given=Allison&gender=female    
 	 * @return FHIR Resource retrieved
 	 * @status 200 Retrieved Success
      * @status 400 Bad Request - Resource could not be parsed or failed basic FHIR validation rules
@@ -102,7 +101,7 @@ public class ReadResourceOperation extends ResourceOperation {
 	
 	/**
 	 * Get FHIR Resource by its Id
-	 * GET [base]/frt-fhir-rest/1.0/Patient/[id]
+	 * GET [base]/Patient/[id]
 	 * @param type Resource type, e.g., Patient
 	 * @param id Resource logical id, e.g., 1356
 	 * @param _format json or xml, default josn and json supported
@@ -122,44 +121,47 @@ public class ReadResourceOperation extends ResourceOperation {
 		return readResource(type, id, _format, _summary, null);
 	}
 
-	private <R extends DomainResource> Response readResource(String type, String id, String _format, String _summary, UriInfo uriInfo) {
+	private <R extends DomainResource> Response readResource(String type, 
+															 String id, 
+															 String _format, 
+															 String _summary, 
+															 UriInfo uriInfo) {
 		try {
 			logger.info(localizer.x("ReadResourceOperation reads a current resource"));		
 			// Request
-			MultivaluedMap parameters = uriInfo!=null?uriInfo.getQueryParameters():null;
-//			if (params!=null) {
-//				parameters = trimParams(params);
-//			}
+			MultivaluedMap parameters = uriInfo != null? uriInfo.getQueryParameters() : null;
+
 			// Response includes ETag with versionId and Last-Modified
 			// 410 Gone - Resource deleted 
 			// 404 Not Found - Unknown resource 
 			OperationValidator.validateFormat(_format);
 			OperationValidator.validateSummary(_summary);
+			
 			// for now, id and params can not be both null/empty
 			// either id not null - a fetch by id, might with restriction expressed in params
 			// or params not empty - a search, might be with id in params : e.g. id=909901
 			OperationValidator.validateParameters(id, parameters);
 			
-			String message;
 			if (streamService.enabled()) {
 				logger.info(localizer.x("write [" + type + "] ReadOperation message to fhir stream"));
 			    streamService.write( "GET [base]/" + type + "/" + id,  id);
 				List<String> bodys = streamService.read();
-				logger.info(localizer.x("read [" + type + "] ReadOperation message from fhir stream"));				
-				message = bodys.get(0);
-			} else {
-				message = id;
-			}			
+				logger.info(localizer.x("read [" + type + "] ReadOperation message from fhir stream"));	
+							
+			} 		
 			
 			String resourceInJson = null;
-			if (message!=null) {
-				logger.info(localizer.x("read a " + type + " by its id[" + message + "] ..."));		
-				Optional<R> found = fhirService.read(type, message);
+			if (id != null) {
+				
+				logger.info(localizer.x("read a " + type + " by its id[" + id + "] ..."));		
+				Optional<R> found = fhirService.read(type, id);
 				if (found.isPresent()) {
 					resourceInJson = parser.serialize(found.get());      
 					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 				}
+				
 			} else {
+				
 				logger.info(localizer.x("search resource of type: " + type + " with parameters [" + parameters.toString() + "] ..."));		
 				Optional<List<R>> found = fhirService.read(type, parameters);
 				if (found.isPresent()) {
@@ -182,7 +184,7 @@ public class ReadResourceOperation extends ResourceOperation {
 			}
 
 			// report error
-			String error = message!=null?"invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
+			String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
