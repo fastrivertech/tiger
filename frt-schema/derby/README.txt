@@ -3,6 +3,8 @@ Apache Derby Database
 Download Apache Derby 10.14.2.0 from https://db.apache.org/derby/
 Install to C:\apache\derby\db-derby-10.14.2.0
 
+default user: APP/null or app/null
+
 1. Embedded Mode
 1.1 SQL command
 	env.bat
