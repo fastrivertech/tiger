@@ -36,8 +36,8 @@
 			<!-- for  network derby -->
 		    <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/tiger_db"/>	
-            <property name="javax.persistence.jdbc.user" value="APP"/>
-            <property name="javax.persistence.jdbc.password" value="null"/>
+            <property name="javax.persistence.jdbc.user" value="frt"/>
+            <property name="javax.persistence.jdbc.password" value="frt"/>
 			<!-- eclipselink.ddl-generation: none/create-tables -->
             <!-- property name="eclipselink.ddl-generation" value="none"/-->		
             <property name="eclipselink.ddl-generation" value="none"/>		
