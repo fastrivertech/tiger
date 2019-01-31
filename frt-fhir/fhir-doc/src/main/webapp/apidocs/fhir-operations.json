@@ -34,7 +34,7 @@
         "paramType" : "query",
         "name" : "_summary"
       } ],
-      "summary" : "Get FHIR Resource by its Id\n GET [base]/frt-fhir-rest/1.0/Patient?_id=[id]",
+      "summary" : "Get FHIR Resource by its Id and search string \n GET [base]/Patient?_id=[id] \n GET [base]/Patient?given=eve",
       "responseMessages" : [ {
         "code" : 200,
         "message" : "Retrieved Success"
@@ -108,7 +108,7 @@
         "paramType" : "query",
         "name" : "_summary"
       } ],
-      "summary" : "Get FHIR Resource by its Id\n GET [base]/frt-fhir-rest/1.0/Patient/[id]",
+      "summary" : "Get FHIR Resource by its Id\n GET [base]/Patient/[id]",
       "responseMessages" : [ {
         "code" : 200,
         "message" : "Retrieved Success"
