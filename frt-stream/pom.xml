@@ -27,10 +27,6 @@
   <version>${frt.stream.version}</version>
   <name>FRT STREAM ${frt.stream.version}</name>
   <description>Fast River STREAM SERVICE ${frt.stream.version}</description>
-
-  <properties>
-	<org.apache.kafka.version>2.0.0</org.apache.kafka.version>
-  </properties>  
   
   <build>
     <plugins>
