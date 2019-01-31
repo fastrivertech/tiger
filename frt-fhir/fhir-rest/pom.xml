@@ -33,15 +33,18 @@
     <finalName>frt-fhir-rest</finalName>
     <plugins>
 		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-compiler-plugin</artifactId>
-			<version>${maven.compiler.plugin.version}</version>
 			<configuration>
+				<!-- compiler does not recognize 1.11 yet -->
+				<source>1.10</source>
+				<target>1.10</target>
 				<release>${maven.compiler.plugin.version.release}</release>
 			</configuration>
 		</plugin>	  
 		<plugin>
+		    <groupId>org.apache.maven.plugins</groupId>		
 			<artifactId>maven-war-plugin</artifactId>
-			<version>${maven.war.plugin.version}</version>
 			<configuration>
 				<classesClassifier>classes</classesClassifier>
 				<packagingExcludes>WEB-INF/lib/jersey-server-1.9.jar</packagingExcludes>				
