@@ -32,10 +32,12 @@
     <finalName>frt-fhir-service</finalName>
     <plugins>
       <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>${maven.compiler.plugin.version}</version>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-compiler-plugin</artifactId>
         <configuration>
-          <release>${maven.compiler.plugin.version.release}</release>
+			<source>1.10</source>
+			<target>1.10</target>
+			<release>${maven.compiler.plugin.version.release}</release>
         </configuration>
       </plugin>	  
     </plugins>

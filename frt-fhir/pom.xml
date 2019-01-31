@@ -147,7 +147,18 @@
 				<groupId>org.glassfish.jersey.inject</groupId>
 				<artifactId>jersey-hk2</artifactId>
 				<version>${org.glassfish.jersey.inject.version}</version>
-			</dependency>			
+			</dependency>		
+			<!-- maven plugins -->	
+			<dependency>			
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>${maven.compiler.plugin.version}</version>
+			</dependency>					
+			<dependency>			
+				<groupId>org.apache.maven.plugins</groupId>		
+				<artifactId>maven-war-plugin</artifactId>
+				<version>${maven.war.plugin.version}</version>
+			</dependency>								
 			<!-- junit -->
 			<dependency>
 				<groupId>junit</groupId>
