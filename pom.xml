@@ -37,7 +37,7 @@
 	<spring.data.version>1.4.6.RELEASE</spring.data.version> 	
     <spring.boot.version>2.1.0.RELEASE</spring.boot.version> 	
 	<!-- eclipselink -->
-	<org.eclipse.version>2.7.2</org.eclipse.version>
+	<org.eclipse.version>2.7.4</org.eclipse.version>
 	<!-- apache kafka -->
 	<org.apache.kafka.version>2.0.0</org.apache.kafka.version>	
 	<!-- apache derby -->
