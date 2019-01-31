@@ -28,15 +28,7 @@
   <version>${frt.fhir.rest.version}</version>
   <name>FRT FHIR REST API ${frt.fhir.rest.version}</name>
   <description>Fast River FHIR REST API ${frt.fhir.rest.version}</description>
-  
-  <properties>
-	<jersey.version>2.27</jersey.version>
-	<javax.ws.rs.version>2.1</javax.ws.rs.version>	
-	<javax.servlet.versoin>4.0.1</javax.servlet.versoin>
-	<org.glassfish.jersey.containers.version>2.27</org.glassfish.jersey.containers.version>
-	<org.glassfish.jersey.inject.version>2.27</org.glassfish.jersey.inject.version>
-  </properties>  
-  
+
   <build>
     <finalName>frt-fhir-rest</finalName>
     <plugins>
