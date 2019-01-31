@@ -25,8 +25,8 @@
 			<!-- for splice machine 
 			<property name="javax.persistence.jdbc.driver" value="com.splicemachine.db.jdbc.ClientDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:splice://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:1527/splicedb"/>
-            <property name="javax.persistence.jdbc.user" value="YourUserId"/>
-            <property name="javax.persistence.jdbc.password" value="YourPassword"/>
+            <property name="javax.persistence.jdbc.user" value="frt"/>
+            <property name="javax.persistence.jdbc.password" value="frt"/>
 			-->
 			<!-- for embedded derby -->
 		    <!--
