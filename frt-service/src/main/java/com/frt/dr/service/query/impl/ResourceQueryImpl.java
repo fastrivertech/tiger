@@ -162,7 +162,7 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 				Predicate expression = cb.disjunction();
 				expression = addCriteria(expression, cb, null, join, expandedParams, false);
 				// AND'd to the main expression
-				cb.and(where, expression);
+				where = cb.and(where, expression);
 				continue;
 			}
 			
@@ -176,7 +176,7 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 				throw new IllegalArgumentException("Missing required parameters when generating query expression.");
 			}
 
-			List valObjs = ap.getValueObject();
+			List<Object> valObjs = ap.getValueObject();
 			term = cb.conjunction();
 
 			// value can be multiple - if multiple values present for a param, the semantics is AND'd
