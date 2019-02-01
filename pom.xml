@@ -29,7 +29,7 @@
 	<frt.fhir.version>1.0.0-SNAPSHOT</frt.fhir.version>
 	<frt.stream.version>1.0.0-SNAPSHOT</frt.stream.version>	
 	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
-	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>
+	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>	
 	<frt.datalake.version>1.0.0-SNAPSHOT</frt.datalake.version>
 	<!-- splice machine -->
 	<com.splicemachine.version>2.7.0.1852</com.splicemachine.version>
@@ -54,6 +54,7 @@
 	<maven.compiler.plugin.version>3.7.0</maven.compiler.plugin.version>
 	<maven.compiler.plugin.version.release>10</maven.compiler.plugin.version.release>
 	<maven.war.plugin.version>3.2.2</maven.war.plugin.version>	
+	<maven.assembly.plugin.version>2.3</maven.assembly.plugin.version>
 	<!-- junit -->
 	<junit.version>4.12</junit.version>	
   </properties>  
@@ -71,6 +72,7 @@
     <module>frt-datalake</module>	
     <module>frt-service</module>    
 	<module>frt-fhir</module>	
+	<module>frt-package</module>		
   </modules>
   	
   <dependencyManagement>
