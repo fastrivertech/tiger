@@ -25,7 +25,7 @@
 	<artifactId>frt-fhir-doc</artifactId>
 	<packaging>war</packaging>  
 	<version>${frt.fhir.service.version}</version>
-	<name>FRT FHIR REST API Doc</name>
+	<name>FRT FHIR REST API Doc ${frt.fhir.service.version}</name>
 	<description>Fast River FHIR API Documentation ${frt.fhir.service.version}</description>
 
     <properties>
