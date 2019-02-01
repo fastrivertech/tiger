@@ -36,7 +36,7 @@
   		<version>${maven.assembly.plugin.version}</version>
   		<configuration>
     		<descriptor>./src/main/assembly/dist.xml</descriptor>
-    		<finalName>frt-service-${frt.version}</finalName>
+    		<finalName>frt-service-package-${frt.version}</finalName>
     		<outputDirectory>target</outputDirectory>  
  			<appendAssemblyId>false</appendAssemblyId>    			
   		</configuration>
