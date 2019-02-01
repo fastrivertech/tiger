@@ -21,6 +21,8 @@ import javax.ws.rs.core.MultivaluedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import com.frt.dr.service.query.ActualParameter;
+
 import org.springframework.data.repository.Repository;
 
 /**
@@ -46,6 +48,6 @@ public abstract class BaseDao<T,ID> implements Repository {
 
     public abstract Optional<T> findById(ID id) throws DaoException;
     
-    public abstract Optional<List<T>> query(Class<T> resourceClazz, MultivaluedMap params) throws DaoException;
+    public abstract Optional<List<T>> query(Class<T> resourceClazz, Map<Class<?>, List<ActualParameter>> parameters) throws DaoException;
     
 }

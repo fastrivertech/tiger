@@ -27,6 +27,7 @@ import com.frt.dr.service.RepositoryApplication;
 import com.frt.dr.service.RepositoryContext;
 import com.frt.dr.service.RepositoryContextException;
 import com.frt.dr.service.RepositoryServiceException;
+import com.frt.dr.service.query.ActualParameter;
 
 /**
  * RepositoryApplication class
@@ -59,13 +60,13 @@ public class FhirService {
 		}
 	}
 
-	public <R extends DomainResource> Optional<List<R>> read(@Nonnull String type,  MultivaluedMap params) 
+	public <R extends DomainResource> Optional<List<R>> read(@Nonnull String type,  Map<Class<?>, List<ActualParameter>> parameters) 
 			throws FhirServiceException {
 			Optional<List<R>> retVal = Optional.empty();
 			try {
 				ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
 				ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
-				List resources = repository.read(resourcePair.getFrt(), params);
+				List resources = repository.read(resourcePair.getFrt(), parameters);
 				List rlist = null;
 				if (resources!=null) {
 					rlist = new ArrayList();

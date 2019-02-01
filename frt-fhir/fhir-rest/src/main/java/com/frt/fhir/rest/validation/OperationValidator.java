@@ -15,6 +15,8 @@ import java.util.Map;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
+import javax.ws.rs.core.UriInfo;
+
 import com.frt.util.logging.Localization;
 
 /**
@@ -50,10 +52,19 @@ public class OperationValidator {
 	 * @param format mime-type format
 	 * @throws ValidationException throw if the format is invalid
 	 */
+	public static void validateFormat(UriInfo info) throws ValidationException {
+		if (info.getQueryParameters()!=null) {
+			String format = info.getQueryParameters().getFirst("_format");
+			if (format!=null&&!format.isEmpty()) {
+				validateFormat(format);
+			}
+		}
+	}
+
 	public static void validateFormat(String format) throws ValidationException {
 		if (!formats.contains(format)) {
 			throw new ValidationException(localizer.x("invalid _format " + format),
-										  ValidationException.ErrorCode.INVALID_MIME_TYPE);
+					  ValidationException.ErrorCode.INVALID_MIME_TYPE);
 		} 
 	}
 
@@ -63,13 +74,22 @@ public class OperationValidator {
 	 * @param summary
 	 * @throws ValidationException throw if the summary value is invalid
 	 */
-	public static void validateSummary(String summary) throws ValidationException {
-		if (summary == null || !summaries.contains(summary)) {
-			throw new ValidationException(localizer.x("invalid _summary " + summary),
-										  ValidationException.ErrorCode.INVALID_MIME_TYPE);
+	public static void validateSummary(UriInfo info) throws ValidationException {
+		if (info.getQueryParameters()!=null) {
+			String summary = info.getQueryParameters().getFirst("_summary");
+			if (summary!=null&&!summary.isEmpty()) {
+				validateSummary(summary);
+			}
 		}
 	}
 
+	public static void validateSummary(String summary) throws ValidationException {
+		if (!summaries.contains(summary)) {
+			throw new ValidationException(localizer.x("invalid _summary " + summary),
+					  ValidationException.ErrorCode.INVALID_SUMMARY_TYPE);
+		} 
+	}
+	
 	public static void validateId(String id) throws ValidationException {
 		if (id != null) {
 			if (!idPattern.matcher(id).matches()) {
@@ -79,10 +99,4 @@ public class OperationValidator {
 		}
 	}
 
-	public static void validateParameters(String id, Map params) throws ValidationException {
-		if (id == null&&(params==null||params.size()==0)) {
-				throw new ValidationException(localizer.x("invalid id " + id),
-										      ValidationException.ErrorCode.INVALID_QUERY_PARAMS);
-		}
-	}
 }

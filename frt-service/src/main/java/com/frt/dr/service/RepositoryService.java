@@ -12,8 +12,11 @@
 package com.frt.dr.service;
 
 import java.util.List;
+import java.util.Map;
+
 import javax.ws.rs.core.MultivaluedMap;
 import com.frt.dr.model.DomainResource;
+import com.frt.dr.service.query.ActualParameter;
 
 /**
  * RepositoryService Interface
@@ -23,7 +26,7 @@ public interface RepositoryService {
 	<R extends DomainResource> R read(java.lang.Class<?> resourceClazz, String id) 
 		throws RepositoryServiceException;
 	
-	<R extends DomainResource> List<R> query(java.lang.Class<?> resourceClazz, MultivaluedMap params) 
+	<R extends DomainResource> List<R> query(java.lang.Class<?> resourceClazz, Map<Class<?>, List<ActualParameter>> parameters) 
 			throws RepositoryServiceException;
 
 	<R extends DomainResource> R save(java.lang.Class<?> resourceClazz, R resource)

@@ -21,6 +21,7 @@ public class ValidationException extends Exception {
         
     	INVALID_ID("invalid id"),
         INVALID_MIME_TYPE("invalid mime type"),
+        INVALID_SUMMARY_TYPE("invalid summary type"),
         INVALID_QUERY_PARAMS("invalid query parameter(s)"),
         UNKNOWN("unknown");        
     	

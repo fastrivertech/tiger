@@ -23,6 +23,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import com.frt.dr.model.DomainResource;
+import com.frt.dr.service.query.ActualParameter;
 import com.frt.dr.dao.DaoFactory;
 import com.frt.dr.dao.BaseDao;
 import com.frt.dr.dao.DaoException;
@@ -73,7 +74,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 		
 	@Override
-	public <R extends DomainResource> List<R> query(Class<?> resourceClazz, MultivaluedMap params)
+	public <R extends DomainResource> List<R> query(Class<?> resourceClazz, Map<Class<?>, List<ActualParameter>> parameters)
 			throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
@@ -82,7 +83,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
 			dao.setEntityManager(em);
 			
-			Optional<List<R>> resources = dao.query(resourceClazz, params);
+			Optional<List<R>> resources = dao.query(resourceClazz, parameters);
 			if (resources.isPresent()) {
 				return resources.get();
 			}

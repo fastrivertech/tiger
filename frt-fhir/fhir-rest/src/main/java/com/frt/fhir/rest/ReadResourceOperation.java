@@ -10,12 +10,14 @@
  */
 package com.frt.fhir.rest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -31,6 +33,9 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
+
+import com.frt.dr.service.query.ActualParameter;
+import com.frt.dr.service.query.SearchParameterUtils;
 import com.frt.fhir.model.base.BaseMapper;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.rest.validation.OperationValidator;
@@ -87,16 +92,15 @@ public class ReadResourceOperation extends ResourceOperation {
 	 * @return FHIR Resource retrieved
 	 * @status 200 Retrieved Success
      * @status 400 Bad Request - Resource could not be parsed or failed basic FHIR validation rules
+     * Response includes ETag with versionId and Last-Modified
+     * 410 Gone - Resource deleted
+     * 404 Not Found - Unknown resource 
 	 */
 	@GET
 	@Path(ResourcePath.TYPE_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
-	public <R extends DomainResource> Response read(@PathParam("type") final String type,
-			  @PathParam("_id") final String _id,
-			  @QueryParam("_format") @DefaultValue("json") final String _format,
-			  @QueryParam("_summary") @DefaultValue("false") final String _summary,
-			  @Context UriInfo uriInfo) {
-		return readResource(type, _id, _format, _summary, uriInfo);
+	public <R extends DomainResource> Response read(@PathParam("type") final String type, @Context UriInfo uriInfo) {
+		return readResource(type, null, uriInfo);
 	}
 	
 	/**
@@ -109,39 +113,35 @@ public class ReadResourceOperation extends ResourceOperation {
 	 * @return FHIR Resource retrieved
 	 * @status 200 Retrieved Success
      * @status 400 Bad Request - Resource could not be parsed or failed basic FHIR validation rules
+     * Response includes ETag with versionId and Last-Modified
+     * 410 Gone - Resource deleted
+     * 404 Not Found - Unknown resource 
 	 */	
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
 	public <R extends DomainResource> Response read(@PathParam("type") final String type,
-											  @PathParam("id") final String id,
-											  @QueryParam("_format") @DefaultValue("json") final String _format,
-											  @QueryParam("_summary") @DefaultValue("false") final String _summary) {
-		
-		return readResource(type, id, _format, _summary, null);
+											  @PathParam("id") final String id, @Context UriInfo uriInfo) {
+		return readResource(type, id, uriInfo);
 	}
 
-	private <R extends DomainResource> Response readResource(String type, 
-															 String id, 
-															 String _format, 
-															 String _summary, 
-															 UriInfo uriInfo) {
+	private <R extends DomainResource> Response readResource(String type, String id, UriInfo uriInfo) {
 		try {
-			logger.info(localizer.x("ReadResourceOperation reads a current resource"));		
-			// Request
-			MultivaluedMap parameters = uriInfo != null? uriInfo.getQueryParameters() : null;
+			logger.info(localizer.x("ReadResourceOperation reads a current resource"));
+			
+			if (id!=null) {
+				OperationValidator.validateId(id);
+			}
+			
+			OperationValidator.validateFormat(uriInfo);
+			OperationValidator.validateSummary(uriInfo);
+			Map<Class<?>, List<ActualParameter>> parameters = SearchParameterUtils.processParameters(uriInfo.getQueryParameters());
 
 			// Response includes ETag with versionId and Last-Modified
 			// 410 Gone - Resource deleted 
 			// 404 Not Found - Unknown resource 
-			OperationValidator.validateFormat(_format);
-			OperationValidator.validateSummary(_summary);
-			
-			// for now, id and params can not be both null/empty
-			// either id not null - a fetch by id, might with restriction expressed in params
-			// or params not empty - a search, might be with id in params : e.g. id=909901
-			OperationValidator.validateParameters(id, parameters);
-			
+
+			String message;
 			if (streamService.enabled()) {
 				logger.info(localizer.x("write [" + type + "] ReadOperation message to fhir stream"));
 			    streamService.write( "GET [base]/" + type + "/" + id,  id);
@@ -159,9 +159,7 @@ public class ReadResourceOperation extends ResourceOperation {
 					resourceInJson = parser.serialize(found.get());      
 					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 				}
-				
 			} else {
-				
 				logger.info(localizer.x("search resource of type: " + type + " with parameters [" + parameters.toString() + "] ..."));		
 				Optional<List<R>> found = fhirService.read(type, parameters);
 				if (found.isPresent()) {

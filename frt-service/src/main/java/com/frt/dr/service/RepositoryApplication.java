@@ -12,6 +12,8 @@
 package com.frt.dr.service;
 
 import java.util.List;
+import java.util.Map;
+
 import javax.ws.rs.core.MultivaluedMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.frt.dr.model.DomainResource;
+import com.frt.dr.service.query.ActualParameter;
 
 /**
  * RepositoryApplication class
@@ -47,9 +50,9 @@ public class RepositoryApplication {
 		return resource;
 	}
 	
-	public <R extends DomainResource> List<R> read(Class<?> resourceClazz, MultivaluedMap params)
+	public <R extends DomainResource> List<R> read(Class<?> resourceClazz, Map<Class<?>, List<ActualParameter>> parameters)
 		throws RepositoryServiceException {
-    	List<R> resources = this.repositoryService.query(resourceClazz, params);    	
+    	List<R> resources = this.repositoryService.query(resourceClazz, parameters);    	
 		return resources;
 	}
 

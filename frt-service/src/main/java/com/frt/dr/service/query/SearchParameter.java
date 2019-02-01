@@ -1,39 +1,48 @@
 package com.frt.dr.service.query;
 
 import java.util.List;
-import java.util.Map;
-
-import com.frt.dr.service.query.SearchParameter.Comparator;
 
 public interface SearchParameter {
-	public static final Map<String, Modifier> MODIFIERMAP = Map.ofEntries(
-			Map.entry("missing", Modifier.MISSING),
-			Map.entry("below", Modifier.BELOW),
-			Map.entry("above", Modifier.ABOVE),
-			Map.entry("exact", Modifier.EXACT),
-			Map.entry("contains", Modifier.CONTAINS),
-			Map.entry("text", Modifier.TEXT),
-			Map.entry("not", Modifier.NOT),
-			Map.entry("in", Modifier.IN),
-			Map.entry("not-in", Modifier.NOT_IN),
-			Map.entry("ofType", Modifier.OFTYPE),
-			Map.entry("type", Modifier.TYPE),
-			Map.entry("identifier", Modifier.IDENTIFIER)
-		); 
-	public static final Map<String, Comparator> COMPARATORMAP = Map.ofEntries(
-			Map.entry("ap", Comparator.AP),
-			Map.entry("eb", Comparator.EB),
-			Map.entry("sa", Comparator.SA),
-			Map.entry("le", Comparator.LE),
-			Map.entry("lt", Comparator.LT),
-			Map.entry("ge", Comparator.GE),
-			Map.entry("gt", Comparator.GT),
-			Map.entry("ne", Comparator.NE),
-			Map.entry("eq", Comparator.EQ)
-		); 
-	public static enum Modifier {MISSING, BELOW, ABOVE, EXACT, CONTAINS, TEXT, NOT, IN, NOT_IN, OFTYPE, TYPE, IDENTIFIER};
+	public static enum Modifier {
+		MISSING("missing"), 
+		BELOW("below"), 
+		ABOVE("above"), 
+		EXACT("exact"), 
+		CONTAINS("contains"), 
+		TEXT("text"), 
+		NOT("not"), 
+		IN("in"), 
+		NOT_IN("not-in"), 
+		OFTYPE("ofType"), 
+		TYPE("type"), 
+		IDENTIFIER("identifier");
+		
+        private String modifier;
+        
+        private Modifier(String m) {
+            this.modifier = m;
+        }
+	};
+	
 	// for FHIR type: date, number, quantity
-	public static enum Comparator {EQ, NE, GT, GE, LT, LE, SA, EB, AP};
+	public static enum Comparator {
+		EQ("eq"), 
+		NE("ne"), 
+		GT("gt"), 
+		GE("ge"), 
+		LT("lt"), 
+		LE("le"), 
+		SA("sa"), 
+		EB("eb"), 
+		AP("ap");
+		
+        private String comparator;
+        
+        private Comparator(String c) {
+            this.comparator = c;
+        }
+	};
+
 	public String getName();
 	public void setName(String name);
 	public Class<?> getType();
