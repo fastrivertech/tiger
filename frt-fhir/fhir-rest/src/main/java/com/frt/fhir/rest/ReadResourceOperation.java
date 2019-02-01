@@ -146,13 +146,11 @@ public class ReadResourceOperation extends ResourceOperation {
 				logger.info(localizer.x("write [" + type + "] ReadOperation message to fhir stream"));
 			    streamService.write( "GET [base]/" + type + "/" + id,  id);
 				List<String> bodys = streamService.read();
-				logger.info(localizer.x("read [" + type + "] ReadOperation message from fhir stream"));	
-							
+				logger.info(localizer.x("read [" + type + "] ReadOperation message from fhir stream"));								
 			} 		
 			
 			String resourceInJson = null;
-			if (id != null) {
-				
+			if (id != null) {				
 				logger.info(localizer.x("read a " + type + " by its id[" + id + "] ..."));		
 				Optional<R> found = fhirService.read(type, id);
 				if (found.isPresent()) {

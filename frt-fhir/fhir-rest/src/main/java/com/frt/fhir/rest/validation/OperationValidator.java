@@ -29,7 +29,7 @@ public class OperationValidator {
 
 	private final static List<String> formats = new ArrayList<>();
 	private final static List<String> summaries = new ArrayList<>();
-	private final static Pattern idPattern = Pattern.compile("^[a-zA-Z0-9][a-zA-Z0-9._-]+");
+	private final static Pattern idPattern = Pattern.compile("[a-zA-Z0-9][a-zA-Z0-9._-]*");
 
 	static {
 		formats.add("json");
