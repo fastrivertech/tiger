@@ -117,50 +117,37 @@ public class ActualParameter {
 		return ret;
 	}
 	
-	public void parse(SearchParameter sp) {
-		String[] parts = parseParamName(rawName);
-		String bn = parts[0];
-		bn = bn.trim();
-		String md = null;
-		setType(sp.getType());
+	public String getCannonicalName() {
+		return this.isPartOfGroup() ? this.getRawName() : this.getBaseName();
+	}
 
-		if (parts.length != 1 && parts.length != 2) {
-			throw new IllegalArgumentException(
-					"Malformed query parameter: " + rawName + ", expects: <name> or <name>:<modifier>");
-		}
-		
+	public void parse(SearchParameter sp) {
+		setType(sp.getType());
+		String[] parts = SearchParameterUtils.parseParamName(rawName);
+		setBaseName(parts[0]);
+		String md = null;
 		if (parts.length == 2) {
-			md = parts[1];
-			md = md.trim();
-			SearchParameter.Modifier m = SearchParameterRegistry.getModifier(md);
-			if (m == null) {
-				throw new IllegalArgumentException("Invalid modifier[" + md + "] in query parameter: " + rawName);
-			}
+			SearchParameter.Modifier m = SearchParameterRegistry.getModifier(parts[1]);
 			if (!sp.accept(m)) {
 				throw new IllegalArgumentException("Invalid modifier[" + md + "] in query parameter: " + rawName
-						+ ", parameter:" + bn + ", does not accept [" + md + "]");
+						+ ", parameter:" + this.getBaseName() + ", does not accept [" + md + "]");
 			}
 			setModifier(md);
 			setEnumModifier(m);
 		}
-		
-		setBaseName(bn.trim());
-		
-		// process comparator on value side
-		Class<?> t = sp.getType();
-		List values = getValues();
+		List<String> values = getValues();
 		String[] value_parts = new String[2];
-		List valObjs = values;
+		List<Object> valObjs = null;
 		List<String> comparatorStrs = new ArrayList<String>();
 		List<SearchParameter.Comparator> comparators = new ArrayList<SearchParameter.Comparator>();
 		
-		if (Number.class.isAssignableFrom(t)) {
-			valObjs = new ArrayList();
+		if (Number.class.isAssignableFrom(this.getType())) {
+			valObjs = new ArrayList<Object>();
 			for (int i = 0; i < values.size(); i++) {
 				String value = (String) values.get(i);
 				// for now only number and date can have comparator
-				SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
 				String realValStr = value;
+				SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
 				if (c != null) {
 					String comparatorStr = value_parts[0];
 					if (sp.accept(c)) {
@@ -170,21 +157,26 @@ public class ActualParameter {
 					} else {
 						throw new IllegalArgumentException(
 								"Invalid comparator[" + comparatorStr + "] in query parameter: " + rawName
-										+ ", parameter:" + bn + ", does not accept [" + comparatorStr + "]");
+										+ ", parameter:" + this.getBaseName() + ", does not accept [" + comparatorStr + "]");
 					}
 				}
-				valObjs.add(parseNumeric(t, realValStr));
+				else {
+					// if comparator not present, assume 'eq' as default
+					comparatorStrs.add("eq");
+					comparators.add(SearchParameter.Comparator.EQ);
+				}
+				valObjs.add(SearchParameterUtils.parseNumeric(this.getType(), realValStr));
 			}
 			setComparator(comparatorStrs);
 			setEnumComparator(comparators);
 			setValueObject(valObjs);
-		} else if (Boolean.class.isAssignableFrom(t)) {
-			valObjs = new ArrayList();
+		} else if (Boolean.class.isAssignableFrom(this.getType())) {
+			valObjs = new ArrayList<Object>();
 			for (int i = 0; i < values.size(); i++) {
 				String value = (String) values.get(i);
 				// for now only number and date can have comparator
-				SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
 				String realValStr = value;
+				SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
 				if (c != null) {
 					String comparatorStr = value_parts[0];
 					if (sp.accept(c)) {
@@ -194,20 +186,25 @@ public class ActualParameter {
 					} else {
 						throw new IllegalArgumentException(
 								"Invalid comparator[" + comparatorStr + "] in query parameter: " + rawName
-										+ ", parameter:" + bn + ", does not accept [" + comparatorStr + "]");
+										+ ", parameter:" + this.getBaseName() + ", does not accept [" + comparatorStr + "]");
 					}
+				}
+				else {
+					// if comparator not present, assume 'eq' as default
+					comparatorStrs.add("eq");
+					comparators.add(SearchParameter.Comparator.EQ);
 				}
 				valObjs.add(Boolean.valueOf(realValStr));
 			}
 			setComparator(comparatorStrs);
 			setEnumComparator(comparators);
 			setValueObject(valObjs);
-		} else if (Date.class.isAssignableFrom(t)) {
-			valObjs = new ArrayList();
+		} else if (Date.class.isAssignableFrom(this.getType())) {
+			valObjs = new ArrayList<Object>();
 			for (int i = 0; i < values.size(); i++) {
 				String value = (String) values.get(i);
-				SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
 				String realValStr = value;
+				SearchParameter.Comparator c = SearchParameterRegistry.checkComparator(value, value_parts);
 				if (c != null) {
 					String comparatorStr = value_parts[0];
 					if (sp.accept(c)) {
@@ -217,10 +214,15 @@ public class ActualParameter {
 					} else {
 						throw new IllegalArgumentException(
 								"Invalid comparator[" + comparatorStr + "] in query parameter: " + rawName
-										+ ", parameter:" + bn + ", does not accept [" + comparatorStr + "]");
+										+ ", parameter:" + this.getBaseName() + ", does not accept [" + comparatorStr + "]");
 					}
 				}
-				Date d = parseDate(realValStr);
+				else {
+					// if comparator not present, assume 'eq' as default
+					comparatorStrs.add("eq");
+					comparators.add(SearchParameter.Comparator.EQ);
+				}
+				Date d = SearchParameterUtils.parseDate(realValStr);
 				if (d == null) {
 					throw new IllegalArgumentException(
 							"Query parameter:" + getBaseName() + " expect date value in the format of: "
@@ -235,73 +237,11 @@ public class ActualParameter {
 			setEnumComparator(comparators);
 			setValueObject(valObjs);
 		} else {
-			// for now assume it is a string - no comparator
+			// for now assume it is a string - no comparator prefix
+			valObjs = new ArrayList<Object>();
+			valObjs.addAll(values);
 			setValueObject(valObjs);
 		}
 	}
 
-	private Object parseNumeric(Class<?> type, String value) {
-		Object parsedValue = null;
-		// number parameter
-		// BigInteger, Byte, Double, Float, Integer, Long, Short
-		if (type.equals(Integer.class)) {
-			parsedValue = Integer.valueOf(value);
-		} else if (type.equals(Long.class)) {
-			parsedValue = Long.valueOf(value);
-		} else if (type.equals(Short.class)) {
-			parsedValue = Short.valueOf(value);
-		} else if (type.equals(Float.class)) {
-			parsedValue = Float.valueOf(value);
-		} else if (type.equals(Double.class)) {
-			parsedValue = Double.valueOf(value);
-		} else {
-			throw new IllegalArgumentException(
-					"Numeric parameter of type :" + type.getCanonicalName() + " not supported yet, value=" + value);
-		}
-		return parsedValue;
-	}
-
-	private String getPlaceHolder(int i, ActualParameter ap) {
-		StringBuilder sb = new StringBuilder(ap.getBaseName());
-		String m = ap.getModifier()!=null?ap.getModifier():"";
-		String c = ap.getComparator()!=null&&ap.getComparator().size()>0?ap.getComparator().get(i):"";
-		sb.append("_").append(m).append(c).append("_").append(i);
-		return sb.toString();
-	}
-
-	/**
-	 * helper - gen SQL String column LIKE pattern
-	 * 
-	 * @param value
-	 * @return
-	 */
-	private String convertToLikePattern(String value) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("%");
-		sb.append(value);
-		sb.append("%");
-		return sb.toString();
-	}
-
-	private static String[] parseParamName(String n) {
-		String[] parts = n.split(SearchParameterRegistry.PARAM_MODIFIER_DELIMETER);
-		if (parts.length != 1 && parts.length != 2) {
-			throw new IllegalArgumentException(
-					"Malformed parameter name: " + n + ", parameter name format: <name> or <name>:<modifier>.");
-		}
-		return parts;
-	}
-
-	private Date parseDate(String value) {
-		Date d = null;
-		for (int i = 0; i < SearchParameterRegistry.DF_FMT_SUPPORTED.length; i++) {
-			try {
-				d = SearchParameterRegistry.DF_FMT_SUPPORTED[i].parse(value);
-				break;
-			} catch (ParseException e) {
-				continue;
-			}
-		}
-		return d;
-	}
 }

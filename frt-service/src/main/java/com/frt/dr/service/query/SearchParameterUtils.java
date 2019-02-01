@@ -1,6 +1,8 @@
 package com.frt.dr.service.query;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -84,7 +86,50 @@ public class SearchParameterUtils {
 			throw new IllegalArgumentException(
 					"Malformed parameter name: " + n + ", parameter name format: <name> or <name>:<modifier>.");
 		}
+		parts[0]=parts[0].trim();
+		if (parts.length == 2) {
+			String md = parts[1].trim();
+			SearchParameter.Modifier m = SearchParameterRegistry.getModifier(md);
+			if (m == null) {
+				throw new IllegalArgumentException("Invalid modifier[" + md + "] in query parameter: " + n);
+			}
+			parts[1]=md;
+		}
 		return parts;
 	}
 
+
+	public static Object parseNumeric(Class<?> type, String value) {
+		Object parsedValue = null;
+		// number parameter
+		// BigInteger, Byte, Double, Float, Integer, Long, Short
+		if (type.equals(Integer.class)) {
+			parsedValue = Integer.valueOf(value);
+		} else if (type.equals(Long.class)) {
+			parsedValue = Long.valueOf(value);
+		} else if (type.equals(Short.class)) {
+			parsedValue = Short.valueOf(value);
+		} else if (type.equals(Float.class)) {
+			parsedValue = Float.valueOf(value);
+		} else if (type.equals(Double.class)) {
+			parsedValue = Double.valueOf(value);
+		} else {
+			throw new IllegalArgumentException(
+					"Numeric parameter of type :" + type.getCanonicalName() + " not supported yet, value=" + value);
+		}
+		return parsedValue;
+	}
+
+	public static Date parseDate(String value) {
+		Date d = null;
+		for (int i = 0; i < SearchParameterRegistry.DF_FMT_SUPPORTED.length; i++) {
+			try {
+				d = SearchParameterRegistry.DF_FMT_SUPPORTED[i].parse(value);
+				break;
+			} catch (ParseException e) {
+				continue;
+			}
+		}
+		return d;
+	}
 }

@@ -153,11 +153,8 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 		Predicate term = null;
 		List<ActualParameter> expandedParams = null;
 		for (ActualParameter ap : actualParams) {
-
-			String baseName = ap.isPartOfGroup() ? ap.getRawName() : ap.getBaseName();
-			
-			sp = SearchParameterRegistry.getParameterDescriptor(baseName);
-			
+			sp = SearchParameterRegistry.getParameterDescriptor(ap.getCannonicalName());
+			// process group parameter
 			if (sp instanceof GroupParameter) {
 				expandedParams = expandGroupParameter(ap);
 				// predicates from expanded parameters are OR'd
@@ -166,8 +163,10 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 				expression = addCriteria(expression, cb, null, join, expandedParams, false);
 				// AND'd to the main expression
 				cb.and(where, expression);
+				continue;
 			}
 			
+			// process field parameter
 			Path<Object> path = null;
 			if (rootResource != null) {
 				path = rootResource.get(sp.getFieldName());
@@ -176,10 +175,12 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 			} else {
 				throw new IllegalArgumentException("Missing required parameters when generating query expression.");
 			}
+
+			List valObjs = ap.getValueObject();
+			term = cb.conjunction();
+
+			// value can be multiple - if multiple values present for a param, the semantics is AND'd
 			if (ap.getType().equals(String.class)) {
-				// value can be multiple
-				List valObjs = ap.getValueObject();
-				term = cb.conjunction();
 				for (int i = 0; i < valObjs.size(); i++) {
 					ParameterExpression<String> p = cb.parameter(String.class, SearchParameterUtils.getPlaceHolder(i, ap));
 					if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
@@ -188,12 +189,10 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 						term = cb.and(term, cb.like(path.as(String.class), p));
 					} else {
 						throw new IllegalArgumentException(
-								"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
+								"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + ap.getCannonicalName());
 					}
 				}
 			} else if (ap.getType().equals(Boolean.class)) {
-				List valObjs = ap.getValueObject();
-				term = cb.conjunction();
 				for (int i = 0; i < valObjs.size(); i++) {
 					ParameterExpression<Boolean> p = cb.parameter(Boolean.class, SearchParameterUtils.getPlaceHolder(i, ap));
 					if (ap.getEnumModifier() == null) {
@@ -202,12 +201,10 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 						term = cb.not(cb.equal(path.as(String.class), p));
 					} else {
 						throw new IllegalArgumentException(
-								"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + baseName);
+								"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + ap.getCannonicalName());
 					}
 				}
 			} else if (ap.getType().equals(Date.class)) {
-				List valObjs = ap.getValueObject();
-				term = cb.conjunction();
 				for (int i = 0; i < valObjs.size(); i++) {
 					ParameterExpression<Date> p = null;
 					if (ap.getEnumComparator() == null||ap.getEnumComparator().size()==0) {
@@ -243,13 +240,11 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 						case AP:
 						default:
 							throw new IllegalArgumentException(
-									"Unsupported comparator : " + ap.getComparator() + ", for parameter: " + baseName);
+									"Unsupported comparator : " + ap.getComparator() + ", for parameter: " + ap.getCannonicalName());
 						}
 					}
 				}
 			} else if (Number.class.isAssignableFrom(ap.getType())) {
-				List valObjs = ap.getValueObject();
-				term = cb.conjunction();
 				for (int i = 0; i < valObjs.size(); i++) {
 					ParameterExpression<Number> p = null;
 					if (ap.getEnumComparator() == null||ap.getEnumComparator().size()==0) {
@@ -285,14 +280,16 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 						case AP:
 						default:
 							throw new IllegalArgumentException(
-									"Unsupported comparator : " + ap.getComparator() + ", for parameter: " + baseName);
+									"Unsupported comparator : " + ap.getComparator() + ", for parameter: " + ap.getCannonicalName());
 						}
 					}
 				}
 			} else {
 				throw new IllegalArgumentException("Unsupported parameter type: " + ap.getType().getCanonicalName()
-						+ " for [" + baseName + "], supported types: string, date, numeric.");
+						+ " for [" + ap.getCannonicalName() + "], supported types: string, date, numeric.");
 			}
+			// term contains the expression on current param
+			// OR the terms - e.g. when params are expanded from a group param such as 'name' on entity HumanName
 			where = isConjunction ? cb.and(where, term) : cb.or(where, term);
 		}
 		if (expandedParams!=null&&expandedParams.size()>0) {
