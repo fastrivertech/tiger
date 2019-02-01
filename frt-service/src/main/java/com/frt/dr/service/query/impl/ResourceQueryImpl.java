@@ -210,7 +210,7 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 				term = cb.conjunction();
 				for (int i = 0; i < valObjs.size(); i++) {
 					ParameterExpression<Date> p = null;
-					if (ap.getEnumComparator() == null) {
+					if (ap.getEnumComparator() == null||ap.getEnumComparator().size()==0) {
 						p = cb.parameter(Date.class, SearchParameterUtils.getPlaceHolder(i, ap));
 						term = cb.and(term, cb.equal(path, p));
 					} else {
@@ -252,7 +252,7 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 				term = cb.conjunction();
 				for (int i = 0; i < valObjs.size(); i++) {
 					ParameterExpression<Number> p = null;
-					if (ap.getEnumComparator() == null) {
+					if (ap.getEnumComparator() == null||ap.getEnumComparator().size()==0) {
 						p = cb.parameter(Number.class, SearchParameterUtils.getPlaceHolder(i, ap));
 						term = cb.and(term, cb.equal(path, p));
 					} else {

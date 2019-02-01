@@ -336,19 +336,20 @@ public class SearchParameterRegistry {
 	}
 	
 	public static Modifier getModifier(String sm) {
-		return SearchParameter.Modifier.valueOf(sm);
+		return SearchParameter.Modifier.valueOf(sm.toUpperCase());
 	}
 	
 	public static Comparator getComparator(String sc) {
-		return SearchParameter.Comparator.valueOf(sc);
+		return SearchParameter.Comparator.valueOf(sc.toUpperCase());
 	}
 	
 	public static Comparator checkComparator(String value, String[] comparator) {
 		Comparator c = null;
 		for (SearchParameter.Comparator e: SearchParameter.Comparator.values()) {
-			if (value.startsWith(e.name())) {
-				comparator[0] = e.name();
-				comparator[1] = value.substring(e.name().length());
+			String ename = e.name().toLowerCase();
+			if (value.startsWith(ename)) {
+				comparator[0] = ename;
+				comparator[1] = value.substring(ename.length());
 				c = e;
 				break;
 			}
