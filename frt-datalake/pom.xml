@@ -41,6 +41,12 @@
   </build>
   	
   <dependencies>
+ 	<!-- frt common -->
+    <dependency>
+      <groupId>com.frt</groupId>
+      <artifactId>frt-common</artifactId>
+    </dependency>	
+	<!-- hadoop -->
 	<dependency>
 		<groupId>org.apache.hadoop</groupId>
 		<artifactId>hadoop-common</artifactId>
