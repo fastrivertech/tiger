@@ -38,7 +38,7 @@
     		<descriptor>./src/main/assembly/dist.xml</descriptor>
     		<finalName>frt-service-package-${frt.version}</finalName>
     		<outputDirectory>target</outputDirectory>  
- 			<appendAssemblyId>false</appendAssemblyId>    			
+ 			<appendAssemblyId>false</appendAssemblyId> 
   		</configuration>
   		<executions>
     		<execution>
@@ -49,5 +49,30 @@
 		</plugin>      					
 		</plugins>
 	</build>
- 
+
+	<dependencies>
+		<!-- stream -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-streams</artifactId>   
+		</dependency>
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+		</dependency>
+		<!-- kafka -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-log4j-appender</artifactId>
+		</dependency>	
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-common</artifactId>
+		</dependency>	
+		<dependency>
+			<groupId>org.apache.hadoop</groupId>
+			<artifactId>hadoop-hdfs</artifactId>
+		</dependency>		
+	</dependencies>
+  
 </project>
