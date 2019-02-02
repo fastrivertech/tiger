@@ -11,8 +11,8 @@
  */
 package com.frt.dr.dao;
 
-//import com.frt.dr.dao.base.PatientHumanNameDao;
-//import com.frt.dr.model.base.PatientHumanName;
+import com.frt.dr.dao.base.PatientHumanNameDao;
+import com.frt.dr.model.base.PatientHumanName;
 import com.frt.dr.model.base.Patient;
 
 /**

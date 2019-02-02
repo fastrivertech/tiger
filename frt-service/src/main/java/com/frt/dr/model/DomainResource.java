@@ -12,7 +12,6 @@
 package com.frt.dr.model;
 
 import java.math.BigInteger;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;

@@ -1,3 +1,14 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (c) 2018 Fast River Technologies Inc. Irvine, CA, USA 
+ * All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
 package com.frt.dr.model;
 
 import java.lang.reflect.Field;
@@ -7,10 +18,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.persistence.JoinColumn;
 
 public class RelationMappingRegistry {
+	
 	enum MAPPING_TYPES {ONETOONE, ONETOMANY, MANYTOONE, MANYTOMANY, UNKNOWN};
 	private static final List<Class<?>> REF_CLASSES = Arrays.asList(new Class<?>[] {
 			com.frt.dr.model.base.PatientAddress.class,
@@ -22,6 +33,7 @@ public class RelationMappingRegistry {
 			com.frt.dr.model.base.PatientIdentifier.class,
 			com.frt.dr.model.base.PatientReference.class,
 	});
+	
 	/**
 	 * relationship mapping registry
 	 * <containing class name> -> <attributeName> -> {mappingType[1:M, M:1, 1:1, N:M], joinColumn(s), extraFieldandValuePair(s)}
@@ -53,7 +65,7 @@ public class RelationMappingRegistry {
 							mtype = MAPPING_TYPES.ONETOMANY;
 						}
 						if (mtype!=MAPPING_TYPES.UNKNOWN) {
-//							new MappingDescriptor();
+							//new MappingDescriptor();
 						}
 						f.getName();
 					}
