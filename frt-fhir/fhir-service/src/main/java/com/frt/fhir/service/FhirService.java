@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.MultivaluedMap;
-
 import org.hl7.fhir.dstu3.model.DomainResource;
 import com.frt.fhir.model.ResourceMapperFactory;
 import com.frt.fhir.model.ResourceMapperInterface;
@@ -27,7 +26,10 @@ import com.frt.dr.service.RepositoryApplication;
 import com.frt.dr.service.RepositoryContext;
 import com.frt.dr.service.RepositoryContextException;
 import com.frt.dr.service.RepositoryServiceException;
-import com.frt.dr.service.query.ActualParameter;
+import com.frt.dr.service.query.CompositeParameter;
+import com.frt.dr.service.query.QueryOption;
+import com.frt.dr.service.query.ResourceQueryUtils;
+import com.frt.dr.service.query.QueryCriteria;
 
 /**
  * RepositoryApplication class
@@ -47,7 +49,8 @@ public class FhirService {
 		}						
 	}
 	
-	public <R extends DomainResource> Optional<R> create(@Nonnull String type, @Nonnull R resource) 
+	public <R extends DomainResource> Optional<R> create(@Nonnull String type, 
+														 @Nonnull R resource) 
 		throws FhirServiceException {	
 		try {
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
@@ -60,27 +63,33 @@ public class FhirService {
 		}
 	}
 
-	public <R extends DomainResource> Optional<List<R>> read(@Nonnull String type,  Map<Class<?>, List<ActualParameter>> parameters) 
-			throws FhirServiceException {
-			Optional<List<R>> retVal = Optional.empty();
-			try {
-				ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
-				ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
-				List resources = repository.read(resourcePair.getFrt(), parameters);
-				List rlist = null;
-				if (resources!=null) {
-					rlist = new ArrayList();
-					for (Object r: resources) {
-						rlist.add(mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)r));
-					}
+	public <R extends DomainResource> Optional<List<R>> read(@Nonnull String type,
+															 QueryCriteria criterias,
+															 QueryOption options) 
+		throws FhirServiceException {
+		Optional<List<R>> retVal = Optional.empty();
+		try {
+			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
+			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
+			//List resources = repository.read(resourcePair.getFrt(), parameters);
+			List resources = repository.read(resourcePair.getFrt(), criterias);
+					
+			List rlist = null;
+			if (resources != null) {
+				rlist = new ArrayList();
+				for (Object r : resources) {
+					rlist.add(mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object) r));
 				}
-				return (rlist==null?Optional.empty():Optional.of(rlist));
-			} catch (MapperException | RepositoryServiceException ex) {
-				throw new FhirServiceException(ex);
-			}		
+			}
+			return (rlist == null ? Optional.empty() : Optional.of(rlist));
+		} catch (MapperException | RepositoryServiceException ex) {
+			throw new FhirServiceException(ex);
 		}
+	}
 
-	public <R extends DomainResource> Optional<R> read(@Nonnull String type, @Nonnull String id) 
+	public <R extends DomainResource> Optional<R> read(@Nonnull String type, 
+													   @Nonnull String id,
+													   QueryOption options) 
 		throws FhirServiceException {
 		Optional<R> retVal = Optional.empty();
 		try {
