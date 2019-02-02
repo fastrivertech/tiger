@@ -9,10 +9,10 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.fhir.model.base;
+package com.frt.fhir.model.map.base;
 
-import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
+import com.frt.fhir.model.map.MapperException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.JsonElement;

@@ -34,8 +34,8 @@ import org.junit.Test;
 
 import com.frt.dr.model.base.PatientReference;
 import com.frt.fhir.model.ResourceDictionary;
-import com.frt.fhir.model.ResourceMapperInterface;
-import com.frt.fhir.model.base.BaseMapper;
+import com.frt.fhir.model.map.ResourceMapperInterface;
+import com.frt.fhir.model.map.base.BaseMapper;
 
 import ca.uhn.fhir.context.FhirContext;
 

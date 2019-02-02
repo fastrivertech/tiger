@@ -9,10 +9,11 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.fhir.model;
+package com.frt.fhir.model.map;
 
 import org.hl7.fhir.dstu3.model.DomainResource;
-import com.frt.fhir.model.base.PatientResourceMapper;
+
+import com.frt.fhir.model.map.base.PatientResourceMapper;
 
 /**
  * ResourceMapperFactory class

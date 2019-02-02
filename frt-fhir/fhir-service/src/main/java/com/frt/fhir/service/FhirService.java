@@ -18,9 +18,10 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.MultivaluedMap;
 import org.hl7.fhir.dstu3.model.DomainResource;
-import com.frt.fhir.model.ResourceMapperFactory;
-import com.frt.fhir.model.ResourceMapperInterface;
-import com.frt.fhir.model.MapperException;
+
+import com.frt.fhir.model.map.MapperException;
+import com.frt.fhir.model.map.ResourceMapperFactory;
+import com.frt.fhir.model.map.ResourceMapperInterface;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.dr.service.RepositoryApplication;
 import com.frt.dr.service.RepositoryContext;

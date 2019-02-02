@@ -7,8 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import com.frt.fhir.model.MapperException;
-import com.frt.fhir.model.ResourceMapperInterface;
+import com.frt.fhir.model.map.MapperException;
+import com.frt.fhir.model.map.ResourceMapperInterface;
+import com.frt.fhir.model.map.base.BaseMapper;
 
 public class HAPIDataTypeParserTest {
 	private static final String MARITAL_STATUS = "\"codeableconcept\": {\r\n" + 

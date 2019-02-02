@@ -16,7 +16,9 @@ import java.util.Hashtable;
 
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.ResourceComplexType;
-import com.frt.fhir.model.base.BaseMapper;
+import com.frt.fhir.model.map.MapperException;
+import com.frt.fhir.model.map.ResourceMapperInterface;
+import com.frt.fhir.model.map.base.BaseMapper;
 
 /**
  * ResourceMappingTable Interface
@@ -97,20 +99,20 @@ public class ResourceDictionary {
 	static Hashtable<String, Class> mappers = new Hashtable<String, Class>();
 
 	static {
-		mappers.put(ResourceMapperInterface.RESOURCE, com.frt.fhir.model.base.ResourceMapper.class);		
-		mappers.put(ResourceMapperInterface.DOMAINRESOURCE, com.frt.fhir.model.base.DomainResourceMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT, com.frt.fhir.model.base.PatientResourceMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_HUMANNAME, com.frt.fhir.model.base.PatientHumanNameMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_IDENTIFIER, com.frt.fhir.model.base.PatientIdentifierMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_ADDRESS, com.frt.fhir.model.base.PatientAddressMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_REFERENCE, com.frt.fhir.model.base.PatientReferenceMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_CODEABLECONCEPT, com.frt.fhir.model.base.PatientCodeableConceptMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_ATTACHMENT, com.frt.fhir.model.base.PatientAttachmentMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_CONTACTPOINT, com.frt.fhir.model.base.PatientContactPointMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_CONTACT, com.frt.fhir.model.base.PatientContactMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_ANIMAL, com.frt.fhir.model.base.PatientAnimalMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_COMMUNICATION, com.frt.fhir.model.base.PatientCommunicationMapper.class);		
-		mappers.put(ResourceMapperInterface.PATIENT_LINK, com.frt.fhir.model.base.PatientLinkMapper.class);		
+		mappers.put(ResourceMapperInterface.RESOURCE, com.frt.fhir.model.map.base.ResourceMapper.class);		
+		mappers.put(ResourceMapperInterface.DOMAINRESOURCE, com.frt.fhir.model.map.base.DomainResourceMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT, com.frt.fhir.model.map.base.PatientResourceMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_HUMANNAME, com.frt.fhir.model.map.base.PatientHumanNameMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_IDENTIFIER, com.frt.fhir.model.map.base.PatientIdentifierMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_ADDRESS, com.frt.fhir.model.map.base.PatientAddressMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_REFERENCE, com.frt.fhir.model.map.base.PatientReferenceMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_CODEABLECONCEPT, com.frt.fhir.model.map.base.PatientCodeableConceptMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_ATTACHMENT, com.frt.fhir.model.map.base.PatientAttachmentMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_CONTACTPOINT, com.frt.fhir.model.map.base.PatientContactPointMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_CONTACT, com.frt.fhir.model.map.base.PatientContactMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_ANIMAL, com.frt.fhir.model.map.base.PatientAnimalMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_COMMUNICATION, com.frt.fhir.model.map.base.PatientCommunicationMapper.class);		
+		mappers.put(ResourceMapperInterface.PATIENT_LINK, com.frt.fhir.model.map.base.PatientLinkMapper.class);		
 	}
 
 	public static <T extends ResourceMapperInterface> T getMapper(String type) {

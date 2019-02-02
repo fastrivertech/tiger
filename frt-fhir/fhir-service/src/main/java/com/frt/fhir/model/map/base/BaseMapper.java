@@ -1,4 +1,4 @@
-package com.frt.fhir.model.base;
+package com.frt.fhir.model.map.base;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -15,10 +15,10 @@ import com.frt.dr.model.ResourceComplexType;
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientExtension;
 import com.frt.dr.model.base.PatientReference;
-import com.frt.fhir.model.MapperException;
 import com.frt.fhir.model.ResourceDictionary;
-import com.frt.fhir.model.ResourceMapperInterface;
 import com.frt.fhir.model.ResourceDictionary.ResourcePair;
+import com.frt.fhir.model.map.MapperException;
+import com.frt.fhir.model.map.ResourceMapperInterface;
 import com.frt.fhir.service.HAPIComplexTypesResource;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;

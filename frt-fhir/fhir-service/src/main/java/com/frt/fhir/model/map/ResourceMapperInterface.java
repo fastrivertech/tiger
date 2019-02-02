@@ -9,9 +9,7 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.fhir.model;
-
-import com.frt.fhir.model.MapperException;
+package com.frt.fhir.model.map;
 
 /**
  * ResourceMapper Interface

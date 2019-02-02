@@ -36,7 +36,7 @@ import com.frt.dr.service.query.CompositeParameter;
 import com.frt.dr.service.query.ResourceQueryUtils;
 import com.frt.dr.service.query.QueryOption;
 import com.frt.dr.service.query.QueryCriteria;
-import com.frt.fhir.model.base.BaseMapper;
+import com.frt.fhir.model.map.base.BaseMapper;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.rest.validation.OperationValidator;
 import com.frt.fhir.rest.validation.ValidationException;
