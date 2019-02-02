@@ -1,3 +1,14 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (c) 2018 Fast River Technologies Inc. Irvine, CA, USA 
+ * All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
 package com.frt.fhir.model.map.base;
 
 import java.lang.reflect.Field;
@@ -6,9 +17,10 @@ import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.List;
-
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.hl7.fhir.dstu3.model.StringType;
-
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
@@ -22,15 +34,18 @@ import com.frt.fhir.model.map.MapperException;
 import com.frt.fhir.model.map.ResourceMapperInterface;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import ca.uhn.fhir.context.FhirContext;
 
+/**
+ * BaseMapper class
+ * @author cqye 
+ * @author jfu
+ */
 public abstract class BaseMapper implements ResourceMapperInterface {
+	
 	private static Logger logger = Logger.getLog(BaseMapper.class.getName());
 	private static Localization localizer = Localization.getInstance();
+	
 	protected static String CUST_RS_BEGIN = "{\"resourceType\": \"HAPIComplexTypesResource\",";
 	protected static String CUST_RS_END = "}";
 	protected static String PAT_RS_BEGIN = "{\"resourceType\": \"Patient\",";
@@ -71,12 +86,15 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	public abstract ResourceMapperInterface to(Class target);
 
 	@Override
-	public abstract Object map(Object source) throws MapperException;
+	public abstract Object map(Object source) 
+		 throws MapperException;
 
 	@Override
-	public Object map(Object source, Object target) throws MapperException {
+	public Object map(Object source, Object target) 
+		throws MapperException {
 		throw new UnsupportedOperationException("Mapping with target instance given is not supported for this mapper, mapper :" + this.getClass().getCanonicalName());
 	}
+	
 	/**
 	 * 
 	 * @param type
