@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 import javax.persistence.LockTimeoutException;
@@ -40,20 +39,19 @@ import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import javax.ws.rs.core.MultivaluedMap;
-
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
-import com.frt.dr.service.query.ActualParameter;
+import com.frt.dr.service.query.CompositeParameter;
 import com.frt.dr.service.query.GroupParameter;
 import com.frt.dr.service.query.ResourceQuery;
 import com.frt.dr.service.query.ResourceQueryBuilder;
 import com.frt.dr.service.query.SearchParameter;
 import com.frt.dr.service.query.SearchParameterRegistry;
-import com.frt.dr.service.query.SearchParameterUtils;
+import com.frt.dr.service.query.ResourceQueryUtils;
+import com.frt.dr.service.query.QueryCriteria;
 
 /**
  * ResourceDao class
- * 
  * @author jfu
  */
 public class ResourceDao extends BaseDao<Resource, String> {
@@ -78,7 +76,8 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	}
 
 	@Override
-	public Optional<Resource> findById(String id) throws DaoException {
+	public Optional<Resource> findById(String id) 
+		throws DaoException {
 		try {
 			Query query = em.createNamedQuery("getResourceById");
 			query.setParameter("id", id);
@@ -100,9 +99,10 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	}
 
 	@Override
-	public Optional<List<Resource>> query(Class<Resource> resourceClazz, Map<Class<?>, List<ActualParameter>> parameters) throws DaoException {
-
+	public Optional<List<Resource>> query(Class<Resource> resourceClazz, QueryCriteria criterias) 
+		throws DaoException {
 		try {
+			Map<Class<?>, List<CompositeParameter>> parameters = ResourceQueryUtils.processParameters(criterias.getParams());	
 			ResourceQueryBuilder<Resource> rb = ResourceQueryBuilder.createBuilder(em, resourceClazz, parameters);
 			ResourceQuery<Resource> rq = rb.createQuery();
 			rq.prepareQuery();

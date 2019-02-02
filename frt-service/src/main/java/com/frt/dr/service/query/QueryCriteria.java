@@ -10,21 +10,26 @@
  */
 package com.frt.dr.service.query;
 
-import java.util.List;
-import java.util.Optional;
-import com.frt.dr.model.Resource;
+import java.io.Serializable;
+import javax.ws.rs.core.MultivaluedMap;
 
 /**
- * ResourceQuery interface
- * @author jimfu
- * @param <T>
+ * QueryCriteria class
+ * @author cqye
  */
-public interface ResourceQuery<T extends Resource> {
+public class QueryCriteria implements Serializable {
 	
-	enum QUERY_STATES {
-		CREATED, PREPARED, EXECUTED
+	private MultivaluedMap params;
+	
+	public QueryCriteria() {
 	}
 	
-	public void prepareQuery();
-	public Optional<List<Resource>> doQuery();
+	public MultivaluedMap getParams() {
+		return this.params;
+	}
+	
+	public void setParams(final MultivaluedMap params) {
+		this.params = params;
+	}
+	
 }

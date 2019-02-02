@@ -1,7 +1,21 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
 package com.frt.dr.service.query;
 
 import java.util.List;
 
+/**
+ * AbstractParameter abstract class
+ * @author jfu
+ */
 public abstract class AbstractParameter implements SearchParameter {
 	protected String name;
 	protected Class<?> type; // java type of the parameter

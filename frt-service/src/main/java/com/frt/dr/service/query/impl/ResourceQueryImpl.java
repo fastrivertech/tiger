@@ -1,3 +1,13 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
 package com.frt.dr.service.query.impl;
 
 import java.util.ArrayList;
@@ -7,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-
 import javax.persistence.EntityManager;
 import javax.persistence.Parameter;
 import javax.persistence.Query;
@@ -20,24 +29,28 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
-
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
-import com.frt.dr.service.query.ActualParameter;
+import com.frt.dr.service.query.CompositeParameter;
 import com.frt.dr.service.query.GroupParameter;
 import com.frt.dr.service.query.ResourceQuery;
 import com.frt.dr.service.query.SearchParameter;
 import com.frt.dr.service.query.SearchParameterRegistry;
-import com.frt.dr.service.query.SearchParameterUtils;
+import com.frt.dr.service.query.ResourceQueryUtils;
 
+/**
+ * ResourceQueryImpl class
+ * @author jfu
+ * @param <T>
+ */
 public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Resource> {
 	private Class<T> resourceClazz;
-	private Map<Class<?>, List<ActualParameter>> parameters;
+	private Map<Class<?>, List<CompositeParameter>> parameters;
 	private EntityManager em;
 	private QUERY_STATES state;
 	private Query query; // JPA query
 	
-	public ResourceQueryImpl(EntityManager em, Class<T> resourceClazz, Map<Class<?>, List<ActualParameter>> parameters) {
+	public ResourceQueryImpl(EntityManager em, Class<T> resourceClazz, Map<Class<?>, List<CompositeParameter>> parameters) {
 		this.em = em;
 		this.resourceClazz = resourceClazz;
 		this.parameters = parameters;
@@ -65,16 +78,16 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 		
 		while (it.hasNext()) {
 			Class<?> clazz = (Class<?>)it.next();
-			List<ActualParameter> paramsPerClazz = parameters.get(clazz);
-			for (ActualParameter ap : paramsPerClazz) {
+			List<CompositeParameter> paramsPerClazz = parameters.get(clazz);
+			for (CompositeParameter ap : paramsPerClazz) {
 				List<Object> valObjs = ap.getValueObject();
 				if (ap.getType().equals(String.class) && ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
 					for (int i=0; i<valObjs.size(); i++) {
-						query.setParameter(SearchParameterUtils.getPlaceHolder(i, ap), SearchParameterUtils.convertToLikePattern(ap.getValueObject().get(i).toString()));
+						query.setParameter(ResourceQueryUtils.getPlaceHolder(i, ap), ResourceQueryUtils.convertToLikePattern(ap.getValueObject().get(i).toString()));
 					}
 				} else {
 					for (int i=0; i<valObjs.size(); i++) {
-						query.setParameter(SearchParameterUtils.getPlaceHolder(i, ap), ap.getValueObject().get(i));
+						query.setParameter(ResourceQueryUtils.getPlaceHolder(i, ap), ap.getValueObject().get(i));
 					}
 				}
 			}
@@ -107,7 +120,7 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 	 * @return CriteriaQuery cq;
 	 * 
 	 */
-	private <T extends Resource, U extends ResourceComplexType> CriteriaQuery<T> getQueryCriteria(Class<T> resourceClazz, Map<Class<?>, List<ActualParameter>> parameters) {
+	private <T extends Resource, U extends ResourceComplexType> CriteriaQuery<T> getQueryCriteria(Class<T> resourceClazz, Map<Class<?>, List<CompositeParameter>> parameters) {
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<T> cq = cb.createQuery(resourceClazz);
 		Root<T> rootResource = cq.from(resourceClazz);
@@ -117,7 +130,7 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 		
 		while (it.hasNext()) {
 			Class<?> clazz = (Class<?>)it.next();
-			List<ActualParameter> paramsPerClazz = parameters.get(clazz);
+			List<CompositeParameter> paramsPerClazz = parameters.get(clazz);
 			if (clazz.equals(resourceClazz)) {
 				// process search parameters on main class (the FHIR resource)
 				where = addCriteria(where, cb, rootResource, null, paramsPerClazz, true);
@@ -147,12 +160,12 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 	 * @return root predicate - root node of AND/OR expression
 	 */
 	private <T extends Resource, U extends ResourceComplexType> Predicate addCriteria(Predicate where,
-			CriteriaBuilder cb, Root<T> rootResource, Join<T, U> join, List<ActualParameter> actualParams,
+			CriteriaBuilder cb, Root<T> rootResource, Join<T, U> join, List<CompositeParameter> actualParams,
 			boolean isConjunction) {
 		SearchParameter sp = null;
 		Predicate term = null;
-		List<ActualParameter> expandedParams = null;
-		for (ActualParameter ap : actualParams) {
+		List<CompositeParameter> expandedParams = null;
+		for (CompositeParameter ap : actualParams) {
 			sp = SearchParameterRegistry.getParameterDescriptor(ap.getCannonicalName());
 			// process group parameter
 			if (sp instanceof GroupParameter) {
@@ -182,7 +195,7 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 			// value can be multiple - if multiple values present for a param, the semantics is AND'd
 			if (ap.getType().equals(String.class)) {
 				for (int i = 0; i < valObjs.size(); i++) {
-					ParameterExpression<String> p = cb.parameter(String.class, SearchParameterUtils.getPlaceHolder(i, ap));
+					ParameterExpression<String> p = cb.parameter(String.class, ResourceQueryUtils.getPlaceHolder(i, ap));
 					if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
 						term = cb.and(term, cb.equal(path, p));
 					} else if (ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
@@ -194,7 +207,7 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 				}
 			} else if (ap.getType().equals(Boolean.class)) {
 				for (int i = 0; i < valObjs.size(); i++) {
-					ParameterExpression<Boolean> p = cb.parameter(Boolean.class, SearchParameterUtils.getPlaceHolder(i, ap));
+					ParameterExpression<Boolean> p = cb.parameter(Boolean.class, ResourceQueryUtils.getPlaceHolder(i, ap));
 					if (ap.getEnumModifier() == null) {
 						term = cb.equal(path, p);
 					} else if (ap.getEnumModifier() == SearchParameter.Modifier.NOT) {
@@ -208,10 +221,10 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 				for (int i = 0; i < valObjs.size(); i++) {
 					ParameterExpression<Date> p = null;
 					if (ap.getEnumComparator() == null||ap.getEnumComparator().size()==0) {
-						p = cb.parameter(Date.class, SearchParameterUtils.getPlaceHolder(i, ap));
+						p = cb.parameter(Date.class, ResourceQueryUtils.getPlaceHolder(i, ap));
 						term = cb.and(term, cb.equal(path, p));
 					} else {
-						p = cb.parameter(Date.class, SearchParameterUtils.getPlaceHolder(i, ap));
+						p = cb.parameter(Date.class, ResourceQueryUtils.getPlaceHolder(i, ap));
 						switch (ap.getEnumComparator().get(i)) {
 						case EQ:
 							term = cb.and(term, cb.equal(path, p));
@@ -248,10 +261,10 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 				for (int i = 0; i < valObjs.size(); i++) {
 					ParameterExpression<Number> p = null;
 					if (ap.getEnumComparator() == null||ap.getEnumComparator().size()==0) {
-						p = cb.parameter(Number.class, SearchParameterUtils.getPlaceHolder(i, ap));
+						p = cb.parameter(Number.class, ResourceQueryUtils.getPlaceHolder(i, ap));
 						term = cb.and(term, cb.equal(path, p));
 					} else {
-						p = cb.parameter(Number.class, SearchParameterUtils.getPlaceHolder(i, ap));
+						p = cb.parameter(Number.class, ResourceQueryUtils.getPlaceHolder(i, ap));
 						switch (ap.getEnumComparator().get(i)) {
 						case EQ:
 							term = cb.and(term, cb.equal(path, p));
@@ -300,27 +313,27 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 
 	/**
 	 * Expand group parameter into its corresponding field parameter(s)
-	 * @param actualParameter
+	 * @param CompositeParameter
 	 * @return - the field parameter(s) from expansion
 	 */
-	private List<ActualParameter> expandGroupParameter(ActualParameter actualParameter) {
-		SearchParameter paramDef = SearchParameterRegistry.getParameterDescriptor(actualParameter.getBaseName());
+	private List<CompositeParameter> expandGroupParameter(CompositeParameter CompositeParameter) {
+		SearchParameter paramDef = SearchParameterRegistry.getParameterDescriptor(CompositeParameter.getBaseName());
 		String[] groupParams = ((GroupParameter)paramDef).getParameters();
-		List<ActualParameter> expandedActualParams = new ArrayList<ActualParameter>();
-		ActualParameter ap = null;
+		List<CompositeParameter> expandedActualParams = new ArrayList<CompositeParameter>();
+		CompositeParameter ap = null;
 		for (int i = 0; i < groupParams.length; i++) {
-			ap = new ActualParameter(groupParams[i], actualParameter.getValues());
+			ap = new CompositeParameter(groupParams[i], CompositeParameter.getValues());
 			// mangle the param names coming from group param expansion
 			// to avoid query parameter placeholder conflict
-			ap.setBaseName(actualParameter.getBaseName() + "_" + groupParams[i]);
+			ap.setBaseName(CompositeParameter.getBaseName() + "_" + groupParams[i]);
 			ap.setRawName(groupParams[i]);
-			ap.setGroupName(actualParameter.getBaseName());
-			ap.setComparator(actualParameter.getComparator());
-			ap.setModifier(actualParameter.getModifier());
-			ap.setEnumComparator(actualParameter.getEnumComparator());
-			ap.setEnumModifier(actualParameter.getEnumModifier());
-			ap.setType(actualParameter.getType());
-			ap.setValueObject(actualParameter.getValueObject());
+			ap.setGroupName(CompositeParameter.getBaseName());
+			ap.setComparator(CompositeParameter.getComparator());
+			ap.setModifier(CompositeParameter.getModifier());
+			ap.setEnumComparator(CompositeParameter.getEnumComparator());
+			ap.setEnumModifier(CompositeParameter.getEnumModifier());
+			ap.setType(CompositeParameter.getType());
+			ap.setValueObject(CompositeParameter.getValueObject());
 			if (paramDef.accept(SearchParameter.Modifier.CONTAINS)) {
 				// for now all group search is string based, and use contains semantics
 				ap.setEnumModifier(SearchParameter.Modifier.CONTAINS);

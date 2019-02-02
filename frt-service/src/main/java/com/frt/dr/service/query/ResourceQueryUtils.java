@@ -1,3 +1,13 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
 package com.frt.dr.service.query;
 
 import java.text.ParseException;
@@ -7,20 +17,23 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javax.ws.rs.core.MultivaluedMap;
 
-public class SearchParameterUtils {
+/**
+ * SearchParameterUtils class
+ * @author jfu
+ */
+public class ResourceQueryUtils {
 	/**
 	 * 
 	 * @param params - query parameters captured from rest API
 	 * @param groupParams - IN/OUT - actual parameters that represent a group search parameter e.g. Patient.name, Patient.address etc.
 	 * @return list of actual parameters extracted from query parameters
 	 */
-	public static Map<Class<?>, List<ActualParameter>> processParameters(MultivaluedMap<String, String> params) {
-		Map<Class<?>, List<ActualParameter>> actualParamsMap = null;
+	public static Map<Class<?>, List<CompositeParameter>> processParameters(MultivaluedMap<String, String> params) {
+		Map<Class<?>, List<CompositeParameter>> actualParamsMap = null;
 		for (Map.Entry<Class<?>, List<String>> paramsPerClazz : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.entrySet()) {
-			List<ActualParameter> actualParams = null;
+			List<CompositeParameter> actualParams = null;
 			Class<?> clazz = paramsPerClazz.getKey();
 			for (String paramName : paramsPerClazz.getValue()) {
 				Iterator<String> it = params.keySet().iterator();
@@ -31,17 +44,17 @@ public class SearchParameterUtils {
 					String baseName = name_parts[0];
 					if (baseName.equals(paramName)) {
 						SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(baseName);
-						ActualParameter actualParam = new ActualParameter(key, mValues);
+						CompositeParameter actualParam = new CompositeParameter(key, mValues);
 						actualParam.parse(sp);
 						if (actualParams==null) {
-							actualParams = new ArrayList<ActualParameter>();
+							actualParams = new ArrayList<CompositeParameter>();
 						}
 						actualParams.add(actualParam);
 					}
 				}
 				if (actualParams!=null) {
 					if (actualParamsMap==null) {
-						actualParamsMap = new HashMap<Class<?>, List<ActualParameter>>();
+						actualParamsMap = new HashMap<Class<?>, List<CompositeParameter>>();
 					}
 					actualParamsMap.put(clazz, actualParams);
 				}
@@ -56,7 +69,7 @@ public class SearchParameterUtils {
 	 * @param aparam - the actual parameter
 	 * @return the mangled parameter place holder 
 	 */
-	public static String getPlaceHolder(int i, ActualParameter ap) {
+	public static String getPlaceHolder(int i, CompositeParameter ap) {
 		StringBuilder sb = new StringBuilder(ap.getBaseName());
 		String m = ap.getModifier()!=null?ap.getModifier():"";
 		String c = ap.getComparator()!=null&&ap.getComparator().size()>0?ap.getComparator().get(i):"";

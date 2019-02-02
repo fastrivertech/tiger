@@ -12,10 +12,7 @@
 package com.frt.dr.service;
 
 import javax.sql.DataSource;
-import javax.ws.rs.core.MultivaluedMap;
-
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +20,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import com.frt.dr.model.DomainResource;
-import com.frt.dr.service.query.ActualParameter;
+import com.frt.dr.service.query.QueryCriteria;
 import com.frt.dr.dao.DaoFactory;
 import com.frt.dr.dao.BaseDao;
 import com.frt.dr.dao.DaoException;
@@ -56,11 +53,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 		throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
-			
 			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
-			dao.setEntityManager(em);
-			
+			dao.setEntityManager(em);		
 			Optional<R> resource = dao.findById(id);
 			if (resource.isPresent()) {
 				return resource.get();
@@ -74,16 +69,14 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 		
 	@Override
-	public <R extends DomainResource> List<R> query(Class<?> resourceClazz, Map<Class<?>, List<ActualParameter>> parameters)
-			throws RepositoryServiceException {
+	public <R extends DomainResource> List<R> query(Class<?> resourceClazz, QueryCriteria criterias)
+		throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
-			
 			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
 			dao.setEntityManager(em);
-			
-			Optional<List<R>> resources = dao.query(resourceClazz, parameters);
+			Optional<List<R>> resources = dao.query(resourceClazz, criterias);
 			if (resources.isPresent()) {
 				return resources.get();
 			}
@@ -97,14 +90,12 @@ public class RepositoryServiceImpl implements RepositoryService {
 	
 	@Override
 	public <R extends DomainResource> R save(Class<?> resourceClazz, R resource)
-		   throws RepositoryServiceException {
+		throws RepositoryServiceException {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
-			
 			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
 			dao.setEntityManager(em);
-									
 			Optional<R> created = dao.save(resource);
 			return created.get();
 		} catch (DaoException dex) {

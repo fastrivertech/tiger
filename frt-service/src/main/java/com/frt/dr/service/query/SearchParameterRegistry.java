@@ -1,3 +1,13 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
 package com.frt.dr.service.query;
 
 import java.io.File;
@@ -18,6 +28,10 @@ import com.frt.dr.service.query.SearchParameter.Modifier;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
+/**
+ * SearchParameterRegistry class
+ * @author jfu
+ */
 public class SearchParameterRegistry {
 	private static final String FHIR_SEARCH_PARAMETERS_JSON="search-parameters.json";
 	private static final JsonParser parser = new JsonParser();

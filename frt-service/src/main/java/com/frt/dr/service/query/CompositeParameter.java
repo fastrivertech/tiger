@@ -1,11 +1,24 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
 package com.frt.dr.service.query;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ActualParameter {
+/**
+ * ActualParameter class
+ * @author jfu
+ */
+public class CompositeParameter {
 	// name from web query, name can be with modifier etc
 	// if ActualParameter is created in group param expansion, the raw name is the
 	// bare param name
@@ -23,7 +36,7 @@ public class ActualParameter {
 	// value(s) in java objet as indocated by type
 	private List<Object> valObjs; 
 
-	public ActualParameter(String rawName, List<String> values) {
+	public CompositeParameter(String rawName, List<String> values) {
 		super();
 		this.rawName = rawName;
 		this.values = values;
@@ -123,7 +136,7 @@ public class ActualParameter {
 
 	public void parse(SearchParameter sp) {
 		setType(sp.getType());
-		String[] parts = SearchParameterUtils.parseParamName(rawName);
+		String[] parts = ResourceQueryUtils.parseParamName(rawName);
 		setBaseName(parts[0]);
 		String md = null;
 		if (parts.length == 2) {
@@ -165,7 +178,7 @@ public class ActualParameter {
 					comparatorStrs.add("eq");
 					comparators.add(SearchParameter.Comparator.EQ);
 				}
-				valObjs.add(SearchParameterUtils.parseNumeric(this.getType(), realValStr));
+				valObjs.add(ResourceQueryUtils.parseNumeric(this.getType(), realValStr));
 			}
 			setComparator(comparatorStrs);
 			setEnumComparator(comparators);
@@ -222,7 +235,7 @@ public class ActualParameter {
 					comparatorStrs.add("eq");
 					comparators.add(SearchParameter.Comparator.EQ);
 				}
-				Date d = SearchParameterUtils.parseDate(realValStr);
+				Date d = ResourceQueryUtils.parseDate(realValStr);
 				if (d == null) {
 					throw new IllegalArgumentException(
 							"Query parameter:" + getBaseName() + " expect date value in the format of: "

@@ -12,18 +12,13 @@
 package com.frt.dr.dao;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.ws.rs.core.MultivaluedMap;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-
-import com.frt.dr.service.query.ActualParameter;
-
 import org.springframework.data.repository.Repository;
+import com.frt.dr.service.query.QueryCriteria;
 
 /**
  * BaseDao class
@@ -48,6 +43,6 @@ public abstract class BaseDao<T,ID> implements Repository {
 
     public abstract Optional<T> findById(ID id) throws DaoException;
     
-    public abstract Optional<List<T>> query(Class<T> resourceClazz, Map<Class<?>, List<ActualParameter>> parameters) throws DaoException;
+    public abstract Optional<List<T>> query(Class<T> resourceClazz, QueryCriteria criterias) throws DaoException;
     
 }

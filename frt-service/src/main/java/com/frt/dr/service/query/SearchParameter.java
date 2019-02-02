@@ -1,8 +1,23 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
 package com.frt.dr.service.query;
 
 import java.util.List;
 
+/**
+ * SearchParameter interface
+ * @author jfu
+ */
 public interface SearchParameter {
+	
 	public static enum Modifier {
 		MISSING("missing"), 
 		BELOW("below"), 
@@ -67,4 +82,5 @@ public interface SearchParameter {
 
 	public boolean accept(Modifier m);
 	public boolean accept(Comparator c);
+	
 }
