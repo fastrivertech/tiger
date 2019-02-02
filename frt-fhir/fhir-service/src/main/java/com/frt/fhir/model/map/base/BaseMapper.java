@@ -15,11 +15,11 @@ import com.frt.dr.model.ResourceComplexType;
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientExtension;
 import com.frt.dr.model.base.PatientReference;
+import com.frt.fhir.model.ComplexTypesResource;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.fhir.model.ResourceDictionary.ResourcePair;
 import com.frt.fhir.model.map.MapperException;
 import com.frt.fhir.model.map.ResourceMapperInterface;
-import com.frt.fhir.service.HAPIComplexTypesResource;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.google.gson.Gson;
@@ -61,7 +61,7 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	public BaseMapper() {
 		FhirContext context = FhirContext.forDstu3();
 		parser = (ca.uhn.fhir.parser.JsonParser) context.newJsonParser();
-		context.registerCustomType(HAPIComplexTypesResource.class);
+		context.registerCustomType(ComplexTypesResource.class);
 	}
 
 	@Override
@@ -106,7 +106,7 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	private Object parseComplexType(String fieldName, String message) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(CUST_RS_BEGIN).append("\"").append(fieldName).append("\":").append(message).append(CUST_RS_END);
-		HAPIComplexTypesResource rs = this.parser.parseResource(HAPIComplexTypesResource.class, sb.toString());
+		ComplexTypesResource rs = this.parser.parseResource(ComplexTypesResource.class, sb.toString());
 		Field field = null;
 		try {
 			field = rs.getClass().getDeclaredField(fieldName);
@@ -149,7 +149,7 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	// return ret;
 	// }
 
-	private Object invokeGetter(HAPIComplexTypesResource rs, String attr) {
+	private Object invokeGetter(ComplexTypesResource rs, String attr) {
 		Object ret = null;
 		Method getter = null;
 		try {

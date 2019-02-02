@@ -9,7 +9,7 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.fhir.service;
+package com.frt.fhir.model;
 
 import java.util.List;
 
@@ -72,8 +72,8 @@ import ca.uhn.fhir.model.api.annotation.ResourceDef;
  * @author JIMFUQIAN
  *
  */
-@ResourceDef(name = "HAPIComplexTypesResource", profile = "http://hl7.org/fhir/profiles/custom-resource")
-public class HAPIComplexTypesResource extends DomainResource {
+@ResourceDef(name = "ComplexTypesResource", profile = "http://hl7.org/fhir/profiles/custom-resource")
+public class ComplexTypesResource extends DomainResource {
 	private static final long serialVersionUID = 1L;
 	
 	/**
@@ -260,8 +260,8 @@ public class HAPIComplexTypesResource extends DomainResource {
 	private List<Reference> referenceArray;
 
 	@Override
-	public HAPIComplexTypesResource copy() {
-		HAPIComplexTypesResource retVal = new HAPIComplexTypesResource();
+	public ComplexTypesResource copy() {
+		ComplexTypesResource retVal = new ComplexTypesResource();
 		super.copyValues(retVal);
 		return retVal;
 	}
