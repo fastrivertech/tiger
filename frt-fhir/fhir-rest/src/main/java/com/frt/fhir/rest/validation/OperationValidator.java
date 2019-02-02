@@ -12,6 +12,7 @@ package com.frt.fhir.rest.validation;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ArrayList;
 import java.util.regex.Pattern;
 
@@ -52,16 +53,8 @@ public class OperationValidator {
 	 * @param format mime-type format
 	 * @throws ValidationException throw if the format is invalid
 	 */
-	public static void validateFormat(UriInfo info) throws ValidationException {
-		if (info.getQueryParameters()!=null) {
-			String format = info.getQueryParameters().getFirst("_format");
-			if (format!=null&&!format.isEmpty()) {
-				validateFormat(format);
-			}
-		}
-	}
-
-	public static void validateFormat(String format) throws ValidationException {
+	public static void validateFormat(String format) 
+		throws ValidationException {
 		if (!formats.contains(format)) {
 			throw new ValidationException(localizer.x("invalid _format " + format),
 					  ValidationException.ErrorCode.INVALID_MIME_TYPE);
@@ -74,26 +67,25 @@ public class OperationValidator {
 	 * @param summary
 	 * @throws ValidationException throw if the summary value is invalid
 	 */
-	public static void validateSummary(UriInfo info) throws ValidationException {
-		if (info.getQueryParameters()!=null) {
-			String summary = info.getQueryParameters().getFirst("_summary");
-			if (summary!=null&&!summary.isEmpty()) {
-				validateSummary(summary);
-			}
-		}
-	}
-
-	public static void validateSummary(String summary) throws ValidationException {
+	public static void validateSummary(String summary) 
+		throws ValidationException {
 		if (!summaries.contains(summary)) {
 			throw new ValidationException(localizer.x("invalid _summary " + summary),
 					  ValidationException.ErrorCode.INVALID_SUMMARY_TYPE);
 		} 
 	}
 	
-	public static void validateId(String id) throws ValidationException {
-		if (id != null) {
-			if (!idPattern.matcher(id).matches()) {
-				throw new ValidationException(localizer.x("invalid id " + id),
+	/**
+	 * Validate id parameter
+	 * 
+	 * @param id
+	 * @throws ValidationException throw if the id value is invalid
+	 */
+	public static void validateId(Optional<String> id) 
+		throws ValidationException {
+		if (id.isPresent()) {
+			if (!idPattern.matcher(id.get()).matches()) {
+				throw new ValidationException(localizer.x("invalid id " + id.get()),
 										      ValidationException.ErrorCode.INVALID_ID);
 			}
 		}

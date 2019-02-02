@@ -17,7 +17,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -33,9 +32,10 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
-
-import com.frt.dr.service.query.ActualParameter;
-import com.frt.dr.service.query.SearchParameterUtils;
+import com.frt.dr.service.query.CompositeParameter;
+import com.frt.dr.service.query.ResourceQueryUtils;
+import com.frt.dr.service.query.QueryOption;
+import com.frt.dr.service.query.QueryCriteria;
 import com.frt.fhir.model.base.BaseMapper;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.rest.validation.OperationValidator;
@@ -49,7 +49,6 @@ import com.frt.stream.service.StreamServiceException;
 
 /**
  * CreateResourceInteraction class
- * 
  * @author cqye
  */
 @Path(ResourcePath.BASE_PATH)
@@ -65,6 +64,10 @@ public class ReadResourceOperation extends ResourceOperation {
 	private FhirService fhirService;
 	private StreamService streamService;
 	
+	/**
+	 * ReadResourceOperation Constructor
+	 * @throws RuntimeException
+	 */
 	public ReadResourceOperation() 
 		throws RuntimeException {
 		try {
@@ -99,8 +102,12 @@ public class ReadResourceOperation extends ResourceOperation {
 	@GET
 	@Path(ResourcePath.TYPE_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
-	public <R extends DomainResource> Response read(@PathParam("type") final String type, @Context UriInfo uriInfo) {
-		return readResource(type, null, uriInfo);
+	public <R extends DomainResource> Response read(@PathParam("type") final String type, 
+												    @PathParam("_id") final String _id,
+												    @QueryParam("_format") @DefaultValue("json") final String _format,
+												    @QueryParam("_summary") @DefaultValue("false") final String _summary,
+													@Context UriInfo uriInfo) {		
+		return readResource(type, _id, _format, _summary, uriInfo);
 	}
 	
 	/**
@@ -121,27 +128,39 @@ public class ReadResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
 	public <R extends DomainResource> Response read(@PathParam("type") final String type,
-											  @PathParam("id") final String id, @Context UriInfo uriInfo) {
-		return readResource(type, id, uriInfo);
+											  		@PathParam("id") final String id, 
+												    @QueryParam("_format") @DefaultValue("json") final String _format,
+												    @QueryParam("_summary") @DefaultValue("false") final String _summary) {											  		
+		return readResource(type, id, _format, _summary, null);
 	}
 
-	private <R extends DomainResource> Response readResource(String type, String id, UriInfo uriInfo) {
+	private <R extends DomainResource> Response readResource(String type, 
+															 String id, 
+															 String format, 
+															 String summary, 
+															 UriInfo uriInfo) {
 		try {
 			logger.info(localizer.x("ReadResourceOperation reads a current resource"));
 			
-			if (id!=null) {
-				OperationValidator.validateId(id);
-			}
-			
-			OperationValidator.validateFormat(uriInfo);
-			OperationValidator.validateSummary(uriInfo);
-			Map<Class<?>, List<ActualParameter>> parameters = SearchParameterUtils.processParameters(uriInfo.getQueryParameters());
+			//ToDo: more validations and more concise validation implementation 			
+			OperationValidator.validateId(Optional.ofNullable(id));
+			OperationValidator.validateFormat(format);
+			OperationValidator.validateSummary(summary);
 
+			//ToDo: add more options
+			QueryOption options = new QueryOption();
+			options.setSummary(Boolean.parseBoolean(summary));
+			options.setFormat(QueryOption.MediaType.value(format));
+			
+			QueryCriteria criterias = new QueryCriteria();
+			if (uriInfo != null) {
+				criterias.setParams(uriInfo.getQueryParameters());
+			}			
+						
 			// Response includes ETag with versionId and Last-Modified
 			// 410 Gone - Resource deleted 
 			// 404 Not Found - Unknown resource 
 
-			String message;
 			if (streamService.enabled()) {
 				logger.info(localizer.x("write [" + type + "] ReadOperation message to fhir stream"));
 			    streamService.write( "GET [base]/" + type + "/" + id,  id);
@@ -152,14 +171,14 @@ public class ReadResourceOperation extends ResourceOperation {
 			String resourceInJson = null;
 			if (id != null) {				
 				logger.info(localizer.x("read a " + type + " by its id[" + id + "] ..."));		
-				Optional<R> found = fhirService.read(type, id);
+				Optional<R> found = fhirService.read(type, id, options);
 				if (found.isPresent()) {
 					resourceInJson = parser.serialize(found.get());      
 					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 				}
 			} else {
-				logger.info(localizer.x("search resource of type: " + type + " with parameters [" + parameters.toString() + "] ..."));		
-				Optional<List<R>> found = fhirService.read(type, parameters);
+				logger.info(localizer.x("search resource of type: " + type + " with parameters [" + criterias.getParams().toString() + "] ..."));		
+				Optional<List<R>> found = fhirService.read(type, criterias, options);
 				if (found.isPresent()) {
 					StringBuilder sb = new StringBuilder();
 					List<R> rsl = found.get();
@@ -179,7 +198,6 @@ public class ReadResourceOperation extends ResourceOperation {
 				}
 			}
 
-			// report error
 			String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
