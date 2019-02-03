@@ -16,6 +16,7 @@ package com.frt.fhir.model.map;
  * @author chaye
  */
 public interface ResourceMapperInterface {
+	
 	// FHIR resources
 	public static final String PATIENT = "PATIENT";
 	// FHIR complex types
@@ -44,4 +45,5 @@ public interface ResourceMapperInterface {
 	Object map(Object source) throws MapperException;
 	
 	Object map(Object source, Object target) throws MapperException;
+	
 }
