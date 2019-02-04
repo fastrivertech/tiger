@@ -30,6 +30,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import com.frt.dr.service.query.CompositeParameter;
@@ -166,33 +167,19 @@ public class ReadResourceOperation extends ResourceOperation {
 				logger.info(localizer.x("read [" + type + "] ReadOperation message from fhir stream"));								
 			} 		
 			
-			String resourceInJson = null;
 			if (id != null) {				
 				logger.info(localizer.x("FHR_I001: ReadResourceOperation reads a current resource by its logical Id {0}", id));				
 				Optional<R> found = fhirService.read(type, id, options);
 				if (found.isPresent()) {
-					resourceInJson = parser.serialize(found.get());      
+					String resourceInJson = parser.serialize(found.get());      
 					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 				}
 			} else {
 				logger.info(localizer.x("FHR_I002: ReadResourceOperation reads a current resource by criteria {0}", criterias.getParams().toString()));										
-				Optional<List<R>> found = fhirService.read(type, criterias, options);
-				if (found.isPresent()) {
-					StringBuilder sb = new StringBuilder();
-					List<R> rsl = found.get();
-					sb.append(BaseMapper.ARRAY_BEGIN);
-					boolean first = true;
-					for (R r: rsl) {
-						if (!first) {
-							sb.append(BaseMapper.VAL_DEL);
-						}
-						else {
-							first = false;
-						}
-						sb.append(parser.serialize(r));
-					}
-					sb.append(BaseMapper.ARRAY_END);
-					return ResourceOperationResponseBuilder.build(sb.toString(), Status.OK, "1.0", MediaType.APPLICATION_JSON);
+				Optional<Bundle> bundle = fhirService.read(type, criterias, options);
+				if (bundle.isPresent()) {
+					String resourceInJson = parser.serialize(bundle.get());
+					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 				}
 			}
 
@@ -200,7 +187,7 @@ public class ReadResourceOperation extends ResourceOperation {
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
-			resourceInJson = parser.serialize(outcome);
+			String resourceInJson = parser.serialize(outcome);
 			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MediaType.APPLICATION_JSON);				
 		} catch (ValidationException vx) {
 			String error = "invalid parameter: " + vx.getMessage(); 
