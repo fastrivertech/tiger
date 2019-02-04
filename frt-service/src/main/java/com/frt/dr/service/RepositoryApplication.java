@@ -41,7 +41,7 @@ public class RepositoryApplication {
 	    this.repositoryService.save(resourceClazz,resource);
 	}
     
-    public <R extends DomainResource> Object read(java.lang.Class<R> resourceClazz, String id)
+    public <R extends DomainResource> R read(java.lang.Class<R> resourceClazz, String id)
 		throws RepositoryServiceException {
     	R resource = this.repositoryService.read(resourceClazz, id);    	
 		return resource;
