@@ -37,6 +37,7 @@ import com.frt.dr.service.query.CompositeParameter;
 import com.frt.dr.service.query.ResourceQueryUtils;
 import com.frt.dr.service.query.QueryOption;
 import com.frt.dr.service.query.QueryCriteria;
+import com.frt.fhir.model.BundleBuilder;
 import com.frt.fhir.model.map.base.BaseMapper;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.rest.validation.OperationValidator;
@@ -104,10 +105,13 @@ public class ReadResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.TYPE_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
 	public <R extends DomainResource> Response read(@PathParam("type") final String type, 
-												    @PathParam("_id") final String _id,
+												    @PathParam("_id") String _id,
 												    @QueryParam("_format") @DefaultValue("json") final String _format,
 												    @QueryParam("_summary") @DefaultValue("false") final String _summary,
-													@Context UriInfo uriInfo) {	
+													@Context UriInfo uriInfo) {		
+		if (uriInfo.getQueryParameters().get("_id") != null ) {
+			_id = uriInfo.getQueryParameters().get("_id").get(0);
+		}
 		return readResource(type, _id, _format, _summary, uriInfo);
 	}
 	
@@ -176,9 +180,13 @@ public class ReadResourceOperation extends ResourceOperation {
 				}
 			} else {
 				logger.info(localizer.x("FHR_I002: ReadResourceOperation reads a current resource by criteria {0}", criterias.getParams().toString()));										
-				Optional<Bundle> bundle = fhirService.read(type, criterias, options);
-				if (bundle.isPresent()) {
-					String resourceInJson = parser.serialize(bundle.get());
+				Optional<List<R>> resources = fhirService.read(type, criterias, options);
+				if (resources.isPresent()) {
+					Bundle bundle = BundleBuilder.create(resources.get(), uriInfo.getAbsolutePath().toString());
+					Bundle.BundleLinkComponent link = bundle.addLink();
+					link.setRelation("self");
+					link.setUrl(uriInfo.getRequestUri().toString());					
+					String resourceInJson = parser.serialize(bundle);
 					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 				}
 			}
