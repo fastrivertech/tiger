@@ -55,7 +55,7 @@ import com.frt.stream.service.StreamServiceException;
 @PermitAll
 public class ReadResourceOperation extends ResourceOperation {
 	private static Logger logger = Logger.getLog(ReadResourceOperation.class.getName());
-	private static Localization localizer = Localization.getInstance();
+	private static Localization localizer = Localization.getInstance("com.frt.fhir");
 		
 	@Context
 	private UriInfo uriInfo;
@@ -106,7 +106,7 @@ public class ReadResourceOperation extends ResourceOperation {
 												    @PathParam("_id") final String _id,
 												    @QueryParam("_format") @DefaultValue("json") final String _format,
 												    @QueryParam("_summary") @DefaultValue("false") final String _summary,
-													@Context UriInfo uriInfo) {		
+													@Context UriInfo uriInfo) {	
 		return readResource(type, _id, _format, _summary, uriInfo);
 	}
 	
@@ -130,7 +130,7 @@ public class ReadResourceOperation extends ResourceOperation {
 	public <R extends DomainResource> Response read(@PathParam("type") final String type,
 											  		@PathParam("id") final String id, 
 												    @QueryParam("_format") @DefaultValue("json") final String _format,
-												    @QueryParam("_summary") @DefaultValue("false") final String _summary) {											  		
+												    @QueryParam("_summary") @DefaultValue("false") final String _summary) {		
 		return readResource(type, id, _format, _summary, null);
 	}
 
@@ -139,9 +139,7 @@ public class ReadResourceOperation extends ResourceOperation {
 															 String format, 
 															 String summary, 
 															 UriInfo uriInfo) {
-		try {
-			logger.info(localizer.x("ReadResourceOperation reads a current resource"));
-			
+		try {			
 			//ToDo: more validations and more concise validation implementation 			
 			OperationValidator.validateId(Optional.ofNullable(id));
 			OperationValidator.validateFormat(format);
@@ -154,7 +152,7 @@ public class ReadResourceOperation extends ResourceOperation {
 			
 			QueryCriteria criterias = new QueryCriteria();
 			if (uriInfo != null) {
-				criterias.setParams(uriInfo.getQueryParameters());
+				criterias.setParams(uriInfo.getQueryParameters());	
 			}			
 						
 			// Response includes ETag with versionId and Last-Modified
@@ -170,14 +168,14 @@ public class ReadResourceOperation extends ResourceOperation {
 			
 			String resourceInJson = null;
 			if (id != null) {				
-				logger.info(localizer.x("read a " + type + " by its id[" + id + "] ..."));		
+				logger.info(localizer.x("FHR_I001: ReadResourceOperation reads a current resource by its logical Id {0}", id));				
 				Optional<R> found = fhirService.read(type, id, options);
 				if (found.isPresent()) {
 					resourceInJson = parser.serialize(found.get());      
 					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 				}
 			} else {
-				logger.info(localizer.x("search resource of type: " + type + " with parameters [" + criterias.getParams().toString() + "] ..."));		
+				logger.info(localizer.x("FHR_I002: ReadResourceOperation reads a current resource by criteria {0}", criterias.getParams().toString()));										
 				Optional<List<R>> found = fhirService.read(type, criterias, options);
 				if (found.isPresent()) {
 					StringBuilder sb = new StringBuilder();

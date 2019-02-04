@@ -111,9 +111,9 @@ public class PatientResourceMapper extends BaseMapper {
 			List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getExtension();
 			addExtensions(frtPatient, extensions, "patient");
 		}
-
+		//ToDo: serializing hapi object to json and deserializeing json to frt object is a workaround
 		String jp = this.parser.encodeResourceToString(hapiPatient);
-		JsonElement el = gparser.parse(jp);
+		JsonElement el = gparser.parse(jp);   
 		JsonObject root = el.getAsJsonObject();
 		
 		// patient.domainresource.resource.id	
