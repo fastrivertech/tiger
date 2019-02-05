@@ -16,23 +16,10 @@ CREATE TABLE SEQUENCE (
 	PRIMARY KEY (SEQ_NAME)
 );
 
- -- system tables --
-CREATE TABLE SYSTEM_RESOURCE (
-	system_id	VARCHAR(64) NOT NULL, -- leave it as VARCHAR 64 for now, if it is internal - change it to BIGINT
-	version_id	VARCHAR(64) NOT NULL,
-	status		VARCHAR(16) NOT NULL,
-	createDate	TIMESTAMP,
-	createUser	VARCHAR(32),
-	updateDate	TIMESTAMP,
-	updateUser	VARCHAR(32),
-	PRIMARY KEY (system_id)
-);
-
 -- FHIR base resource table --- 
 CREATE TABLE RESOURCE (
 	resource_id BIGINT, -- implementation specific primary key
 	id	VARCHAR(64) NOT NULL UNIQUE, -- logical ID of the resource per FHIR, visible to end user
-	system_id	VARCHAR(64), --NOT NULL, relax now since SYSTEM_RESOURCE is not implemented yet
 	meta VARCHAR(1024), -- relax CLOB to enable search, -- Σ, Meta object serialization and de-serialization
 	implicitRules VARCHAR(2048), -- ?!Σ, maximum uri length 
 	language VARCHAR(32), -- Σ, maximum code length
@@ -287,3 +274,19 @@ CREATE TABLE PATIENT_LINK (
 
 CREATE SEQUENCE PATIENT_LINK_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
 INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_LINK_SEQ', 1);
+
+-- patient transaction tables --
+CREATE TABLE PATIENT_TRANSACTION (
+	transaction_id BIGINT, -- implementation specific primary key
+	resource_id BIGINT NOT NULL, -- FK to PATIENT TABLE
+	meta CLOB, -- FHIR Metadata which includes versionId, lastUpdate 
+	action VARCHAR(32), -- FHIR AuditEvent: http://hl7.org/fhir/valueset-audit-event-action.html 
+	delta CLOB, -- delimited string with paths and changes, paitent.name.given=old value 
+	actor VARCHAR(1024),
+	transaction_timestamp TIMESTAMP,
+	PRIMARY KEY (transaction_id), 	
+	FOREIGN KEY (resource_id) REFERENCES PATIENT(resource_id)											
+);
+
+CREATE SEQUENCE PATIENT_TRANSACTION_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
+INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_TRANSACTION_SEQ', 1);
