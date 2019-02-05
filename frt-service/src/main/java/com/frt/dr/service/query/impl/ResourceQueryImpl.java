@@ -132,10 +132,10 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 			Class<?> clazz = (Class<?>)it.next();
 			List<CompositeParameter> paramsPerClazz = parameters.get(clazz);
 			if (clazz.equals(resourceClazz)) {
-				// process search parameters on main class (the FHIR resource)
+				// process search parameters on primary class (the FHIR resource)
 				where = addCriteria(where, cb, rootResource, null, paramsPerClazz, true);
 			} else {
-				// process search parameters on associated class (the FHIR complex types)
+				// process search parameters on child classes (the FHIR complex types)
 				// a join is needed plus other expression
 				String[] joinAttrs = SearchParameterRegistry.getJoinAttributes(resourceClazz, (Class<U>)clazz);
 				Metamodel m = em.getMetamodel();

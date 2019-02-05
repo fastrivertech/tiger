@@ -33,7 +33,7 @@ public class CompositeParameter {
 	// original values from query : may with comparator
 	private List<String> values; 
 	private Class<?> type;
-	// value(s) in java objet as indocated by type
+	// value(s) in java object as indicated by type
 	private List<Object> valObjs; 
 
 	public CompositeParameter(String rawName, List<String> values) {
@@ -254,6 +254,10 @@ public class CompositeParameter {
 			valObjs = new ArrayList<Object>();
 			valObjs.addAll(values);
 			setValueObject(valObjs);
+			// ToDo: need to fix in the current query builder logic 
+			if (sp.getName().equals("given")) {
+				setEnumModifier(SearchParameter.Modifier.CONTAINS);
+			}
 		}
 	}
 
