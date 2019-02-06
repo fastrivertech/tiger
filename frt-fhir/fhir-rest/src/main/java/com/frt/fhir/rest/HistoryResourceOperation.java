@@ -53,7 +53,7 @@ public class HistoryResourceOperation extends ResourceOperation {
 												    @QueryParam("_format") @DefaultValue("json") final String _format) {
 		
 		logger.info(localizer.x("FHR_I005: HistoryResourceOperation retrieves the hsitory of resource {0} by its id {1}", type, id));										
-		String resourceInJson = type + ":" + id + " history";
+		String resourceInJson = "not implemented yet";
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 	
 	}

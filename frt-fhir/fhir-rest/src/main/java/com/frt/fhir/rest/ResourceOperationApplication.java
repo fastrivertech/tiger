@@ -34,6 +34,7 @@ public class ResourceOperationApplication extends Application {
 		resources.add(CapabilityResourceOperation.class);
 		resources.add(DeleteResourceOperation.class);
 		resources.add(HistoryResourceOperation.class);
+		resources.add(UpdateResourceOperation.class);
 		return resources;
 	}
 }

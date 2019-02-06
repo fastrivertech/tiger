@@ -47,7 +47,7 @@ import com.frt.stream.service.StreamServiceException;
 @PermitAll
 public class CreateResourceOperation extends ResourceOperation {	
 	private static Logger logger = Logger.getLog(CreateResourceOperation.class.getName());
-	private static Localization localizer = Localization.getInstance();
+	private static Localization localizer = Localization.getInstance("com.frt.fhir");
 	
     @Context
     private UriInfo uriInfo;

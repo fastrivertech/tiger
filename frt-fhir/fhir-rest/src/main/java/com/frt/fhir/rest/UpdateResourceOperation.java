@@ -10,6 +10,53 @@
  */
 package com.frt.fhir.rest;
 
-public class UpdateResourceOperation {
+import javax.annotation.security.PermitAll;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.PUT;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import javax.ws.rs.core.Response.Status;
+import org.hl7.fhir.dstu3.model.DomainResource;
+import com.frt.util.logging.Localization;
+import com.frt.util.logging.Logger;
 
+/**
+ * CreateResourceInteraction class
+ * 
+ * @author cqye
+ */
+@Path(ResourcePath.BASE_PATH)
+@PermitAll
+public class UpdateResourceOperation extends ResourceOperation {	
+	
+	private static Logger logger = Logger.getLog(UpdateResourceOperation.class.getName());
+	private static Localization localizer = Localization.getInstance("com.frt.fhir");
+	
+	@Context
+	private UriInfo uriInfo;
+	 
+	public UpdateResourceOperation() {
+	}
+	
+	@PUT
+	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
+	@Consumes(MediaType.APPLICATION_JSON)	
+	@Produces(MediaType.APPLICATION_JSON)	
+	public Response create(@PathParam("type") final String type,
+						   @PathParam("id") final String id,
+						   @QueryParam("_format") @DefaultValue("json") final String _format, 
+						   final String body) {
+		
+		logger.info(localizer.x("FHR_I006: UpdateResourceOperatio updates the resource {0} by its id {1}", type, id));										
+		String resourceInJson = "not implemented yet";
+		return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
+	
+	}
 }
