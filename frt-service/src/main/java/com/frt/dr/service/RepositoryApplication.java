@@ -52,7 +52,12 @@ public class RepositoryApplication {
     	List<R> resources = this.repositoryService.query(resourceClazz, criterias);    	
 		return resources;
 	}
-
+	
+	public <R extends DomainResource> void update(java.lang.Class<?> resourceClazz, String id, Object resource)
+		throws RepositoryServiceException {
+		this.repositoryService.update(resourceClazz, id, (R)resource); 
+	}
+	
 	public static void main(String[] args) {
 		try {
 			RepositoryContext context = new RepositoryContext(RepositoryApplication.class);			

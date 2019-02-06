@@ -103,4 +103,10 @@ public class RepositoryServiceImpl implements RepositoryService {
 		}
 	}
 
+	@Override
+	public <R extends DomainResource> void update(java.lang.Class<?> resourceClazz, String id, R resource)
+		throws RepositoryServiceException {
+		// ToDo:
+	}
+	
 }
