@@ -26,13 +26,26 @@ public class TransactionService {
 	private EntityManager em;
 	private EntityTransaction transaction;
 	
-	public TransactionService() {		
+	private static TransactionService instance;
+	
+	private TransactionService() {		
+	}
+	
+	public static TransactionService getInstance() {
+		if (instance == null) {
+			instance = new TransactionService(); 
+		}
+		return instance;
 	}
 	
     public void setEntityManager(EntityManager em) {
     	this.em = em;
     }
 	
+    public EntityManager getEntityManager() {
+    	return this.em;
+    }
+    
 	public void start()
 		throws TransactionServiceException {
 		try {
@@ -76,5 +89,5 @@ public class TransactionService {
 			transaction = null;
 		}
 	}
-	
+		
 }

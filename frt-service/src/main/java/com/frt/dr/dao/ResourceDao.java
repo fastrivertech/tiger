@@ -49,28 +49,26 @@ import com.frt.dr.service.query.SearchParameter;
 import com.frt.dr.service.query.SearchParameterRegistry;
 import com.frt.dr.service.query.ResourceQueryUtils;
 import com.frt.dr.service.query.QueryCriteria;
+import com.frt.dr.transaction.TransactionService;
 
 /**
  * ResourceDao class
  * @author jfu
  */
 public class ResourceDao extends BaseDao<Resource, String> {
+			
+	public ResourceDao() {
+		super.initialize();		
+	}
+	
 	@Override
-	public Optional<Resource> save(Resource entry) throws DaoException {
-		EntityTransaction transaction = null;
+	public Optional<Resource> save(Resource entry) 
+		throws DaoException {
 		try {
-			transaction = em.getTransaction();
-			transaction.begin();
-			em.persist(entry);
-			transaction.commit();
-			return Optional.of(entry);
-		} catch (IllegalStateException | RollbackException ex) {
-			try {
-				if (transaction != null) {
-					transaction.rollback();
-				}
-			} catch (IllegalStateException | RollbackException ignore) {
-			}
+			ts.getEntityManager().persist(entry);
+			return Optional.of(entry);			
+		} catch (IllegalStateException | 
+				 RollbackException ex) {
 			throw new DaoException(ex);
 		}
 	}
@@ -79,19 +77,21 @@ public class ResourceDao extends BaseDao<Resource, String> {
 	public Optional<Resource> findById(String id) 
 		throws DaoException {
 		try {
-			Query query = em.createNamedQuery("getResourceById");
+			Query query = ts.getEntityManager().createNamedQuery("getResourceById");
 			query.setParameter("id", id);
 			List<Resource> resources = (List<Resource>) query.getResultList();
 			Optional<Resource> resource = null;
 			if (resources.size() > 0) {
-
 				resource = Optional.ofNullable(resources.get(0));
 			} else {
 				resource = Optional.empty();
 			}
 			return resource;
-		} catch (IllegalArgumentException | QueryTimeoutException | TransactionRequiredException
-				| PessimisticLockException | LockTimeoutException ex) {
+		} catch (IllegalArgumentException | 
+				 QueryTimeoutException | 
+				 TransactionRequiredException | 
+				 PessimisticLockException | 
+				 LockTimeoutException ex) {
 			throw new DaoException(ex);
 		} catch (PersistenceException ex) {
 			throw new DaoException(ex);
@@ -103,12 +103,15 @@ public class ResourceDao extends BaseDao<Resource, String> {
 		throws DaoException {
 		try {
 			Map<Class<?>, List<CompositeParameter>> parameters = ResourceQueryUtils.processParameters(criterias.getParams());	
-			ResourceQueryBuilder<Resource> rb = ResourceQueryBuilder.createBuilder(em, resourceClazz, parameters);
+			ResourceQueryBuilder<Resource> rb = ResourceQueryBuilder.createBuilder(ts.getEntityManager(), resourceClazz, parameters);
 			ResourceQuery<Resource> rq = rb.createQuery();
 			rq.prepareQuery();
 			return rq.doQuery();
-		} catch (IllegalArgumentException | QueryTimeoutException | TransactionRequiredException
-				| PessimisticLockException | LockTimeoutException ex) {
+		} catch (IllegalArgumentException | 
+				 QueryTimeoutException | 
+				 TransactionRequiredException | 
+				 PessimisticLockException | 
+				 LockTimeoutException ex) {
 			throw new DaoException(ex);
 		} catch (PersistenceException ex) {
 			throw new DaoException(ex);

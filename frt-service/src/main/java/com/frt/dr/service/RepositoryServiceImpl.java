@@ -21,6 +21,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.service.query.QueryCriteria;
+import com.frt.dr.transaction.TransactionService;
 import com.frt.dr.dao.DaoFactory;
 import com.frt.dr.dao.BaseDao;
 import com.frt.dr.dao.DaoException;
@@ -52,10 +53,10 @@ public class RepositoryServiceImpl implements RepositoryService {
 	public <R extends DomainResource> R read(Class<?> resourceClazz, String id) 
 		throws RepositoryServiceException {
 		try {
-			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
-			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
-			dao.setEntityManager(em);		
+		    TransactionService.getInstance().setEntityManager(em);
+		    
+			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
 			Optional<R> resource = dao.findById(id);
 			if (resource.isPresent()) {
 				return resource.get();
@@ -72,10 +73,10 @@ public class RepositoryServiceImpl implements RepositoryService {
 	public <R extends DomainResource> List<R> query(Class<?> resourceClazz, QueryCriteria criterias)
 		throws RepositoryServiceException {
 		try {
-			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
-			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
-			dao.setEntityManager(em);
+		    TransactionService.getInstance().setEntityManager(em);
+			
+			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
 			Optional<List<R>> resources = dao.query(resourceClazz, criterias);
 			if (resources.isPresent()) {
 				return resources.get();
@@ -91,14 +92,18 @@ public class RepositoryServiceImpl implements RepositoryService {
 	@Override
 	public <R extends DomainResource> R save(Class<?> resourceClazz, R resource)
 		throws RepositoryServiceException {
+		TransactionService ts  = TransactionService.getInstance();
 		try {
-			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
-			dao.setJdbcTemplate(new JdbcTemplate(dataSource));
-		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
-			dao.setEntityManager(em);
+			
+		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();
+			ts.setEntityManager(em);
+		    ts.start();
+			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
 			Optional<R> created = dao.save(resource);
+			ts.commit();
 			return created.get();
 		} catch (DaoException dex) {
+			ts.rollback();
 			throw new RepositoryServiceException(dex); 
 		}
 	}

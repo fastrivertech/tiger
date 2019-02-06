@@ -37,7 +37,7 @@ public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
     	
     	try {
     		// a transaction started
-    		em.persist(entry);
+    		ts.getEntityManager().persist(entry);
     		return Optional.of(entry);
     	} catch (EntityExistsException | 
     			 IllegalArgumentException | 
@@ -52,7 +52,7 @@ public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
     	throws DaoException {
     	
 		try {
-			Query query = em.createNamedQuery("PatientTransaction.getPatientTransactionById");
+			Query query = ts.getEntityManager().createNamedQuery("PatientTransaction.getPatientTransactionById");
 			query.setParameter("id", id);
 			List<PatientTransaction> transactions = (List<PatientTransaction>) query.getResultList();			
 			if (transactions != null && 
@@ -67,10 +67,9 @@ public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
     }
 	
     public Optional<List<PatientTransaction>> findByResourceId(String id) 
-        	throws DaoException {
-        	
+        	throws DaoException {        	
     		try {
-    			Query query = em.createNamedQuery("PatientTransaction.getPatientTransactionByResourceId");
+    			Query query = ts.getEntityManager().createNamedQuery("PatientTransaction.getPatientTransactionByResourceId");
     			query.setParameter("id", id);
     			List<PatientTransaction> transactions = (List<PatientTransaction>) query.getResultList();			
     			if (transactions != null && 
