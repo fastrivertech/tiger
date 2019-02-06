@@ -33,6 +33,7 @@ public class ResourceOperationApplication extends Application {
 		resources.add(ReadResourceOperation.class);		
 		resources.add(CapabilityResourceOperation.class);
 		resources.add(DeleteResourceOperation.class);
+		resources.add(HistoryResourceOperation.class);
 		return resources;
 	}
 }
