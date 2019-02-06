@@ -280,9 +280,9 @@ CREATE TABLE PATIENT_TRANSACTION (
 	transaction_id BIGINT, -- implementation specific primary key
 	resource_id BIGINT NOT NULL, -- FK to PATIENT TABLE
 	meta CLOB, -- FHIR Metadata which includes versionId, lastUpdate 
-	action VARCHAR(32), -- FHIR AuditEvent: http://hl7.org/fhir/valueset-audit-event-action.html 
+	action VARCHAR(32) NOT NULL, -- FHIR AuditEvent: http://hl7.org/fhir/valueset-audit-event-action.html 
 	delta CLOB, -- delimited string with paths and changes, paitent.name.given=old value 
-	actor VARCHAR(1024),
+	actor VARCHAR(128) NOT NULL,
 	transaction_timestamp TIMESTAMP,
 	PRIMARY KEY (transaction_id), 	
 	FOREIGN KEY (resource_id) REFERENCES PATIENT(resource_id)											

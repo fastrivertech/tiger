@@ -35,9 +35,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.RelationMappingCustomizer;
-
 import javax.xml.bind.annotation.XmlTransient;
-
 import org.eclipse.persistence.annotations.Customizer;
 
 @Entity
