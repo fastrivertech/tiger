@@ -56,11 +56,7 @@ public class Resource implements Serializable {
 		this.resourceId = resourceId;
 	}
 
-	@Size(max = 64)    
-    @Column(name = "system_id")            
-	private String systemId; 
-
-	//@Lob
+  //@Lob
 	@Size(max=1024)
     @Column(name = "meta")                        
 	private String meta;
@@ -81,14 +77,6 @@ public class Resource implements Serializable {
 		this.id = id;
 	}
 
-    public String getSystemId() {
-		return systemId;
-	}
-
-	public void setSystemId(String systemId) {
-		this.systemId = systemId;
-	}
-	
 	public String getMeta() {
 		return meta;
 	}
