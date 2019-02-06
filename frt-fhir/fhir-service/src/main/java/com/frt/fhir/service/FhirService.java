@@ -123,4 +123,9 @@ public class FhirService {
 			throw new FhirServiceException(ex);
 		}		
 	}
+	
+	public void delete(@Nonnull String type, @Nonnull String id) {
+		//ToDo
+	}	
+	
 }
