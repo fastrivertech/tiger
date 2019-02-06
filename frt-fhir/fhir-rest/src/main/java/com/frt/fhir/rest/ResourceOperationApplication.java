@@ -31,6 +31,7 @@ public class ResourceOperationApplication extends Application {
 		Set<Class<?>> resources = new java.util.HashSet<>();
 		resources.add(CreateResourceOperation.class);
 		resources.add(ReadResourceOperation.class);		
+		resources.add(CapabilityResourceOperation.class);		
 		return resources;
 	}
 }
