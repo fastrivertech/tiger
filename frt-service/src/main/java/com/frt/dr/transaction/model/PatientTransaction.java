@@ -16,6 +16,7 @@ import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
 import javax.persistence.Id;
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -28,6 +29,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.persistence.FetchType;
 import javax.persistence.CascadeType;
 import javax.persistence.GeneratedValue;
@@ -36,6 +38,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.validation.constraints.Size;
+import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.base.Patient;
 
 /**
@@ -45,23 +48,24 @@ import com.frt.dr.model.base.Patient;
 @Entity
 @Table(name = "PATIENT_TRANSACTION")
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-@SequenceGenerator(name = "PATIENT_TRANSACTION_SEQ", sequenceName = "PATIENT_TRANSACTION_SEQ", allocationSize = 1)
+@SequenceGenerator(name = "PATIENT_TRANSACTION_SEQ", sequenceName = "PATIENT_TRANSACTION_SEQ", allocationSize = 100)
 @NamedQueries({
 	@NamedQuery(name = "PatientTransaction.getPatientTransactionById", query = "SELECT T FROM PatientTransaction T WHERE T.transactionId = :id"),	
-    @NamedQuery(name = "PatientTransaction.getPatientTransactionByResourceId", query = "SELECT T FROM PatientTransaction T WHERE T.resourceId = :id")
+    @NamedQuery(name = "PatientTransaction.getPatientTransactionByResourceId", query = "SELECT T FROM PatientTransaction T WHERE T.transactionId = :id")
 })
 public class PatientTransaction implements Transaction {
 
 	@Id
     @Column(name = "transaction_id", nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "PATIENT_TRANSACTION_SEQ")      
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PATIENT_TRANSACTION_SEQ") 
+	@Basic(optional = false)
     private BigInteger transactionId;    
-        
-  //@ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL) 
-  //@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")    
-  //private Patient patient;
-    @Column(name = "resource_id", insertable = true, updatable = false)                        
-    private BigInteger resourceId;
+        		  
+   @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL) 
+   @JoinColumn(name = "resource_id", referencedColumnName = "resource_id")
+    private Patient patient;
+  //@Column(name = "resource_id", insertable = true, updatable = false)                        
+  //private BigInteger resourceId;
 
     @Lob
     @Column(name = "meta", insertable = true, updatable = false)                        
@@ -92,25 +96,17 @@ public class PatientTransaction implements Transaction {
     public BigInteger getTransactionId() {
     	return this.transactionId;
     }
+    
+    @Override        
+    public <R extends DomainResource> void setResource(R patient) {
+    	this.patient = (Patient)patient;
+    }
 
-    /*    
-    public void setPatient(Patient patient) {
-    	this.patient = patient;
+    @Override
+    public <R extends DomainResource> R getResource() {
+    	return (R)this.patient;
     }
-    
-    public Patient getPatient() {
-    	return this.patient;
-    }
-    */
-
-    public void setResourceId(BigInteger resourceId) {
-    	this.resourceId = resourceId;
-    }
-    
-    public BigInteger getResourceId() {
-    	return this.resourceId;
-    }
-    
+        
     public void setMeta(String meta) {
     	this.meta = meta;
     }

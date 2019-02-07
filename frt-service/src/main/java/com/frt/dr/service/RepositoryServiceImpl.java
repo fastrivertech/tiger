@@ -89,14 +89,15 @@ public class RepositoryServiceImpl implements RepositoryService {
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();
 			ts.setEntityManager(em);
 			
-		    ts.start();
-			BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
-			Optional<R> created = resourceDao.save(resource);
-			com.frt.dr.transaction.model.PatientTransaction transaction = (com.frt.dr.transaction.model.PatientTransaction)TransactionHelper.createTransaction();
-			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);						
-			transactionDao.save(transaction);			
+		    ts.start();			
+		  //BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
+		  //Optional<R> created = resourceDao.save(resource);					
+			Transaction transaction = TransactionHelper.createTransaction();
+			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+		    transaction.setResource(resource);			
+			transactionDao.save(transaction);						
 			ts.commit();
-			return created.get();
+			return resource;
 			
 		} catch (DaoException dex) {
 			ts.rollback();

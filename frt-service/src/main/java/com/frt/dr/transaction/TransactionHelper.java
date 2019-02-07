@@ -22,8 +22,6 @@ public class TransactionHelper {
 	public static <T extends Transaction> T createTransaction() {
 		PatientTransaction transaction = new PatientTransaction();	
 		// ToDo
-		transaction.setTransactionId(BigInteger.ONE);
-		transaction.setResourceId(BigInteger.ONE);		
 		transaction.setAction("created");
 		transaction.setActor("foo");		
 		transaction.setTimestamp(new Timestamp(new Date().getTime()));

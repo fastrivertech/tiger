@@ -13,6 +13,7 @@ package com.frt.dr.transaction.model;
 
 import java.io.Serializable;
 import javax.persistence.MappedSuperclass;
+import com.frt.dr.model.DomainResource;
 
 /**
  * Transaction class
@@ -21,4 +22,9 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public interface Transaction extends Serializable{	
 	static final long serialVersionUID = -8321293485415819089L;	
+	
+	<R extends DomainResource> void setResource(R resource);
+	
+	<R extends DomainResource> R getResource();
+	
 }
