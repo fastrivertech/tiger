@@ -52,7 +52,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
    
 	@Override
-	public <R extends DomainResource> R read(Class<?> resourceClazz, String id) 
+	public <R extends DomainResource> Optional<R> read(Class<?> resourceClazz, String id) 
 		throws RepositoryServiceException {
 		try {
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
@@ -60,19 +60,14 @@ public class RepositoryServiceImpl implements RepositoryService {
 		    
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
 			Optional<R> resource = dao.findById(id);
-			if (resource.isPresent()) {
-				return resource.get();
-			}
-			else {
-				return null;
-			}
+			return resource;
 		} catch (DaoException dex) {
 			throw new RepositoryServiceException(dex); 
 		}
 	}
 		
 	@Override
-	public <R extends DomainResource> List<R> query(Class<?> resourceClazz, QueryCriteria criterias)
+	public <R extends DomainResource> Optional<List<R>> query(Class<?> resourceClazz, QueryCriteria criterias)
 		throws RepositoryServiceException {
 		try {
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
@@ -80,12 +75,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
 			Optional<List<R>> resources = dao.query(resourceClazz, criterias);
-			if (resources.isPresent()) {
-				return resources.get();
-			}
-			else {
-				return null;
-			}
+			return resources;
 		} catch (DaoException dex) {
 			throw new RepositoryServiceException(dex); 
 		}
@@ -120,4 +110,17 @@ public class RepositoryServiceImpl implements RepositoryService {
 		// ToDo:
 	}
 	
+	@Override
+	public void delete(java.lang.Class<?> resourceClazz, String id)
+		throws RepositoryServiceException {
+		// ToDo:
+	}	
+	
+	@Override
+	public <R extends DomainResource> Optional<List<R>> history(java.lang.Class<?> resourceClazz, String id)
+			throws RepositoryServiceException {
+		// ToDo:
+		List<R> resources = null;
+		return Optional.ofNullable(resources);
+	}
 }

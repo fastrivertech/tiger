@@ -13,6 +13,8 @@ package com.frt.dr.service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
@@ -41,21 +43,31 @@ public class RepositoryApplication {
 	    this.repositoryService.save(resourceClazz,resource);
 	}
     
-    public <R extends DomainResource> R read(java.lang.Class<R> resourceClazz, String id)
+    public <R extends DomainResource> Optional<R> read(java.lang.Class<R> resourceClazz, String id)
 		throws RepositoryServiceException {
-    	R resource = this.repositoryService.read(resourceClazz, id);    	
+    	Optional<R> resource = this.repositoryService.read(resourceClazz, id);    	
 		return resource;
 	}
 	
-	public <R extends DomainResource> List<R> read(Class<?> resourceClazz, QueryCriteria criterias)
+	public <R extends DomainResource> Optional<List<R>> read(Class<?> resourceClazz, QueryCriteria criterias)
 		throws RepositoryServiceException {
-    	List<R> resources = this.repositoryService.query(resourceClazz, criterias);    	
+		Optional<List<R>> resources = this.repositoryService.query(resourceClazz, criterias);    	
 		return resources;
 	}
 	
 	public <R extends DomainResource> void update(java.lang.Class<?> resourceClazz, String id, Object resource)
 		throws RepositoryServiceException {
 		this.repositoryService.update(resourceClazz, id, (R)resource); 
+	}
+	
+	public void delete(java.lang.Class<?> resourceClazz, String id)
+		throws RepositoryServiceException {
+		this.repositoryService.delete(resourceClazz, id); 
+	}
+	
+	public <R extends DomainResource> Optional<List<R>> history(java.lang.Class<?> resourceClazz, String id)
+		throws RepositoryServiceException {
+		return this.repositoryService.history(resourceClazz, id);
 	}
 	
 	public static void main(String[] args) {

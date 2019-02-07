@@ -12,6 +12,7 @@
 package com.frt.dr.service;
 
 import java.util.List;
+import java.util.Optional;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.service.query.QueryCriteria;;
 
@@ -21,10 +22,10 @@ import com.frt.dr.service.query.QueryCriteria;;
  */
 public interface RepositoryService {
 	
-	<R extends DomainResource> R read(java.lang.Class<?> resourceClazz, String id) 
+	<R extends DomainResource> Optional<R> read(java.lang.Class<?> resourceClazz, String id) 
 		throws RepositoryServiceException;
 	
-	<R extends DomainResource> List<R> query(java.lang.Class<?> resourceClazz, QueryCriteria criterias) 
+	<R extends DomainResource> Optional<List<R>> query(java.lang.Class<?> resourceClazz, QueryCriteria criterias) 
 		throws RepositoryServiceException;
 
 	<R extends DomainResource> R save(java.lang.Class<?> resourceClazz, R resource)
@@ -32,5 +33,11 @@ public interface RepositoryService {
 	
 	<R extends DomainResource> void update(java.lang.Class<?> resourceClazz, String id, R resource)
 		throws RepositoryServiceException;	
+
+	void delete(java.lang.Class<?> resourceClazz, String id)
+		throws RepositoryServiceException;
+	
+	<R extends DomainResource> Optional<List<R>> history(java.lang.Class<?> resourceClazz, String id)
+		throws RepositoryServiceException;
 
 }
