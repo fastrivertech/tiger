@@ -26,6 +26,7 @@ import org.hl7.fhir.dstu3.model.CapabilityStatement;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.service.FhirConformanceService;
+import com.frt.fhir.service.FhirService;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 
@@ -44,8 +45,10 @@ public class DeleteResourceOperation extends ResourceOperation {
 	@Context
 	private UriInfo uriInfo;
 	
+	private FhirService fhirService;
 
 	public DeleteResourceOperation() { 
+		fhirService = new FhirService();
 	}
 	
 	@DELETE
@@ -56,6 +59,7 @@ public class DeleteResourceOperation extends ResourceOperation {
 		
 		logger.info(localizer.x("FHR_I004: DeleteResourceOperation deletes a resource {0} by its id {1}", type, id));										
 		String resourceInJson = "not implemented yet";
+		fhirService.delete(type, id);
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 	}	
 	

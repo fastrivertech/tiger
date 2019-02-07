@@ -25,6 +25,8 @@ import javax.ws.rs.core.Response.Status;
 
 import org.hl7.fhir.dstu3.model.DomainResource;
 
+import com.frt.dr.service.query.QueryOption;
+import com.frt.fhir.service.FhirService;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 
@@ -41,19 +43,23 @@ public class HistoryResourceOperation extends ResourceOperation {
 		
 	@Context
 	private UriInfo uriInfo;
-
+	private FhirService fhirService;
+	
 	public HistoryResourceOperation(){
+		fhirService = new FhirService();
 	}
 	
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response read(@PathParam("type") final String type, 
-												    @PathParam("id") String id,
-												    @QueryParam("_format") @DefaultValue("json") final String _format) {
+						 @PathParam("id") final String id,
+						 @QueryParam("_format") @DefaultValue("json") final String _format) {
 		
 		logger.info(localizer.x("FHR_I005: HistoryResourceOperation retrieves the hsitory of resource {0} by its id {1}", type, id));										
 		String resourceInJson = "not implemented yet";
+		QueryOption options = new QueryOption();
+		fhirService.history(type, id, options);
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 	
 	}
