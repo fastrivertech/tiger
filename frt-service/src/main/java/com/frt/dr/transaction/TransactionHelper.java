@@ -14,6 +14,7 @@ package com.frt.dr.transaction;
 import java.util.Date;
 import java.sql.Timestamp;
 import java.math.BigInteger;
+import com.frt.dr.transaction.model.Meta;
 import com.frt.dr.transaction.model.Transaction;
 import com.frt.dr.transaction.model.PatientTransaction;
 
@@ -22,8 +23,9 @@ public class TransactionHelper {
 	public static <T extends Transaction> T createTransaction() {
 		PatientTransaction transaction = new PatientTransaction();	
 		// ToDo
-		transaction.setAction("created");
-		transaction.setActor("foo");		
+		transaction.setMeta(new Meta().toString());
+		transaction.setAction(Transaction.ActionCode.C.name());
+		transaction.setActor("frt");		
 		transaction.setTimestamp(new Timestamp(new Date().getTime()));
 		return (T)transaction;		
 	}

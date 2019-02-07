@@ -23,6 +23,24 @@ import com.frt.dr.model.DomainResource;
 public interface Transaction extends Serializable{	
 	static final long serialVersionUID = -8321293485415819089L;	
 	
+	public enum ActionCode {
+		C("Create"),
+		R("Read/view/print"),
+		U("Update"),
+		D("Delete"),
+		E("Excute");		
+		
+		private String code;
+		
+		ActionCode(String code){
+			this.code = code;
+		}
+		
+		public String getActionCode() {
+			return this.code;
+		}
+	}
+	
 	<R extends DomainResource> void setResource(R resource);
 	
 	<R extends DomainResource> R getResource();
