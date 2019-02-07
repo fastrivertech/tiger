@@ -284,8 +284,8 @@ CREATE TABLE PATIENT_TRANSACTION (
 	delta CLOB, -- delimited string with paths and changes, paitent.name.given=old value 
 	actor VARCHAR(128) NOT NULL,
 	transaction_timestamp TIMESTAMP,
-	PRIMARY KEY (transaction_id), 	
-	FOREIGN KEY (resource_id) REFERENCES PATIENT(resource_id)											
+	PRIMARY KEY (transaction_id) 	
+  --FOREIGN KEY (resource_id) REFERENCES PATIENT(resource_id)											
 );
 
 CREATE SEQUENCE PATIENT_TRANSACTION_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;

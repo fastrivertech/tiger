@@ -11,6 +11,7 @@
  */
 package com.frt.dr.transaction.model;
 
+import java.sql.Timestamp;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.List;
@@ -43,25 +44,25 @@ import com.frt.dr.model.base.Patient;
  */
 @Entity
 @Table(name = "PATIENT_TRANSACTION")
-@Inheritance( strategy = InheritanceType.SINGLE_TABLE )
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 @SequenceGenerator(name = "PATIENT_TRANSACTION_SEQ", sequenceName = "PATIENT_TRANSACTION_SEQ", allocationSize = 1)
 @NamedQueries({
-	@NamedQuery(name = "PatientTransaction.getPatientTransactionById", query = "SELECT T FROM PatientTransaction T WHERE T.transaction_id = :id"),	
-    @NamedQuery(name = "PatientTransaction.getPatientTransactionByResourceId", query = "SELECT T FROM PatientTransaction T WHERE T.reource_id = :id")
+	@NamedQuery(name = "PatientTransaction.getPatientTransactionById", query = "SELECT T FROM PatientTransaction T WHERE T.transactionId = :id"),	
+    @NamedQuery(name = "PatientTransaction.getPatientTransactionByResourceId", query = "SELECT T FROM PatientTransaction T WHERE T.resourceId = :id")
 })
-public class PatientTransaction implements Serializable {
-	private static final long serialVersionUID = -8321293485415819089L;
+public class PatientTransaction implements Transaction {
 
 	@Id
     @Column(name = "transaction_id", nullable = false, updatable = false)
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "PATIENT_TRANSACTION_SEQ")      
     private BigInteger transactionId;    
         
-    @Column(name = "resource_id", nullable = false, updatable = false)
-    @ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL) 
-    @JoinColumn(name = "resource_id", referencedColumnName = "resource_id")    
-    private Patient patient;
-        
+  //@ManyToOne(optional = false, fetch = FetchType.LAZY, cascade = CascadeType.ALL) 
+  //@JoinColumn(name = "resource_id", referencedColumnName = "resource_id")    
+  //private Patient patient;
+    @Column(name = "resource_id", insertable = true, updatable = false)                        
+    private BigInteger resourceId;
+
     @Lob
     @Column(name = "meta", insertable = true, updatable = false)                        
     private String meta;
@@ -78,6 +79,9 @@ public class PatientTransaction implements Serializable {
     @Column(name = "actor", nullable = false, insertable = true, updatable = false)                                            
     private String actor;
  
+	@Column(name = "transaction_timestamp")                        
+    private Timestamp timestamp;
+
     public PatientTransaction() {    	
     }
 
@@ -89,12 +93,22 @@ public class PatientTransaction implements Serializable {
     	return this.transactionId;
     }
 
+    /*    
     public void setPatient(Patient patient) {
     	this.patient = patient;
     }
     
     public Patient getPatient() {
     	return this.patient;
+    }
+    */
+
+    public void setResourceId(BigInteger resourceId) {
+    	this.resourceId = resourceId;
+    }
+    
+    public BigInteger getResourceId() {
+    	return this.resourceId;
     }
     
     public void setMeta(String meta) {
@@ -129,5 +143,12 @@ public class PatientTransaction implements Serializable {
     	return this.action;
     }
 
+    public void setTimestamp(Timestamp timestamp) {
+    	this.timestamp = timestamp;
+    }
+    
+    public Timestamp getTimestamp() {
+    	return this.timestamp;
+    }
     
 }

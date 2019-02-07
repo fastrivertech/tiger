@@ -21,7 +21,9 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.service.query.QueryCriteria;
+import com.frt.dr.transaction.TransactionHelper;
 import com.frt.dr.transaction.TransactionService;
+import com.frt.dr.transaction.model.Transaction;
 import com.frt.dr.dao.DaoFactory;
 import com.frt.dr.dao.BaseDao;
 import com.frt.dr.dao.DaoException;
@@ -93,15 +95,19 @@ public class RepositoryServiceImpl implements RepositoryService {
 	public <R extends DomainResource> R save(Class<?> resourceClazz, R resource)
 		throws RepositoryServiceException {
 		TransactionService ts  = TransactionService.getInstance();
-		try {
-			
+		try {			
 		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();
 			ts.setEntityManager(em);
+			
 		    ts.start();
-			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
-			Optional<R> created = dao.save(resource);
+			BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
+			Optional<R> created = resourceDao.save(resource);
+			com.frt.dr.transaction.model.PatientTransaction transaction = (com.frt.dr.transaction.model.PatientTransaction)TransactionHelper.createTransaction();
+			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);						
+			transactionDao.save(transaction);			
 			ts.commit();
 			return created.get();
+			
 		} catch (DaoException dex) {
 			ts.rollback();
 			throw new RepositoryServiceException(dex); 

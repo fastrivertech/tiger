@@ -9,7 +9,7 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.dr.transaction.model;
+package com.frt.dr.transaction.model.dao;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +20,7 @@ import javax.persistence.PersistenceException;
 import com.frt.dr.dao.BaseDao;
 import com.frt.dr.dao.DaoException;
 import com.frt.dr.service.query.QueryCriteria;
+import com.frt.dr.transaction.model.PatientTransaction;
 
 /**
  * PatientTransactionDao clas
@@ -28,7 +29,8 @@ import com.frt.dr.service.query.QueryCriteria;
  */
 public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
 
-	public PatientTransactionDao() {		
+	public PatientTransactionDao() {	
+		super.initialize();
 	}
 	
 	@Override

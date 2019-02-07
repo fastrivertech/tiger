@@ -4,6 +4,7 @@
             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
     <persistence-unit name="FRT_DR_LOCAL_PERSISTENCE" transaction-type="RESOURCE_LOCAL">
 	    <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<!-- resource entities -->
 		<class>com.frt.dr.model.base.Patient</class>
 		<class>com.frt.dr.model.base.PatientExtension</class>
 		<class>com.frt.dr.model.base.PatientHumanName</class>
@@ -19,6 +20,8 @@
 		<class>com.frt.dr.model.base.PatientContact</class>
 		<class>com.frt.dr.model.DomainResource</class>
 		<class>com.frt.dr.model.Resource</class>
+		<!-- transaction entities -->
+		<class>com.frt.dr.transaction.model.PatientTransaction</class>		
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <shared-cache-mode>NONE</shared-cache-mode>		
         <properties>			

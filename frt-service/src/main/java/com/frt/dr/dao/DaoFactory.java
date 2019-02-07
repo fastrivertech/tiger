@@ -13,6 +13,7 @@ package com.frt.dr.dao;
 
 import com.frt.dr.dao.base.PatientHumanNameDao;
 import com.frt.dr.model.base.PatientHumanName;
+import com.frt.dr.transaction.model.dao.PatientTransactionDao;
 import com.frt.dr.model.base.Patient;
 
 /**
@@ -39,5 +40,15 @@ public class DaoFactory {
 			throw new DaoException(resourceClazz.getName() + "Dao Not Implemented Yet");
 		}
 	}
+
+	public <D extends BaseDao> D createTransactionDao(Class<?> resourceClazz) 
+			throws DaoException {
+			if (resourceClazz.equals(Patient.class) ) {
+				D transactionDao = (D)new PatientTransactionDao();
+				return transactionDao;
+			} else {
+				throw new DaoException(resourceClazz.getName() + "Dao Not Implemented Yet");
+			}
+		}
 	
 }
