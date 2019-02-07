@@ -74,12 +74,11 @@ public class FhirService {
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			
-			List<com.frt.dr.model.DomainResource> frtResources = repository.read(resourcePair.getFrt(), criterias);
+			Optional<List<com.frt.dr.model.DomainResource>> frtResources = repository.read(resourcePair.getFrt(), criterias);
 			List<R> hapiResources = null;
-			if (frtResources != null &&
-				!frtResources.isEmpty()) {
+			if (frtResources.isPresent()) {
 				hapiResources = new ArrayList();
-				for (com.frt.dr.model.DomainResource frtResource : frtResources) {
+				for (com.frt.dr.model.DomainResource frtResource : frtResources.get()) {
 					R hapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object) frtResource);
 					hapiResources.add(hapiResource);
 				}
@@ -99,9 +98,9 @@ public class FhirService {
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			
-			com.frt.dr.model.DomainResource frtResource = repository.read(resourcePair.getFrt(), id);
-			if (frtResource != null) {
-				R hapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)frtResource);
+			Optional<com.frt.dr.model.DomainResource> frtResource = repository.read(resourcePair.getFrt(), id);
+			if (frtResource.isPresent()) {
+				R hapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)frtResource.get());
 				retVal = Optional.of(hapiResource);
 			}
 			
@@ -111,8 +110,12 @@ public class FhirService {
 		}		
 	}
 	
-	public <R extends DomainResource> void update(@Nonnull String type, @Nonnull String id, R hapiResource) {
+	public <R extends DomainResource> void update(@Nonnull String type, 
+												  @Nonnull String id, 
+												  R hapiResource) 
+		throws FhirServiceException {
 		try {
+			//ToDo
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			
@@ -124,8 +127,34 @@ public class FhirService {
 		}		
 	}
 	
-	public void delete(@Nonnull String type, @Nonnull String id) {
-		//ToDo
+	public void delete(@Nonnull String type, 
+					   @Nonnull String id) 
+	    throws FhirServiceException {
+		try {
+			//ToDo
+			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
+			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
+			repository.delete(resourcePair.getFrt(), id);
+		} catch (RepositoryServiceException ex) {
+			throw new FhirServiceException(ex);
+		}
 	}	
-	
+		
+	public <R extends DomainResource> Optional<List<R>> history(@Nonnull String type, 
+			   											        @Nonnull String id,
+			   											        QueryOption options) 
+		throws FhirServiceException {
+		try {
+			//ToDo
+			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
+			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
+			Optional<List<com.frt.dr.model.DomainResource>> frtResources = repository.history(resourcePair.getFrt(), id);
+			List<R> hapiResources = null;
+			return Optional.ofNullable(hapiResources);
+		} catch (MapperException | RepositoryServiceException ex) {
+			throw new FhirServiceException(ex);
+		}				
+		
+	}
+
 }
