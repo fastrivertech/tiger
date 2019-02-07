@@ -278,14 +278,14 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_LINK_SEQ', 1);
 -- patient transaction tables --
 CREATE TABLE PATIENT_TRANSACTION (
 	transaction_id BIGINT, -- implementation specific primary key
-	resource_id BIGINT NOT NULL, -- FK to PATIENT TABLE
+    resource_id BIGINT NOT NULL, -- FK to PATIENT TABLE
 	meta CLOB, -- FHIR Metadata which includes versionId, lastUpdate 
 	action VARCHAR(32) NOT NULL, -- FHIR AuditEvent: http://hl7.org/fhir/valueset-audit-event-action.html 
 	delta CLOB, -- delimited string with paths and changes, paitent.name.given=old value 
 	actor VARCHAR(128) NOT NULL,
 	transaction_timestamp TIMESTAMP,
-	PRIMARY KEY (transaction_id) 	
-  --FOREIGN KEY (resource_id) REFERENCES PATIENT(resource_id)											
+	PRIMARY KEY (transaction_id),
+    FOREIGN KEY (resource_id) REFERENCES PATIENT(resource_id)										
 );
 
 CREATE SEQUENCE PATIENT_TRANSACTION_SEQ AS BIGINT START WITH 1 INCREMENT by 1 NO CYCLE;
