@@ -64,7 +64,7 @@ public class UpdateResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Consumes(MediaType.APPLICATION_JSON)	
 	@Produces(MediaType.APPLICATION_JSON)	
-	public <R extends DomainResource> Response create(@PathParam("type") final String type,
+	public <R extends DomainResource> Response update(@PathParam("type") final String type,
 						   @PathParam("id") final String id,
 						   @QueryParam("_format") @DefaultValue("json") final String _format, 
 						   final String body) {
@@ -73,8 +73,8 @@ public class UpdateResourceOperation extends ResourceOperation {
 		try {
 			OperationValidator.validateFormat(_format);
 			R resource = parser.deserialize(type, body);	
-			fhirService.update(type, id, resource);		
-			String resourceInJson = "the resource " + type + ":" + id + " updated";
+			R updated = fhirService.update(type, id, resource);
+			String resourceInJson = parser.serialize(updated);
 			return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 		} catch (ValidationException vx) {
 			String error = "invalid parameter: " + vx.getMessage(); 
