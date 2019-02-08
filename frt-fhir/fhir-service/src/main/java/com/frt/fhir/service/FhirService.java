@@ -75,15 +75,15 @@ public class FhirService {
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			
 			Optional<List<com.frt.dr.model.DomainResource>> frtResources = repository.read(resourcePair.getFrt(), criterias);
-			List<R> hapiResources = null;
+			Optional<List<R>> hapiResources = Optional.empty();
 			if (frtResources.isPresent()) {
-				hapiResources = new ArrayList();
+				hapiResources = Optional.of(new ArrayList());
 				for (com.frt.dr.model.DomainResource frtResource : frtResources.get()) {
 					R hapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object) frtResource);
-					hapiResources.add(hapiResource);
+					hapiResources.get().add(hapiResource);
 				}
 			}
-			return Optional.ofNullable(hapiResources);
+			return hapiResources;
 		} catch (MapperException | RepositoryServiceException ex) {
 			throw new FhirServiceException(ex);
 		}		
@@ -133,7 +133,6 @@ public class FhirService {
 					   @Nonnull String id) 
 	    throws FhirServiceException {
 		try {
-			//ToDo
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			repository.delete(resourcePair.getFrt(), id);
@@ -147,12 +146,18 @@ public class FhirService {
 			   											        QueryOption options) 
 		throws FhirServiceException {
 		try {
-			//ToDo
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			Optional<List<com.frt.dr.model.DomainResource>> frtResources = repository.history(resourcePair.getFrt(), id);
-			List<R> hapiResources = null;
-			return Optional.ofNullable(hapiResources);
+			Optional<List<R>> hapiResources = Optional.empty();
+			if (frtResources.isPresent()) {
+				hapiResources = Optional.of(new ArrayList());
+				for (com.frt.dr.model.DomainResource frtResource : frtResources.get()) {
+					R hapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object) frtResource);
+					hapiResources.get().add(hapiResource);
+				}				
+			}			
+			return hapiResources;
 		} catch (MapperException | RepositoryServiceException ex) {
 			throw new FhirServiceException(ex);
 		}				
