@@ -11,6 +11,7 @@
  */
 package com.frt.dr.transaction.model.dao;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.TransactionRequiredException;
@@ -53,7 +54,7 @@ public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
     	
 		try {
 			Query query = ts.getEntityManager().createNamedQuery("PatientTransaction.getPatientTransactionById");
-			query.setParameter("id", id);
+			query.setParameter("id", new BigInteger(id));
 			List<PatientTransaction> transactions = (List<PatientTransaction>) query.getResultList();			
 			if (transactions != null && 
 				transactions.size() >0 ) {

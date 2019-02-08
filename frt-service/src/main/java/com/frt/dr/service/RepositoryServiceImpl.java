@@ -12,6 +12,8 @@
 package com.frt.dr.service;
 
 import javax.sql.DataSource;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
@@ -23,6 +25,7 @@ import com.frt.dr.model.DomainResource;
 import com.frt.dr.service.query.QueryCriteria;
 import com.frt.dr.transaction.TransactionHelper;
 import com.frt.dr.transaction.TransactionService;
+import com.frt.dr.transaction.model.PatientTransaction;
 import com.frt.dr.transaction.model.Transaction;
 import com.frt.dr.dao.DaoFactory;
 import com.frt.dr.dao.BaseDao;
@@ -144,9 +147,16 @@ public class RepositoryServiceImpl implements RepositoryService {
 	
 	@Override
 	public <R extends DomainResource> Optional<List<R>> history(java.lang.Class<?> resourceClazz, String id)
-			throws RepositoryServiceException {
-		// ToDo:
-		List<R> resources = null;
-		return Optional.ofNullable(resources);
+		throws RepositoryServiceException {
+		Optional<List<R>> history = Optional.empty();		
+		Optional<R> found = read(resourceClazz, id);
+		if (found.isPresent()) {
+			history = Optional.of(new ArrayList());
+			history.get().add(found.get());
+			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	
+			Optional<List<Transaction>> transactions = transactionDao.findById(id); 
+			//ToDo 
+		}
+		return history;
 	}
 }
