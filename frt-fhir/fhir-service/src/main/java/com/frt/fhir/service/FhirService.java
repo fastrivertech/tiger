@@ -110,17 +110,19 @@ public class FhirService {
 		}		
 	}
 	
-	public <R extends DomainResource> void update(@Nonnull String type, 
-												  @Nonnull String id, 
-												  R hapiResource) 
+	public <R extends DomainResource> R update(@Nonnull String type, 
+											   @Nonnull String id, 
+			 								   R hapiResource) 
 		throws FhirServiceException {
 		try {
-			//ToDo
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			
 			Object frtResource = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)hapiResource);			
-			repository.update(resourcePair.getFrt(), id, frtResource);
+			com.frt.dr.model.DomainResource updatedfrtResource = repository.update(resourcePair.getFrt(), id, frtResource);
+						
+			R updatedhapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)updatedfrtResource);
+			return updatedhapiResource;
 			
 		} catch (MapperException | RepositoryServiceException ex) {
 			throw new FhirServiceException(ex);
