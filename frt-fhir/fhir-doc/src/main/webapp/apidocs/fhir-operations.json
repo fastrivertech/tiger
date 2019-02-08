@@ -4,6 +4,28 @@
   "basePath" : "/frt-fhir-rest",
   "resourcePath" : "/1.0",
   "apis" : [ {
+    "path" : "/1.0/metadata",
+    "operations" : [ {
+      "method" : "GET",
+      "nickname" : "read",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "description" : "return information mode: full, normative or terminology",
+        "defaultValue" : "normative",
+        "paramType" : "query",
+        "name" : "mode"
+      }, {
+        "type" : "string",
+        "description" : "mime-type json or xml, default josn and json supported",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      } ],
+      "summary" : "Retrieve the FHIR server capability statement resource\n GET [base]/frt-fhir-rest/1.0/metadata{?mode=[mode]} {&_format=[mime-type]}",
+      "produces" : [ "application/json" ]
+    } ]
+  }, {
     "path" : "/1.0/{type}",
     "operations" : [ {
       "method" : "GET",
@@ -18,9 +40,8 @@
       }, {
         "type" : "string",
         "description" : "Resource logical id, e.g., 1356",
-        "paramType" : "path",
-        "name" : "_id",
-        "required" : true
+        "paramType" : "query",
+        "name" : "_id"
       }, {
         "type" : "string",
         "description" : "json or xml, json supported",
@@ -34,13 +55,13 @@
         "paramType" : "query",
         "name" : "_summary"
       } ],
-      "summary" : "Get FHIR Resource by its Id and search string \n GET [base]/Patient?_id=[id] \n GET [base]/Patient?given=eve",
+      "summary" : "Get FHIR Resource by its Id and search string \n GET [base]/frt-fhir-rest/1.0[type]{?[parameters]{&_format=[mime-type]}} \n GET [base]/frt-fhir-rest/1.0/Patient?_id=[id] or [base]/frt-fhir-rest/1.0/Patient/given=eve",
       "responseMessages" : [ {
         "code" : 200,
         "message" : "Retrieved Success"
       }, {
         "code" : 400,
-        "message" : "Bad Request - Resource could not be parsed or failed basic FHIR validation rules"
+        "message" : "Bad Request - Resource could not be parsed or failed basic FHIR validation rules\n Response includes ETag with versionId and Last-Modified\n 410 Gone - Resource deleted\n 404 Not Found - Unknown resource"
       } ],
       "produces" : [ "application/json" ]
     }, {
@@ -66,7 +87,7 @@
         "name" : "body",
         "required" : true
       } ],
-      "summary" : "Create FHIR Resource\n POST [base]/frt-fhir-rest/1.0/Patient",
+      "summary" : "Create a FHIR Resource\n POST [base]/frt-fhir-rest/1.0/[type] {?_format=[mime-type]}",
       "responseMessages" : [ {
         "code" : 201,
         "message" : "Created Success"
@@ -80,6 +101,42 @@
   }, {
     "path" : "/1.0/{type}/{id}",
     "operations" : [ {
+      "method" : "PUT",
+      "nickname" : "update",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "description" : "Resource type, e.g., Patient",
+        "paramType" : "path",
+        "name" : "type",
+        "required" : true
+      }, {
+        "type" : "string",
+        "description" : "Resource logical id, e.g., 1356",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      }, {
+        "type" : "string",
+        "description" : "json or xml, default josn and json supported",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "description" : "resource",
+        "paramType" : "body",
+        "name" : "body",
+        "required" : true
+      } ],
+      "summary" : "Create a new current version for an existing resource or create an initial version if no resource exists for the give Id\n PUT [base]/[type]/[id] {?_format=[mime-type]}",
+      "responseMessages" : [ {
+        "code" : 201,
+        "message" : "Created Success"
+      } ],
+      "consumes" : [ "application/json" ],
+      "produces" : [ "application/json" ]
+    }, {
       "method" : "GET",
       "nickname" : "read",
       "type" : "Response",
@@ -108,14 +165,61 @@
         "paramType" : "query",
         "name" : "_summary"
       } ],
-      "summary" : "Get FHIR Resource by its Id\n GET [base]/Patient/[id]",
+      "summary" : "Get FHIR Resource by its Id\n GET [base]/frt-fhir-rest/1.0/[type]/[id] {?_format=[mime-type]} {&_format=[mime-type]}",
       "responseMessages" : [ {
         "code" : 200,
         "message" : "Retrieved Success"
       }, {
         "code" : 400,
-        "message" : "Bad Request - Resource could not be parsed or failed basic FHIR validation rules"
+        "message" : "Bad Request - Resource could not be parsed or failed basic FHIR validation rules\n Response includes ETag with versionId and Last-Modified\n 410 Gone - Resource deleted\n 404 Not Found - Unknown resource"
       } ],
+      "produces" : [ "application/json" ]
+    }, {
+      "method" : "DELETE",
+      "nickname" : "read",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "description" : "resource type",
+        "paramType" : "path",
+        "name" : "type",
+        "required" : true
+      }, {
+        "type" : "string",
+        "description" : "resource logical Id",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      } ],
+      "summary" : "Delete a resource by its id\n DELETE [base]/frt-fhir-rest/1.0/[type]/[id]",
+      "produces" : [ "application/json" ]
+    } ]
+  }, {
+    "path" : "/1.0/{type}/{id}/_history",
+    "operations" : [ {
+      "method" : "GET",
+      "nickname" : "read",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "description" : "Resource type, e.g., Patient",
+        "paramType" : "path",
+        "name" : "type",
+        "required" : true
+      }, {
+        "type" : "string",
+        "description" : "Resource logical id, e.g., 1356",
+        "paramType" : "path",
+        "name" : "id",
+        "required" : true
+      }, {
+        "type" : "string",
+        "description" : "json or xml, default josn and json supported",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      } ],
+      "summary" : "Retrieve the history of a resource by its logical Id\n GET [base]/frt-fhir-rest/1.0/[type]/[id]/_history{?_format=[mime-type]}",
       "produces" : [ "application/json" ]
     } ]
   } ]
