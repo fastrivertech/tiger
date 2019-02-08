@@ -10,6 +10,9 @@
  */
 package com.frt.fhir.rest;
 
+import java.util.List;
+import java.util.Optional;
+
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -23,10 +26,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 
+import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.OperationOutcome;
 
 import com.frt.dr.service.query.QueryOption;
+import com.frt.fhir.model.BundleBuilder;
+import com.frt.fhir.parser.JsonParser;
+import com.frt.fhir.rest.validation.ValidationException;
 import com.frt.fhir.service.FhirService;
+import com.frt.fhir.service.FhirServiceException;
+import com.frt.stream.service.StreamServiceException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 
@@ -43,25 +53,50 @@ public class HistoryResourceOperation extends ResourceOperation {
 		
 	@Context
 	private UriInfo uriInfo;
-	private FhirService fhirService;
+	private FhirService fhirService;	
+	private JsonParser parser;
 	
 	public HistoryResourceOperation(){
+		parser = new JsonParser();
 		fhirService = new FhirService();
 	}
 	
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response read(@PathParam("type") final String type, 
-						 @PathParam("id") final String id,
-						 @QueryParam("_format") @DefaultValue("json") final String _format) {
+	public <R extends DomainResource> Response read(@PathParam("type") final String type, 
+						 						    @PathParam("id") final String id,
+						 						    @QueryParam("_format") @DefaultValue("json") final String _format) {
 		
 		logger.info(localizer.x("FHR_I005: HistoryResourceOperation retrieves the hsitory of resource {0} by its id {1}", type, id));										
-		String resourceInJson = "not implemented yet";
-		QueryOption options = new QueryOption();
-		fhirService.history(type, id, options);
-		return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
-	
+		
+		try {
+			QueryOption options = new QueryOption();
+			Optional<List<R>> history = fhirService.history(type, id, options);
+			if (history.isPresent()) {
+				Bundle bundle = BundleBuilder.create(history.get(), uriInfo.getAbsolutePath().toString());
+				Bundle.BundleLinkComponent link = bundle.addLink();
+				link.setRelation("self");
+				link.setUrl(uriInfo.getRequestUri().toString());					
+				String resourceInJson = parser.serialize(bundle);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
+			}
+			
+			String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = parser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MediaType.APPLICATION_JSON);				
+						
+		}  catch (FhirServiceException ex) {
+			String error = "\"service failure: " + ex.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = parser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.INTERNAL_SERVER_ERROR, "", MediaType.APPLICATION_JSON);							
+		}
 	}
 	
 }
