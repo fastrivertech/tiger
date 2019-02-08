@@ -80,12 +80,10 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			Query query = ts.getEntityManager().createNamedQuery("getResourceById");
 			query.setParameter("id", id);
 			List<Resource> resources = (List<Resource>) query.getResultList();
-			Optional<Resource> resource = null;
+			Optional<Resource> resource = Optional.empty();
 			if (resources.size() > 0) {
 				resource = Optional.ofNullable(resources.get(0));
-			} else {
-				resource = Optional.empty();
-			}
+			} 
 			return resource;
 		} catch (IllegalArgumentException | 
 				 QueryTimeoutException | 
@@ -114,6 +112,18 @@ public class ResourceDao extends BaseDao<Resource, String> {
 				 LockTimeoutException ex) {
 			throw new DaoException(ex);
 		} catch (PersistenceException ex) {
+			throw new DaoException(ex);
+		}
+	}
+	
+	@Override
+	public Optional<Resource> update(Resource entry) 
+		throws DaoException {
+		try {
+			ts.getEntityManager().merge(entry);
+			return Optional.of(entry);			
+		} catch (IllegalStateException | 
+				 RollbackException ex) {
 			throw new DaoException(ex);
 		}
 	}

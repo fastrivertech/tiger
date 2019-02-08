@@ -31,7 +31,7 @@ public interface RepositoryService {
 	<R extends DomainResource> R save(java.lang.Class<?> resourceClazz, R resource)
 	   throws RepositoryServiceException;
 	
-	<R extends DomainResource> void update(java.lang.Class<?> resourceClazz, String id, R resource)
+	<R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource)
 		throws RepositoryServiceException;	
 
 	void delete(java.lang.Class<?> resourceClazz, String id)

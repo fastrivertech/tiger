@@ -20,11 +20,11 @@ import com.frt.dr.transaction.model.PatientTransaction;
 
 public class TransactionHelper {
 
-	public static <T extends Transaction> T createTransaction() {
+	public static <T extends Transaction> T createTransaction(Transaction.ActionCode code) {
 		PatientTransaction transaction = new PatientTransaction();	
 		// ToDo
 		transaction.setMeta(new Meta().toString());
-		transaction.setAction(Transaction.ActionCode.C.name());
+		transaction.setAction(code.name());
 		transaction.setActor("frt");		
 		transaction.setTimestamp(new Timestamp(new Date().getTime()));
 		return (T)transaction;		

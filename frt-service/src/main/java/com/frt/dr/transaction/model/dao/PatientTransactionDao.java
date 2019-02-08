@@ -36,7 +36,6 @@ public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
 	@Override
     public Optional<PatientTransaction> save(PatientTransaction entry) 
     	throws DaoException {
-    	
     	try {
     		// a transaction started
     		ts.getEntityManager().persist(entry);
@@ -45,8 +44,7 @@ public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
     			 IllegalArgumentException | 
     			 TransactionRequiredException ex) {
     		throw new DaoException(ex);
-    	}
-		
+    	}	
     }
 
 	@Override	
@@ -91,4 +89,9 @@ public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
     	throw new DaoException("Not Implemented Yet");
     }
 	
+	@Override
+    public Optional<PatientTransaction> update(PatientTransaction entry) 
+    	throws DaoException {
+		throw new DaoException("Not Supported");
+    }	
 }

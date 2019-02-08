@@ -92,7 +92,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		    ts.start();			
 		  //BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
 		  //Optional<R> created = resourceDao.save(resource);					
-			Transaction transaction = TransactionHelper.createTransaction();
+			Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 		    transaction.setResource(resource);			
 			transactionDao.save(transaction);						
@@ -106,9 +106,34 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 
 	@Override
-	public <R extends DomainResource> void update(java.lang.Class<?> resourceClazz, String id, R resource)
+	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource)
 		throws RepositoryServiceException {
-		// ToDo:
+		TransactionService ts  = TransactionService.getInstance();
+		try {			
+		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();
+			ts.setEntityManager(em);	
+			 ts.start();		
+			 BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);	
+			 Optional<R> found = resourceDao.findById(id);
+			 if (found.isPresent()) {
+				 R changed = found.get();
+				 // ToDO: delta
+				 resourceDao.update(changed);
+				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
+				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+				 transaction.setResource(changed);			
+			     transactionDao.save(transaction);				 
+			 } else {
+				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
+				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+				 transaction.setResource(resource);			
+				 transactionDao.save(transaction);										 
+			 }
+			 ts.commit();
+			 return resource;
+		} catch (DaoException dex) {
+			throw new RepositoryServiceException(dex); 
+		}
 	}
 	
 	@Override

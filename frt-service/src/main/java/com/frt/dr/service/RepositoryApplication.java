@@ -42,7 +42,7 @@ public class RepositoryApplication {
 		R resource = (R)object;
 	    this.repositoryService.save(resourceClazz,resource);
 	}
-    
+     
     public <R extends DomainResource> Optional<R> read(java.lang.Class<R> resourceClazz, String id)
 		throws RepositoryServiceException {
     	Optional<R> resource = this.repositoryService.read(resourceClazz, id);    	
@@ -55,9 +55,9 @@ public class RepositoryApplication {
 		return resources;
 	}
 	
-	public <R extends DomainResource> void update(java.lang.Class<?> resourceClazz, String id, Object resource)
+	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, Object resource)
 		throws RepositoryServiceException {
-		this.repositoryService.update(resourceClazz, id, (R)resource); 
+		return this.repositoryService.update(resourceClazz, id, (R)resource); 
 	}
 	
 	public void delete(java.lang.Class<?> resourceClazz, String id)

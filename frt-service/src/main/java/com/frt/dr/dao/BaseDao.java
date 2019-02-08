@@ -40,4 +40,7 @@ public abstract class BaseDao<T,ID> implements Repository {
     public abstract Optional<List<T>> query(Class<T> resourceClazz, QueryCriteria criterias) 
     	throws DaoException;
     
+    public abstract Optional<T> update(T entry) 
+        throws DaoException;
+  
 }
