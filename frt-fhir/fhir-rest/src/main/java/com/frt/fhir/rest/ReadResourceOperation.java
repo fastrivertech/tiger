@@ -88,7 +88,8 @@ public class ReadResourceOperation extends ResourceOperation {
 	
 	/**
 	 * Get FHIR Resource by its Id and search string 
-	 * GET [base]/Patient?_id=[id] or [base]/Patient/given=eve
+	 * GET [base]/frt-fhir-rest/1.0[type]{?[parameters]{&_format=[mime-type]}} 
+	 * GET [base]/frt-fhir-rest/1.0/Patient?_id=[id] or [base]/frt-fhir-rest/1.0/Patient/given=eve
 	 * @param type Resource type, e.g., Patient
 	 * @param _id Resource logical id, e.g., 1356
 	 * @param _format json or xml, json supported
@@ -105,7 +106,7 @@ public class ReadResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.TYPE_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
 	public <R extends DomainResource> Response read(@PathParam("type") final String type, 
-												    @PathParam("_id") String _id,
+												    @QueryParam("_id") String _id,
 												    @QueryParam("_format") @DefaultValue("json") final String _format,
 												    @QueryParam("_summary") @DefaultValue("false") final String _summary,
 													@Context UriInfo uriInfo) {		
@@ -117,7 +118,7 @@ public class ReadResourceOperation extends ResourceOperation {
 	
 	/**
 	 * Get FHIR Resource by its Id
-	 * GET [base]/Patient/[id]
+	 * GET [base]/frt-fhir-rest/1.0/[type]/[id] {?_format=[mime-type]} {&_format=[mime-type]}
 	 * @param type Resource type, e.g., Patient
 	 * @param id Resource logical id, e.g., 1356
 	 * @param _format json or xml, default josn and json supported

@@ -61,6 +61,14 @@ public class HistoryResourceOperation extends ResourceOperation {
 		fhirService = new FhirService();
 	}
 	
+	/**
+	 * Retrieve the history of a resource by its logical Id
+	 * GET [base]/frt-fhir-rest/1.0/[type]/[id]/_history{?_format=[mime-type]}
+	 * @param type Resource type, e.g., Patient
+	 * @param id Resource logical id, e.g., 1356
+	 * @param _format json or xml, default josn and json supported
+	 * @return bundle bundle of resource history
+	 */
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH)
 	@Produces(MediaType.APPLICATION_JSON)

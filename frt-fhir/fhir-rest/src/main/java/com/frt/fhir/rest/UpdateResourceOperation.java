@@ -60,6 +60,16 @@ public class UpdateResourceOperation extends ResourceOperation {
 		fhirService = new FhirService();
 	}
 	
+	/**
+	 * Create a new current version for an existing resource or create an initial version if no resource exists for the give Id
+	 * PUT [base]/[type]/[id] {?_format=[mime-type]}
+	 * @param type Resource type, e.g., Patient
+	 * @param id Resource logical id, e.g., 1356
+	 * @param _format json or xml, default josn and json supported
+	 * @param body resource 
+	 * @status 201 Created Success
+	 */
+	
 	@PUT
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Consumes(MediaType.APPLICATION_JSON)	

@@ -50,6 +50,13 @@ public class CapabilityResourceOperation extends ResourceOperation {
 		conformance = new FhirConformanceService();
 	}
 	
+	/**
+	 * Retrieve the FHIR server capability statement resource
+	 * GET [base]/frt-fhir-rest/1.0/metadata{?mode=[mode]} {&_format=[mime-type]}
+	 * @param mode return information mode: full, normative or terminology 
+	 * @param _format mime-type json or xml, default josn and json supported
+	 * @return the FHIR server capability statement resource
+	 */
 	@GET
 	@Path(ResourcePath.METADATA_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
@@ -61,7 +68,6 @@ public class CapabilityResourceOperation extends ResourceOperation {
 		CapabilityStatement cs = conformance.getCapabilityStatement();
 		String resourceInJson = parser.serialize(cs);
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
-		
 	}
 	
 }

@@ -73,8 +73,8 @@ public class CreateResourceOperation extends ResourceOperation {
 	}
 	
 	/**
-	 * Create FHIR Resource
-	 * POST [base]/frt-fhir-rest/1.0/Patient 
+	 * Create a FHIR Resource
+	 * POST [base]/frt-fhir-rest/1.0/[type] {?_format=[mime-type]}
 	 * @param type Resource type, e.g., Patient
 	 * @param _format json or xml, default josn and json supported
 	 * @param body FHIR Resource

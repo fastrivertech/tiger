@@ -51,6 +51,13 @@ public class DeleteResourceOperation extends ResourceOperation {
 		fhirService = new FhirService();
 	}
 	
+	/**
+	 * Delete a resource by its id
+	 * DELETE [base]/frt-fhir-rest/1.0/[type]/[id]
+	 * @param type resource type
+	 * @param id resource logical Id
+	 * @return status 200 OK
+	 */
 	@DELETE
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Produces(MediaType.APPLICATION_JSON)
