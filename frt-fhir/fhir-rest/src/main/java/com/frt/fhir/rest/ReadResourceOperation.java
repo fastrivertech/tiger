@@ -104,7 +104,8 @@ public class ReadResourceOperation extends ResourceOperation {
 	 */
 	@GET
 	@Path(ResourcePath.TYPE_PATH)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(FHIRMediaType.APPLICATION_FHIR_JSON + "," + MediaType.APPLICATION_JSON)
+	//@Produces(MediaType.APPLICATION_JSON)
 	public <R extends DomainResource> Response read(@PathParam("type") final String type, 
 												    @QueryParam("_id") String _id,
 												    @QueryParam("_format") @DefaultValue("json") final String _format,
@@ -132,7 +133,8 @@ public class ReadResourceOperation extends ResourceOperation {
 	 */	
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces(FHIRMediaType.APPLICATION_FHIR_JSON + "," + MediaType.APPLICATION_JSON)
+	//@Produces(MediaType.APPLICATION_JSON)
 	public <R extends DomainResource> Response read(@PathParam("type") final String type,
 											  		@PathParam("id") final String id, 
 												    @QueryParam("_format") @DefaultValue("json") final String _format,
