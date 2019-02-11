@@ -59,8 +59,7 @@ public class CapabilityResourceOperation extends ResourceOperation {
 	 */
 	@GET
 	@Path(ResourcePath.METADATA_PATH)
-	@Produces("application/fhir+json,application/json")
-	//@Produces(MediaType.APPLICATION_JSON)
+	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	public Response read(@QueryParam("mode") @DefaultValue("normative") final String mode,
 						 @QueryParam("_format") @DefaultValue("json") final String _format) {	
 		
