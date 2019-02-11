@@ -1,3 +1,14 @@
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright (c) 2018 Fast River Technologies Inc. Irvine, CA, USA 
+ * All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
 package com.frt.dr.dao.base;
 
 import java.math.BigInteger;
@@ -14,7 +25,6 @@ public class PatientHumanNameRowMapper implements RowMapper<PatientHumanName> {
 		throws SQLException {
 		PatientHumanName name = new PatientHumanName();
 		name.setHumannameId(BigInteger.valueOf(row.getLong("humanname_id")));
-	  //name.setPatientId(row.getString("patient_id"));
 		name.setPath(row.getString("path"));
 		name.setUse(row.getString("use"));
 		name.setTxt(row.getString("txt"));		

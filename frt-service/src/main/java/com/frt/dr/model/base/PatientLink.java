@@ -58,9 +58,8 @@ public class PatientLink implements Serializable, ResourceComplexType, BackboneE
     @Column(name = "type")                                            
     private String type;
 
-//    private List<PatientExtension> extensions;
-//    
-//    private List<PatientElementExtension> elementExtensions;
+  //private List<PatientExtension> extensions;    
+  //private List<PatientElementExtension> elementExtensions;
     
 	public PatientLink() {    	
     }

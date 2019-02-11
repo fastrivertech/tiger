@@ -101,9 +101,8 @@ public class PatientAttachment implements Serializable, ResourceComplexType {
 	@Column(name = "creation")
 	private java.sql.Timestamp creation;
 
-	// private List<PatientExtension> extensions;
-	//
-	// private List<PatientElementExtension> elementExtensions;
+  //private List<PatientExtension> extensions;
+  //private List<PatientElementExtension> elementExtensions;
 
 	public PatientAttachment() {
 	}

@@ -73,11 +73,9 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
     
     @Lob
 	@Column(name = "assigner")                    
-  //private Clob assigner;
     private String assigner;
  
   //private List<PatientExtension> extensions;
-  
   //private List<PatientElementExtension> elementExtensions;
     
 	public PatientIdentifier() {    	

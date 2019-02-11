@@ -22,7 +22,6 @@ public class TransactionHelper {
 
 	public static <T extends Transaction> T createTransaction(Transaction.ActionCode code) {
 		PatientTransaction transaction = new PatientTransaction();	
-		// ToDo
 		transaction.setMeta(new Meta().toString());
 		transaction.setAction(code.name());
 		transaction.setActor("frt");		

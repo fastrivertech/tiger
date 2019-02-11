@@ -59,9 +59,8 @@ public class PatientAnimal implements Serializable, ResourceComplexType, Backbon
 	@Column(name = "genderstatus")
 	private String genderStatus;
 
-//    private List<PatientExtension> extensions;
-//    
-//    private List<PatientElementExtension> elementExtensions;
+  //private List<PatientExtension> extensions;
+  //private List<PatientElementExtension> elementExtensions;
 
 	public PatientAnimal() {
 	}

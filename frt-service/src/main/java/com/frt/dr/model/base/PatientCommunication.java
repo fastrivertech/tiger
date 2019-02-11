@@ -58,9 +58,8 @@ public class PatientCommunication implements Serializable, ResourceComplexType, 
 	@Column(name = "language")
 	private String language;
 
-//    private List<PatientExtension> extensions;
-//    
-//    private List<PatientElementExtension> elementExtensions;
+  //private List<PatientExtension> extensions;
+  //private List<PatientElementExtension> elementExtensions;
 
 	public PatientCommunication() {
 	}

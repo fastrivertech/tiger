@@ -83,11 +83,8 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
 	@Column(name = "period")
 	private String period;
 
-	/*
-	 * private List<PatientExtension> extensions;
-	 * 
-	 * private List<PatientElementExtension> elementExtensions;
-	 */
+  //private List<PatientExtension> extensions;
+  //private List<PatientElementExtension> elementExtensions;
 
 	public PatientHumanName() {
 	}

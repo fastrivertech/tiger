@@ -34,50 +34,39 @@ import com.frt.dr.model.base.PatientHumanName;
 @Transactional
 @Repository
 public class PatientHumanNameDao /**extends BaseDao<PatientHumanName, Long>**/ {
-//	private static final String SQL_INSERT = "INSERT INTO PATIENT_HUMANNAME (" + "NEXT VALUE FOR PATIENT_HUMANNAME_SEQ, " + "patient_id, " + "use, " + "family)"
-//			+ "VALUES (?, ?, ?, ?)";
+
 	private static final String SQL_INSERT = "INSERT INTO PATIENT_HUMANNAME (humanname_id, patient_id, use, family)"
-			+ "VALUES (NEXT VALUE FOR PATIENT_HUMANNAME_SEQ, ?, ?, ?)";
-	private static final String SQL_SELECT_BYID = "SELECT humanname_id, patient_id, path, use, txt, family, given, prefix, suffix, period FROM PATIENT_HUMANNAME WHERE patient_id = ? ";
-		
-//	@PersistenceContext
-//	private EntityManager em;
-	
+											  + "VALUES (NEXT VALUE FOR PATIENT_HUMANNAME_SEQ, ?, ?, ?)";
+	private static final String SQL_SELECT_BYID = "SELECT humanname_id, patient_id, path, use, txt, family, given, prefix, suffix, period "
+												  + "FROM PATIENT_HUMANNAME WHERE patient_id = ? ";	
+	private JdbcTemplate jdbcTemplate;
 	public PatientHumanNameDao() {
 	}
 
-//	@Override
-//	public Optional<PatientHumanName> save(PatientHumanName name) 
-//	    /*throws DaoException*/ {
-////		try {
-////			Object[] params = new Object[] {name.getPatient().getPatientId(), name.getUse(), name.getFamily() };
-////			int[] types = new int[] {Types.BIGINT, Types.VARCHAR, Types.VARCHAR };
-////			int row = this.jdbcTemplate.update(SQL_INSERT, params, types);
-////			if (row > 0) {
-////				return Optional.of(name);
-////			} else {
-////				throw new DaoException("failed to persist patient humanname resource");
-////			}		
-////		} catch (DataAccessException dex) {
-////			throw new DaoException(dex);
-////		}
-//		return null;
-//	}
-//
-//	@Override
-//	public Optional<PatientHumanName> findById(Long id) throws DaoException {
-//		try {
-//			RowMapper<PatientHumanName> rowMapper = new PatientHumanNameRowMapper();
-//			Optional<PatientHumanName> name = Optional.ofNullable(this.jdbcTemplate.queryForObject(SQL_SELECT_BYID, new Object[] { id }, rowMapper));
-//			return name;
-//		} catch (DataAccessException dex) {
-//			throw new DaoException(dex);
-//		}
-//	}
-//
-//	@Override
-//	public Optional<List<PatientHumanName>> query(Class<?> resourceClazz, Map params) throws DaoException {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
+	public Optional<PatientHumanName> save(PatientHumanName name) 
+		throws DaoException {
+		try {
+			Object[] params = new Object[] {name.getPatient().getPatientId(), name.getUse(), name.getFamily() };
+			int[] types = new int[] {Types.BIGINT, Types.VARCHAR, Types.VARCHAR };
+			int row = this.jdbcTemplate.update(SQL_INSERT, params, types);
+			if (row > 0) {
+				return Optional.of(name);
+			} else {
+				throw new DaoException("failed to persist patient humanname resource");
+			}		
+		} catch (DataAccessException dex) {
+			throw new DaoException(dex);
+		}
+	}
+
+	public Optional<PatientHumanName> findById(Long id) throws DaoException {
+		try {
+			RowMapper<PatientHumanName> rowMapper = new PatientHumanNameRowMapper();
+			Optional<PatientHumanName> name = Optional.ofNullable(this.jdbcTemplate.queryForObject(SQL_SELECT_BYID, new Object[] { id }, rowMapper));
+			return name;
+		} catch (DataAccessException dex) {
+			throw new DaoException(dex);
+		}
+	}
+
 }

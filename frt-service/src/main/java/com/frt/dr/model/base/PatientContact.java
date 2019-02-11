@@ -80,11 +80,8 @@ public class PatientContact implements Serializable, ResourceComplexType {
 	@Column(name = "organization")
 	private String organization;
 
-	/*
-	 * private List<PatientExtension> extensions;
-	 * 
-	 * private List<PatientElementExtension> elementExtensions;
-	 */
+  //private List<PatientExtension> extensions;
+  //private List<PatientElementExtension> elementExtensions;
 
 	public PatientContact() {
 	}
