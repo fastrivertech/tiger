@@ -92,7 +92,13 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	@Override
 	public Object map(Object source, Object target) 
 		throws MapperException {
-		throw new UnsupportedOperationException("Mapping with target instance given is not supported for this mapper, mapper :" + this.getClass().getCanonicalName());
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void setStatus(Object object, String status) 
+		throws MapperException {		
+		throw new UnsupportedOperationException();
 	}
 	
 	/**
@@ -445,8 +451,12 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	 * @param mapperName
 	 * @return
 	 */
-	protected <T extends ResourceComplexType> List<T> mapComponent(Patient frtPatient, JsonObject jsonRoot, List<T> lst,
-			String jsonAttName, String path, String mapperName) {
+	protected <T extends ResourceComplexType> List<T> mapComponent(Patient frtPatient, 
+																   JsonObject jsonRoot, 
+																   List<T> lst,
+																   String jsonAttName, 
+																   String path, 
+																   String mapperName) {
 		if (jsonRoot.getAsJsonArray(jsonAttName) != null) {
 			ResourcePair rp = ResourceDictionary.get(mapperName);
 			final ResourceMapperInterface m = ResourceDictionary.getMapper(mapperName).from(rp.getFhir())
@@ -468,8 +478,11 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 		return lst;
 	}
 
-	protected <T extends ResourceComplexType> T mapComponent(DomainResource frtDomainResource, JsonObject jsonRoot,
-			String jsonAttName, String path, String mapperName) {
+	protected <T extends ResourceComplexType> T mapComponent(DomainResource frtDomainResource, 
+															 JsonObject jsonRoot,
+															 String jsonAttName, 
+															 String path, 
+															 String mapperName) {
 		T ret = null;
 		if (jsonAttName.equals("managingOrganization")) {
 			PatientReference ptref = ((PatientReference)ret);
@@ -499,8 +512,11 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	 * @param mapperName
 	 * @return
 	 */
-	protected <T extends ResourceComplexType> T mapComponent(Patient frtPatient, JsonObject jsonRoot,
-			String jsonAttName, String path, String mapperName) {
+	protected <T extends ResourceComplexType> T mapComponent(Patient frtPatient, 
+														     JsonObject jsonRoot,
+														     String jsonAttName, 
+														     String path, 
+														     String mapperName) {
 		T ret = null;
 		if (jsonRoot.getAsJsonObject(jsonAttName) != null) {
 			ResourcePair rp = ResourceDictionary.get(mapperName);
@@ -514,7 +530,8 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	}
 
 	protected void addExtensions(com.frt.dr.model.base.Patient frtPatient,
-			List<org.hl7.fhir.dstu3.model.Extension> extensions, String path) {
+							     List<org.hl7.fhir.dstu3.model.Extension> extensions, 
+							     String path) {
 
 		List<PatientExtension> patientExtensions = frtPatient.getExtensions();
 		extensions.forEach(extension -> {
@@ -527,11 +544,11 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 			}
 			patientExtensions.add(patientExtension);
 		});
-
 	}
 
-	protected void getExtensions(org.hl7.fhir.dstu3.model.Patient hapiPatient, List<PatientExtension> patientExtensions,
-			String path) {
+	protected void getExtensions(org.hl7.fhir.dstu3.model.Patient hapiPatient, 
+								 List<PatientExtension> patientExtensions,
+								 String path) {
 		patientExtensions.forEach(patientExtension -> {
 			// patient.extension
 			if (path.equalsIgnoreCase("patient") && path.equalsIgnoreCase(patientExtension.getPath())) {

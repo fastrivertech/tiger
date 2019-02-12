@@ -32,6 +32,7 @@ import com.frt.dr.service.RepositoryServiceException;
 import com.frt.dr.service.query.CompositeParameter;
 import com.frt.dr.service.query.QueryOption;
 import com.frt.dr.service.query.ResourceQueryUtils;
+import com.frt.dr.transaction.model.Transaction;
 import com.frt.dr.service.query.QueryCriteria;
 
 /**
@@ -60,6 +61,8 @@ public class FhirService {
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			
 			Object frtResource = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)hapiResource);
+			mapper.setStatus(frtResource, Transaction.ActionCode.C.name());
+			
 			repository.create(resourcePair.getFrt(), frtResource);
 			
 			return Optional.of(hapiResource);

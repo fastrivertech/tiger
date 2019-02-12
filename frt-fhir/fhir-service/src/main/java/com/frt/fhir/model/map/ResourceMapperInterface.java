@@ -45,5 +45,7 @@ public interface ResourceMapperInterface {
 	Object map(Object source) throws MapperException;
 	
 	Object map(Object source, Object target) throws MapperException;
+
+	void setStatus(Object object, String status);
 	
 }
