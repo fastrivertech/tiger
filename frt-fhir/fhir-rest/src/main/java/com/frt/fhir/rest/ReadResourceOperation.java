@@ -41,7 +41,7 @@ import com.frt.fhir.model.BundleBuilder;
 import com.frt.fhir.model.map.base.BaseMapper;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.rest.validation.OperationValidator;
-import com.frt.fhir.rest.validation.ValidationException;
+import com.frt.fhir.rest.validation.OperationValidatorException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.frt.fhir.service.FhirService;
@@ -198,7 +198,7 @@ public class ReadResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
 			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MediaType.APPLICATION_JSON);				
-		} catch (ValidationException vx) {
+		} catch (OperationValidatorException vx) {
 			String error = "invalid parameter: " + vx.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 

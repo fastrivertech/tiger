@@ -56,13 +56,13 @@ public class OperationValidator {
 	 * Validate mime-type format
 	 * 
 	 * @param format mime-type format
-	 * @throws ValidationException throw if the format is invalid
+	 * @throws OperationValidatorException throw if the format is invalid
 	 */
 	public static void validateFormat(String format) 
-		throws ValidationException {
+		throws OperationValidatorException {
 		if (!formats.contains(format)) {
-			throw new ValidationException(localizer.x("invalid _format " + format),
-					  ValidationException.ErrorCode.INVALID_MIME_TYPE);
+			throw new OperationValidatorException(localizer.x("invalid _format " + format),
+					  OperationValidatorException.ErrorCode.INVALID_MIME_TYPE);
 		} 
 	}
 
@@ -70,13 +70,13 @@ public class OperationValidator {
 	 * Validate _summary parameter
 	 * 
 	 * @param summary
-	 * @throws ValidationException throw if the summary value is invalid
+	 * @throws OperationValidatorException throw if the summary value is invalid
 	 */
 	public static void validateSummary(String summary) 
-		throws ValidationException {
+		throws OperationValidatorException {
 		if (!summaries.contains(summary)) {
-			throw new ValidationException(localizer.x("invalid _summary " + summary),
-					  ValidationException.ErrorCode.INVALID_SUMMARY_TYPE);
+			throw new OperationValidatorException(localizer.x("invalid _summary " + summary),
+					  OperationValidatorException.ErrorCode.INVALID_SUMMARY_TYPE);
 		} 
 	}
 	
@@ -84,14 +84,14 @@ public class OperationValidator {
 	 * Validate id parameter
 	 * 
 	 * @param id
-	 * @throws ValidationException throw if the id value is invalid
+	 * @throws OperationValidatorException throw if the id value is invalid
 	 */
 	public static void validateId(Optional<String> id) 
-		throws ValidationException {
+		throws OperationValidatorException {
 		if (id.isPresent()) {
 			if (!idPattern.matcher(id.get()).matches()) {
-				throw new ValidationException(localizer.x("invalid id " + id.get()),
-										      ValidationException.ErrorCode.INVALID_ID);
+				throw new OperationValidatorException(localizer.x("invalid id " + id.get()),
+										      OperationValidatorException.ErrorCode.INVALID_ID);
 			}
 		}
 	}

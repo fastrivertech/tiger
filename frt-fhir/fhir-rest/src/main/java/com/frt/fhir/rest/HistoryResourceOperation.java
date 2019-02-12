@@ -33,7 +33,7 @@ import org.hl7.fhir.dstu3.model.OperationOutcome;
 import com.frt.dr.service.query.QueryOption;
 import com.frt.fhir.model.BundleBuilder;
 import com.frt.fhir.parser.JsonParser;
-import com.frt.fhir.rest.validation.ValidationException;
+import com.frt.fhir.rest.validation.OperationValidatorException;
 import com.frt.fhir.service.FhirService;
 import com.frt.fhir.service.FhirServiceException;
 import com.frt.stream.service.StreamServiceException;

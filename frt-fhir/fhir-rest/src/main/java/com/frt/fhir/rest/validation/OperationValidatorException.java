@@ -15,7 +15,7 @@ package com.frt.fhir.rest.validation;
  * 
  * @author cqye
  */
-public class ValidationException extends Exception {
+public class OperationValidatorException extends Exception {
 
     public enum ErrorCode {
         
@@ -35,33 +35,33 @@ public class ValidationException extends Exception {
     
     private ErrorCode errorCode = ErrorCode.UNKNOWN;
     
-    public ValidationException() {
+    public OperationValidatorException() {
         super();
     }
 
-    public ValidationException(String m) {
+    public OperationValidatorException(String m) {
         super(m);
     }
 
-    public ValidationException(Throwable t) {
+    public OperationValidatorException(Throwable t) {
         super(t);
     }
     
-    public ValidationException(String m, Throwable t) {
+    public OperationValidatorException(String m, Throwable t) {
         super(m, t);
     }
 
-    public ValidationException(String m, ErrorCode e) {
+    public OperationValidatorException(String m, ErrorCode e) {
         super(m);
         this.errorCode = e;
     }
     
-    public ValidationException(Throwable t, ErrorCode e) {
+    public OperationValidatorException(Throwable t, ErrorCode e) {
         super(t);
         this.errorCode = e;
     }
     
-    public ValidationException(String m, Throwable t, ErrorCode e) {
+    public OperationValidatorException(String m, Throwable t, ErrorCode e) {
         super(m, t);
         this.errorCode = e;
     }

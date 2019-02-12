@@ -28,10 +28,14 @@ import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 
+import com.frt.dr.cache.CacheService;
+import com.frt.dr.cache.NamedCache;
+import com.frt.dr.transaction.model.Transaction;
 import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.parser.JsonParser;
+import com.frt.fhir.service.validation.IdValidatorException;
 import com.frt.fhir.rest.validation.OperationValidator;
-import com.frt.fhir.rest.validation.ValidationException;
+import com.frt.fhir.rest.validation.OperationValidatorException;
 import com.frt.fhir.service.FhirService;
 import com.frt.fhir.service.FhirServiceException;
 import com.frt.util.logging.Localization;
@@ -39,7 +43,6 @@ import com.frt.util.logging.Logger;
 
 /**
  * CreateResourceInteraction class
- * 
  * @author cqye
  */
 @Path(ResourcePath.BASE_PATH)
@@ -55,6 +58,9 @@ public class UpdateResourceOperation extends ResourceOperation {
 	private JsonParser parser;
 	private FhirService fhirService;
 	
+	/**
+	 * UpdateResourceOperation 
+	 */
 	public UpdateResourceOperation() {
 		parser = new JsonParser();
 		fhirService = new FhirService();
@@ -66,27 +72,52 @@ public class UpdateResourceOperation extends ResourceOperation {
 	 * @param type Resource type, e.g., Patient
 	 * @param id Resource logical id, e.g., 1356
 	 * @param _format json or xml, default josn and json supported
-	 * @param body resource 
+	 * @param body resource for updating
 	 * @status 201 Created Success
-	 */
-	
+	 */	
 	@PUT
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
-	@Consumes(MediaType.APPLICATION_JSON)	
-	@Produces(MediaType.APPLICATION_JSON)	
+	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
+	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	public <R extends DomainResource> Response update(@PathParam("type") final String type,
-						   @PathParam("id") final String id,
-						   @QueryParam("_format") @DefaultValue("json") final String _format, 
-						   final String body) {
-		
+						   							  @PathParam("id") final String id,
+						   							  @QueryParam("_format") @DefaultValue("json") final String _format, 
+						   							  final String body) {		
 		logger.info(localizer.x("FHR_I006: UpdateResourceOperatio updates the resource {0} by its id {1}", type, id));										
 		try {
-			OperationValidator.validateFormat(_format);
+			OperationValidator.validateFormat(_format);			
 			R resource = parser.deserialize(type, body);	
-			R updated = fhirService.update(type, id, resource);
+			R updated = fhirService.update(type, id, resource);			
 			String resourceInJson = parser.serialize(updated);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
-		} catch (ValidationException vx) {
+		
+			Optional<NamedCache> cache = CacheService.getInstance().getCache();
+			if (cache.isPresent()) {
+				String action = (String)cache.get().get(NamedCache.ACTION_CODE);
+				if (action.equalsIgnoreCase("Update")) {
+					// resource updated
+					return ResourceOperationResponseBuilder.build(resourceInJson, 
+															      Status.OK, 
+															      updated.getMeta().getVersionId(), 
+															      uriInfo.getAbsolutePath(),
+															      MimeType.APPLICATION_FHIR_JSON);				
+				}				
+				CacheService.getInstance().destroyCache();
+			}			
+			// resource created 
+			return ResourceOperationResponseBuilder.build(resourceInJson, 
+														  Status.CREATED, 
+														  updated.getMeta().getVersionId(), 
+														  uriInfo.getAbsolutePath(),
+														  MimeType.APPLICATION_FHIR_JSON);
+			
+		} catch (IdValidatorException iex) {
+			String error = "invalid id: " + iex.getMessage(); 			
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = parser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_JSON);										
+		} catch (OperationValidatorException vx) {
 			String error = "invalid parameter: " + vx.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 

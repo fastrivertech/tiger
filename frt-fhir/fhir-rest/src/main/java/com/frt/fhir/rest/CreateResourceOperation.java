@@ -13,7 +13,6 @@ package com.frt.fhir.rest;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 import javax.ws.rs.Path;
 import javax.ws.rs.POST;
 import javax.ws.rs.Produces;
@@ -32,7 +31,7 @@ import org.hl7.fhir.dstu3.model.OperationOutcome;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.rest.validation.OperationValidator;
-import com.frt.fhir.rest.validation.ValidationException;
+import com.frt.fhir.rest.validation.OperationValidatorException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import com.frt.fhir.service.FhirService;
@@ -87,9 +86,7 @@ public class CreateResourceOperation extends ResourceOperation {
 	@POST
 	@Path(ResourcePath.TYPE_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	//@Consumes(MediaType.APPLICATION_JSON)	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	//@Produces(MediaType.APPLICATION_JSON)	
 	public <R extends DomainResource> Response create(@PathParam("type") final String type,
 						   						      @QueryParam("_format") @DefaultValue("json") final String _format, 
 						   						      final String body) {
@@ -122,13 +119,12 @@ public class CreateResourceOperation extends ResourceOperation {
 			}
 			
 			logger.info(localizer.x("create a new " + type + " ..."));										
-			R resource = parser.deserialize(type, message);	
-			if (resource.getId()!=null) {
-				logger.warn("POST request will create ressource with server assigned logical ID, but received resource instance with ID given:" + resource.getId());
-			}
-			else {
+			R resource = parser.deserialize(type, message);
+			
+			if (resource.getId() == null) {
 				resource.setId(UUID.randomUUID().toString());
 			}
+			
 			Optional<R> created = fhirService.create(type, resource);
 			if (created.isPresent()) {
 				String resourceInJson = parser.serialize(created.get());      
@@ -142,7 +138,7 @@ public class CreateResourceOperation extends ResourceOperation {
 				return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MediaType.APPLICATION_JSON);
 			}
 			
-		} catch (ValidationException vx) {
+		} catch (OperationValidatorException vx) {
 			String error = "invalid parameter: " + vx.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 

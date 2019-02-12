@@ -10,6 +10,7 @@
  */
 package com.frt.fhir.rest;
 
+import java.net.URI;
 import java.util.Date;
 import javax.ws.rs.core.Response;
 import com.frt.util.logging.Localization;
@@ -22,11 +23,17 @@ import org.hl7.fhir.dstu3.model.OperationOutcome;
  * @author cqye
  */
 public class ResourceOperationResponseBuilder {
-	private static Localization localizer = Localization.getInstance();
+	private static Localization localizer = Localization.getInstance("com.frt.fhir");
 
 	public static Response build(Object body, Response.Status status, String tag, String type) {
 		Response.ResponseBuilder responseBuilder = Response.status(status).entity(body);
 		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type);
+		return responseBuilder.build();
+	}
+	
+	public static Response build(Object body, Response.Status status, String tag, URI uri, String type) {
+		Response.ResponseBuilder responseBuilder = Response.status(status).entity(body);
+		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type).location(uri);
 		return responseBuilder.build();
 	}
 
