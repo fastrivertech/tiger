@@ -22,6 +22,8 @@ import org.hl7.fhir.dstu3.model.Bundle;
 import com.frt.fhir.model.map.MapperException;
 import com.frt.fhir.model.map.ResourceMapperFactory;
 import com.frt.fhir.model.map.ResourceMapperInterface;
+import com.frt.fhir.service.validation.ValidationService;
+import com.frt.fhir.service.validation.ValidatorException;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.dr.service.RepositoryApplication;
 import com.frt.dr.service.RepositoryContext;
@@ -111,19 +113,19 @@ public class FhirService {
 	}
 	
 	public <R extends DomainResource> R update(@Nonnull String type, 
-											   @Nonnull String id, 
+											   String id, 
 			 								   R hapiResource) 
-		throws FhirServiceException {
-		try {
+		throws FhirServiceException, ValidatorException {
+		try {						
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
-			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
+			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);			
+			Object frtResource = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)hapiResource);
 			
-			Object frtResource = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)hapiResource);			
-			com.frt.dr.model.DomainResource updatedfrtResource = repository.update(resourcePair.getFrt(), id, frtResource);
-						
+			ValidationService.getInstance().validate(id, (com.frt.dr.model.Resource)frtResource);
+			
+			com.frt.dr.model.DomainResource updatedfrtResource = repository.update(resourcePair.getFrt(), id, frtResource);									
 			R updatedhapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)updatedfrtResource);
-			return updatedhapiResource;
-			
+			return updatedhapiResource;			
 		} catch (MapperException | RepositoryServiceException ex) {
 			throw new FhirServiceException(ex);
 		}		
