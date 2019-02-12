@@ -333,6 +333,7 @@ public class Patient extends DomainResource {
 	}
     
     @XmlTransient
+    @Override
     public List<PatientExtension> getExtensions() {
     	if (extensions == null) {
     		extensions = new ArrayList<PatientExtension>();

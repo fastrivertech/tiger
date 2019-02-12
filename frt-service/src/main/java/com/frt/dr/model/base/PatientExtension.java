@@ -22,6 +22,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -31,6 +33,9 @@ import com.frt.dr.model.Extension;
 @Entity
 @Table(name = "PATIENT_EXTENSION")
 @SequenceGenerator(name = "PATIENT_EXTENSION_SEQ", sequenceName = "PATIENT_EXTENSION_SEQ", allocationSize=1)
+@NamedQueries({
+    @NamedQuery(name = "getPatientExtensionById", query = "SELECT PE FROM PatientExtension PE WHERE PE.patient.resourceId = :resourceId and PE.path = :path")
+})
 public class PatientExtension extends Extension {
 	private static final long serialVersionUID = -1L;
 	 

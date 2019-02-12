@@ -12,6 +12,9 @@
 package com.frt.dr.model;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
@@ -26,6 +29,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+
+import com.frt.dr.model.base.PatientExtension;
 
 /**
  *  DomainResource class
@@ -58,9 +63,8 @@ public class DomainResource extends Resource {
     @Column(name = "contained")                        
 	private String contained;
 
-//	private List<PatientExtension> extension;
-//
-//	private List<PatientExtension> modifierExtension;
+  //private List<PatientExtension> extension;
+  //private List<PatientExtension> modifierExtension;
 	
 	public BigInteger getDomainResourceId() {
 		return domainResourceId;
@@ -85,5 +89,9 @@ public class DomainResource extends Resource {
 	public void setContained(String contained) {
 		this.contained = contained;
 	}
-	
+
+    public <R extends Extension> List<R> getExtensions() {
+    	return new ArrayList<R>();
+    }	
+    
 }

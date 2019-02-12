@@ -22,6 +22,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import com.frt.dr.model.DomainResource;
+import com.frt.dr.model.Resource;
+import com.frt.dr.model.Extension;
 import com.frt.dr.service.query.QueryCriteria;
 import com.frt.dr.transaction.TransactionHelper;
 import com.frt.dr.transaction.TransactionService;
@@ -155,14 +157,48 @@ public class RepositoryServiceImpl implements RepositoryService {
 			 ts.commit();
 			 return resource;
 		} catch (DaoException dex) {
+			ts.rollback();
 			throw new RepositoryServiceException(dex); 
 		}
 	}
 	
 	@Override
-	public void delete(java.lang.Class<?> resourceClazz, String id)
+	public  <R extends DomainResource> void delete(java.lang.Class<?> resourceClazz, String id)
 		throws RepositoryServiceException {
-		// ToDo:
+		TransactionService ts  = TransactionService.getInstance();
+		try {			
+		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();
+			ts.setEntityManager(em);	
+			
+			 BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);	
+			 Optional<R> found = resourceDao.findById(id);	
+			 if (found.isPresent()) {
+				 ts.start();		 
+				 R deleted = found.get();
+				 java.lang.Class<?> resourceExtensionClazz = Class.forName(resourceClazz.getName() + "Extension");
+				 BaseDao resourceExtensionDao = DaoFactory.getInstance().createResourceDao(resourceExtensionClazz);	
+				 Optional<Extension> extension = resourceExtensionDao.findById(deleted.getId());
+				 if (extension.isPresent() &&
+					 !Transaction.ActionCode.D.name().equals(extension.get().getValue())) {
+					 // change the status to 'deleted'
+					 extension.get().setValue(Transaction.ActionCode.D.name());
+					 ts.getEntityManager().merge(extension.get());
+					 // log transaction
+					 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
+					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+					 transaction.setResource(found.get());			
+					 transactionDao.save(transaction);						 
+				 }
+				 ts.commit();				 
+			 } else {
+				 throw new RepositoryServiceException("resource " + resourceClazz.getName() + " " +id + " not found");
+			 }
+			 
+		} catch (DaoException | ClassNotFoundException dex) {
+			ts.rollback();
+			throw new RepositoryServiceException(dex); 
+		}
+		
 	}	
 	
 	@Override

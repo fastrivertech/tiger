@@ -41,7 +41,7 @@ public class Meta implements Serializable{
 		this.lastUpdated = lastUpdated;
 	}
 	
-	public String getLastUpdated() {
+	public String getLastUpdated() {		
 		return this.lastUpdated;
 	}
 	
