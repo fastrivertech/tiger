@@ -12,7 +12,8 @@
 package com.frt.dr.transaction.model;
 
 import java.io.Serializable;
-import java.time.ZonedDateTime;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
  * Meta class
@@ -25,8 +26,9 @@ public class Meta implements Serializable{
 	private String lastUpdated;
 	
 	public Meta() {
-		versionId = "1"; 
-		lastUpdated = ZonedDateTime.now().toString();
+		versionId = "1"; 				
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");				
+		lastUpdated = format.format(Calendar.getInstance().getTime());								
 	}
 	
 	public void setVersionId(String versionId) {

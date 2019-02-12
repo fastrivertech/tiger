@@ -13,7 +13,6 @@ package com.frt.dr.transaction;
 
 import java.util.Date;
 import java.sql.Timestamp;
-import java.time.ZonedDateTime;
 import java.math.BigInteger;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -37,7 +36,7 @@ public class TransactionHelper {
 		Meta meta = jsonToObject(json);
 		int version = Integer.parseInt(meta.getversionId());
 		meta.setVersionId(Integer.toString(version));
-		meta.setLastUpdated(ZonedDateTime.now().toString());
+		meta.setLastUpdated(new Meta().getLastUpdated());
 		return objectToJson(meta);
 	}
 	
