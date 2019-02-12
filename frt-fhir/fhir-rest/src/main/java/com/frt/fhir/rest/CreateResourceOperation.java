@@ -128,14 +128,14 @@ public class CreateResourceOperation extends ResourceOperation {
 			Optional<R> created = fhirService.create(type, resource);
 			if (created.isPresent()) {
 				String resourceInJson = parser.serialize(created.get());      
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.CREATED, "1.0", MediaType.APPLICATION_JSON);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.CREATED, "1.0", MimeType.APPLICATION_FHIR_JSON);
 			} else {		
 				String error = "failed to create domain resource '" + type + "'"; 
 				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																								  OperationOutcome.IssueSeverity.ERROR, 
 																								  OperationOutcome.IssueType.PROCESSING);
 				String resourceInJson = parser.serialize(outcome);
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MediaType.APPLICATION_JSON);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_FHIR_JSON);
 			}
 			
 		} catch (OperationValidatorException vx) {
@@ -144,21 +144,21 @@ public class CreateResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MediaType.APPLICATION_JSON);				
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_FHIR_JSON);				
 		} catch (JsonFormatException jfx) {
 			String error = "invalid resource: " + jfx.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MediaType.APPLICATION_JSON);							 
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);							 
 		} catch (FhirServiceException | StreamServiceException ex) {								
 			String error = "service failure: " + ex.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MediaType.APPLICATION_JSON);							 			 			 
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);							 			 			 
 		} 
 	}
 	
