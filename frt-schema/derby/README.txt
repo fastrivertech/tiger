@@ -25,7 +25,7 @@ default user: APP/null or app/null
 2.3 change app to system user
 	run derby-ij.bat
 	ij>CALL SYSCS_UTIL.SYSCS_CREATE_USER('app','derby');
-	ij>SYSCS_UTIL.SYSCS_RESET_PASSWORD('app','derby');	
+	ij>CALL SYSCS_UTIL.SYSCS_RESET_PASSWORD('app','derby');	
 	ij>disconnect;
 	ij>exit;
 
