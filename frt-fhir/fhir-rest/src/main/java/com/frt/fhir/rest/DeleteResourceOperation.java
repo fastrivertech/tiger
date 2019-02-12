@@ -65,8 +65,8 @@ public class DeleteResourceOperation extends ResourceOperation {
 		 				 @PathParam("id") final String id) {
 		
 		logger.info(localizer.x("FHR_I004: DeleteResourceOperation deletes a resource {0} by its id {1}", type, id));										
-		String resourceInJson = "not implemented yet";
-		fhirService.delete(type, id);
+		String resourceInJson = "not implemented yet";		
+		fhirService.delete(type, id);		
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
 	}	
 	
