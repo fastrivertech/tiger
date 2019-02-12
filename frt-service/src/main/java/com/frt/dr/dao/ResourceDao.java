@@ -11,45 +11,22 @@
  */
 package com.frt.dr.dao;
 
-import java.text.ParseException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityTransaction;
 import javax.persistence.LockTimeoutException;
-import javax.persistence.Parameter;
 import javax.persistence.PersistenceException;
 import javax.persistence.PessimisticLockException;
 import javax.persistence.Query;
 import javax.persistence.QueryTimeoutException;
 import javax.persistence.RollbackException;
 import javax.persistence.TransactionRequiredException;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Join;
-import javax.persistence.criteria.ParameterExpression;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
-import javax.ws.rs.core.MultivaluedMap;
 import com.frt.dr.model.Resource;
-import com.frt.dr.model.ResourceComplexType;
 import com.frt.dr.service.query.CompositeParameter;
-import com.frt.dr.service.query.GroupParameter;
 import com.frt.dr.service.query.ResourceQuery;
 import com.frt.dr.service.query.ResourceQueryBuilder;
-import com.frt.dr.service.query.SearchParameter;
-import com.frt.dr.service.query.SearchParameterRegistry;
 import com.frt.dr.service.query.ResourceQueryUtils;
 import com.frt.dr.service.query.QueryCriteria;
-import com.frt.dr.transaction.TransactionService;
 
 /**
  * ResourceDao class
