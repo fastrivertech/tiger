@@ -44,5 +44,9 @@ public interface Transaction extends Serializable{
 	<R extends DomainResource> void setResource(R resource);
 	
 	<R extends DomainResource> R getResource();
+
+	void setMeta(String meta);
+	 	    
+	String getMeta();
 	
 }

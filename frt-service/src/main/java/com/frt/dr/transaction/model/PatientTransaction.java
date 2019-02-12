@@ -107,10 +107,12 @@ public class PatientTransaction implements Transaction {
     	return (R)this.patient;
     }
         
+    @Override
     public void setMeta(String meta) {
     	this.meta = meta;
     }
     
+    @Override
     public String getMeta() {
     	return this.meta;
     }

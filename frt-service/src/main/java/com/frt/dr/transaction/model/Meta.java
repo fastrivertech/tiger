@@ -21,27 +21,27 @@ import java.time.ZonedDateTime;
 public class Meta implements Serializable{	
 	static final long serialVersionUID = -8321293485415819089L;	
 	
-	private String id;
-	private ZonedDateTime lastUpdated;
+	private String versionId;
+	private String lastUpdated;
 	
 	public Meta() {
-		id = "1"; 
-		lastUpdated = ZonedDateTime.now();
+		versionId = "1"; 
+		lastUpdated = ZonedDateTime.now().toString();
 	}
 	
-	public void setId(String id) {
-		this.id = id;
+	public void setVersionId(String versionId) {
+		this.versionId = versionId;
 	}
 	
-	public String getId() {
-		return this.id;
+	public String getversionId() {
+		return this.versionId;
 	}
 	
-	public void setLastUpdated(ZonedDateTime lastUpdated) {
+	public void setLastUpdated(String lastUpdated) {
 		this.lastUpdated = lastUpdated;
 	}
 	
-	public ZonedDateTime getLastUpdated() {
+	public String getLastUpdated() {
 		return this.lastUpdated;
 	}
 	
@@ -49,7 +49,7 @@ public class Meta implements Serializable{
 	public String toString() {
 		StringBuilder strBuilder = new StringBuilder();
 		strBuilder.append("{\n");
-		strBuilder.append("\"versionId\" : \"").append(id).append("\",\n");
+		strBuilder.append("\"versionId\" : \"").append(versionId).append("\",\n");
 		strBuilder.append("\"lastUpdated\" : \"").append(lastUpdated.toString()).append("\"\n");	
 		strBuilder.append("}");		
 		return strBuilder.toString();

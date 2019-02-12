@@ -30,6 +30,8 @@ import com.frt.dr.transaction.model.Transaction;
 import com.frt.dr.dao.DaoFactory;
 import com.frt.dr.dao.BaseDao;
 import com.frt.dr.dao.DaoException;
+import com.frt.dr.cache.CacheService;
+import com.frt.dr.cache.NamedCache;
 
 /**
  * RepositoryServiceImpl class
@@ -117,20 +119,38 @@ public class RepositoryServiceImpl implements RepositoryService {
 			ts.setEntityManager(em);	
 			 ts.start();		
 			 BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);	
-			 Optional<R> found = resourceDao.findById(id);
+			 Optional<R> found = resourceDao.findById(id);	
+			 
+			 CacheService.getInstance().createCache();
+			 
 			 if (found.isPresent()) {
-				 R changed = found.get();
-				 // ToDO: delta
+				 R changed = found.get();				 
+				 // ToDo: 1) delta: resource and found.get()  2) copy resource to found.get()
+				 String meta = TransactionHelper.updateMeta(changed.getMeta());
+				 changed.setMeta(meta);
 				 resourceDao.update(changed);
 				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
+				 transaction.setMeta(meta);
 				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 				 transaction.setResource(changed);			
-			     transactionDao.save(transaction);				 
+			     transactionDao.save(transaction);		
+			     
+			     Optional<NamedCache> cache = CacheService.getInstance().getCache();
+			     if (cache.isPresent()) {
+			    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.U.name());
+			     }
+			     
 			 } else {
 				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 				 transaction.setResource(resource);			
-				 transactionDao.save(transaction);										 
+				 transactionDao.save(transaction);	
+			
+			     Optional<NamedCache> cache = CacheService.getInstance().getCache();
+			     if (cache.isPresent()) {
+			    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.C.name());
+			     }
+							 
 			 }
 			 ts.commit();
 			 return resource;
