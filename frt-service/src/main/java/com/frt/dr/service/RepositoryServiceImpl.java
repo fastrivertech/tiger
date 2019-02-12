@@ -56,15 +56,14 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Autowired
     public void setJpaTransactionManager(JpaTransactionManager jpaTransactionManager) {
     	this.jpaTransactionManager = jpaTransactionManager;
+	    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();    	
+	    TransactionService.getInstance().setEntityManager(em);    	
     }
    
 	@Override
 	public <R extends DomainResource> Optional<R> read(Class<?> resourceClazz, String id) 
 		throws RepositoryServiceException {
-		try {
-		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
-		    TransactionService.getInstance().setEntityManager(em);
-		    
+		try {		    
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
 			Optional<R> resource = dao.findById(id);
 			return resource;
@@ -77,9 +76,6 @@ public class RepositoryServiceImpl implements RepositoryService {
 	public <R extends DomainResource> Optional<List<R>> query(Class<?> resourceClazz, QueryCriteria criterias)
 		throws RepositoryServiceException {
 		try {
-		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();			
-		    TransactionService.getInstance().setEntityManager(em);
-			
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
 			Optional<List<R>> resources = dao.query(resourceClazz, criterias);
 			return resources;
@@ -93,9 +89,6 @@ public class RepositoryServiceImpl implements RepositoryService {
 		throws RepositoryServiceException {
 		TransactionService ts  = TransactionService.getInstance();
 		try {			
-		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();
-			ts.setEntityManager(em);
-			
 		    ts.start();			
 		  //BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
 		  //Optional<R> created = resourceDao.save(resource);					
@@ -117,8 +110,6 @@ public class RepositoryServiceImpl implements RepositoryService {
 		throws RepositoryServiceException {
 		TransactionService ts  = TransactionService.getInstance();
 		try {			
-		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();
-			ts.setEntityManager(em);	
 			 ts.start();		
 			 BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);	
 			 Optional<R> found = resourceDao.findById(id);	
@@ -167,9 +158,6 @@ public class RepositoryServiceImpl implements RepositoryService {
 		throws RepositoryServiceException {
 		TransactionService ts  = TransactionService.getInstance();
 		try {			
-		    EntityManager em = jpaTransactionManager.getEntityManagerFactory().createEntityManager();
-			ts.setEntityManager(em);	
-			
 			 BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);	
 			 Optional<R> found = resourceDao.findById(id);	
 			 if (found.isPresent()) {
@@ -211,7 +199,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			history.get().add(found.get());
 			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	
 			Optional<List<Transaction>> transactions = transactionDao.findById(id); 
-			//ToDo 
+			//ToDo 			
 		}
 		return history;
 	}

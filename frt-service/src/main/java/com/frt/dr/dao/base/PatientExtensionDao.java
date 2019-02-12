@@ -11,6 +11,7 @@
  */
 package com.frt.dr.dao.base;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +39,8 @@ import com.frt.dr.model.base.PatientExtension;
 @Repository
 public class PatientExtensionDao extends BaseDao<PatientExtension, String> {
 
-	public PatientExtensionDao() {	
+	public PatientExtensionDao() {
+		super.initialize();				
 	}
 	
 	public Optional<PatientExtension> save(PatientExtension entry) 
@@ -50,7 +52,7 @@ public class PatientExtensionDao extends BaseDao<PatientExtension, String> {
 		throws DaoException {
 		try {
 			Query query = ts.getEntityManager().createNamedQuery("getPatientExtensionById");
-			query.setParameter("resourceId", id);
+			query.setParameter("resourceId", BigInteger.valueOf(Long.parseLong(id)));
 			query.setParameter("path", "patient.status");			
 			List<PatientExtension> extensions = (List<PatientExtension>) query.getResultList();
 			Optional<PatientExtension> extension = Optional.empty();
