@@ -35,7 +35,7 @@ public class TransactionHelper {
 	public static String updateMeta(String json) {
 		Meta meta = jsonToObject(json);
 		int version = Integer.parseInt(meta.getversionId());
-		meta.setVersionId(Integer.toString(version));
+		meta.setVersionId(Integer.toString(++version));
 		meta.setLastUpdated(new Meta().getLastUpdated());
 		return objectToJson(meta);
 	}

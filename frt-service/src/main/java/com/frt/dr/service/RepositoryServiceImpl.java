@@ -154,6 +154,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 String meta = TransactionHelper.updateMeta(changed.getMeta());
 				 changed.setMeta(meta);
 				 resourceDao.update(changed);
+				 
 				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
 				 transaction.setMeta(meta);
 				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
