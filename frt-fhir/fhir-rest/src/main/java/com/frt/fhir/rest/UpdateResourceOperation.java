@@ -84,6 +84,7 @@ public class UpdateResourceOperation extends ResourceOperation {
 						   							  @QueryParam("_format") @DefaultValue("json") final String _format, 
 						   							  final String body) {		
 		logger.info(localizer.x("FHR_I006: UpdateResourceOperatio updates the resource {0} by its id {1}", type, id));										
+		CacheService.getInstance().createCache();
 		try {
 			OperationValidator.validateFormat(_format);			
 			R resource = parser.deserialize(type, body);	
@@ -93,7 +94,7 @@ public class UpdateResourceOperation extends ResourceOperation {
 			Optional<NamedCache> cache = CacheService.getInstance().getCache();
 			if (cache.isPresent()) {
 				String action = (String)cache.get().get(NamedCache.ACTION_CODE);
-				if (action.equalsIgnoreCase("Update")) {
+				if (action.equalsIgnoreCase("U")) {
 					// resource updated
 					return ResourceOperationResponseBuilder.build(resourceInJson, 
 															      Status.OK, 
@@ -101,7 +102,6 @@ public class UpdateResourceOperation extends ResourceOperation {
 															      uriInfo.getAbsolutePath(),
 															      MimeType.APPLICATION_FHIR_JSON);				
 				}				
-				CacheService.getInstance().destroyCache();
 			}			
 			// resource created 
 			return ResourceOperationResponseBuilder.build(resourceInJson, 
@@ -138,6 +138,8 @@ public class UpdateResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
 			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MediaType.APPLICATION_JSON);							 			 			 
-		} 
+		} finally {
+			CacheService.getInstance().destroyCache();			
+		}
 	}
 }

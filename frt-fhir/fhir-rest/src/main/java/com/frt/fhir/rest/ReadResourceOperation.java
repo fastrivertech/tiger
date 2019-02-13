@@ -33,6 +33,9 @@ import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
+
+import com.frt.dr.cache.CacheService;
+import com.frt.dr.cache.NamedCache;
 import com.frt.dr.service.query.CompositeParameter;
 import com.frt.dr.service.query.ResourceQueryUtils;
 import com.frt.dr.service.query.QueryOption;
@@ -146,6 +149,8 @@ public class ReadResourceOperation extends ResourceOperation {
 															 String summary, 
 															 UriInfo uriInfo) {
 		try {			
+			CacheService.getInstance().createCache();
+			
 			//ToDo: more validations and more concise validation implementation 			
 			OperationValidator.validateId(Optional.ofNullable(id));
 			OperationValidator.validateFormat(format);
@@ -189,15 +194,32 @@ public class ReadResourceOperation extends ResourceOperation {
 					link.setUrl(uriInfo.getRequestUri().toString());					
 					String resourceInJson = parser.serialize(bundle);
 					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
-				}
+				} 
 			}
 
-			String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
-			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
-																							  OperationOutcome.IssueSeverity.ERROR, 
-																							  OperationOutcome.IssueType.PROCESSING);
-			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MediaType.APPLICATION_JSON);				
+			boolean deleted = false;
+			Optional<NamedCache> cache = CacheService.getInstance().getCache();			
+			if (cache.isPresent()) {
+				String action = (String)cache.get().get(NamedCache.ACTION_CODE);
+				if (action.equalsIgnoreCase("D")) {
+					deleted = true;
+				}	
+			}		
+			if (deleted) {
+				String message = "domain resource logical id '" + id + "' deleted."; 
+				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																								  OperationOutcome.IssueSeverity.INFORMATION, 
+																								  OperationOutcome.IssueType.PROCESSING);
+				String resourceInJson = parser.serialize(outcome);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.GONE, "", MediaType.APPLICATION_JSON);				
+			} else {
+				String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
+				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
+																								  OperationOutcome.IssueSeverity.ERROR, 
+																								  OperationOutcome.IssueType.PROCESSING);
+				String resourceInJson = parser.serialize(outcome);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MediaType.APPLICATION_JSON);
+			}
 		} catch (OperationValidatorException vx) {
 			String error = "invalid parameter: " + vx.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
@@ -212,6 +234,8 @@ public class ReadResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
 			return ResourceOperationResponseBuilder.build(resourceInJson, Status.INTERNAL_SERVER_ERROR, "", MediaType.APPLICATION_JSON);							
+		} finally {
+			CacheService.getInstance().destroyCache();						
 		}
 		
 	}
