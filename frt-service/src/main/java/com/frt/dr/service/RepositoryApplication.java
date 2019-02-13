@@ -60,9 +60,9 @@ public class RepositoryApplication {
 		return this.repositoryService.update(resourceClazz, id, (R)resource); 
 	}
 	
-	public void delete(java.lang.Class<?> resourceClazz, String id)
+	public <R extends DomainResource> Optional<R> delete(java.lang.Class<?> resourceClazz, String id)
 		throws RepositoryServiceException {
-		this.repositoryService.delete(resourceClazz, id); 
+		return this.repositoryService.delete(resourceClazz, id); 
 	}
 	
 	public <R extends DomainResource> Optional<List<R>> history(java.lang.Class<?> resourceClazz, String id)

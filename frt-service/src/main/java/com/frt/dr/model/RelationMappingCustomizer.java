@@ -23,6 +23,7 @@ public class RelationMappingCustomizer implements DescriptorCustomizer {
 	
 	@Override
 	public void customize(ClassDescriptor descriptor) throws Exception {
+		
 		OneToManyMapping mapping = (OneToManyMapping)descriptor.getMappingForAttributeName("generalPractitioners");
 		ExpressionBuilder eb = new ExpressionBuilder(mapping.getReferenceClass());
 		Expression fkExp = eb.getField("RESOURCE_ID").equal(eb.getParameter("RESOURCE_ID"));
@@ -34,5 +35,6 @@ public class RelationMappingCustomizer implements DescriptorCustomizer {
 		Expression fkExp2 = eb2.getField("RESOURCE_ID").equal(eb2.getParameter("RESOURCE_ID"));
 		Expression pathExp2 = eb2.getField("PATH").equal("Patient.managingOrganization");
 		mapping2.setSelectionCriteria(fkExp2.and(pathExp2));
+		
 	}
 }

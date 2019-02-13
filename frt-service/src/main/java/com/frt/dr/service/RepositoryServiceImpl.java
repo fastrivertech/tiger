@@ -66,6 +66,22 @@ public class RepositoryServiceImpl implements RepositoryService {
 		try {		    
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
 			Optional<R> resource = dao.findById(id);
+			if (resource.isPresent()) {
+				List<Extension> extensions = resource.get().getExtensions();
+				for (Extension extension : extensions) {
+					if("patient.status".equals(extension.getPath())) {
+						if (Transaction.ActionCode.D.name().equals(extension.getValue())) {
+							
+						    Optional<NamedCache> cache = CacheService.getInstance().getCache();
+						    if (cache.isPresent()) {
+						    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.D.name());
+						    }				
+						    resource = Optional.empty();
+							break;							
+						}
+					}
+				}			     
+			}			
 			return resource;
 		} catch (DaoException dex) {
 			throw new RepositoryServiceException(dex); 
@@ -78,7 +94,25 @@ public class RepositoryServiceImpl implements RepositoryService {
 		try {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);
 			Optional<List<R>> resources = dao.query(resourceClazz, criterias);
-			return resources;
+			List<R> undeleteds =  new ArrayList<>();
+			if (resources.isPresent()) {
+				for (R r : resources.get()) {
+					List<Extension> extensions = r.getExtensions();
+					boolean deleted = false;
+					for (Extension extension : extensions) {						
+						if("patient.status".equals(extension.getPath())) {
+							if (Transaction.ActionCode.D.name().equals(extension.getValue())) {
+								deleted = true;
+								break;
+							}
+						}
+					}
+					if (!deleted) {
+						undeleteds.add(r);
+					}					
+				}
+			}
+			return Optional.of(undeleteds);
 		} catch (DaoException dex) {
 			throw new RepositoryServiceException(dex); 
 		}
@@ -113,8 +147,6 @@ public class RepositoryServiceImpl implements RepositoryService {
 			 ts.start();		
 			 BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);	
 			 Optional<R> found = resourceDao.findById(id);	
-			 
-			 CacheService.getInstance().createCache();
 			 
 			 if (found.isPresent()) {
 				 R changed = found.get();				 
@@ -154,7 +186,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 	
 	@Override
-	public  <R extends DomainResource> void delete(java.lang.Class<?> resourceClazz, String id)
+	public  <R extends DomainResource> Optional<R> delete(java.lang.Class<?> resourceClazz, String id)
 		throws RepositoryServiceException {
 		TransactionService ts  = TransactionService.getInstance();
 		try {			
@@ -165,7 +197,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 R deleted = found.get();
 				 java.lang.Class<?> resourceExtensionClazz = Class.forName(resourceClazz.getName() + "Extension");
 				 BaseDao resourceExtensionDao = DaoFactory.getInstance().createResourceDao(resourceExtensionClazz);	
-				 Optional<Extension> extension = resourceExtensionDao.findById(deleted.getId());
+				 Optional<Extension> extension = resourceExtensionDao.findById(deleted.getResourceId().toString());
 				 if (extension.isPresent() &&
 					 !Transaction.ActionCode.D.name().equals(extension.get().getValue())) {
 					 // change the status to 'deleted'
@@ -177,7 +209,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 transaction.setResource(found.get());			
 					 transactionDao.save(transaction);						 
 				 }
-				 ts.commit();				 
+				 ts.commit();			
+				 return found;
 			 } else {
 				 throw new RepositoryServiceException("resource " + resourceClazz.getName() + " " +id + " not found");
 			 }

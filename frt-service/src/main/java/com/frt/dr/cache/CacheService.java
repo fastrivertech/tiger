@@ -33,7 +33,7 @@ public class CacheService {
 	}
 	
 	public void createCache() {
-		if (cache != null) {
+		if (cache == null) {
 			cache = new ThreadLocal<NamedCache>();
 			cache.set(new NamedCache<String, String>());
 		}
