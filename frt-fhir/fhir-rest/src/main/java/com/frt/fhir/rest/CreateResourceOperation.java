@@ -128,7 +128,7 @@ public class CreateResourceOperation extends ResourceOperation {
 			Optional<R> created = fhirService.create(type, resource);
 			if (created.isPresent()) {
 				String resourceInJson = parser.serialize(created.get());      
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.CREATED, "1.0", MimeType.APPLICATION_FHIR_JSON);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.CREATED, "1.0", MimeType.APPLICATION_FHIR_JSON, "utf-8");
 			} else {		
 				String error = "failed to create domain resource '" + type + "'"; 
 				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
