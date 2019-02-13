@@ -134,13 +134,19 @@ public class FhirService {
 		}		
 	}
 	
-	public void delete(@Nonnull String type, 
-					   @Nonnull String id) 
+	public <R extends DomainResource> Optional<R> delete(@Nonnull String type, 
+					   						             @Nonnull String id) 
 	    throws FhirServiceException {
 		try {
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
-			repository.delete(resourcePair.getFrt(), id);
+			 
+			Optional<com.frt.dr.model.DomainResource> deletedFrtResource = repository.delete(resourcePair.getFrt(), id);
+			Optional<R> deletedHapiResource = Optional.empty();
+			if (deletedFrtResource.isPresent()) {
+				deletedHapiResource = Optional.of((R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)deletedFrtResource.get()));
+			}
+			return deletedHapiResource;
 		} catch (RepositoryServiceException ex) {
 			throw new FhirServiceException(ex);
 		}
