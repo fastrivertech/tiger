@@ -175,4 +175,22 @@ public class FhirService {
 		
 	}
 
+	public <R extends DomainResource> Optional<R> vRead(@Nonnull String type, @Nonnull String id, @Nonnull String vid)
+		throws FhirServiceException {
+		Optional<R> retVal = Optional.empty();
+		try {
+			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
+			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
+
+			Optional<com.frt.dr.model.DomainResource> frtResource = repository.vRead(resourcePair.getFrt(), id, vid);
+			if (frtResource.isPresent()) {
+				R hapiResource = (R) mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object) frtResource.get());
+				retVal = Optional.of(hapiResource);
+			}
+			return retVal;
+		} catch (MapperException | RepositoryServiceException ex) {
+			throw new FhirServiceException(ex);
+		}
+	}
+	
 }
