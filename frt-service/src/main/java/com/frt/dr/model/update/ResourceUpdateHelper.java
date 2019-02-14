@@ -29,62 +29,59 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
 public class ResourceUpdateHelper {
-	public static Set<String> primitives = Stream.of("long", "java.math.BigInteger", "java.lang.Boolean",
-			"java.lang.String", "java.util.Date", "java.sql.Timestamp", "java.lang.Integer")
-			.collect(Collectors.toCollection(HashSet::new));
-	public static Set<String> complexes = Stream
-			.of("com.frt.dr.model.base.PatientHumanName", "com.frt.dr.model.base.PatientIdentifier",
-					"com.frt.dr.model.base.PatientAddress", "com.frt.dr.model.base.PatientContact",
-					"com.frt.dr.model.base.PatientAttachment", "com.frt.dr.model.base.PatientContactPoint",
-					"com.frt.dr.model.base.PatientCodeableConcept", "com.frt.dr.model.base.PatientReference",
-					"com.frt.dr.model.base.PatientAnimal", "com.frt.dr.model.base.PatientCommunication",
-					"com.frt.dr.model.base.PatientLink", "com.frt.dr.model.base.PatientExtension")
-			.collect(Collectors.toCollection(HashSet::new));
-
+	
+	public static Set<String> primitives = Stream.of("long",
+												     "java.math.BigInteger",
+												     "java.lang.Boolean",
+											  	     "java.lang.String",
+												     "java.util.Date",
+												     "java.sql.Timestamp",
+											         "java.lang.Integer").collect(Collectors.toCollection(HashSet::new));
+	public static Set<String> complexes = Stream.of("com.frt.dr.model.base.PatientHumanName",
+													"com.frt.dr.model.base.PatientIdentifier",
+												    "com.frt.dr.model.base.PatientAddress",
+												    "com.frt.dr.model.base.PatientContact",
+												    "com.frt.dr.model.base.PatientAttachment",
+												    "com.frt.dr.model.base.PatientContactPoint",
+												    "com.frt.dr.model.base.PatientCodeableConcept",
+												    "com.frt.dr.model.base.PatientReference",
+												    "com.frt.dr.model.base.PatientAnimal",
+												    "com.frt.dr.model.base.PatientCommunication",
+												    "com.frt.dr.model.base.PatientLink",
+												    "com.frt.dr.model.base.PatientExtension").collect(Collectors.toCollection(HashSet::new));	
 	/**
 	 * Set the value of the primitive field of primary object, e.g., Patient.gender
-	 * 
-	 * @param clazz
-	 *            primary class
-	 * @param field
-	 *            primitive field
-	 * @param object
-	 *            primary object
-	 * @param value
-	 *            primitive field value
-	 * @throws ResourceUpdateException
-	 *             throws exception if any error occurs
+	 * @param clazz primary class 
+	 * @param field primitive field 
+	 * @param object primary object 
+	 * @param value primitive field value 
+	 * @throws ResourceUpdateException throws exception if any error occurs
 	 */
-	public static void setValue(Class clazz, String field, Object object, String value) throws ResourceUpdateException {
-		String dataType = getDateType(clazz, field).get();
+	public static void setValue(Class clazz, String field, Object object, String value) 
+		throws ResourceUpdateException {
+		String dataType = getDateType(clazz, field).get();	
 		Optional<Object> fieldValue = stringToObject(value, dataType);
 		if (fieldValue.isPresent()) {
 			setValue(clazz, field, object, fieldValue.get());
 		}
 	}
-
+	
 	/**
 	 * Set the value of the primitive field of primary object, e.g., Patient.gender
-	 * 
-	 * @param clazz
-	 *            primary class
-	 * @param field
-	 *            primitive field
-	 * @param object
-	 *            primary object
-	 * @param value
-	 *            primitive field value
-	 * @throws ResourceUpdateException
-	 *             throws exception if any error occurs
-	 */
-	public static void setValue(Class clazz, String field, Object object, Object value) throws ResourceUpdateException {
+	 * @param clazz primary class 
+	 * @param field primitive field 
+	 * @param object primary object 
+	 * @param value primitive field value 
+	 * @throws ResourceUpdateException throws exception if any error occurs
+	 */	
+	public static void setValue(Class clazz, String field, Object object, Object value) 
+		throws ResourceUpdateException {
 		try {
 			Optional<Method> setMethod = getClazzMethod(clazz, buldMethodName(field, "set"));
 			if (setMethod.isPresent()) {
 				setMethod.get().invoke(object, value);
 			} else {
-				throw new ResourceUpdateException(
-						"set method for " + field + " of " + clazz.getName() + " is not defined");
+				throw new ResourceUpdateException("set method for " + field + " of " + clazz.getName() + " is not defined");
 			}
 		} catch (InvocationTargetException | IllegalAccessException ex) {
 			throw new ResourceUpdateException(ex);
@@ -94,22 +91,15 @@ public class ResourceUpdateHelper {
 	/**
 	 * Set the value of the complex field or list of complex of primary object,e.g.,
 	 * Patient.maritalStatus.coding, Patient.names.family (List)
-	 * 
-	 * @param clazz
-	 *            primary class
-	 * @param child
-	 *            child name
-	 * @param field
-	 *            child primitive field name
-	 * @param object
-	 *            primary object
-	 * @param value
-	 *            value of child primitive field
-	 * @throws ResourceUpdateException
-	 *             throws exception if any error occurs
+	 * @param clazz primary class
+	 * @param child child name
+	 * @param field child primitive field name
+	 * @param object primary object
+	 * @param value value of child primitive field
+	 * @throws ResourceUpdateException throws exception if any error occurs
 	 */
 	public static void setValue(Class clazz, String child, String field, Object object, String value)
-			throws ResourceUpdateException {
+		throws ResourceUpdateException {
 		try {
 			Field[] fields = clazz.getDeclaredFields();
 			Optional<Field> childField = Optional.empty();
@@ -153,22 +143,22 @@ public class ResourceUpdateHelper {
 			throw new ResourceUpdateException(ex);
 		}
 	}
-
-	public static void setFieldValue(Class clazz, String field, Object object, Object fieldValue)
-			throws ResourceUpdateException {
+		
+	public static void setFieldValue(Class clazz, String field, Object object, Object fieldValue) 
+		throws ResourceUpdateException {
 		try {
-
+			
 			Optional<Method> setMethod = getClazzMethod(clazz, buldMethodName(field, "set"));
 			if (setMethod.isPresent()) {
 				setMethod.get().invoke(object, fieldValue);
 			}
-		} catch (InvocationTargetException | IllegalAccessException ex) {
+		}  catch(InvocationTargetException | IllegalAccessException ex) {
 			throw new ResourceUpdateException(ex);
 		}
-	}
-
-	public static Optional<Object> getFieldValue(Class clazz, String field, Object source)
-			throws ResourceUpdateException {
+	}	
+	
+	public static Optional<Object> getFieldValue(Class clazz, String field, Object source) 
+		throws ResourceUpdateException {
 		try {
 			Optional<Object> value = Optional.empty();
 			Optional<Method> getMethod = getClazzMethod(clazz, buldMethodName(field, "get"));
@@ -176,25 +166,25 @@ public class ResourceUpdateHelper {
 				value = Optional.ofNullable(getMethod.get().invoke(source));
 			}
 			return value;
-		} catch (InvocationTargetException | IllegalAccessException ex) {
+		}  catch(InvocationTargetException | IllegalAccessException ex) {
 			throw new ResourceUpdateException(ex);
 		}
-	}
-
+	}	
+	
 	public static boolean equals(Class clazz, String name) {
 		boolean compared = false;
 		String[] tokens = clazz.getName().split("\\.");
-		if (tokens[tokens.length - 1].equalsIgnoreCase(name)) {
+		if (tokens[tokens.length-1].equalsIgnoreCase(name)) {
 			compared = true;
-		}
+		}		
 		return compared;
 	}
-
+	
 	public static String name(Class clazz) {
 		String[] tokens = clazz.getName().split("\\.");
-		return tokens[tokens.length - 1];
+		return tokens[tokens.length-1];
 	}
-
+	
 	public static List<Method> getMethods(Class clazz) {
 		List<Method> methods = new ArrayList<>();
 		Method[] primaryMethods = clazz.getDeclaredMethods();
@@ -202,8 +192,7 @@ public class ResourceUpdateHelper {
 			Class superClazz = clazz.getSuperclass();
 			List<Method> superMethods = getMethods(superClazz);
 			methods.addAll(superMethods);
-		}
-		;
+		};
 		methods.addAll(Arrays.asList(primaryMethods));
 		return methods;
 	}
@@ -214,8 +203,9 @@ public class ResourceUpdateHelper {
 		strBuilder.insert(0, operator);
 		return strBuilder.toString();
 	}
-
-	public static Optional<Method> getClazzMethod(Class clazz, String methodName) throws ResourceUpdateException {
+	
+	public static Optional<Method> getClazzMethod(Class clazz, String methodName) 
+		throws ResourceUpdateException {
 		List<Method> methods = getMethods(clazz);
 		Optional<Method> found = Optional.empty();
 		for (Method method : methods) {
@@ -223,11 +213,10 @@ public class ResourceUpdateHelper {
 				found = Optional.of(method);
 				break;
 			}
-		}
-		;
+		};
 		return found;
 	}
-
+	
 	public static Optional<String> getDateType(Class clazz, String field) {
 		Optional<String> dataType = Optional.empty();
 		Field[] fields = clazz.getDeclaredFields();
@@ -239,8 +228,9 @@ public class ResourceUpdateHelper {
 		}
 		return dataType;
 	}
-
-	public static Optional<Object> stringToObject(String value, String dataType) throws ResourceUpdateException {
+	
+	public static Optional<Object> stringToObject(String value, String dataType) 
+		throws ResourceUpdateException {
 		Optional<Object> dataObject = Optional.empty();
 		switch (dataType) {
 		case "long":
@@ -270,7 +260,8 @@ public class ResourceUpdateHelper {
 		return dataObject;
 	}
 
-	public static Optional<String> objectToString(Object value, String dataType) throws ResourceUpdateException {
+	public static Optional<String> objectToString(Object value, String dataType) 
+		throws ResourceUpdateException {
 		Optional<String> dataString = Optional.empty();
 		switch (dataType) {
 		case "long":
@@ -283,25 +274,25 @@ public class ResourceUpdateHelper {
 			dataString = Optional.of(value.toString());
 			break;
 		case "java.lang.Boolean":
-			dataString = Optional.of(Boolean.toString(((Boolean) value).booleanValue()));
+			dataString = Optional.of(Boolean.toString(((Boolean)value).booleanValue()));
 			break;
 		case "java.lang.String":
 			dataString = Optional.of(value.toString());
 			break;
 		case "java.util.Date":
-			dataString = Optional.of(((Date) value).toString());
+			dataString = Optional.of(((Date)value).toString());
 			break;
 		case "java.sql.Timestamp":
-			dataString = Optional.of(((Timestamp) value).toString());
+			dataString = Optional.of(((Timestamp)value).toString());
 			break;
 		default:
 			throw new ResourceUpdateException(dataType + " not supported yet");
 		}
 		return dataString;
 	}
-
+	
 	public static boolean equals(String dataType, Object value1, Object value2) {
-		boolean compared = false;
+		boolean compared = false;		
 		switch (dataType) {
 		case "long":
 			compared = value1 == value2 ? true : false;
@@ -319,14 +310,14 @@ public class ResourceUpdateHelper {
 			compared = value1.equals(value2) ? true : false;
 			break;
 		case "java.util.Date":
-			compared = ((Date) value1).compareTo((Date) value2) == 0 ? true : false;
+			compared = ((Date)value1).compareTo((Date)value2) == 0 ? true : false;
 			break;
 		case "java.sql.Timestamp":
-			compared = ((Timestamp) value1).compareTo((Timestamp) value2) == 0 ? true : false;
+			compared = ((Timestamp)value1).compareTo((Timestamp)value2) == 0 ? true : false;
 			break;
 		default:
 			throw new ResourceUpdateException(dataType + " not supported yet");
-		}
+		}		
 		return compared;
-	}
+	}			
 }
