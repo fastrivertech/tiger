@@ -72,7 +72,7 @@ public class PatientContactPoint implements Serializable, ResourceComplexType {
 
 	@Size(max = 128)
 	@Column(name = "cp_system")
-	private String cp_system;
+	private String system;
 
 	@Size(max = 2048)
 	@Column(name = "value")
@@ -117,11 +117,11 @@ public class PatientContactPoint implements Serializable, ResourceComplexType {
 	}
 
 	public String getSystem() {
-		return cp_system;
+		return this.system;
 	}
 
 	public void setSystem(String system) {
-		this.cp_system = system;
+		this.system = system;
 	}
 
 	public String getValue() {
