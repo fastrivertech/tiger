@@ -28,8 +28,15 @@ public class ResourceUpdateManager {
 	public ResourceUpdateManager() {	
 	}
 	
-	public List<String> getChanges(){
-		return changes;
+	public String getChanges(){
+		StringBuilder strBuilder = new StringBuilder();
+		changes.forEach(change->{
+			if (strBuilder.length() > 0) {
+				strBuilder.append(",");
+			}
+			strBuilder.append(change.trim());
+		});
+		return strBuilder.toString();
 	}
 	
 	public void cleanChanges(){

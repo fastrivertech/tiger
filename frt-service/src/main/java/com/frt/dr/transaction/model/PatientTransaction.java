@@ -117,34 +117,42 @@ public class PatientTransaction implements Transaction {
     	return this.meta;
     }
     
+    @Override
     public void setDelta(String delta) {
     	this.delta = delta;
     }
     
+    @Override
     public String getDelta() {
     	return this.delta;
     }
     
+    @Override
     public void setActor(String actor) {
     	this.actor = actor;
     }
     
+    @Override
     public String getActor() {
     	return this.actor;
     }
     
+    @Override
     public void setAction(String action) {
     	this.action = action;
     }
     
+    @Override
     public String getAction() {
     	return this.action;
     }
 
+    @Override
     public void setTimestamp(Timestamp timestamp) {
     	this.timestamp = timestamp;
     }
     
+    @Override
     public Timestamp getTimestamp() {
     	return this.timestamp;
     }

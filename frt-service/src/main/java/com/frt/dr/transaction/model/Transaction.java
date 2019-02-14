@@ -12,6 +12,8 @@
 package com.frt.dr.transaction.model;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
+
 import javax.persistence.MappedSuperclass;
 import com.frt.dr.model.DomainResource;
 
@@ -20,7 +22,7 @@ import com.frt.dr.model.DomainResource;
  * @author cqye
  */
 @MappedSuperclass
-public interface Transaction extends Serializable{	
+public interface Transaction extends Serializable {	
 	static final long serialVersionUID = -8321293485415819089L;	
 	
 	public enum ActionCode {
@@ -48,5 +50,21 @@ public interface Transaction extends Serializable{
 	void setMeta(String meta);
 	 	    
 	String getMeta();
+	
+	void setAction(String action);
+	    
+	String getAction();
+	
+	void setActor(String actor);
+    
+	String getActor();
+		
+	void setDelta(String delta);
+	    
+	String getDelta();	
+	
+	Timestamp getTimestamp();
+	
+	void setTimestamp(Timestamp timestamp);
 	
 }

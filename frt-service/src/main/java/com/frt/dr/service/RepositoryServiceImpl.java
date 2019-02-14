@@ -18,16 +18,16 @@ import java.util.List;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.Extension;
+import com.frt.dr.model.update.ResourceUpdateException;
+import com.frt.dr.model.update.ResourceUpdateManager;
 import com.frt.dr.service.query.QueryCriteria;
 import com.frt.dr.transaction.TransactionHelper;
 import com.frt.dr.transaction.TransactionService;
-import com.frt.dr.transaction.model.PatientTransaction;
 import com.frt.dr.transaction.model.Transaction;
 import com.frt.dr.dao.DaoFactory;
 import com.frt.dr.dao.BaseDao;
@@ -44,8 +44,10 @@ public class RepositoryServiceImpl implements RepositoryService {
 	
     private DataSource dataSource;
     private JpaTransactionManager jpaTransactionManager;
- 
+    private ResourceUpdateManager resourceUpdateManager;
+    
     public RepositoryServiceImpl() {	
+    	resourceUpdateManager = new ResourceUpdateManager();
     }
     
     @Autowired
@@ -150,13 +152,17 @@ public class RepositoryServiceImpl implements RepositoryService {
 			 
 			 if (found.isPresent()) {
 				 R changed = found.get();				 
-				 // ToDo: 1) delta: resource and found.get()  2) copy resource to found.get()
+				 // compute changes
+				 resourceUpdateManager.change(resourceClazz, resourceClazz, resource, changed);		
+				 // save changes
 				 String meta = TransactionHelper.updateMeta(changed.getMeta());
 				 changed.setMeta(meta);
 				 resourceDao.update(changed);
-				 
+				 // create transaction log
 				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
 				 transaction.setMeta(meta);
+				 transaction.setDelta(resourceUpdateManager.getChanges());
+				 // save transaction log
 				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 				 transaction.setResource(changed);			
 			     transactionDao.save(transaction);		
@@ -183,6 +189,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 		} catch (DaoException dex) {
 			ts.rollback();
 			throw new RepositoryServiceException(dex); 
+		} finally {
+			resourceUpdateManager.cleanChanges();
 		}
 	}
 	
@@ -230,10 +238,16 @@ public class RepositoryServiceImpl implements RepositoryService {
 		Optional<R> found = read(resourceClazz, id);
 		if (found.isPresent()) {
 			history = Optional.of(new ArrayList());
-			history.get().add(found.get());
+			// ToDo: build history of the resource
 			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	
 			Optional<List<Transaction>> transactions = transactionDao.findById(id); 
-			//ToDo 			
+			if (transactions.isPresent()) {
+				transactions.get().forEach(transaction->{
+					//transaction.getMeta();
+					//transaction.getDelta();
+				});
+			}
+			history.get().add(found.get());					
 		}
 		return history;
 	}
