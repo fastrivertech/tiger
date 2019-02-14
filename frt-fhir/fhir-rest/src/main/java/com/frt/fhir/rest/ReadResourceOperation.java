@@ -152,7 +152,6 @@ public class ReadResourceOperation extends ResourceOperation {
 			CacheService.getInstance().createCache();
 			
 			//ToDo: more validations and more concise validation implementation 			
-			OperationValidator.validateId(Optional.ofNullable(id));
 			OperationValidator.validateFormat(format);
 			OperationValidator.validateSummary(summary);
 			OperationValidator.validateQueryParameters(Optional.ofNullable(id), uriInfo);
@@ -164,7 +163,6 @@ public class ReadResourceOperation extends ResourceOperation {
 			
 			QueryCriteria criterias = new QueryCriteria();
 			if (uriInfo != null) {
-				
 				criterias.setParams(uriInfo.getQueryParameters());	
 			}			
 						

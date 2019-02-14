@@ -26,12 +26,8 @@ public class ResourceOperationResponseBuilder {
 	private static Localization localizer = Localization.getInstance("com.frt.fhir");
 
 	public static Response build(Object body, Response.Status status, String tag, String type) {
-		return build(body, status, tag, type, null);
-	}
-
-	public static Response build(Object body, Response.Status status, String tag, String type, String encoding) {
 		Response.ResponseBuilder responseBuilder = Response.status(status).entity(body);
-		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(encoding!=null&&!encoding.isEmpty()?type+";charset="+encoding:type);
+		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type).encoding("utf-8");
 		return responseBuilder.build();
 	}
 	
