@@ -11,6 +11,17 @@
  */
 package com.frt.dr.model.update;
 
-public class ResourceUpdateException {
+/**
+ * ResourceUpdateException class
+ * @author cqye
+ */
+public class ResourceUpdateException extends RuntimeException {
+	
+	public ResourceUpdateException(String m) {
+		super(m);
+	}
 
+	public ResourceUpdateException(Throwable t) {
+		super(t);
+	}	
 }

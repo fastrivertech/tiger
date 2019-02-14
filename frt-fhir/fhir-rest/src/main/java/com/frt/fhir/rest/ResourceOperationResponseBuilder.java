@@ -27,7 +27,7 @@ public class ResourceOperationResponseBuilder {
 
 	public static Response build(Object body, Response.Status status, String tag, String type) {
 		Response.ResponseBuilder responseBuilder = Response.status(status).entity(body);
-		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type).encoding("utf-8");
+		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type + "; charset=UTF-8");
 		return responseBuilder.build();
 	}
 	
