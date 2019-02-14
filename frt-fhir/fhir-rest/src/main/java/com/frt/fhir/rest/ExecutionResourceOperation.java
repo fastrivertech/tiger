@@ -10,9 +10,9 @@
  */
 package com.frt.fhir.rest;
 
-public class SearchResourceOperation {
+public class ExecutionResourceOperation {
 
-	public SearchResourceOperation() {
+	public ExecutionResourceOperation() {
 		throw new UnsupportedOperationException();
 	}
 	
