@@ -12,9 +12,9 @@
 package com.frt.dr.service;
 
 import javax.sql.DataSource;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Arrays;
 import java.util.Optional;
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -232,23 +232,78 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}	
 	
 	@Override
+	@SuppressWarnings("unchecked")
 	public <R extends DomainResource> Optional<List<R>> history(java.lang.Class<?> resourceClazz, String id)
 		throws RepositoryServiceException {
-		Optional<List<R>> history = Optional.empty();		
-		Optional<R> found = read(resourceClazz, id);
-		if (found.isPresent()) {
-			history = Optional.of(new ArrayList());
-			// ToDo: build history of the resource
-			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	
-			Optional<List<Transaction>> transactions = transactionDao.findById(id); 
-			if (transactions.isPresent()) {
-				transactions.get().forEach(transaction->{
-					//transaction.getMeta();
-					//transaction.getDelta();
-				});
+		try {
+			Optional<List<R>> history = Optional.empty();		
+			Optional<R> found = read(resourceClazz, id);
+			if (found.isPresent()) {
+				history = Optional.of(new ArrayList());			
+				BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	
+				Optional<List<Transaction>> transactions = transactionDao.findById(id); 
+				if (transactions.isPresent()) {
+					for (Transaction transaction : transactions.get()) {
+						// apply changes
+						R versioned = (R)resourceClazz.newInstance();
+						resourceUpdateManager.change(resourceClazz, resourceClazz, found, versioned);
+						resourceUpdateManager.cleanChanges();		
+						String delta = transaction.getDelta();
+						List<String> changes = Arrays.asList(delta.split(","));
+						for (String change : changes) {
+							String[] tokens = change.split("=");
+							if (tokens != null && tokens.length == 2) {
+								resourceUpdateManager.update(resourceClazz, tokens[0], versioned, tokens[1]);
+							}
+						}
+						// apply meta
+						String meta = transaction.getMeta();
+						versioned.setMeta(meta);						
+						history.get().add(versioned);
+					}
+				}			
 			}
-			history.get().add(found.get());					
+			return history;
+		} catch (IllegalAccessException | InstantiationException ex) {
+			throw new RepositoryServiceException(ex);
 		}
-		return history;
 	}
+	
+	@Override
+	public <R extends DomainResource> Optional<R> vRead(Class<?> resourceClazz, String id, String vid) 
+		throws RepositoryServiceException {
+		try {
+			Optional<R> found = read(resourceClazz, id);
+			if (found.isPresent()) {
+				BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	
+				Optional<List<Transaction>> transactions = transactionDao.findById(id); 
+				if (transactions.isPresent()) {
+					for (Transaction transaction : transactions.get()) {
+						// apply changes
+						R versioned = (R)resourceClazz.newInstance();
+						resourceUpdateManager.change(resourceClazz, resourceClazz, found, versioned);
+						resourceUpdateManager.cleanChanges();		
+						String delta = transaction.getDelta();
+						List<String> changes = Arrays.asList(delta.split(","));
+						for (String change : changes) {
+							String[] tokens = change.split("=");
+							if (tokens != null && tokens.length == 2) {
+								resourceUpdateManager.update(resourceClazz, tokens[0], versioned, tokens[1]);
+							}
+						}
+						// apply meta
+						String meta = transaction.getMeta();
+						versioned.setMeta(meta);						
+						if (meta.contains("\"versionId\": \"" + vid + "\"")) {
+							break;
+						}
+					}
+				}			
+			}
+			return found;
+		} catch (IllegalAccessException | InstantiationException ex) {
+			throw new RepositoryServiceException(ex);
+		}	
+	}	
+
 }

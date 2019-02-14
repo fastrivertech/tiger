@@ -70,6 +70,12 @@ public class RepositoryApplication {
 		return this.repositoryService.history(resourceClazz, id);
 	}
 	
+    public <R extends DomainResource> Optional<R> vRead(java.lang.Class<R> resourceClazz, String id, String vid)
+		throws RepositoryServiceException {
+    	Optional<R> resource = this.repositoryService.vRead(resourceClazz, id, vid);    	
+		return resource;
+	}
+	
 	public static void main(String[] args) {
 		try {
 			RepositoryContext context = new RepositoryContext(RepositoryApplication.class);			

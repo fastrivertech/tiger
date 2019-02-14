@@ -40,4 +40,7 @@ public interface RepositoryService {
 	<R extends DomainResource> Optional<List<R>> history(java.lang.Class<?> resourceClazz, String id)
 		throws RepositoryServiceException;
 
+	<R extends DomainResource> Optional<R> vRead(java.lang.Class<?> resourceClazz, String id, String vid) 
+		throws RepositoryServiceException;
+		
 }
