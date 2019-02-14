@@ -96,4 +96,17 @@ public class OperationValidator {
 		}
 	}
 
+	public static void validateQueryParameters(Optional<String> optId, UriInfo uriInfo)
+		throws OperationValidatorException {
+		// to get patient resources : get by ID or search with parameters
+		// the request is invalid if ID is not present and query parameters not present
+		if (!optId.isPresent()
+				&&(uriInfo==null
+				||uriInfo.getQueryParameters()==null
+				||uriInfo.getQueryParameters().size()==0)) {
+			throw new OperationValidatorException(localizer.x("Invalid resource query: both resource id and query parameters are not present, request rejected.",
+				      OperationValidatorException.ErrorCode.INVALID_QUERY_PARAMS));
+		}
+	}
+
 }

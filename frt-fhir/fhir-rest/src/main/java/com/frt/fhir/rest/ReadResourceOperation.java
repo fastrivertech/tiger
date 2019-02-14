@@ -155,7 +155,8 @@ public class ReadResourceOperation extends ResourceOperation {
 			OperationValidator.validateId(Optional.ofNullable(id));
 			OperationValidator.validateFormat(format);
 			OperationValidator.validateSummary(summary);
-
+			OperationValidator.validateQueryParameters(Optional.ofNullable(id), uriInfo);
+			
 			//ToDo: add more options
 			QueryOption options = new QueryOption();
 			options.setSummary(Boolean.parseBoolean(summary));
@@ -163,6 +164,7 @@ public class ReadResourceOperation extends ResourceOperation {
 			
 			QueryCriteria criterias = new QueryCriteria();
 			if (uriInfo != null) {
+				
 				criterias.setParams(uriInfo.getQueryParameters());	
 			}			
 						
