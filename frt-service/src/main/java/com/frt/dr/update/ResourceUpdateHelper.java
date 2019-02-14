@@ -9,7 +9,7 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.dr.model.update;
+package com.frt.dr.update;
 
 import java.util.List;
 import java.util.Optional;
