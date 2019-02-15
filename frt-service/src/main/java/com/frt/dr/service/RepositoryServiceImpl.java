@@ -156,26 +156,27 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 R changed = found.get();				 
 				 // compute changes
 				 resourceUpdateManager.cleanChanges();
-				 resourceUpdateManager.change(resourceClazz, resourceClazz, resource, changed);		
-				 // save changes
-				 String meta = changed.getMeta();
-				 String changedMeta = TransactionHelper.updateMeta(meta);
-				 changed.setMeta(changedMeta);
-				 resourceDao.update(changed);
-				 // create transaction log
-				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
-				 transaction.setMeta(meta);
-				 transaction.setDelta(resourceUpdateManager.getChanges());
-				 // save transaction log
-				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
-				 transaction.setResource(changed);			
-			     transactionDao.save(transaction);		
-			     
-			     Optional<NamedCache> cache = CacheService.getInstance().getCache();
-			     if (cache.isPresent()) {
-			    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.U.name());
-			     }
-			     
+				 resourceUpdateManager.change(resourceClazz, resourceClazz, resource, changed);
+				 Optional<String> changes = resourceUpdateManager.getChanges();
+				 if (changes.isPresent()) {
+					 // save changes
+					 String meta = changed.getMeta();
+					 String changedMeta = TransactionHelper.updateMeta(meta);
+					 changed.setMeta(changedMeta);
+					 resourceDao.update(changed);
+					 // create transaction log
+					 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
+					 transaction.setMeta(meta);
+					 transaction.setDelta(changes.get());
+					 // save transaction log
+					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+					 transaction.setResource(changed);			
+					 transactionDao.save(transaction);						     
+					 Optional<NamedCache> cache = CacheService.getInstance().getCache();
+					 if (cache.isPresent()) {
+						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.U.name());
+					 }
+				 }
 			 } else {
 				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			

@@ -29,15 +29,19 @@ public class ResourceUpdateManager {
 	public ResourceUpdateManager() {	
 	}
 	
-	public String getChanges(){
+	public Optional<String> getChanges(){
+		Optional<String> changed = Optional.empty();
 		StringBuilder strBuilder = new StringBuilder();
 		changes.forEach(change->{
 			if (strBuilder.length() > 0) {
 				strBuilder.append(",");
 			}
 			strBuilder.append(change.trim());
-		});
-		return strBuilder.toString();
+		});		
+		if (strBuilder.length() > 0) {
+			changed = Optional.of(strBuilder.toString());
+		}		
+		return changed;
 	}
 	
 	public void cleanChanges(){
@@ -137,7 +141,6 @@ public class ResourceUpdateManager {
 				}
 			} else if (!field.getType().getName().equals(root.getName())) {
 				// complex data type				
-				/*
 				try {
 					Optional<Object> sourceFieldValue = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), source);
 					if (sourceFieldValue.isPresent()) {
@@ -152,7 +155,6 @@ public class ResourceUpdateManager {
 				} catch (IllegalAccessException | InstantiationException ex) {
 					throw new ResourceUpdateException(ex);
 				}
-				*/
 			} else {
 				// Unknown data type
 				if (!field.getType().getName().equals(root.getName())) {
@@ -185,16 +187,22 @@ public class ResourceUpdateManager {
 			Optional<Method> getMethod = ResourceUpdateHelper.getClazzMethod(clazz,
 					ResourceUpdateHelper.buldMethodName(field.getName(), "get"));
 			if (getMethod.isPresent()) {
-				Object value = getMethod.get().invoke(source);
-				if (value != null) {
-					Optional<Method> setMethod = ResourceUpdateHelper.getClazzMethod(clazz,
-							ResourceUpdateHelper.buldMethodName(field.getName(), "set"));
-					if (setMethod.isPresent()) {
-						setMethod.get().invoke(target, value);
-						String changed = path + "." + field.getName() + "="
-								+ ResourceUpdateHelper.objectToString(value, field.getType().getTypeName()).get();
-						System.out.println("3: " + changed);
-						changes.add(changed);
+				Object sourceFieldValue = getMethod.get().invoke(source);
+				if ( sourceFieldValue != null) {
+					Object targetFieldValue = getMethod.get().invoke(target);
+					if (targetFieldValue == null || 
+						ResourceUpdateHelper.notEquals(field.getType().getTypeName(), sourceFieldValue, targetFieldValue)) { 
+					
+						Optional<Method> setMethod = ResourceUpdateHelper.getClazzMethod(clazz,
+								ResourceUpdateHelper.buldMethodName(field.getName(), "set"));
+						if (setMethod.isPresent()) {
+							setMethod.get().invoke(target, sourceFieldValue);
+							String changed = path + "." + field.getName() + "="
+									+ ResourceUpdateHelper.objectToString(sourceFieldValue, field.getType().getTypeName()).get();
+							System.out.println("333333: " + changed);
+							changes.add(changed);
+						}
+						
 					}
 				}
 			} else {

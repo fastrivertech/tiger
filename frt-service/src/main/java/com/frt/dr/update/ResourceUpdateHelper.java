@@ -298,6 +298,10 @@ public class ResourceUpdateHelper {
 		return dataString;
 	}
 	
+	public static boolean notEquals(String dataType, Object value1, Object value2) {
+		return !equals(dataType, value1, value2);
+	}
+	
 	public static boolean equals(String dataType, Object value1, Object value2) {
 		boolean compared = false;		
 		switch (dataType) {
