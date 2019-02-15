@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
+--> 
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<pluginRepositories>
+		<pluginRepository>
+			<id>smartbear-sweden-plugin-repository</id>
+			<url>http://www.soapui.org/repository/maven2/</url>
+		</pluginRepository>
+	</pluginRepositories>
+  
+  <parent>
+    <groupId>com.frt</groupId>
+    <artifactId>frt-fhir</artifactId>
+    <version>${frt.fhir.version}</version>
+  </parent>
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.frt</groupId>
+  <artifactId>frt-fhir-rest-test</artifactId>
+  <version>1.0</version>
+  <name>FRT FHIR REST API TEST ${frt.fhir.rest.test.version}</name>
+  <description>Fast River FHIR REST API ${frt.fhir.rest.test.version}</description>
+	
+  <build>
+	<plugins>
+	  <plugin>
+			<groupId>com.smartbear.soapui</groupId>
+			<artifactId>soapui-maven-plugin</artifactId>
+			<version>5.0.0</version>
+			<dependencies>
+
+			<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>forms</artifactId>
+			<version>1.0.7</version>
+			</dependency>
+
+			</dependencies>
+
+			<executions>
+				<execution>
+					<phase>test</phase>
+					<goals>
+						<goal>test</goal>
+					</goals>
+				</execution>
+            </executions>
+      </plugin>
+	</plugins>
+  </build>
+</project>
