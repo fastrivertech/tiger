@@ -67,7 +67,7 @@ public class PatientTransaction implements Transaction {
   //@Column(name = "resource_id", insertable = true, updatable = false)                        
   //private BigInteger resourceId;
 
-    @Lob
+  //@Lob
     @Column(name = "meta", insertable = true, updatable = false)                        
     private String meta;
 
@@ -75,7 +75,7 @@ public class PatientTransaction implements Transaction {
     @Column(name = "action", nullable = false, insertable = true, updatable = false)                                            
     private String action;
 
-    @Lob
+  //@Lob
     @Column(name = "delta", insertable = true, updatable = false)                        
     private String delta;
 

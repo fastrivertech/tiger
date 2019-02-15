@@ -85,6 +85,7 @@ public class ResourceUpdateManager {
 				// List
 				ParameterizedType listType = (ParameterizedType)field.getGenericType();				
 				Type type = listType.getActualTypeArguments()[0];
+				/*
 				if (!ResourceUpdateHelper.primitives.contains(type.toString())) {
 					// List complex data type					
 					try {
@@ -112,7 +113,7 @@ public class ResourceUpdateManager {
 					// List primitive data type
 					throw new ResourceUpdateException("List primitive type " + type.toString() + " not supported");
 				}
-				
+				*/
 			} else if (ResourceUpdateHelper.primitives.contains(field.getType().getName())) {
 				// primitive data type				
 				if (!field.getName().equals("serialVersionUID")){					
@@ -123,22 +124,20 @@ public class ResourceUpdateManager {
 						if (targetFieldValue.isPresent()) {
 							if (!ResourceUpdateHelper.equals(field.getType().getName(), sourceFieldValue.get(), targetFieldValue.get())) {
 								
-								String changed = ResourceUpdateHelper.name(root) + "." + field.getName() + "=" + sourceFieldValue.get().toString();
-								changes.add(changed);
-								
+								String changed = ResourceUpdateHelper.name(root) + "." + field.getName() + "=" + targetFieldValue.get().toString();
+								changes.add(changed);								
 								ResourceUpdateHelper.setFieldValue(clazz, field.getName(), target, sourceFieldValue.get());
 							}
-						} else {
-							
-							String changed = ResourceUpdateHelper.name(root) + "." + field.getName() + "=" + sourceFieldValue.get().toString();
+						} else {							
+							String changed = ResourceUpdateHelper.name(root) + "." + field.getName() + "=NULL";
 							changes.add(changed);
-							
 							ResourceUpdateHelper.setFieldValue(clazz, field.getName(), target, sourceFieldValue.get());							
 						}
 					}
 				}
 			} else if (!field.getType().getName().equals(root.getName())) {
 				// complex data type				
+				/*
 				try {
 					Optional<Object> sourceFieldValue = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), source);
 					if (sourceFieldValue.isPresent()) {
@@ -153,6 +152,7 @@ public class ResourceUpdateManager {
 				} catch (IllegalAccessException | InstantiationException ex) {
 					throw new ResourceUpdateException(ex);
 				}
+				*/
 			} else {
 				// Unknown data type
 				if (!field.getType().getName().equals(root.getName())) {
@@ -193,6 +193,7 @@ public class ResourceUpdateManager {
 						setMethod.get().invoke(target, value);
 						String changed = path + "." + field.getName() + "="
 								+ ResourceUpdateHelper.objectToString(value, field.getType().getTypeName()).get();
+						System.out.println("3: " + changed);
 						changes.add(changed);
 					}
 				}
@@ -205,6 +206,7 @@ public class ResourceUpdateManager {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void copyFieldValue(String path, Class clazz, String field, Object source, Object target)
 			throws ResourceUpdateException {
 		try {

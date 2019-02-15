@@ -143,6 +143,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 	}
 
 	@Override
+	@SuppressWarnings("unchecked")
 	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource)
 		throws RepositoryServiceException {
 		TransactionService ts  = TransactionService.getInstance();
@@ -154,10 +155,12 @@ public class RepositoryServiceImpl implements RepositoryService {
 			 if (found.isPresent()) {
 				 R changed = found.get();				 
 				 // compute changes
+				 resourceUpdateManager.cleanChanges();
 				 resourceUpdateManager.change(resourceClazz, resourceClazz, resource, changed);		
 				 // save changes
-				 String meta = TransactionHelper.updateMeta(changed.getMeta());
-				 changed.setMeta(meta);
+				 String meta = changed.getMeta();
+				 String changedMeta = TransactionHelper.updateMeta(meta);
+				 changed.setMeta(changedMeta);
 				 resourceDao.update(changed);
 				 // create transaction log
 				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
