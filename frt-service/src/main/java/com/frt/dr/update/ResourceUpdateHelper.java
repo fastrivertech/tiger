@@ -37,6 +37,7 @@ public class ResourceUpdateHelper {
 												     "java.util.Date",
 												     "java.sql.Timestamp",
 											         "java.lang.Integer").collect(Collectors.toCollection(HashSet::new));
+	/* enable it to expedite domain-specific mapping 
 	public static Set<String> complexes = Stream.of("com.frt.dr.model.base.PatientHumanName",
 													"com.frt.dr.model.base.PatientIdentifier",
 												    "com.frt.dr.model.base.PatientAddress",
@@ -48,7 +49,8 @@ public class ResourceUpdateHelper {
 												    "com.frt.dr.model.base.PatientAnimal",
 												    "com.frt.dr.model.base.PatientCommunication",
 												    "com.frt.dr.model.base.PatientLink",
-												    "com.frt.dr.model.base.PatientExtension").collect(Collectors.toCollection(HashSet::new));	
+												    "com.frt.dr.model.base.PatientExtension").collect(Collectors.toCollection(HashSet::new));
+    */												    	
 	/**
 	 * Set the value of the primitive field of primary object, e.g., Patient.gender
 	 * @param clazz primary class 

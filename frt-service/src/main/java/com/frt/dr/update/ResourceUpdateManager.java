@@ -89,14 +89,11 @@ public class ResourceUpdateManager {
 				// List
 				ParameterizedType listType = (ParameterizedType)field.getGenericType();				
 				Type type = listType.getActualTypeArguments()[0];
-				/*
 				if (!ResourceUpdateHelper.primitives.contains(type.toString())) {
 					// List complex data type					
-					try {
-						
+					try {						
 						Optional<Object> sourceFieldValues = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), source);					
-						if (!((List)sourceFieldValues.get()).isEmpty()) {
-						
+						if (!((List)sourceFieldValues.get()).isEmpty()) {						
 							Object sourceFieldValue = ((List)sourceFieldValues.get()).get(0);
 							Optional<Object> targetFieldValues = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), target);					
 							Object targetFieldValue = null;
@@ -108,8 +105,7 @@ public class ResourceUpdateManager {
 							}		
 							String path = ResourceUpdateHelper.name(root) + "." + field.getName();
 							copyObjectValue(path, Class.forName(type.getTypeName()), sourceFieldValue, targetFieldValue);
-						}
-						
+						}						
 					} catch (IllegalAccessException | InstantiationException | ClassNotFoundException ex) {
 						throw new ResourceUpdateException(ex);
 					}
@@ -117,7 +113,6 @@ public class ResourceUpdateManager {
 					// List primitive data type
 					throw new ResourceUpdateException("List primitive type " + type.toString() + " not supported");
 				}
-				*/
 			} else if (ResourceUpdateHelper.primitives.contains(field.getType().getName())) {
 				// primitive data type				
 				if (!field.getName().equals("serialVersionUID")){					
@@ -166,8 +161,8 @@ public class ResourceUpdateManager {
 	}
 	
 	@SuppressWarnings("unchecked")	
-	public void copyObjectValue(String path, Class clazz, Object source, Object target) throws ResourceUpdateException {
-
+	public void copyObjectValue(String path, Class clazz, Object source, Object target) 
+		throws ResourceUpdateException {
 		List<Field> fieldList = new ArrayList(Arrays.asList(clazz.getDeclaredFields()));
 		fieldList.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));		
 		Field[] fields = fieldList.toArray(new Field[] {});
@@ -181,6 +176,7 @@ public class ResourceUpdateManager {
 		});
 	}
 
+	@SuppressWarnings("unchecked")	
 	public void copyFieldValue(String path, Class clazz, Field field, Object source, Object target)
 		throws ResourceUpdateException {
 		try {
@@ -199,9 +195,7 @@ public class ResourceUpdateManager {
 							setMethod.get().invoke(target, sourceFieldValue);
 							String changed = path + "." + field.getName() + "="
 									+ (targetFieldValue == null ? "NULL" : ResourceUpdateHelper.objectToString(targetFieldValue, field.getType().getTypeName()).get());
-							System.out.println("333333: " + changed);
-							changes.add(changed);
-							
+							changes.add(changed);							
 						}
 						
 					}
