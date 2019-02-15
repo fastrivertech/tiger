@@ -23,5 +23,8 @@ public interface ResourcePath {
 	 // removed the space between id: and the regex - same reason as in case of TYPE_PATH 
 	 public static final String ID_PATH = "/{id:[A-Za-z0-9\\-\\.]+}";
 	 public static final String HISTORY_PATH = "/_history";	 	
-	 public static final String METADATA_PATH = "/metadata";	 		 
+	 public static final String METADATA_PATH = "/metadata";	 	
+	 public static final String PATIENT_PATH = "/Patient";	 	
+	 public static final String OPERATION_PATH = "/${operation:(match)|(merge)|(unmerge)|(link)|(unlink)}";	 	
+	 
 }
