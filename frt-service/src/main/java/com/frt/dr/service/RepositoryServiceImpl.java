@@ -31,6 +31,7 @@ import com.frt.dr.update.ResourceUpdateException;
 import com.frt.dr.update.ResourceUpdateManager;
 import com.frt.dr.dao.DaoFactory;
 import com.frt.dr.dao.BaseDao;
+import com.frt.dr.transaction.model.dao.TransactionDao;
 import com.frt.dr.dao.DaoException;
 import com.frt.dr.cache.CacheService;
 import com.frt.dr.cache.NamedCache;
@@ -240,31 +241,38 @@ public class RepositoryServiceImpl implements RepositoryService {
 			Optional<R> found = read(resourceClazz, id);
 			if (found.isPresent()) {
 				history = Optional.of(new ArrayList());			
-				BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	
-				Optional<List<Transaction>> transactions = transactionDao.findById(id); 
+				TransactionDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	 
+				Optional<List<Transaction>> transactions = transactionDao.findByResourceId(found.get().getResourceId()); 
 				if (transactions.isPresent()) {
+					history.get().add(found.get());
 					for (Transaction transaction : transactions.get()) {
-						// apply changes
-						R versioned = (R)resourceClazz.newInstance();
-						resourceUpdateManager.change(resourceClazz, resourceClazz, found, versioned);
-						resourceUpdateManager.cleanChanges();		
-						String delta = transaction.getDelta();
-						List<String> changes = Arrays.asList(delta.split(","));
-						for (String change : changes) {
-							String[] tokens = change.split("=");
-							if (tokens != null && tokens.length == 2) {
-								resourceUpdateManager.update(resourceClazz, tokens[0], versioned, tokens[1]);
+						if (transaction.getAction().equals("U")) {
+							// apply changes
+							// ToDo
+							//R versioned = (R)resourceClazz.newInstance();
+							//resourceUpdateManager.change(resourceClazz, resourceClazz, found.get(), versioned);
+							//resourceUpdateManager.cleanChanges();		
+							
+							String delta = transaction.getDelta();
+							List<String> changes = Arrays.asList(delta.split(","));
+							for (String change : changes) {
+								String[] tokens = change.split("=");
+								if (tokens != null && tokens.length == 2) {
+									resourceUpdateManager.update(resourceClazz, tokens[0], found.get(), tokens[1]);
+								}
 							}
+							// apply meta
+							String meta = transaction.getMeta();
+						    found.get().setMeta(meta);
+							//versioned.setMeta(meta);							
+							history.get().add(found.get());
 						}
-						// apply meta
-						String meta = transaction.getMeta();
-						versioned.setMeta(meta);						
-						history.get().add(versioned);
 					}
 				}			
 			}
 			return history;
-		} catch (IllegalAccessException | InstantiationException ex) {
+	  //} catch (IllegalAccessException | InstantiationException ex) {
+		} catch (DaoException ex) {
 			throw new RepositoryServiceException(ex);
 		}
 	}

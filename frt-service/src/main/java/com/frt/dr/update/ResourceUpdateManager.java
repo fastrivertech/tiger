@@ -12,6 +12,7 @@
 package com.frt.dr.update;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.lang.reflect.Field;
@@ -51,6 +52,7 @@ public class ResourceUpdateManager {
 	 * @param value value of field
 	 * @throws ResourceUpdateException throws exception if any error occurs 
 	 */
+	@SuppressWarnings("unchecked")
 	public void update(Class clazz, String path, Object object, String value) 
 		throws ResourceUpdateException {		
 		// Primitive data type: Path = Patient.gender
@@ -69,11 +71,14 @@ public class ResourceUpdateManager {
 		}		
 	}
 	
-	
+	@SuppressWarnings("unchecked")
 	public void change(Class clazz, Class root, Object source, Object target) 
 		throws ResourceUpdateException {
 		
-		Field[] fields = clazz.getDeclaredFields();		
+		List<Field> fieldList = new ArrayList(Arrays.asList(clazz.getDeclaredFields()));
+		fieldList.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));		
+		Field[] fields = fieldList.toArray(new Field[] {});
+		
 		Stream.of(fields).forEach(field->{
 			
 			if (field.getType().getName().equals("java.util.List")) {
@@ -158,11 +163,14 @@ public class ResourceUpdateManager {
 		});		
 	}
 	
+	@SuppressWarnings("unchecked")	
 	public void copyObjectValue(String path, Class clazz, Object source, Object target) throws ResourceUpdateException {
 
-		Field[] fields = clazz.getDeclaredFields();
+		List<Field> fieldList = new ArrayList(Arrays.asList(clazz.getDeclaredFields()));
+		fieldList.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));		
+		Field[] fields = fieldList.toArray(new Field[] {});
+		
 		Stream.of(fields).forEach(field -> {
-
 			if (ResourceUpdateHelper.primitives.contains(field.getType().getName())) {
 				if (!field.getName().equals("serialVersionUID")) {
 					copyFieldValue(path, clazz, field, source, target);

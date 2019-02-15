@@ -332,8 +332,6 @@ public class Patient extends DomainResource {
 		this.contacts = contacts;
 	}
     
-    @XmlTransient
-    @Override
     public List<PatientExtension> getExtensions() {
     	if (extensions == null) {
     		extensions = new ArrayList<PatientExtension>();
@@ -341,7 +339,6 @@ public class Patient extends DomainResource {
         return extensions;
     }
 
-    
     public void setExtensions( List<PatientExtension> extensions) {
         this.extensions = extensions;
     }    

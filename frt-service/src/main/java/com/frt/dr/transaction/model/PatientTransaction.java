@@ -51,7 +51,7 @@ import com.frt.dr.model.base.Patient;
 @SequenceGenerator(name = "PATIENT_TRANSACTION_SEQ", sequenceName = "PATIENT_TRANSACTION_SEQ", allocationSize = 100)
 @NamedQueries({
 	@NamedQuery(name = "PatientTransaction.getPatientTransactionById", query = "SELECT T FROM PatientTransaction T WHERE T.transactionId = :id"),	
-    @NamedQuery(name = "PatientTransaction.getPatientTransactionByResourceId", query = "SELECT T FROM PatientTransaction T WHERE T.transactionId = :id")
+    @NamedQuery(name = "PatientTransaction.getPatientTransactionByResourceId", query = "SELECT T FROM PatientTransaction T WHERE T.patient.resourceId = :resourceId ORDER BY T.transactionId DESC")
 })
 public class PatientTransaction implements Transaction {
 

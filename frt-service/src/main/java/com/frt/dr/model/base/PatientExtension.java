@@ -57,7 +57,7 @@ public class PatientExtension extends Extension {
     	return this.patientExtensionId;
     }
     
-    public void getPatientExtensionId(BigInteger patientExtensionId) {
+    public void setPatientExtensionId(BigInteger patientExtensionId) {
     	this.patientExtensionId = patientExtensionId;
     }
     

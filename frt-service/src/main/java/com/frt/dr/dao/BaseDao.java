@@ -42,5 +42,5 @@ public abstract class BaseDao<T,ID> implements Repository {
     
     public abstract Optional<T> update(T entry) 
         throws DaoException;
-  
+     
 }

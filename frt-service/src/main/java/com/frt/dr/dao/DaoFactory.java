@@ -15,6 +15,7 @@ import com.frt.dr.model.base.Patient;
 import com.frt.dr.model.base.PatientExtension;
 import com.frt.dr.dao.base.PatientExtensionDao;
 import com.frt.dr.transaction.model.dao.PatientTransactionDao;
+import com.frt.dr.transaction.model.dao.TransactionDao;
 
 /**
  * DaoFactory class
@@ -44,7 +45,7 @@ public class DaoFactory {
 		}
 	}
 
-	public <D extends BaseDao> D createTransactionDao(Class<?> resourceClazz) 
+	public <D extends TransactionDao> D createTransactionDao(Class<?> resourceClazz) 
 			throws DaoException {
 			if (resourceClazz.equals(Patient.class) ) {
 				D transactionDao = (D)new PatientTransactionDao();

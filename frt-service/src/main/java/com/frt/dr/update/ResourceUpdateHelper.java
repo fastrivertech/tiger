@@ -101,7 +101,10 @@ public class ResourceUpdateHelper {
 	public static void setValue(Class clazz, String child, String field, Object object, String value)
 		throws ResourceUpdateException {
 		try {
-			Field[] fields = clazz.getDeclaredFields();
+			List<Field> fieldList = new ArrayList(Arrays.asList(clazz.getDeclaredFields()));
+			fieldList.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));		
+			Field[] fields = fieldList.toArray(new Field[] {});
+			
 			Optional<Field> childField = Optional.empty();
 			for (Field f : fields) {
 				if (f.getName().equalsIgnoreCase(child)) {
@@ -218,8 +221,12 @@ public class ResourceUpdateHelper {
 	}
 	
 	public static Optional<String> getDateType(Class clazz, String field) {
+		
 		Optional<String> dataType = Optional.empty();
-		Field[] fields = clazz.getDeclaredFields();
+		List<Field> fieldList = new ArrayList(Arrays.asList(clazz.getDeclaredFields()));
+		fieldList.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));		
+		Field[] fields = fieldList.toArray(new Field[] {});
+		
 		for (Field f : fields) {
 			if (f.getName().equals(field)) {
 				dataType = Optional.of(f.getType().getName());

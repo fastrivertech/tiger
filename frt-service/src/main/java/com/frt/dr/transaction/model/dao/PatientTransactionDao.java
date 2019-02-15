@@ -28,7 +28,7 @@ import com.frt.dr.transaction.model.PatientTransaction;
  * @author cqye
  *
  */
-public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
+public class PatientTransactionDao extends TransactionDao<PatientTransaction, String> {
 
 	public PatientTransactionDao() {	
 		super.initialize();
@@ -48,7 +48,8 @@ public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
     	}	
     }
 
-	@Override	
+	@Override
+	@SuppressWarnings("unchecked")
     public Optional<PatientTransaction> findById(String id) 
     	throws DaoException {
     	
@@ -67,11 +68,13 @@ public class PatientTransactionDao extends BaseDao<PatientTransaction, String> {
 		}    	
     }
 	
-    public Optional<List<PatientTransaction>> findByResourceId(String id) 
+	@Override
+	@SuppressWarnings("unchecked")
+    public Optional<List<PatientTransaction>> findByResourceId(BigInteger id) 
         	throws DaoException {        	
     		try {
     			Query query = ts.getEntityManager().createNamedQuery("PatientTransaction.getPatientTransactionByResourceId");
-    			query.setParameter("id", id);
+    			query.setParameter("resourceId", id);
     			List<PatientTransaction> transactions = (List<PatientTransaction>) query.getResultList();			
     			if (transactions != null && 
     				transactions.size() >0 ) {
