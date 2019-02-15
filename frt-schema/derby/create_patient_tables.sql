@@ -279,9 +279,9 @@ INSERT INTO SEQUENCE (SEQ_NAME, SEQ_COUNT) VALUES ('PATIENT_LINK_SEQ', 1);
 CREATE TABLE PATIENT_TRANSACTION (
 	transaction_id BIGINT, -- implementation specific primary key
     resource_id BIGINT NOT NULL, -- FK to PATIENT TABLE
-	meta CLOB, -- FHIR Metadata which includes versionId, lastUpdate 
+	meta VARCHAR(1024), -- relax CLOB to debug, FHIR Metadata which includes versionId, lastUpdate 
 	action VARCHAR(32) NOT NULL, -- FHIR AuditEvent: http://hl7.org/fhir/valueset-audit-event-action.html 
-	delta CLOB, -- delimited string with paths and changes, paitent.name.given=old value 
+	delta VARCHAR(4096), -- relex CLOB to debug, delimited string with paths and changes, paitent.name.given=old value 
 	actor VARCHAR(128) NOT NULL,
 	transaction_timestamp TIMESTAMP,
 	PRIMARY KEY (transaction_id),
