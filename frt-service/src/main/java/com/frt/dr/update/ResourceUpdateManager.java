@@ -198,9 +198,10 @@ public class ResourceUpdateManager {
 						if (setMethod.isPresent()) {
 							setMethod.get().invoke(target, sourceFieldValue);
 							String changed = path + "." + field.getName() + "="
-									+ ResourceUpdateHelper.objectToString(sourceFieldValue, field.getType().getTypeName()).get();
+									+ targetFieldValue == null ? "NULL" : ResourceUpdateHelper.objectToString(targetFieldValue, field.getType().getTypeName()).get();
 							System.out.println("333333: " + changed);
 							changes.add(changed);
+							
 						}
 						
 					}

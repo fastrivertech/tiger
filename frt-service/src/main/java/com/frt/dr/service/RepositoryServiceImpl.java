@@ -147,6 +147,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource)
 		throws RepositoryServiceException {
 		TransactionService ts  = TransactionService.getInstance();
+		Optional<NamedCache> cache = CacheService.getInstance().getCache();
 		try {			
 			 ts.start();		
 			 BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);	
@@ -171,23 +172,25 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 // save transaction log
 					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 					 transaction.setResource(changed);			
-					 transactionDao.save(transaction);						     
-					 Optional<NamedCache> cache = CacheService.getInstance().getCache();
+					 transactionDao.save(transaction);						     					
 					 if (cache.isPresent()) {
 						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.U.name());
 					 }
+				 } else {
+					 // no changes
+					 if (cache.isPresent()) {
+						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.N.name());
+					 }					 
 				 }
 			 } else {
+				 // create resource
 				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 				 transaction.setResource(resource);			
-				 transactionDao.save(transaction);	
-			
-			     Optional<NamedCache> cache = CacheService.getInstance().getCache();
+				 transactionDao.save(transaction);				
 			     if (cache.isPresent()) {
 			    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.C.name());
-			     }
-							 
+			     }							 
 			 }
 			 ts.commit();
 			 return resource;

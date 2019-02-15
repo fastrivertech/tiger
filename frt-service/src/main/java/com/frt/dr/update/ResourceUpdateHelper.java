@@ -79,7 +79,15 @@ public class ResourceUpdateHelper {
 		try {
 			Optional<Method> setMethod = getClazzMethod(clazz, buldMethodName(field, "set"));
 			if (setMethod.isPresent()) {
-				setMethod.get().invoke(object, value);
+				if (value != null) {
+					if ("NULL".equals(value.toString())) {
+						setMethod.get().invoke(object, (Object)null);					
+					} else {
+						setMethod.get().invoke(object, value);
+					}
+				} else {
+					setMethod.get().invoke(object, (Object)null);					
+				}
 			} else {
 				throw new ResourceUpdateException("set method for " + field + " of " + clazz.getName() + " is not defined");
 			}
@@ -135,7 +143,7 @@ public class ResourceUpdateHelper {
 					Object childValue = getMethod.get().invoke(object);
 					if (childValue == null) {
 						childValue = childField.get().getType().newInstance();
-						Optional<Method> setMethod = getClazzMethod(clazz, buldMethodName(child, "set"));
+						Optional<Method> setMethod = getClazzMethod(clazz, buldMethodName(child, "set"));						
 						setMethod.get().invoke(object, childValue);
 					}
 					setValue(childField.get().getType(), field, childValue, value);
