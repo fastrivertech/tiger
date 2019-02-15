@@ -92,24 +92,29 @@ public class UpdateResourceOperation extends ResourceOperation {
 			String resourceInJson = parser.serialize(updated);
 		
 			Optional<NamedCache> cache = CacheService.getInstance().getCache();
-			if (cache.isPresent()) {
-				String action = (String)cache.get().get(NamedCache.ACTION_CODE);
-				if (action.equalsIgnoreCase("U")) {
-					// resource updated
-					return ResourceOperationResponseBuilder.build(resourceInJson, 
-															      Status.OK, 
-															      updated.getMeta().getVersionId(), 
-															      uriInfo.getAbsolutePath(),
-															      MimeType.APPLICATION_FHIR_JSON);				
-				}				
-			}			
-			// resource created 
-			return ResourceOperationResponseBuilder.build(resourceInJson, 
-														  Status.CREATED, 
-														  updated.getMeta().getVersionId(), 
-														  uriInfo.getAbsolutePath(),
-														  MimeType.APPLICATION_FHIR_JSON);
-			
+			String action = (String)cache.get().get(NamedCache.ACTION_CODE);
+			if (action.equalsIgnoreCase("U")) {
+				// resource updated
+				return ResourceOperationResponseBuilder.build(resourceInJson, 
+															  Status.OK, 
+													          updated.getMeta().getVersionId(), 
+													          uriInfo.getAbsolutePath(),
+													          MimeType.APPLICATION_FHIR_JSON);				
+			} else if (action.equalsIgnoreCase("C")) {
+				// resource created 
+				return ResourceOperationResponseBuilder.build(resourceInJson, 
+															  Status.CREATED, 
+															  updated.getMeta().getVersionId(), 
+															  uriInfo.getAbsolutePath(),
+															  MimeType.APPLICATION_FHIR_JSON);						
+			} else {
+				// resource no changed  
+				return ResourceOperationResponseBuilder.build(resourceInJson, 
+															  Status.NOT_MODIFIED, 
+															  updated.getMeta().getVersionId(), 
+															  uriInfo.getAbsolutePath(),
+															  MimeType.APPLICATION_FHIR_JSON);									
+			}								
 		} catch (IdValidatorException iex) {
 			String error = "invalid id: " + iex.getMessage(); 			
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
