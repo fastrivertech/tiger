@@ -172,6 +172,7 @@
     <modules>
 		<module>fhir-service</module>				
 		<module>fhir-rest</module>	
+		<module>fhir-harness</module>	
 		<module>fhir-doc</module>
     </modules>
 
