@@ -51,8 +51,8 @@ public class Meta implements Serializable{
 	public String toString() {
 		StringBuilder strBuilder = new StringBuilder();
 		strBuilder.append("{\n");
-		strBuilder.append("\"versionId\" : \"").append(versionId).append("\",\n");
-		strBuilder.append("\"lastUpdated\" : \"").append(lastUpdated.toString()).append("\"\n");	
+		strBuilder.append("\"versionId\":\"").append(versionId).append("\",\n");
+		strBuilder.append("\"lastUpdated\":\"").append(lastUpdated.toString()).append("\"\n");	
 		strBuilder.append("}");		
 		return strBuilder.toString();
 	}

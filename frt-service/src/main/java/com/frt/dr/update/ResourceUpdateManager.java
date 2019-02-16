@@ -23,7 +23,9 @@ import java.util.stream.Stream;
 import java.lang.reflect.ParameterizedType;
 
 public class ResourceUpdateManager {
-
+	
+	public static final String DELIMITER = "\\|";
+	
 	private List<String> changes = new ArrayList<>();
 	
 	public ResourceUpdateManager() {	
@@ -34,7 +36,7 @@ public class ResourceUpdateManager {
 		StringBuilder strBuilder = new StringBuilder();
 		changes.forEach(change->{
 			if (strBuilder.length() > 0) {
-				strBuilder.append(",");
+				strBuilder.append(DELIMITER);
 			}
 			strBuilder.append(change.trim());
 		});		
@@ -93,7 +95,8 @@ public class ResourceUpdateManager {
 					// List complex data type					
 					try {						
 						Optional<Object> sourceFieldValues = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), source);					
-						if (!((List)sourceFieldValues.get()).isEmpty()) {						
+						if (!((List)sourceFieldValues.get()).isEmpty()) {				
+							// need to support multiple elements
 							Object sourceFieldValue = ((List)sourceFieldValues.get()).get(0);
 							Optional<Object> targetFieldValues = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), target);					
 							Object targetFieldValue = null;

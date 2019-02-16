@@ -250,36 +250,34 @@ public class RepositoryServiceImpl implements RepositoryService {
 				history = Optional.of(new ArrayList());			
 				TransactionDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	 
 				Optional<List<Transaction>> transactions = transactionDao.findByResourceId(found.get().getResourceId()); 
+				history.get().add(found.get());
 				if (transactions.isPresent()) {
-					history.get().add(found.get());
 					for (Transaction transaction : transactions.get()) {
 						if (transaction.getAction().equals("U")) {
+							// clone a resource
+							R versioned = (R)resourceClazz.newInstance();
+							resourceUpdateManager.change(resourceClazz, resourceClazz, found.get(), versioned);
+							resourceUpdateManager.cleanChanges();
 							// apply changes
-							// ToDo
-							//R versioned = (R)resourceClazz.newInstance();
-							//resourceUpdateManager.change(resourceClazz, resourceClazz, found.get(), versioned);
-							//resourceUpdateManager.cleanChanges();		
-							
 							String delta = transaction.getDelta();
-							List<String> changes = Arrays.asList(delta.split(","));
+							List<String> changes = Arrays.asList(delta.split(ResourceUpdateManager.DELIMITER));
 							for (String change : changes) {
 								String[] tokens = change.split("=");
 								if (tokens != null && tokens.length == 2) {
-									resourceUpdateManager.update(resourceClazz, tokens[0], found.get(), tokens[1]);
+									resourceUpdateManager.update(resourceClazz, tokens[0], versioned, tokens[1]);
 								}
 							}
 							// apply meta
 							String meta = transaction.getMeta();
-						    found.get().setMeta(meta);
-							//versioned.setMeta(meta);							
-							history.get().add(found.get());
+						    versioned.setMeta(meta);
+							history.get().add(versioned);
+							found = Optional.of(versioned);
 						}
 					}
 				}			
 			}
 			return history;
-	  //} catch (IllegalAccessException | InstantiationException ex) {
-		} catch (DaoException ex) {
+	    } catch (IllegalAccessException | InstantiationException ex) {
 			throw new RepositoryServiceException(ex);
 		}
 	}
@@ -293,7 +291,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 				BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	
 				Optional<List<Transaction>> transactions = transactionDao.findById(id); 
 				if (transactions.isPresent()) {
-					for (Transaction transaction : transactions.get()) {
+					for (Transaction transaction : transactions.get()) {						
 						// apply changes
 						R versioned = (R)resourceClazz.newInstance();
 						resourceUpdateManager.change(resourceClazz, resourceClazz, found, versioned);
@@ -308,7 +306,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 						}
 						// apply meta
 						String meta = transaction.getMeta();
-						versioned.setMeta(meta);						
+						versioned.setMeta(meta);
+						found = Optional.of(versioned);
 						if (meta.contains("\"versionId\": \"" + vid + "\"")) {
 							break;
 						}
