@@ -12,7 +12,6 @@ package com.frt.fhir.rest;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -25,18 +24,15 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
-
 import com.frt.dr.service.query.QueryOption;
 import com.frt.fhir.model.BundleBuilder;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.rest.validation.OperationValidatorException;
 import com.frt.fhir.service.FhirService;
 import com.frt.fhir.service.FhirServiceException;
-import com.frt.stream.service.StreamServiceException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 
