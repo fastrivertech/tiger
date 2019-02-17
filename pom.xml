@@ -31,7 +31,6 @@
 	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
 	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>	
 	<frt.datalake.version>1.0.0-SNAPSHOT</frt.datalake.version>
-	<frt.fhir.rest.test.version>1.0.0-SNAPSHOT</frt.fhir.rest.test.version>
 	<!-- splice machine -->
 	<com.splicemachine.version>2.7.0.1852</com.splicemachine.version>
     <!-- apache spring -->
