@@ -33,6 +33,7 @@
 		<!-- frt -->
 		<frt.fhir.rest.version>1.0.0-SNAPSHOT</frt.fhir.rest.version>
         <frt.fhir.service.version>1.0.0-SNAPSHOT</frt.fhir.service.version>
+		<frt.fhir.rest.test.version>1.0.0-SNAPSHOT</frt.fhir.rest.test.version>		
 		<!-- hapi -->
 		<hapi.fhir.version>3.4.0</hapi.fhir.version>	
 		<!-- jersey -->
@@ -47,7 +48,8 @@
 		<!-- junit -->
 		<junit.version>4.12</junit.version>		
         <sonar.skip>true</sonar.skip>
-    </properties>
+		<soapui.maven.plugin.version>5.0.0</soapui.maven.plugin.version>
+	</properties>
 
     <build>
         <plugins>
