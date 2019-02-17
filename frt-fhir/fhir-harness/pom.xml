@@ -14,28 +14,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
 		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
 		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+		 
+	<parent>
+		<groupId>com.frt</groupId>
+		<artifactId>frt-fhir</artifactId>
+		<version>${frt.fhir.version}</version>
+	</parent>
+  
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.frt</groupId>
+	<artifactId>frt-fhir-rest-test</artifactId>
+	<version>1.0</version>
+	<name>FRT FHIR REST API TEST ${frt.fhir.rest.test.version}</name>
+	<description>FRT FHIR REST API TEST ${frt.fhir.rest.test.version}</description>
+	
 	<pluginRepositories>
 		<pluginRepository>
 			<id>smartbear-sweden-plugin-repository</id>
 			<url>http://www.soapui.org/repository/maven2/</url>
 		</pluginRepository>
 	</pluginRepositories>
-		 
-  <parent>
-    <groupId>com.frt</groupId>
-    <artifactId>frt-fhir</artifactId>
-    <version>${frt.fhir.version}</version>
-  </parent>
-  
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.frt</groupId>
-  <artifactId>frt-fhir-rest-test</artifactId>
-  <version>1.0</version>
-  <name>FRT FHIR REST API TEST ${frt.fhir.rest.test.version}</name>
-  <description>Fast River FHIR REST API ${frt.fhir.rest.test.version}</description>
-	
-  <build>
+
+	<build>
 	<plugins>
 		<plugin>
 		    <groupId>org.apache.maven.plugins</groupId>
@@ -50,7 +50,7 @@
       	<plugin>
 			<groupId>com.smartbear.soapui</groupId>
 			<artifactId>soapui-maven-plugin</artifactId>
-			<version>5.0.0</version>
+			<version>${soapui.maven.plugin.version}</version>
 			<dependencies>
 				<dependency>
 					<groupId>com.jgoodies</groupId>
@@ -61,10 +61,9 @@
 			<executions>
 				<execution>
 					<configuration>
-						<projectFile>./frt-fhir/fhir-harness/frt-fhir-rest-test-soapui-project.xml</projectFile>
-						<settingsFile>./frt-fhir/fhir-harness/soapui-settings.xml</settingsFile>
-						<settingsFile>./frt-fhir/fhir-harness/soapui-settings.xml</settingsFile>
-						<outputFolder>./frt-fhir/fhir-harness/target</outputFolder>
+						<projectFile>${basedir}/frt-fhir-rest-test-soapui-project.xml</projectFile>
+						<settingsFile>${basedir}/soapui-settings.xml</settingsFile>
+						<outputFolder>${basedir}/target</outputFolder>
 						<reportFormat>HTML</reportFormat>
 					</configuration>
 					<phase>test</phase>
@@ -75,7 +74,7 @@
             </executions>
       	</plugin>
 	</plugins>
-  </build>
+	</build>
 
     <dependencies>
 	<!-- junit -->
@@ -85,5 +84,4 @@
 		<scope>test</scope>
 	</dependency>				
     </dependencies>
-
 </project>
