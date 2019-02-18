@@ -12,13 +12,11 @@
 package com.frt.fhir.parser;
 
 import java.util.List;
-import org.hl7.fhir.dstu3.model.Resource;
-
-
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.JsonParser;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import org.hl7.fhir.dstu3.model.Resource;
 import org.hl7.fhir.dstu3.model.Element;
 
 public class ResourceParser {
