@@ -26,6 +26,7 @@ import com.frt.dr.model.Extension;
 import com.frt.dr.service.query.QueryCriteria;
 import com.frt.dr.transaction.TransactionHelper;
 import com.frt.dr.transaction.TransactionService;
+import com.frt.dr.transaction.model.Meta;
 import com.frt.dr.transaction.model.Transaction;
 import com.frt.dr.update.ResourceUpdateException;
 import com.frt.dr.update.ResourceUpdateManager;
@@ -131,6 +132,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		  //Optional<R> created = resourceDao.save(resource);					
 			Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+			resource.setMeta((new Meta()).toString());
 		    transaction.setResource(resource);			
 			transactionDao.save(transaction);						
 			ts.commit();
@@ -185,7 +187,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 			 } else {
 				 // create resource
 				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
-				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);
+				 resource.setMeta((new Meta()).toString());
 				 transaction.setResource(resource);			
 				 transactionDao.save(transaction);				
 			     if (cache.isPresent()) {
