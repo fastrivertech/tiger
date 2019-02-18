@@ -33,7 +33,7 @@ public class ResourceOperationResponseBuilder {
 	
 	public static Response build(Object body, Response.Status status, String tag, URI uri, String type) {
 		Response.ResponseBuilder responseBuilder = Response.status(status).entity(body);
-		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type).location(uri);
+		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type + "; charset=UTF-8").location(uri);
 		return responseBuilder.build();
 	}
 
