@@ -64,8 +64,10 @@ public class FhirService {
 			mapper.setStatus(frtResource, Transaction.ActionCode.C.name());
 			
 			repository.create(resourcePair.getFrt(), frtResource);
+
+			Object hapiResponse = mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)frtResource);
 			
-			return Optional.of(hapiResource);
+			return Optional.of((R)hapiResponse);
 		} catch (MapperException | RepositoryServiceException ex) {
 			throw new FhirServiceException(ex);
 		}
