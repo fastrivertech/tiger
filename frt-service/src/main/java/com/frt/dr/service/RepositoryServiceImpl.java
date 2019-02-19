@@ -147,6 +147,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 	@SuppressWarnings("unchecked")
 	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource)
 		throws RepositoryServiceException {
+		R updatedResource = resource;
 		TransactionService ts  = TransactionService.getInstance();
 		Optional<NamedCache> cache = CacheService.getInstance().getCache();
 		try {			
@@ -177,6 +178,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 if (cache.isPresent()) {
 						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.U.name());
 					 }
+					 updatedResource = changed;
 				 } else {
 					 // no changes
 					 if (cache.isPresent()) {
@@ -196,7 +198,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			     }							 
 			 }
 			 ts.commit();
-			 return resource;
+			 return updatedResource;
 		} catch (DaoException dex) {
 			ts.rollback();
 			throw new RepositoryServiceException(dex); 
