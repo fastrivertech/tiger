@@ -130,9 +130,10 @@ public class RepositoryServiceImpl implements RepositoryService {
 		  //BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
 		  //Optional<R> created = resourceDao.save(resource);					
 			Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
-			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);				
+			RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());			
 			resource.setMeta((new Meta()).toString());						
-		    transaction.setResource(resource);			
+		    transaction.setResource(resource);					    
 			transactionDao.save(transaction);										
 			ts.commit();
 			return resource;			
