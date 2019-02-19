@@ -34,8 +34,6 @@
 		<frt.fhir.rest.version>1.0.0-SNAPSHOT</frt.fhir.rest.version>
         <frt.fhir.service.version>1.0.0-SNAPSHOT</frt.fhir.service.version>
 		<frt.fhir.rest.test.version>1.0.0-SNAPSHOT</frt.fhir.rest.test.version>		
-		<!-- hapi -->
-		<hapi.fhir.version>3.4.0</hapi.fhir.version>	
 		<!-- jersey -->
 		<jersey.version>2.27</jersey.version>
 		<javax.ws.rs.version>2.1</javax.ws.rs.version>	
@@ -97,32 +95,6 @@
 			  <artifactId>frt-fhir-service</artifactId>
 			  <version>${frt.fhir.service.version}</version>
 			</dependency>  				
-			<!-- hapi -->
-			<dependency>
-				<groupId>ca.uhn.hapi.fhir</groupId>
-				<artifactId>hapi-fhir-base</artifactId>
-			  <version>${hapi.fhir.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>ca.uhn.hapi.fhir</groupId>
-				<artifactId>hapi-fhir-utilities</artifactId>
-				<version>${hapi.fhir.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>ca.uhn.hapi.fhir</groupId>
-				<artifactId>hapi-fhir-structures-dstu3</artifactId>
-				<version>${hapi.fhir.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>ca.uhn.hapi.fhir</groupId>
-				<artifactId>hapi-fhir-validation</artifactId>
-				<version>${hapi.fhir.version}</version>
-			</dependency>	
-			<dependency>
-				<groupId>ca.uhn.hapi.fhir</groupId>
-				<artifactId>hapi-fhir-validation-resources-dstu3</artifactId>
-				<version>${hapi.fhir.version}</version>
-			</dependency>
 			<!-- javax -->	
 			<dependency>
 			  <groupId>javax.ws.rs</groupId>
