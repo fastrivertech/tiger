@@ -199,7 +199,8 @@ public class ReadResourceOperation extends ResourceOperation {
 
 			boolean deleted = false;
 			Optional<NamedCache> cache = CacheService.getInstance().getCache();			
-			if (cache.isPresent()) {
+			if (cache.isPresent() &&
+				cache.get().get(NamedCache.ACTION_CODE) != null) {
 				String action = (String)cache.get().get(NamedCache.ACTION_CODE);
 				if (action.equalsIgnoreCase("D")) {
 					deleted = true;
