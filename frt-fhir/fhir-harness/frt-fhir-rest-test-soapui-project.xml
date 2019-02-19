@@ -30,12 +30,12 @@
   <con:entry key="Domain" value=""/>
   <con:entry key="Tool Args" value=""/>
   <con:entry key="Save Project" value="false"/>
-</xml-fragment>]]></con:setting></con:settings><con:interface xsi:type="con:RestService" id="b031a5dc-f434-4d3e-ba6a-99d716e993ae" wadlVersion="http://wadl.dev.java.net/2009/02" name="FHIR4-0-0-Connectathon20" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:endpoint>${#Project#Service.Remote.Endpoint}</con:endpoint></con:endpoints><con:resource name="Patient-01-Intro" path="/${#Project#Service.Resource.Path}/${#Project#CD16}" id="ebb69a5a-2d02-4a02-a665-6042a6ee1b05"><con:settings/><con:parameters/><con:method name="RegisterNewPatient" id="75f0dd26-1b61-41ec-87c7-010979be5f66" method="PUT"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/fhir+json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json;charset=utf-8</con:mediaType><con:status>201</con:status><con:params/><con:element xmlns:pat="http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient">pat:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>405</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json;charset=UTF-8</con:mediaType><con:status>201</con:status><con:params/><con:element xmlns:pat="http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient">pat:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json</con:mediaType><con:status>201</con:status><con:params/><con:element xmlns:pat="http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient">pat:Response</con:element></con:representation><con:request name="CreatePatient" id="d4297414-09e1-4c0a-8fe5-2c87aaf5b7a8" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</xml-fragment>]]></con:setting></con:settings><con:interface xsi:type="con:RestService" id="b031a5dc-f434-4d3e-ba6a-99d716e993ae" wadlVersion="http://wadl.dev.java.net/2009/02" name="FHIR4-0-0-Connectathon20" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:endpoint>${#Project#Service.Remote.Endpoint}</con:endpoint></con:endpoints><con:resource name="Patient-01-Intro" path="/${#Project#Service.Resource.Path}/${#Project#CD16}" id="ebb69a5a-2d02-4a02-a665-6042a6ee1b05"><con:settings/><con:parameters/><con:method name="RegisterNewPatient" id="75f0dd26-1b61-41ec-87c7-010979be5f66" method="PUT"><con:settings/><con:parameters/><con:representation type="REQUEST"><con:mediaType>application/fhir+json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json;charset=utf-8</con:mediaType><con:status>201</con:status><con:params/><con:element xmlns:pat="http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient">pat:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>405</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json;charset=UTF-8</con:mediaType><con:status>201</con:status><con:params/><con:element xmlns:pat="http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient">pat:Response</con:element></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json</con:mediaType><con:status>201</con:status><con:params/><con:element xmlns:pat="http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient">pat:Response</con:element></con:representation><con:representation type="FAULT"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>400</con:status><con:params/><con:element xmlns:pat="http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient">pat:Fault</con:element></con:representation><con:request name="CreatePatient" id="d4297414-09e1-4c0a-8fe5-2c87aaf5b7a8" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Accept" value="application/fhir+json;charset=utf-8"/>
   &lt;con:entry key="Content-Type" value="application/fhir+json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request><![CDATA[{
   "resourceType" : "Patient",
-  "id" : "${CD16}",
+  "id" : "${#Project#CD16}",
   "text" : {
     "status" : "generated",
     "div" : "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n    <table>\n        <tbody>\n          <tr>\n            <td>Name</td>\n            <td>Peter James <b>Chalmers</b> (&quot;Jim&quot;)</td>\n          </tr>\n          <tr>\n            <td>Address</td>\n            <td>534 Erewhon, Pleasantville, Vic, 3999</td>\n          </tr>\n          <tr>\n            <td>Contacts</td>\n            <td>Home: unknown. Work: (03) 5555 6473</td>\n          </tr>\n          <tr>\n            <td>Id</td>\n            <td>MR: 12345 (Acme Healthcare)</td>\n          </tr>\n        </tbody>\n      </table>\n    </div>"
@@ -49,7 +49,7 @@
       } ]
     },
     "system" : "urn:oid:1.2.36.146.595.217.0.1",
-    "value" : "${CD16}",
+    "value" : "${#Project#CD16}",
     "period" : {
       "start" : "2001-05-06"
     },
@@ -60,8 +60,8 @@
   "active" : true,
   "name" : [ {
     "use" : "official",
-    "family" : "Chalmers${C8}",
-    "given" : [ "Peter${C8}", "James${C8}" ]
+    "family" : "Chalmers${#Project#C8}",
+    "given" : [ "Peter${#Project#C8}", "James${#Project#C8}" ]
   }, {
     "use" : "usual",
     "given" : [ "Jim" ]
@@ -78,10 +78,10 @@
   "deceasedBoolean" : false,
   "address" : [ {
     "use" : "home",
-    "line" : [ "534 Erewhon${C9} St" ],
+    "line" : [ "534 Erewhon${#Project#C9} St" ],
     "city" : "PleasantVille",
     "state" : "Vic",
-    "postalCode" : "${D4}"
+    "postalCode" : "${#Project#D4}"
   } ],
   "contact" : [ {
     "relationship" : [ {
