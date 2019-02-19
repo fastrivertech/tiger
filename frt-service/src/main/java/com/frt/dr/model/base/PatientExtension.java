@@ -28,6 +28,8 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
+
+import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Extension;
 
 @Entity
@@ -68,5 +70,15 @@ public class PatientExtension extends Extension {
     public void setPatient(Patient patient) {
     	this.patient = patient;
     }  
+    
+    @Override
+    public <R extends DomainResource> void setResource(R resource) {
+    	this.patient = (Patient)resource;
+    }
+
+    @Override
+    public <R extends DomainResource> R getResource() {
+    	return (R)this.patient;
+    }
     
 }

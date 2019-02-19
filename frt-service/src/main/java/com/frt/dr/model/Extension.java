@@ -76,4 +76,8 @@ public abstract class Extension implements Serializable {
     	this.value = value;
     }
     
+    public abstract <R extends DomainResource> void setResource(R resource);
+
+    public abstract <R extends DomainResource> R getResource();
+    
 }

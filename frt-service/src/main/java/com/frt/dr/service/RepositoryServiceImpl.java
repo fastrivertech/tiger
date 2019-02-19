@@ -74,8 +74,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 				List<Extension> extensions = resource.get().getExtensions();
 				for (Extension extension : extensions) {
 					if("patient.status".equals(extension.getPath())) {
-						if (Transaction.ActionCode.D.name().equals(extension.getValue())) {
-							
+						if (Transaction.ActionCode.D.name().equals(extension.getValue())) {							
 						    Optional<NamedCache> cache = CacheService.getInstance().getCache();
 						    if (cache.isPresent()) {
 						    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.D.name());
@@ -132,12 +131,11 @@ public class RepositoryServiceImpl implements RepositoryService {
 		  //Optional<R> created = resourceDao.save(resource);					
 			Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
-			resource.setMeta((new Meta()).toString());
+			resource.setMeta((new Meta()).toString());						
 		    transaction.setResource(resource);			
-			transactionDao.save(transaction);						
+			transactionDao.save(transaction);										
 			ts.commit();
-			return resource;
-			
+			return resource;			
 		} catch (DaoException dex) {
 			ts.rollback();
 			throw new RepositoryServiceException(dex); 
@@ -189,6 +187,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);
 				 resource.setMeta((new Meta()).toString());
+				 RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());
 				 transaction.setResource(resource);			
 				 transactionDao.save(transaction);				
 			     if (cache.isPresent()) {
