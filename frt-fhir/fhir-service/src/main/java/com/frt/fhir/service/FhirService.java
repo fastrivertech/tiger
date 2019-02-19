@@ -60,11 +60,8 @@ public class FhirService {
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
 			
-			Object frtResource = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)hapiResource);
-			mapper.setStatus(frtResource, Transaction.ActionCode.C.name());
-			
+			Object frtResource = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)hapiResource);		
 			repository.create(resourcePair.getFrt(), frtResource);
-
 			Object hapiResponse = mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)frtResource);
 			
 			return Optional.of((R)hapiResponse);

@@ -95,12 +95,6 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 		throw new UnsupportedOperationException();
 	}
 
-	@Override
-	public void setStatus(Object object, String status) 
-		throws MapperException {		
-		throw new UnsupportedOperationException();
-	}
-	
 	/**
 	 * 
 	 * @param type

@@ -240,19 +240,7 @@ public class PatientResourceMapper extends BaseMapper {
 
 		return (Object) frtPatient;		
 	}
-	
-	@Override
-	public void setStatus(Object object, String status) {
-		com.frt.dr.model.base.Patient frtPatient = (com.frt.dr.model.base.Patient)object;
-		List<PatientExtension> extensions = frtPatient.getExtensions();
-		PatientExtension patientExtension = new PatientExtension();
-		patientExtension.setPatient(frtPatient);
-		patientExtension.setPath("patient.status");
-		patientExtension.setValue(status);
-		patientExtension.setUrl("http://hl7.org/fhir/StructureDefinition/patient-status");
-		extensions.add(patientExtension);
-	}
-	
+		
 	private Object map(com.frt.dr.model.base.Patient frtPatient) 
 		throws MapperException {
 		
