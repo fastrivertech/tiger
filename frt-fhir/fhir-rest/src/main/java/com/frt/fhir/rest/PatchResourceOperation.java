@@ -12,4 +12,7 @@ package com.frt.fhir.rest;
 
 public class PatchResourceOperation {
 
+	public PatchResourceOperation() {
+		throw new UnsupportedOperationException();
+	}
 }

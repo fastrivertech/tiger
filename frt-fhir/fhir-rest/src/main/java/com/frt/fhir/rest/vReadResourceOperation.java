@@ -89,7 +89,7 @@ public class vReadResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MediaType.APPLICATION_JSON);				
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MimeType.APPLICATION_FHIR_JSON);				
 						
 		} catch (OperationValidatorException vx) {
 			String error = "invalid id: " + vx.getMessage(); 
@@ -97,14 +97,14 @@ public class vReadResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MediaType.APPLICATION_JSON);							
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_FHIR_JSON);							
 		}  catch (FhirServiceException ex) {
 			String error = "\"service failure: " + ex.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.INTERNAL_SERVER_ERROR, "", MediaType.APPLICATION_JSON);							
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.INTERNAL_SERVER_ERROR, "", MimeType.APPLICATION_FHIR_JSON);							
 		}
 	}
 

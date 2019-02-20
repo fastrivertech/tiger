@@ -121,28 +121,28 @@ public class UpdateResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_JSON);										
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_FHIR_JSON);										
 		} catch (OperationValidatorException vx) {
 			String error = "invalid parameter: " + vx.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MediaType.APPLICATION_JSON);				
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_FHIR_JSON);				
 		} catch (JsonFormatException jfx) {
 			String error = "invalid resource: " + jfx.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MediaType.APPLICATION_JSON);							 
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);							 
 		} catch (FhirServiceException ex) {								
 			String error = "service failure: " + ex.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MediaType.APPLICATION_JSON);							 			 			 
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);							 			 			 
 		} finally {
 			CacheService.getInstance().destroyCache();			
 		}

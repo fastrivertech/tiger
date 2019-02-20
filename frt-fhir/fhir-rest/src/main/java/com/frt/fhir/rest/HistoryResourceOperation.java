@@ -84,7 +84,7 @@ public class HistoryResourceOperation extends ResourceOperation {
 				link.setRelation("self");
 				link.setUrl(uriInfo.getRequestUri().toString());					
 				String resourceInJson = parser.serialize(bundle);
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MimeType.APPLICATION_FHIR_JSON);
 			}
 			
 			String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
@@ -92,7 +92,7 @@ public class HistoryResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MediaType.APPLICATION_JSON);				
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MimeType.APPLICATION_FHIR_JSON);				
 						
 		}  catch (FhirServiceException ex) {
 			String error = "\"service failure: " + ex.getMessage(); 
@@ -100,7 +100,7 @@ public class HistoryResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.INTERNAL_SERVER_ERROR, "", MediaType.APPLICATION_JSON);							
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.INTERNAL_SERVER_ERROR, "", MimeType.APPLICATION_FHIR_JSON);							
 		}
 	}
 	

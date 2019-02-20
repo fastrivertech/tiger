@@ -182,7 +182,7 @@ public class ReadResourceOperation extends ResourceOperation {
 				Optional<R> found = fhirService.read(type, id, options);
 				if (found.isPresent()) {
 					String resourceInJson = parser.serialize(found.get());      
-					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
+					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MimeType.APPLICATION_FHIR_JSON);
 				}
 			} else {
 				logger.info(localizer.x("FHR_I002: ReadResourceOperation reads a current resource by criteria {0}", criterias.getParams().toString()));										
@@ -193,7 +193,7 @@ public class ReadResourceOperation extends ResourceOperation {
 					link.setRelation("self");
 					link.setUrl(uriInfo.getRequestUri().toString());					
 					String resourceInJson = parser.serialize(bundle);
-					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MediaType.APPLICATION_JSON);
+					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MimeType.APPLICATION_FHIR_JSON);
 				} 
 			}
 
@@ -212,14 +212,14 @@ public class ReadResourceOperation extends ResourceOperation {
 																								  OperationOutcome.IssueSeverity.INFORMATION, 
 																								  OperationOutcome.IssueType.PROCESSING);
 				String resourceInJson = parser.serialize(outcome);
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.GONE, "", MediaType.APPLICATION_JSON);				
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.GONE, "", MimeType.APPLICATION_FHIR_JSON);				
 			} else {
 				String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
 				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																								  OperationOutcome.IssueSeverity.ERROR, 
 																								  OperationOutcome.IssueType.PROCESSING);
 				String resourceInJson = parser.serialize(outcome);
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MediaType.APPLICATION_JSON);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MimeType.APPLICATION_FHIR_JSON);
 			}
 		} catch (OperationValidatorException vx) {
 			String error = "invalid parameter: " + vx.getMessage(); 
@@ -227,14 +227,14 @@ public class ReadResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MediaType.APPLICATION_JSON);				
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_FHIR_JSON);				
 		}  catch (FhirServiceException | StreamServiceException ex) {
 			String error = "\"service failure: " + ex.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.INTERNAL_SERVER_ERROR, "", MediaType.APPLICATION_JSON);							
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.INTERNAL_SERVER_ERROR, "", MimeType.APPLICATION_FHIR_JSON);							
 		} finally {
 			CacheService.getInstance().destroyCache();						
 		}
