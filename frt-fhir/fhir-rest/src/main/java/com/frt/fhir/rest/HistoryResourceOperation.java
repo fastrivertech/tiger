@@ -79,6 +79,7 @@ public class HistoryResourceOperation extends ResourceOperation {
 			Optional<List<R>> history = fhirService.history(type, id, options);
 			if (history.isPresent()) {
 				Bundle bundle = BundleBuilder.create(history.get(), uriInfo.getAbsolutePath().toString());
+				bundle.setType(Bundle.BundleType.HISTORY);
 				Bundle.BundleLinkComponent link = bundle.addLink();
 				link.setRelation("self");
 				link.setUrl(uriInfo.getRequestUri().toString());					
