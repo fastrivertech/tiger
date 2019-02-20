@@ -22,6 +22,8 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.HashSet;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.text.ParseException;
 import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -248,33 +250,37 @@ public class ResourceUpdateHelper {
 	
 	public static Optional<Object> stringToObject(String value, String dataType) 
 		throws ResourceUpdateException {
-		Optional<Object> dataObject = Optional.empty();
-		switch (dataType) {
-		case "long":
-			dataObject = Optional.of(Long.valueOf(value));
-			break;
-		case "java.lang.Integer":
-			dataObject = Optional.of(Integer.parseInt(value));
-			break;
-		case "java.math.BigInteger":
-			dataObject = Optional.of(BigInteger.valueOf(Long.parseLong(value)));
-			break;
-		case "java.lang.Boolean":
-			dataObject = Optional.of(Boolean.valueOf(value));
-			break;
-		case "java.lang.String":
-			dataObject = Optional.of(value);
-			break;
-		case "java.util.Date":
-			dataObject = Optional.of(Date.parse(value));
-			break;
-		case "java.sql.Timestamp":
-			dataObject = Optional.of(Timestamp.valueOf(value));
-			break;
-		default:
-			throw new ResourceUpdateException(dataType + " not supported yet");
+		try {
+			Optional<Object> dataObject = Optional.empty();
+			switch (dataType) {
+			case "long":
+				dataObject = Optional.of(Long.valueOf(value));
+				break;
+			case "java.lang.Integer":
+				dataObject = Optional.of(Integer.parseInt(value));
+				break;
+			case "java.math.BigInteger":
+				dataObject = Optional.of(BigInteger.valueOf(Long.parseLong(value)));
+				break;
+			case "java.lang.Boolean":
+				dataObject = Optional.of(Boolean.valueOf(value));
+				break;
+			case "java.lang.String":
+				dataObject = Optional.of(value);
+				break;
+			case "java.util.Date":
+				dataObject = Optional.of(new Date(value.toString()));
+				break;
+			case "java.sql.Timestamp":
+				dataObject = Optional.of(Timestamp.valueOf(value));
+				break;
+			default:
+				throw new ResourceUpdateException(dataType + " not supported yet");
+			}
+			return dataObject;
+		} catch (Exception ex) {
+			throw new ResourceUpdateException("failed to convert " + value + " to object " + dataType);
 		}
-		return dataObject;
 	}
 
 	public static Optional<String> objectToString(Object value, String dataType) 
