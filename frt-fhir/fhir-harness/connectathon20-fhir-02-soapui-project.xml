@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="bbd71ca7-8bdf-449b-8419-515adb280ad0" activeEnvironment="Default" name="CONNECTATHON20_FHIR_TEST_02" resourceRoot="" soapui-version="5.5.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="754ca14a-aece-4e77-a3e5-57882d13086f" wadlVersion="http://wadl.dev.java.net/2009/02" name="FHIR4-0-0-Connectathon20-Patient-02-Formal" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints/><con:resource name="PatientRetrieve" path="/${#Project#Service.Resource.Path}/${#Project#CD13}-${#Project#D7}" id="8a746961-a4df-4386-8016-202c3ee40808"><con:settings/><con:parameters/><con:method name="RegisterNewPatient" id="bc61d9f2-51a9-428b-8d5e-3225dd53b4c3" method="PUT"><con:settings/><con:parameters/><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>405</con:status><con:params/><con:element>html</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json;charset=UTF-8</con:mediaType><con:status>201</con:status><con:params/></con:representation><con:request name="UpdateCreatePatient" id="21069084-4fd6-4f3e-9454-1a3acdd9f8c7" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request>{ 
+  "resourceType" : "Patient",
+  "id" : "${#Project#CD13}-${#Project#D7}",
+  "identifier" : [ {
+    "use" : "usual",
+    "type" : {
+      "coding" : [ {
+        "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+        "code" : "MR"
+      } ]
+    },
+    "system" : "urn:oid:1.2.36.146.595.217.0.1",
+    "value" : "${#Project#CD13}${#Project#D7}",
+    "period" : {
+      "start" : "2001-05-06"
+    },
+    "assigner" : {
+      "display" : "Acme Healthcare"
+    }
+  } ],
+  "active" : true,
+  "name" : [ {
+    "use" : "official",
+    "family" : "Chalmers${#Project#C6}",
+    "given" : [ "Peter${#Project#C6}" ]
+  } ],
+  "telecom" : [ {
+    "system" : "phone",
+    "value" : "(0${#Project#D1}) ${#Project#D4} ${#Project#D4}",
+    "use" : "work"
+  } ],
+  "gender" : "male",
+  "birthDate" : "1974-12-25",
+  "deceasedBoolean" : false,
+  "address" : [ {
+    "use" : "home",
+    "line" : [ "${#Project#D3} Erewhon${#Project#C6} St" ],
+    "city" : "PleasantVille${#Project#C6}",
+    "state" : "Vic${#Project#C6}",
+    "postalCode" : "3999"
+  } ],
+  "contact" : [ {
+    "relationship" : [ {
+      "coding" : [ {
+        "system" : "http://terminology.hl7.org/CodeSystem/v2-0131",
+        "code" : "C"
+      } ]
+    } ],
+    "name" : {
+      "family" : "du Marché",
+      "given" : [ "Bénédicte" ]
+    },
+    "telecom" : [ {
+      "system" : "phone",
+      "value" : "+33 (237) 998327"
+    } ],
+    "gender" : "female",
+    "period" : {
+      "start" : "2012"
+    }
+  } ]
+}
+</con:request><con:originalUri>http://localhost//frt-fhir-rest/1.0/Patient/</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="RetrievePatient" id="3e2ca1df-ffbc-4e69-87d8-e359ec58d88c" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json;charset=UTF-8</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="RESPONSE"><con:mediaType>application/fhir+json</con:mediaType><con:status>200</con:status><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html;charset=utf-8</con:mediaType><con:status>404</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="RetrievePatientById" id="774eada6-4bca-4dba-87d6-5651c857ec14" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://localhost//frt-fhir-rest/1.0/Patient/QwElU2uhF9U1M-1888247</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:testSuite id="2b4d1dee-2481-419b-bbbf-68572b1b3e04" name="FHIR4-0-0-Connectathon20-Patient-02-Formal-TestSuite"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="92707a59-0204-4ba3-844b-d85e35407daf" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Patient-02-Formal-Client-Id-01-RegisterPatient" searchProperties="true"><con:settings/><con:testStep type="restrequest" name="RegisterNewPatient" id="f26e845f-5679-4b9f-aed3-5028d53f3e0c"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-02-Formal" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD13}-${#Project#D7}" methodName="RegisterNewPatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="RegisterNewPatient" id="21069084-4fd6-4f3e-9454-1a3acdd9f8c7" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request>{ 
+  "resourceType" : "Patient",
+  "id" : "${#Project#CD13}-${#Project#D7}",
+  "identifier" : [ {
+    "use" : "usual",
+    "type" : {
+      "coding" : [ {
+        "system" : "http://terminology.hl7.org/CodeSystem/v2-0203",
+        "code" : "MR"
+      } ]
+    },
+    "system" : "urn:oid:1.2.36.146.595.217.0.1",
+    "value" : "${#Project#CD13}${#Project#D7}",
+    "period" : {
+      "start" : "2001-05-06"
+    },
+    "assigner" : {
+      "display" : "Acme Healthcare"
+    }
+  } ],
+  "active" : true,
+  "name" : [ {
+    "use" : "official",
+    "family" : "Chalmers${#Project#C6}",
+    "given" : [ "Peter${#Project#C6}" ]
+  } ],
+  "telecom" : [ {
+    "system" : "phone",
+    "value" : "(0${#Project#D1}) ${#Project#D4} ${#Project#D4}",
+    "use" : "work"
+  } ],
+  "gender" : "male",
+  "birthDate" : "1974-12-25",
+  "deceasedBoolean" : false,
+  "address" : [ {
+    "use" : "home",
+    "line" : [ "${#Project#D3} Erewhon${#Project#C6} St" ],
+    "city" : "PleasantVille${#Project#C6}",
+    "state" : "Vic${#Project#C6}",
+    "postalCode" : "3999"
+  } ],
+  "contact" : [ {
+    "relationship" : [ {
+      "coding" : [ {
+        "system" : "http://terminology.hl7.org/CodeSystem/v2-0131",
+        "code" : "C"
+      } ]
+    } ],
+    "name" : {
+      "family" : "du Marché",
+      "given" : [ "Bénédicte" ]
+    },
+    "telecom" : [ {
+      "system" : "phone",
+      "value" : "+33 (237) 998327"
+    } ],
+    "gender" : "female",
+    "period" : {
+      "start" : "2012"
+    }
+  } ]
+}
+</con:request><con:originalUri>http://localhost//frt-fhir-rest/1.0/Patient/</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="d7a30b24-b210-4278-9602-8ce4c464e66a" name="Response Codes"><con:configuration><codes>200,201</codes></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="f8f256a6-1dc3-4255-92d3-30f50e66c863" name="Response ETag header presents"><con:configuration><scriptText>assert messageExchange.responseHeaders["ETag"] != null</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="74e511bf-85b9-46cf-8980-f5307d2d2bc0" name="Response Last-Modified header presents"><con:configuration><scriptText>assert messageExchange.responseHeaders["Last-Modified"] != null</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="2b76b6a0-6515-4c75-9bbf-f6040ecdc8b8" name="Response Content Type header presents"><con:configuration><scriptText>assert messageExchange.responseHeaders["Content-Type"] != null</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="5640d234-8cbb-4c43-8913-e69c49a868e9" name="Response Content Type header contains application/fhir+json"><con:configuration><scriptText>assert ((com.eviware.soapui.support.types.StringList)messageExchange.responseHeaders["Content-Type"]).get(0).contains("application/fhir+json")</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="3b20d464-5bac-4871-8dae-3380a5bbcbf2" name="Response Content Type header contains charset=UTF-8"><con:configuration><scriptText>assert ((com.eviware.soapui.support.types.StringList)messageExchange.responseHeaders["Content-Type"]).get(0).contains("charset=UTF-8")</scriptText></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="42e55c15-c973-4d3b-b452-f4ca40e61bb9" name="Response body resource type is Patient"><con:configuration><path>resourceType</path><content>Patient</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="db7bbf33-8eb7-41e9-abe3-b86b54bba418" name="Response body conforms FHIR patient-profile"><con:configuration><scriptText>true</scriptText></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="81a208b4-1c84-4d4c-b42d-3029772456a3" name="Response meta.versionId presents"><con:configuration><path>meta.versionId</path><content>1</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="ReadPatient" id="0dd90974-e2fa-41ee-8bac-013f3683414b"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-02-Formal" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD13}-${#Project#D7}" methodName="RetrievePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="ReadPatient" id="774eada6-4bca-4dba-87d6-5651c857ec14" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://localhost//frt-fhir-rest/1.0/Patient/QwElU2uhF9U1M-1888247</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="3dde9e77-8fd5-4655-a7b8-6dc9443dbaca" name="Response Codes"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="4457bee2-9d29-48d2-8ac2-cdd1fbf51f4f" name="Response Content-Type is application/json"><con:configuration><scriptText>assert ((com.eviware.soapui.support.types.StringList)messageExchange.responseHeaders["Content-Type"]).get(0).contains("application/fhir+json")</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="ff989d2c-1bbb-4978-a0c2-4b606ed2dff6" name="Response ETag header presents"><con:configuration><scriptText>assert messageExchange.responseHeaders["ETag"] != null</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="8f2a84f0-cdac-43c9-919a-c7c7097c2f96" name="Response Last-Modified header presents"><con:configuration><scriptText>assert messageExchange.responseHeaders["Last-Modified"] != null</scriptText></con:configuration></con:assertion><con:assertion type="JsonPath Match" id="745681a1-df1a-4d77-9f18-b669ef3bfb4f" name="Response Resource type id Patient"><con:configuration><path>resourceType</path><content>Patient</content><allowWildcards>false</allowWildcards><ignoreNamspaceDifferences>false</ignoreNamspaceDifferences><ignoreComments>false</ignoreComments></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="dd62120b-0b67-48d4-a2cb-fefd714c0862" name="Response body conforms FHIR patient-profile"><con:configuration><scriptText>true</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="68989633-3db9-4ad3-888c-704c72b49b20" name="Response identifier[0].value"><con:configuration><scriptText>import net.sf.json.groovy.JsonSlurper
+def parser = new JsonSlurper()
+def result = parser.parseText(context.response)
+def identifiers = (List)result.identifier
+assert identifiers[0].value == "QwElU2uhF9U1M1888247"</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="24d6a5c8-f10e-41db-a250-a255eee76a7b" name="Response name[0].family value"><con:configuration><scriptText>import net.sf.json.groovy.JsonSlurper
+def parser = new JsonSlurper()
+def result = parser.parseText(context.response)
+def names = (List)result.name
+assert names[0].family == "ChalmersNDlQAb"</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="1fba53f7-44ce-4085-a6ed-5dcdf923b34b" name="Response  name[0].given[0] value"><con:configuration><scriptText>import net.sf.json.groovy.JsonSlurper
+def parser = new JsonSlurper()
+def result = parser.parseText(context.response)
+def names = (List)result.name
+assert names[0].given[0] == "PeterNDlQAb"</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="5148f8b7-6f5e-476f-9a41-a488151799de" name="Response gender value"><con:configuration><scriptText>import net.sf.json.groovy.JsonSlurper
+def parser = new JsonSlurper()
+def result = parser.parseText(context.response)
+def gender = result.gender
+assert gender == "male"</scriptText></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="fe226656-79e6-472f-8814-17430eb910b2" name="Response birthDate value"><con:configuration><scriptText>import net.sf.json.groovy.JsonSlurper
+def parser = new JsonSlurper()
+def result = parser.parseText(context.response)
+def birthDate = result.birthDate
+assert birthDate == "1974-12-25"</scriptText></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties><con:property><con:name>Service.Local.Endpoint</con:name><con:value>http://localhost:8080</con:value></con:property><con:property><con:name>Service.Remote.Endpoint</con:name><con:value>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088</con:value></con:property><con:property><con:name>Service.Resource.Path</con:name><con:value>/frt-fhir-rest/1.0/Patient</con:value></con:property><con:property><con:name>CD16</con:name><con:value>CREATE-PT-ID-PUT</con:value></con:property><con:property><con:name>C8</con:name><con:value>Nmjdjdejwbn89</con:value></con:property><con:property><con:name>C9</con:name><con:value>JKDBERJKBJJJX</con:value></con:property><con:property><con:name>D4</con:name><con:value>1699</con:value></con:property><con:property><con:name>CD13</con:name><con:value>QwElU2uhF9U1M</con:value></con:property><con:property><con:name>D1</con:name><con:value>8</con:value></con:property><con:property><con:name>D3</con:name><con:value>456</con:value></con:property><con:property><con:name>D7</con:name><con:value>1888247</con:value></con:property><con:property><con:name>C6</con:name><con:value>NDlQAb</con:value></con:property></con:properties><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>
