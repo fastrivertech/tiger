@@ -82,7 +82,8 @@ public class ResourceUpdateManager {
 		throws ResourceUpdateException {
 		
 		List<Field> fieldList = new ArrayList(Arrays.asList(clazz.getDeclaredFields()));
-		fieldList.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));		
+		fieldList.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));	
+		fieldList.addAll(Arrays.asList(clazz.getSuperclass().getSuperclass().getDeclaredFields()));			
 		Field[] fields = fieldList.toArray(new Field[] {});
 		
 		Stream.of(fields).forEach(field->{
