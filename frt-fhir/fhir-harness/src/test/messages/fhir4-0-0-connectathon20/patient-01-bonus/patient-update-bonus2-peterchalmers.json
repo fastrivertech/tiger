@@ -14,7 +14,7 @@
       } ]
     },
     "system" : "urn:oid:1.2.36.146.595.217.0.1",
-    "value" : "${CD16}",
+    "value" : "${#Project#CD16}",
     "period" : {
       "start" : "2001-05-06"
     },
@@ -25,8 +25,8 @@
   "active" : true,
   "name" : [ {
     "use" : "official",
-    "family" : "Chalmers${C8}",
-    "given" : [ "Peter${C8}", "James${C8}" ]
+    "family" : "Chalmers${#Project#C8}",
+    "given" : [ "Peter${#Project#C8}", "James${#Project#C8}" ]
   }, {
     "use" : "usual",
     "given" : [ "Jim" ]
@@ -49,10 +49,10 @@
   "deceasedBoolean" : false,
   "address" : [ {
     "use" : "home",
-    "line" : [ "534 Erewhon${C9} St" ],
+    "line" : [ "534 Erewhon${#Project#C9} St" ],
     "city" : "Pleasant Valley",
     "state" : "Vic",
-    "postalCode" : "${D4}"
+    "postalCode" : "${#Project#D4}"
   } ],
   "contact" : [ {
     "relationship" : [ {

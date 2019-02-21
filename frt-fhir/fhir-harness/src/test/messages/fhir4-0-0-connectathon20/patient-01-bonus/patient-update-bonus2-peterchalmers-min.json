@@ -2,8 +2,8 @@
   "resourceType" : "Patient",
   "name" : [ {
     "use" : "official",
-    "family" : "Chalmers${C8}",
-    "given" : [ "Peter${C8}", "James${C8}" ]
+    "family" : "Chalmers${#Project#C8}",
+    "given" : [ "Peter${#Project#C8}", "James${#Project#C8}" ]
   }, {
     "use" : "usual",
     "given" : [ "Jim" ]
@@ -26,9 +26,9 @@
   "deceasedBoolean" : false,
   "address" : [ {
     "use" : "home",
-    "line" : [ "534 Erewhon${C9} St" ],
+    "line" : [ "534 Erewhon${#Project#C9} St" ],
     "city" : "Pleasant Valley",
     "state" : "Vic",
-    "postalCode" : "${D4}"
+    "postalCode" : "${#Project#D4}"
   } ]
 }
