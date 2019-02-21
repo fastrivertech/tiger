@@ -14,6 +14,7 @@ package com.frt.dr.transaction.model;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.TimeZone;
 
 /**
  * Meta class
@@ -27,7 +28,7 @@ public class Meta implements Serializable{
 	
 	public Meta() {
 		versionId = "1"; 				
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");				
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 		lastUpdated = format.format(Calendar.getInstance().getTime());								
 	}
 	
