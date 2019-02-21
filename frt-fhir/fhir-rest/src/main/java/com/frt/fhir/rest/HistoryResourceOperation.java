@@ -62,12 +62,12 @@ public class HistoryResourceOperation extends ResourceOperation {
 	 * GET [base]/frt-fhir-rest/1.0/[type]/[id]/_history{?_format=[mime-type]}
 	 * @param type Resource type, e.g., Patient
 	 * @param id Resource logical id, e.g., 1356
-	 * @param _format json or xml, default josn and json supported
+	 * @param _format json or xml, default json and json supported
 	 * @return bundle bundle of resource history
 	 */
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	public <R extends DomainResource> Response read(@PathParam("type") final String type, 
 						 						    @PathParam("id") final String id,
 						 						    @QueryParam("_format") @DefaultValue("json") final String _format) {
@@ -84,7 +84,7 @@ public class HistoryResourceOperation extends ResourceOperation {
 				link.setRelation("self");
 				link.setUrl(uriInfo.getRequestUri().toString());					
 				String resourceInJson = parser.serialize(bundle);
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1", MimeType.APPLICATION_FHIR_JSON);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1", uriInfo.getRequestUri().toString(), MimeType.APPLICATION_FHIR_JSON);
 			}
 			
 			String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
