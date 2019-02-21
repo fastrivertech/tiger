@@ -402,15 +402,8 @@ assert total >= entries.size()</scriptText></con:configuration></con:assertion><
 def parser = new JsonSlurper()
 def resp = messageExchange.response.responseContent
 def respJson = parser.parseText(resp)
-
-def projectPath = new com.eviware.soapui.support.GroovyUtils(context).projectPath
-log.info "ProjectPath:"+projectPath
-def minJsonFile = new File(projectPath, "src/test/messages/fhir4-0-0-connectathon20/patient-01-intro/patient-create-peterchalmers-min.json")
+def minJsonFile = context.minJsonFile
 def minJson = parser.parse(minJsonFile, "UTF-8")
-log.info("minResource:" + minJsonFile.absolutePath)
-log.info("resourceType:" + minJson.resourceType)
-log.warn("gender:" + minJson.gender)
-log.error("birthDate:" + minJson.birthDate)
 assert respJson instanceof Map : "Json resource expected in response."
 assert minJson instanceof Map : "Json resource expected in min resource template."
 
@@ -425,7 +418,6 @@ assert result!=null
 resourceContains(minJson, result)
 
 def resourceContains(min, resp) {
-	log.info("min response json resource===>")
 	min.each { key, value -> 
   		log.info "$key : $value"
   		def respVal = resp.get(key)
@@ -433,20 +425,25 @@ def resourceContains(min, resp) {
   		log.info("RESP VALUE="+respVal)
   		match(value, respVal)
 	}
-	log.info("response json resource===>")
 	resp.each { key, value ->
   		log.info "$key : $value"
 	}
 }
 
 def match(obj1, obj2) {
+	// to be implemented
 	log.info("OBJ1="+obj1)
 	log.info("OBJ2="+obj2)
 }
 </scriptText></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="family:contains" value="Chalmers"/>
   <con:entry key="given:contains" value="Peter"/>
-</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step5.1-DeletePatient" id="832d4ca6-d6b9-44dd-8927-664a36474812"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="DeletePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step5.1-DeletePatient" id="c499e719-154b-4c90-832a-cb589b399159" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient/CREATE-PT-0001</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="b7fc9b43-ff4c-4232-8a82-94166650db19" name="HTTP Return Code 200 or 204 or 404"><con:configuration><codes>200,204,404</codes></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="ea4480ef-10a7-43a1-b1c8-97e076b8482f" name="Response ETag header presents"><con:configuration><scriptText>assert messageExchange.responseHeaders["ETag"] != null</scriptText></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step5.2-ReadPatientAfterDelete" id="937a0379-5a58-41c5-988b-346d72f093b7"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="RetrievePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step5.2-ReadPatientAfterDelete" id="7d61567d-4079-4fe3-8c2b-27e2736dfca6" mediaType="application/fhir+json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://localhost//frt-fhir-rest/1.0/Patient/CREATE-PT-ID-PUT</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="aa999ceb-a2de-416b-bdc5-fd5180d9ac19" name="Response Codes is Gone"><con:configuration><codes>404,410</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:restRequest></con:config></con:testStep><con:properties/></con:testCase><con:testCase id="51f52867-0cf4-4629-a34f-779b97d4f7a9" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Patient-01-Intro-Server-Id" searchProperties="true"><con:settings/><con:testStep type="restrequest" name="Step1.1-CreatePatient" id="cb38901d-9204-417a-8d60-b45fc51e235b"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}" methodName="RegisterNewPatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step1.1-CreatePatient" id="d4297414-09e1-4c0a-8fe5-2c87aaf5b7a8" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+</con:parameters></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step5.1-DeletePatient" id="832d4ca6-d6b9-44dd-8927-664a36474812"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="DeletePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step5.1-DeletePatient" id="c499e719-154b-4c90-832a-cb589b399159" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient/CREATE-PT-0001</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="b7fc9b43-ff4c-4232-8a82-94166650db19" name="HTTP Return Code 200 or 204 or 404"><con:configuration><codes>200,204,404</codes></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="ea4480ef-10a7-43a1-b1c8-97e076b8482f" name="Response ETag header presents"><con:configuration><scriptText>assert messageExchange.responseHeaders["ETag"] != null</scriptText></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step5.2-ReadPatientAfterDelete" id="937a0379-5a58-41c5-988b-346d72f093b7"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="RetrievePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step5.2-ReadPatientAfterDelete" id="7d61567d-4079-4fe3-8c2b-27e2736dfca6" mediaType="application/fhir+json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://localhost//frt-fhir-rest/1.0/Patient/CREATE-PT-ID-PUT</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="aa999ceb-a2de-416b-bdc5-fd5180d9ac19" name="Response Codes is Gone"><con:configuration><codes>404,410</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:restRequest></con:config></con:testStep><con:setupScript>import groovy.json.*
+
+def projectPath = new com.eviware.soapui.support.GroovyUtils(context).projectPath
+log.info "ProjectPath:"+projectPath
+context.minJsonFile = new File(projectPath, "src/test/messages/fhir4-0-0-connectathon20/patient-01-intro/patient-create-peterchalmers-min.json")
+</con:setupScript><con:properties/></con:testCase><con:testCase id="51f52867-0cf4-4629-a34f-779b97d4f7a9" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="Patient-01-Intro-Server-Id" searchProperties="true"><con:settings/><con:testStep type="restrequest" name="Step1.1-CreatePatient" id="cb38901d-9204-417a-8d60-b45fc51e235b"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}" methodName="RegisterNewPatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step1.1-CreatePatient" id="d4297414-09e1-4c0a-8fe5-2c87aaf5b7a8" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
   &lt;con:entry key="Accept" value="application/fhir+json;charset=utf-8"/>
   &lt;con:entry key="Content-Type" value="application/fhir+json"/>
 &lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request><![CDATA[{
