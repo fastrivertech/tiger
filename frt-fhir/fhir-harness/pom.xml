@@ -61,7 +61,7 @@
 			<executions>
 				<execution>
 					<configuration>
-						<projectFile>${basedir}/frt-fhir-rest-test-soapui-project.xml</projectFile>
+						<projectFile>${basedir}/connectathon20-fhir-01-soapui-project.xml</projectFile>
 						<settingsFile>${basedir}/soapui-settings.xml</settingsFile>
 						<outputFolder>${basedir}/target</outputFolder>
 						<reportFormat>HTML</reportFormat>
