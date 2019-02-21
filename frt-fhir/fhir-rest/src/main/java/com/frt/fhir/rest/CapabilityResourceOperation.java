@@ -67,7 +67,7 @@ public class CapabilityResourceOperation extends ResourceOperation {
 		
 		CapabilityStatement cs = conformance.getCapabilityStatement();
 		String resourceInJson = parser.serialize(cs);
-		return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MimeType.APPLICATION_FHIR_JSON);
+		return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1", MimeType.APPLICATION_FHIR_JSON);
 	}
 	
 }

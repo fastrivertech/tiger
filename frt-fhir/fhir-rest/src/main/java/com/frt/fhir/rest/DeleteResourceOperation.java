@@ -79,18 +79,19 @@ public class DeleteResourceOperation extends ResourceOperation {
 			Optional<R> deleted = fhirService.delete(type, id);		
 
 			if (deleted.isPresent()) {				
-				String resourceInJson = parser.serialize(deleted.get());      
+				String resourceInJson = parser.serialize(deleted.get());    
+				String location = uriInfo.getAbsolutePath().getPath() + "/_history/" + deleted.get().getMeta().getVersionId();
 				return ResourceOperationResponseBuilder.build(resourceInJson, 
 															  Status.OK, 
 															  deleted.get().getMeta().getVersionId(), 
-														      uriInfo.getAbsolutePath(),
+														      location,
 														      MimeType.APPLICATION_FHIR_JSON);
 			} else {
 				String resourceInJson = "";
 				return ResourceOperationResponseBuilder.build(resourceInJson, 
 						  									  Status.NO_CONTENT, 
 						  									  "", 
-						  									  uriInfo.getAbsolutePath(),
+						  									  uriInfo.getAbsolutePath().getPath(),
 						  									  MimeType.APPLICATION_FHIR_JSON);				
 			}			
 		} catch (OperationValidatorException vx) {

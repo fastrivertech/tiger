@@ -93,26 +93,27 @@ public class UpdateResourceOperation extends ResourceOperation {
 		
 			Optional<NamedCache> cache = CacheService.getInstance().getCache();
 			String action = (String)cache.get().get(NamedCache.ACTION_CODE);
+			String location = uriInfo.getAbsolutePath().getPath() + "/_history/" + updated.getMeta().getVersionId();				
 			if (action.equalsIgnoreCase("U")) {
 				// resource updated
 				return ResourceOperationResponseBuilder.build(resourceInJson, 
 															  Status.OK, 
 													          updated.getMeta().getVersionId(), 
-													          uriInfo.getAbsolutePath(),
+													          location,
 													          MimeType.APPLICATION_FHIR_JSON);				
 			} else if (action.equalsIgnoreCase("C")) {
 				// resource created 
 				return ResourceOperationResponseBuilder.build(resourceInJson, 
 															  Status.CREATED, 
 															  updated.getMeta().getVersionId(), 
-															  uriInfo.getAbsolutePath(),
+															  location,
 															  MimeType.APPLICATION_FHIR_JSON);						
 			} else {
 				// resource no changed  
 				return ResourceOperationResponseBuilder.build(resourceInJson, 
 															  Status.NOT_MODIFIED, 
 															  updated.getMeta().getVersionId(), 
-															  uriInfo.getAbsolutePath(),
+															  location,
 															  MimeType.APPLICATION_FHIR_JSON);									
 			}								
 		} catch (IdValidatorException iex) {

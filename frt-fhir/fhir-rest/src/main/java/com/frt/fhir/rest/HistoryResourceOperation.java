@@ -84,7 +84,7 @@ public class HistoryResourceOperation extends ResourceOperation {
 				link.setRelation("self");
 				link.setUrl(uriInfo.getRequestUri().toString());					
 				String resourceInJson = parser.serialize(bundle);
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MimeType.APPLICATION_FHIR_JSON);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1", MimeType.APPLICATION_FHIR_JSON);
 			}
 			
 			String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 

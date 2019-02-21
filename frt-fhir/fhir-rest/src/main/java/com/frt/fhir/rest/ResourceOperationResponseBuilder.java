@@ -27,13 +27,13 @@ public class ResourceOperationResponseBuilder {
 
 	public static Response build(Object body, Response.Status status, String tag, String type) {
 		Response.ResponseBuilder responseBuilder = Response.status(status).entity(body);
-		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type + "; charset=UTF-8");
+		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type + ";charset=UTF-8");
 		return responseBuilder.build();
 	}
 	
-	public static Response build(Object body, Response.Status status, String tag, URI uri, String type) {
+	public static Response build(Object body, Response.Status status, String tag, String location, String type) {
 		Response.ResponseBuilder responseBuilder = Response.status(status).entity(body);
-		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type + "; charset=UTF-8").location(uri);
+		responseBuilder.lastModified(new Date()).tag("W/" + tag).type(type + ";charset=UTF-8").header("Location", location);
 		return responseBuilder.build();
 	}
 

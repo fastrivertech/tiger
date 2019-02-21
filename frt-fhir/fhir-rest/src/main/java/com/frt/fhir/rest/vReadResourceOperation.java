@@ -82,7 +82,7 @@ public class vReadResourceOperation extends ResourceOperation {
 			Optional<R> found = fhirService.vRead(type, id, vid);
 			if (found.isPresent()) {
 				String resourceInJson = parser.serialize(found.get());      
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, found.get().getMeta().getVersionId(), MediaType.APPLICATION_JSON);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, found.get().getMeta().getVersionId(), MimeType.APPLICATION_FHIR_JSON);
 			}
 			String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
