@@ -67,8 +67,8 @@ public class vReadResourceOperation extends ResourceOperation {
 	 * @return bundle bundle of resource history
 	 */
 	@GET
-	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH + ResourcePath.ID_PATH)
-	@Produces(MediaType.APPLICATION_JSON)
+	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH + ResourcePath.VID_PATH)
+	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	public <R extends DomainResource> Response read(@PathParam("type") final String type, 
 						 						    @PathParam("id") final String id,
 						 						    @PathParam("vid") final String vid,						 						    
@@ -83,14 +83,14 @@ public class vReadResourceOperation extends ResourceOperation {
 			if (found.isPresent()) {
 				String resourceInJson = parser.serialize(found.get());      
 				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, found.get().getMeta().getVersionId(), MimeType.APPLICATION_FHIR_JSON);
-			}
-			String error = id != null ? "invalid domain resource logical id '" + id + "'" : "resource search result in 0 results."; 
-			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
-																							  OperationOutcome.IssueSeverity.ERROR, 
-																							  OperationOutcome.IssueType.PROCESSING);
-			String resourceInJson = parser.serialize(outcome);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MimeType.APPLICATION_FHIR_JSON);				
-						
+			} else {
+				String error = "invalid domain resource logical id '" + id + "'" +  " with version '" + vid + "'"; 
+				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
+																							      OperationOutcome.IssueSeverity.ERROR, 
+																							      OperationOutcome.IssueType.PROCESSING);
+				String resourceInJson = parser.serialize(outcome);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_FOUND, "", MimeType.APPLICATION_FHIR_JSON);				
+			}	
 		} catch (OperationValidatorException vx) {
 			String error = "invalid id: " + vx.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 

@@ -35,7 +35,8 @@ public class ResourceOperationApplication extends Application {
 		resources.add(DeleteResourceOperation.class);
 		resources.add(HistoryResourceOperation.class);
 		resources.add(UpdateResourceOperation.class);
-		resources.add(ExecutionResourceOperation.class);		
+		resources.add(ExecutionResourceOperation.class);	
+		resources.add(vReadResourceOperation.class);
 		return resources;
 	}
 }
