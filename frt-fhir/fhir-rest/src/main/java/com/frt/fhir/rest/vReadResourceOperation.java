@@ -49,6 +49,7 @@ public class vReadResourceOperation extends ResourceOperation {
 		
 	@Context
 	private UriInfo uriInfo;
+	
 	private FhirService fhirService;	
 	private JsonParser parser;
 	
@@ -82,7 +83,8 @@ public class vReadResourceOperation extends ResourceOperation {
 			Optional<R> found = fhirService.vRead(type, id, vid);
 			if (found.isPresent()) {
 				String resourceInJson = parser.serialize(found.get());      
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, found.get().getMeta().getVersionId(), MimeType.APPLICATION_FHIR_JSON);
+				String location = uriInfo.getAbsolutePath().getPath() + "/_history/" + found.get().getMeta().getVersionId();
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, found.get().getMeta().getVersionId(), location, MimeType.APPLICATION_FHIR_JSON);
 			} else {
 				String error = "invalid domain resource logical id '" + id + "'" +  " with version '" + vid + "'"; 
 				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
