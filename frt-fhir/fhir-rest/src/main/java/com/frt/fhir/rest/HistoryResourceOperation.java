@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import com.frt.dr.service.query.QueryOption;
@@ -78,8 +79,7 @@ public class HistoryResourceOperation extends ResourceOperation {
 			QueryOption options = new QueryOption();
 			Optional<List<R>> history = fhirService.history(type, id, options);
 			if (history.isPresent()) {
-				Bundle bundle = BundleBuilder.create(history.get(), uriInfo.getAbsolutePath().toString());
-				bundle.setType(Bundle.BundleType.HISTORY);
+				Bundle bundle = BundleBuilder.create(BundleType.HISTORY, history.get(), uriInfo, Status.OK);
 				Bundle.BundleLinkComponent link = bundle.addLink();
 				link.setRelation("self");
 				link.setUrl(uriInfo.getRequestUri().toString());					

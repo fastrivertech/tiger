@@ -189,7 +189,7 @@ public class ReadResourceOperation extends ResourceOperation {
 				logger.info(localizer.x("FHR_I002: ReadResourceOperation reads a current resource by criteria {0}", criterias.getParams().toString()));										
 				Optional<List<R>> resources = fhirService.read(type, criterias, options);
 				if (resources.isPresent()) {
-					Bundle bundle = BundleBuilder.create(resources.get(), uriInfo.getAbsolutePath().toString());
+					Bundle bundle = BundleBuilder.create(Bundle.BundleType.SEARCHSET, resources.get(), uriInfo, Status.OK);
 					Bundle.BundleLinkComponent link = bundle.addLink();
 					link.setRelation("self");
 					link.setUrl(uriInfo.getRequestUri().toString());					
