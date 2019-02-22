@@ -291,35 +291,48 @@ public class RepositoryServiceImpl implements RepositoryService {
 	public <R extends DomainResource> Optional<R> vRead(Class<?> resourceClazz, String id, String vid) 
 		throws RepositoryServiceException {
 		try {
+			Optional<R> vidResource = Optional.empty();
 			Optional<R> found = read(resourceClazz, id);
 			if (found.isPresent()) {
-				BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	
-				Optional<List<Transaction>> transactions = transactionDao.findById(id); 
-				if (transactions.isPresent()) {
-					for (Transaction transaction : transactions.get()) {						
-						// apply changes
-						R versioned = (R)resourceClazz.newInstance();
-						resourceUpdateManager.change(resourceClazz, resourceClazz, found, versioned);
-						resourceUpdateManager.cleanChanges();		
-						String delta = transaction.getDelta();
-						List<String> changes = Arrays.asList(delta.split(","));
-						for (String change : changes) {
-							String[] tokens = change.split("=");
-							if (tokens != null && tokens.length == 2) {
-								resourceUpdateManager.update(resourceClazz, tokens[0], versioned, tokens[1]);
+				if (found.get().getMeta().contains("\"versionId\":\"" + vid + "\"")) {
+					vidResource = found;
+				} else {						
+					TransactionDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);	
+					Optional<List<Transaction>> transactions = transactionDao.findByResourceId(found.get().getResourceId());
+					if (transactions.isPresent()) {
+						boolean vidMatched = false;
+						for (Transaction transaction : transactions.get()) {		
+							if (transaction.getAction().equals("U")) {
+								// clone a resource
+								R versioned = (R)resourceClazz.newInstance();
+								resourceUpdateManager.change(resourceClazz, resourceClazz, found.get(), versioned);
+								resourceUpdateManager.cleanChanges();	
+								// apply changes
+								String delta = transaction.getDelta();
+								List<String> changes = Arrays.asList(delta.split(ResourceUpdateManager.DELIMITER));
+								for (String change : changes) {
+									String[] tokens = change.split("=");
+									if (tokens != null && tokens.length == 2) {
+										resourceUpdateManager.update(resourceClazz, tokens[0], versioned, tokens[1]);
+									}
+								}
+								// apply meta
+								String meta = transaction.getMeta();
+								versioned.setMeta(meta);
+								vidResource = Optional.of(versioned);
+								if (meta.contains("\"versionId\":\"" + vid + "\"")) {
+									vidMatched = true;
+									break;
+								}
 							}
-						}
-						// apply meta
-						String meta = transaction.getMeta();
-						versioned.setMeta(meta);
-						found = Optional.of(versioned);
-						if (meta.contains("\"versionId\": \"" + vid + "\"")) {
-							break;
-						}
-					}
-				}			
+						} // end of for
+						if (!vidMatched) {
+							vidResource = Optional.empty();
+						}						
+					} // end of if
+				} // end of else
 			}
-			return found;
+			return vidResource;
 		} catch (IllegalAccessException | InstantiationException ex) {
 			throw new RepositoryServiceException(ex);
 		}	
