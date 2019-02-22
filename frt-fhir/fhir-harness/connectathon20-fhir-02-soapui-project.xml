@@ -343,6 +343,12 @@
 ]]></con:request><con:originalUri>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
   <con:entry key="Accept" value="application/fhir+json;charset=UTF-8"/>
   <con:entry key="Content-Type" value="application/fhir+json;charset=UTF-8"/>
+</con:parameters><con:parameterOrder><con:entry>Accept</con:entry><con:entry>Content-Type</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step1.2-ReadPatient" id="c08354f1-b52b-4b7f-93d8-dea33e59cadf"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Bonus" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="RetrievePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="ReadPatient" id="b4ee2d28-6ce3-46d5-9677-775cb33c7bda" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment xmlns:con="http://eviware.com/soapui/config">
+  &lt;con:entry key="Accept" value="application/fhir+json"/>
+  &lt;con:entry key="Content-Type" value="application/fhir+json"/>
+&lt;/xml-fragment></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="Accept" value=""/>
+  <con:entry key="Content-Type" value=""/>
 </con:parameters><con:parameterOrder><con:entry>Accept</con:entry><con:entry>Content-Type</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:setupScript>import groovy.json.*
 
 def projectPath = new com.eviware.soapui.support.GroovyUtils(context).projectPath
