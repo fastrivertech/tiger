@@ -1,30 +1,30 @@
 {
   "resourceType": "CapabilityStatement",
-  "id": "fastrivertech-1.0",
+  "id": "frt-fhir-1.0",
   "text": {
     "status": "generated",
-    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n\t\t\t<p>The EHR Server supports the following transactions for the resource Patient: read, vread, \n        update, delete, history, search(name,gender,address,...), create and updates.</p>\n\t\t\t<p>The EHR System supports the following message: admin-notify::Person.</p>\n\t\t\t<p>The EHR Application has a \n        <a href=\"https://www.hl7.org/fhir/capabilitystatement-base.xml.html\">general document profile</a>.\n      </p>\n\t\t</div>"
+    "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">\n\t\t\t<p>The Fast River Fhir Server supports the following transactions for the resource Patient: read, vread, \n        update, delete, history, search(name,gender,address,...), create and updates.</p>\n\t\t\t<p>It has a \n        <a href=\"https://www.hl7.org/fhir/capabilitystatement-base.xml.html\">general document profile</a>.\n      </p>\n\t\t</div>"
   },
   "url": "urn:uuid:68D043B5-9ECF-4559-A57A-396E0D452311",
   "version": "20130510",
-  "name": "FastRiverTech-EHR",
-  "title": "FastRiverTech EHR capability statement",
+  "name": "FastRiverTechFhir",
+  "title": "FastRiver Technologies FHIR capability statement",
   "status": "draft",
   "experimental": true,
   "date": "2019-02-18",
-  "publisher": "Fast River Tech Corporation",
+  "publisher": "Fast River Technologies Inc.",
   "contact": [
     {
       "name": "System Administrator",
       "telecom": [
         {
           "system": "email",
-          "value": "admin@fastrivertech.org"
+          "value": "info@fastrivertech.com"
         }
       ]
     }
   ],
-  "description": "This is the FHIR capability statement for the main EHR at Fast River Tech for the private interface - it does not describe the public interface",
+  "description": "This is the FHIR capability statement for the FastRiver Fhir Server at Fast River Tech for the private interface - it does not describe the public interface",
   "useContext": [
     {
       "code": {
@@ -52,19 +52,19 @@
       ]
     }
   ],
-  "purpose": "Main EHR capability statement, published for contracting and operational support",
-  "copyright": "Copyright © Fast River Tech",
+  "purpose": "Main FRT FHIR capability statement, published for contracting and operational support",
+  "copyright": "Copyright(c) 2019 Fast River Technologies Inc. All Rights Reserved.",
   "kind": "instance",
   "instantiates": [
     "http://ihe.org/fhir/CapabilityStatement/frt-client"
   ],
   "software": {
-    "name": "EHR",
+    "name": "FRT",
     "version": "0.00.020.2134",
     "releaseDate": "2019-02-18"
   },
   "implementation": {
-    "description": "main EHR at Fast River Tech",
+    "description": "main FRT FHIR at Fast River Tech",
     "url": "http://10.2.3.4/fhir"
   },
   "fhirVersion": "4.0.0",
@@ -110,8 +110,7 @@
               "code": "read"
             },
             {
-              "code": "vread",
-              "documentation": "Only supported for patient records since 18-Feb 2019"
+              "code": "vread"
             },
             {
               "code": "update"
@@ -132,7 +131,7 @@
           "versioning": "versioned-update",
           "readHistory": true,
           "updateCreate": true,
-          "conditionalCreate": true,
+          "conditionalCreate": false,
           "conditionalRead": "full-support",
           "conditionalUpdate": false,
           "conditionalDelete": "not-supported",
