@@ -439,8 +439,49 @@ assert context.resourceContains("RESOURCE.TEMPLATE.BASE.DIR", "PT01INTRO.PT.UPDA
   <con:entry key="given" value="Peter${#Project#C8}"/>
   <con:entry key="family" value="Chalmers${#Project#C8}"/>
 </con:parameters><con:parameterOrder><con:entry>#Project#Service.Resource.Path</con:entry><con:entry>family</con:entry><con:entry>given</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step5.1-DeletePatient" id="832d4ca6-d6b9-44dd-8927-664a36474812"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="DeletePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step5.1-DeletePatient" id="c499e719-154b-4c90-832a-cb589b399159" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient/CREATE-PT-0001</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="b7fc9b43-ff4c-4232-8a82-94166650db19" name="HTTP Return Code 200 or 204 or 404"><con:configuration><codes>200,204,404</codes></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="ea4480ef-10a7-43a1-b1c8-97e076b8482f" name="Response ETag header presents"><con:configuration><scriptText>assert messageExchange.responseHeaders["ETag"] != null</scriptText></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step5.2-ReadPatientAfterDelete" id="937a0379-5a58-41c5-988b-346d72f093b7"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="RetrievePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step5.2-ReadPatientAfterDelete" id="7d61567d-4079-4fe3-8c2b-27e2736dfca6" mediaType="application/fhir+json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://localhost//frt-fhir-rest/1.0/Patient/CREATE-PT-ID-PUT</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="aa999ceb-a2de-416b-bdc5-fd5180d9ac19" name="Response Codes is Gone"><con:configuration><codes>404,410</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:restRequest></con:config></con:testStep><con:setupScript><![CDATA[import groovy.json.*
-import org.apache.commons.lang.*
+import org.apache.commons.lang.RandomStringUtils
 
+// random seeding template properties
+context.seededProperties=[:]
+def propNames = testRunner.testCase.project.propertyNames
+for(n in propNames)
+{
+	log.info( "property name=" + n + ", value=" + testRunner.testCase.project.properties[n].value )
+	def group=(n =~ /([CD]+)(\d+)/)
+	log.info("group:" + group)
+	log.info("group count:" + group.count)
+	if (group.hasGroup()&&group.size()==1) {
+		def seededValue = ''
+		if (group[0].size()==3) {
+			def alpha=group[0][1]
+			def num=group[0][2]
+			//log.info("alpha=" + alpha + ", num=" + num)
+			def pattn='\\$\\{#Project#' + n + '\\}'
+			//def propName='${#Project#'+n+'}'
+			if (alpha=='C') {
+				seededValue=RandomStringUtils.randomAlphabetic(num.toInteger())
+			}
+			else if (alpha=='D') {
+				seededValue=RandomStringUtils.randomNumeric(num.toInteger())
+			}
+			else if (alpha=='CD') {
+				seededValue=RandomStringUtils.randomAlphanumeric(num.toInteger())
+			}
+			if (seededValue!='') {
+				context.seededProperties.put(pattn, seededValue)
+				testRunner.testCase.project.setPropertyValue(n, seededValue)
+			}
+		}
+	}
+	else {
+		log.info("Not a json template property, property skipped.")
+	}
+}
+
+context.seededProperties.each {
+	k, v ->
+	log.info "$k :: $v"
+}
 
 context.genBoundedString={len ->
 	def array = new byte[len]
@@ -560,18 +601,22 @@ context.resourceContains={baseDirProp, pathProp, resp ->
 	def jsonTemplate = jsonFile.text
 	assert jsonTemplate!=null
 	log.info("json template:" + jsonTemplate)
-	log.info "iterate project properties================="
-	def projPropNames = testRunner.testCase.project.propertyNames
+	//log.info "iterate project properties================="
+	//def projPropNames = testRunner.testCase.project.propertyNames
 	def target=jsonTemplate
-	for(n in projPropNames)
-	{
-		log.info( "property name=" + n + ", value=" + testRunner.testCase.project.properties[n].value )
-		if (n.startsWith("C")||n.startsWith("D")) {
-			def pattern1='\\$\\{#Project#' + n + '\\}'
-			def propName='${#Project#'+n+'}'
-			target=target.replaceAll(pattern1, context.expand(propName))
-		}
+	//for(n in projPropNames)
+	//{
+//		log.info( "property name=" + n + ", value=" + testRunner.testCase.project.properties[n].value )
+//		if (n.startsWith("C")||n.startsWith("D")) {
+//			def pattern1='\\$\\{#Project#' + n + '\\}'
+//			def propName='${#Project#'+n+'}'
+//			target=target.replaceAll(pattern1, context.expand(propName))
+//		}
+//	}
+	context.seededProperties.each {k, v ->
+		target=target.replaceAll(k, v)
 	}
+
 	log.info("resolved json template:" + target)
 	def min=context.parser.parseText(target)
 	// note, resource is a Map
@@ -667,7 +712,11 @@ def returnedResource = entry.get("resource")
 assert returnedResource!=null
 assert context.resourceContains("RESOURCE.TEMPLATE.BASE.DIR", "PT01INTRO.PT.CREATE.PETERCHALMERS.MIN.JSON", returnedResource)
 
-</scriptText></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters><entry key="id" value="${#Project#CD16}" xmlns="http://eviware.com/soapui/config"/></con:parameters><con:parameterOrder/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step2.1-UpdatePatient" id="b00a93b1-aca7-4894-a384-989620645d3c"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="UpdatePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step2.1-UpdatePatient" id="37c078af-4f63-4844-904b-f00622e767fc" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request><![CDATA[{
+</scriptText></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters>
+  <con:entry key="given" value="Peter${#Project#C8}"/>
+  <con:entry key="id" value="${#Project#CD16}"/>
+  <con:entry key="family" value="Chalmers${#Project#C8}"/>
+</con:parameters><con:parameterOrder/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step2.1-UpdatePatient" id="b00a93b1-aca7-4894-a384-989620645d3c"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="UpdatePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step2.1-UpdatePatient" id="37c078af-4f63-4844-904b-f00622e767fc" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request><![CDATA[{
   "resourceType" : "Patient",
   "id" : "${#Project#CD16}",
   "text" : {
@@ -789,8 +838,49 @@ assert context.resourceContains("RESOURCE.TEMPLATE.BASE.DIR", "PT01INTRO.PT.UPDA
   <con:entry key="given" value="Peter${#Project#C8}"/>
   <con:entry key="family" value="Chalmers${#Project#C8}"/>
 </con:parameters><con:parameterOrder><con:entry>#Project#Service.Resource.Path</con:entry><con:entry>family</con:entry><con:entry>given</con:entry></con:parameterOrder></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step5.1-DeletePatient" id="6d4d2db1-6a67-4fba-9229-72a0c805d6ff"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="DeletePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step5.1-DeletePatient" id="c499e719-154b-4c90-832a-cb589b399159" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com/frt-fhir-rest/1.0/Patient/CREATE-PT-0001</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="b7fc9b43-ff4c-4232-8a82-94166650db19" name="HTTP Return Code 200 or 204 or 404"><con:configuration><codes>200,204,404</codes></con:configuration></con:assertion><con:assertion type="GroovyScriptAssertion" id="ea4480ef-10a7-43a1-b1c8-97e076b8482f" name="Response ETag header presents"><con:configuration><scriptText>assert messageExchange.responseHeaders["ETag"] != null</scriptText></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="restrequest" name="Step5.2-ReadPatientAfterDelete" id="da788ea1-52ac-44c9-b277-45cffeeaacbd"><con:settings/><con:config service="FHIR4-0-0-Connectathon20-Patient-01-Intro" resourcePath="/${#Project#Service.Resource.Path}/${#Project#CD16}" methodName="RetrievePatient" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="Step5.2-ReadPatientAfterDelete" id="7d61567d-4079-4fe3-8c2b-27e2736dfca6" mediaType="application/fhir+json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>${#Project#Service.Local.Endpoint}</con:endpoint><con:request/><con:originalUri>http://localhost//frt-fhir-rest/1.0/Patient/CREATE-PT-ID-PUT</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="aa999ceb-a2de-416b-bdc5-fd5180d9ac19" name="Response Codes is Gone"><con:configuration><codes>404,410</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/><con:parameterOrder/></con:restRequest></con:config></con:testStep><con:setupScript><![CDATA[import groovy.json.*
-import org.apache.commons.lang.*
+import org.apache.commons.lang.RandomStringUtils
 
+// random seeding template properties
+context.seededProperties=[:]
+def propNames = testRunner.testCase.project.propertyNames
+for(n in propNames)
+{
+	log.info( "property name=" + n + ", value=" + testRunner.testCase.project.properties[n].value )
+	def group=(n =~ /([CD]+)(\d+)/)
+	log.info("group:" + group)
+	log.info("group count:" + group.count)
+	if (group.hasGroup()&&group.size()==1) {
+		def seededValue = ''
+		if (group[0].size()==3) {
+			def alpha=group[0][1]
+			def num=group[0][2]
+			//log.info("alpha=" + alpha + ", num=" + num)
+			def pattn='\\$\\{#Project#' + n + '\\}'
+			//def propName='${#Project#'+n+'}'
+			if (alpha=='C') {
+				seededValue=RandomStringUtils.randomAlphabetic(num.toInteger())
+			}
+			else if (alpha=='D') {
+				seededValue=RandomStringUtils.randomNumeric(num.toInteger())
+			}
+			else if (alpha=='CD') {
+				seededValue=RandomStringUtils.randomAlphanumeric(num.toInteger())
+			}
+			if (seededValue!='') {
+				context.seededProperties.put(pattn, seededValue)
+				testRunner.testCase.project.setPropertyValue(n, seededValue)
+			}
+		}
+	}
+	else {
+		log.info("Not a json template property, property skipped.")
+	}
+}
+
+context.seededProperties.each {
+	k, v ->
+	log.info "$k :: $v"
+}
 
 context.genBoundedString={len ->
 	def array = new byte[len]
@@ -910,18 +1000,22 @@ context.resourceContains={baseDirProp, pathProp, resp ->
 	def jsonTemplate = jsonFile.text
 	assert jsonTemplate!=null
 	log.info("json template:" + jsonTemplate)
-	log.info "iterate project properties================="
-	def projPropNames = testRunner.testCase.project.propertyNames
+	//log.info "iterate project properties================="
+	//def projPropNames = testRunner.testCase.project.propertyNames
 	def target=jsonTemplate
-	for(n in projPropNames)
-	{
-		log.info( "property name=" + n + ", value=" + testRunner.testCase.project.properties[n].value )
-		if (n.startsWith("C")||n.startsWith("D")) {
-			def pattern1='\\$\\{#Project#' + n + '\\}'
-			def propName='${#Project#'+n+'}'
-			target=target.replaceAll(pattern1, context.expand(propName))
-		}
+	//for(n in projPropNames)
+	//{
+//		log.info( "property name=" + n + ", value=" + testRunner.testCase.project.properties[n].value )
+//		if (n.startsWith("C")||n.startsWith("D")) {
+//			def pattern1='\\$\\{#Project#' + n + '\\}'
+//			def propName='${#Project#'+n+'}'
+//			target=target.replaceAll(pattern1, context.expand(propName))
+//		}
+//	}
+	context.seededProperties.each {k, v ->
+		target=target.replaceAll(k, v)
 	}
+
 	log.info("resolved json template:" + target)
 	def min=context.parser.parseText(target)
 	// note, resource is a Map
@@ -933,4 +1027,4 @@ context.resourceContains={baseDirProp, pathProp, resp ->
 	return context.mapContains(min, resp)
 }
 
-]]></con:setupScript><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties><con:property><con:name>CD16</con:name><con:value>CREATE-PT-ID-PUT</con:value></con:property><con:property><con:name>C8</con:name><con:value>Nmjdjdejwbn89</con:value></con:property><con:property><con:name>C9</con:name><con:value>JKDBERJKBJJJX</con:value></con:property><con:property><con:name>D4</con:name><con:value>1699</con:value></con:property><con:property><con:name>Service.Remote.Endpoint</con:name><con:value>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088</con:value></con:property><con:property><con:name>Service.Resource.Path</con:name><con:value>/frt-fhir-rest/1.0/Patient</con:value></con:property><con:property><con:name>Service.Local.Endpoint</con:name><con:value>http://localhost:8080</con:value></con:property><con:property><con:name>CD13</con:name><con:value>QwElU2uhF9U1M</con:value></con:property><con:property><con:name>D1</con:name><con:value>8</con:value></con:property><con:property><con:name>D3</con:name><con:value>456</con:value></con:property><con:property><con:name>D7</con:name><con:value>1888247</con:value></con:property><con:property><con:name>C6</con:name><con:value>NDlQAb</con:value></con:property><con:property><con:name>createResourceId</con:name><con:value>X7gJKcMAxItnHF4q</con:value></con:property><con:property><con:name>RESOURCE.TEMPLATE.BASE.DIR</con:name><con:value>src/test/messages/fhir4-0-0-connectathon20/</con:value></con:property><con:property><con:name>PT01BONUS.PT.CREATE.BONUS.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/patient-create-bonus-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.CREATE.BONUS.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/patient-create-bonus-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS1.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/patient-update-bonus1-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS1.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/patient-update-bonus1-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS2.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/patient-update-bonus2-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS2.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/patient-update-bonus2-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT02FORMAL.PT.CREATE.CLIENT.ID.JSON</con:name><con:value>patient-02-formal-fhirserver/patient-create-client-id.json</con:value></con:property><con:property><con:name>PT02FORMAL.PT.UPDATE.CLIENT.ID.JSON</con:name><con:value>patient-02-formal-fhirserver/patient-update-client-id.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.CLIENT.ID.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/patient-create-client-id-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-intro/patient-create-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.SERVER.ID.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/patient-create-server-id-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.UPDATE.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/patient-update-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.UPDATE.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-intro/patient-update-peterchalmers-min.json</con:value></con:property></con:properties><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
+]]></con:setupScript><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties><con:property><con:name>CD16</con:name><con:value>9Iyx8H3F67VIYr7v</con:value></con:property><con:property><con:name>C8</con:name><con:value>jxXKBfhj</con:value></con:property><con:property><con:name>C9</con:name><con:value>TumUzwsCz</con:value></con:property><con:property><con:name>D4</con:name><con:value>9425</con:value></con:property><con:property><con:name>Service.Remote.Endpoint</con:name><con:value>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088</con:value></con:property><con:property><con:name>Service.Resource.Path</con:name><con:value>/frt-fhir-rest/1.0/Patient</con:value></con:property><con:property><con:name>Service.Local.Endpoint</con:name><con:value>http://localhost:8080</con:value></con:property><con:property><con:name>CD13</con:name><con:value>3DJZpkopP2Y6t</con:value></con:property><con:property><con:name>D1</con:name><con:value>8</con:value></con:property><con:property><con:name>D3</con:name><con:value>515</con:value></con:property><con:property><con:name>D7</con:name><con:value>9222070</con:value></con:property><con:property><con:name>C6</con:name><con:value>DrniTc</con:value></con:property><con:property><con:name>createResourceId</con:name><con:value>X7gJKcMAxItnHF4q</con:value></con:property><con:property><con:name>RESOURCE.TEMPLATE.BASE.DIR</con:name><con:value>src/test/messages/fhir4-0-0-connectathon20/</con:value></con:property><con:property><con:name>PT01BONUS.PT.CREATE.BONUS.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/patient-create-bonus-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.CREATE.BONUS.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/patient-create-bonus-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS1.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/patient-update-bonus1-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS1.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/patient-update-bonus1-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS2.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/patient-update-bonus2-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS2.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/patient-update-bonus2-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT02FORMAL.PT.CREATE.CLIENT.ID.JSON</con:name><con:value>patient-02-formal-fhirserver/patient-create-client-id.json</con:value></con:property><con:property><con:name>PT02FORMAL.PT.UPDATE.CLIENT.ID.JSON</con:name><con:value>patient-02-formal-fhirserver/patient-update-client-id.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.CLIENT.ID.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/patient-create-client-id-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-intro/patient-create-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.SERVER.ID.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/patient-create-server-id-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.UPDATE.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/patient-update-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.UPDATE.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-intro/patient-update-peterchalmers-min.json</con:value></con:property></con:properties><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
