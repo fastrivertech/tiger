@@ -13,6 +13,7 @@ package com.frt.fhir.rest;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
@@ -47,24 +48,44 @@ public class ExecutionResourceOperation extends ResourceOperation {
 	 * POST [base]/Patient/$match, [base]/Patient/$merge, [base]/Patient/$link
 	 * @param operation $match, $merge and $unmerge, $link and $unlink 
 	 * @param _format json or xml, json supported
+	 * @param body match message body
 	 * @return operation result 
 	 */
 	@POST
-	@Path(ResourcePath.PATIENT_PATH + ResourcePath.OPERATION_PATH)
+	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_POST_OPERATION_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
-	public Response execute(@PathParam("operation") final String operation,
-						    @QueryParam("_format") @DefaultValue("json") final String _format) {
+	public Response mpiPost(@PathParam("operation") final String operation,
+						    @QueryParam("_format") @DefaultValue("json") final String _format,
+						    final String body) {
 		
-		logger.info(localizer.x("FHR_I008: ExecutionResourceOperation executes the command ${0}", operation));										
+		logger.info(localizer.x("FHR_I008: ExecutionResourceOperation executes the POST command ${0}", operation));										
 		
 		String message = "Patient resource operation $" + operation + " not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
 																						  OperationOutcome.IssueSeverity.INFORMATION, 
 																						  OperationOutcome.IssueType.INFORMATIONAL);
 		String resourceInJson = parser.serialize(outcome);
-		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);
-		
+		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
 	}
+
+	@PUT
+	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_PUT_OPERATION_PATH)
+	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
+	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
+	public Response mpiPut(@PathParam("operation") final String operation,
+						   @QueryParam("_format") @DefaultValue("json") final String _format,
+						   final String body) {
+		
+		logger.info(localizer.x("FHR_I009: ExecutionResourceOperation executes the PUTcommand ${0}", operation));										
+		
+		String message = "Patient resource operation $" + operation + " not implemented yet"; 
+		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																						  OperationOutcome.IssueSeverity.INFORMATION, 
+																						  OperationOutcome.IssueType.INFORMATIONAL);
+		String resourceInJson = parser.serialize(outcome);
+		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
+	}
+
 	
 }

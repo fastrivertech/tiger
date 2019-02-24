@@ -26,6 +26,6 @@ public interface ResourcePath {
 	 public static final String HISTORY_PATH = "/_history";	 	
 	 public static final String METADATA_PATH = "/metadata";	 	
 	 public static final String PATIENT_PATH = "/Patient";	 	
-	 public static final String OPERATION_PATH = "/${operation:(match)|(merge)|(unmerge)|(link)|(unlink)}";	 	
-	 
+	 public static final String MPI_POST_OPERATION_PATH = "/${operation:(match)|(search)}";	 	
+	 public static final String MPI_PUT_OPERATION_PATH = "/${operation:.(merge)|(unmerge)|(link)|(unlink)}";	 	
 }
