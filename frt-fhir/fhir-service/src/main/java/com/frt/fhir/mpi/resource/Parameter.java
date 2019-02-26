@@ -27,17 +27,8 @@ public class Parameter implements Serializable {
 	private String name;
 	
 	@XmlAttribute
-	private String resource;
-	
-	@XmlAttribute
-	private Integer valueInteger;
-	
-	@XmlAttribute
-	private Boolean valueBoolean;
-
-	@XmlAttribute
-	private String valueString;
-	
+	private DataType value;
+		
 	public Parameter() {
 	}
 	
@@ -49,4 +40,11 @@ public class Parameter implements Serializable {
 		return this.name;
 	}
 	
+	public void setValue(DataType value) {
+		this.value = value;
+	}
+	
+	public DataType getValue() {
+		return this.value;
+	}	
 }
