@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.regex.Pattern;
+
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -265,7 +267,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 							resourceUpdateManager.cleanChanges();
 							// apply changes
 							String delta = transaction.getDelta();
-							List<String> changes = Arrays.asList(delta.split(ResourceUpdateManager.DELIMITER));
+							List<String> changes = Arrays.asList(delta.split(Pattern.quote(ResourceUpdateManager.DELIMITER)));
 							for (String change : changes) {
 								String[] tokens = change.split("=");
 								if (tokens != null && tokens.length == 2) {
@@ -309,7 +311,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 								resourceUpdateManager.cleanChanges();	
 								// apply changes
 								String delta = transaction.getDelta();
-								List<String> changes = Arrays.asList(delta.split(ResourceUpdateManager.DELIMITER));
+								List<String> changes = Arrays.asList(delta.split(Pattern.quote(ResourceUpdateManager.DELIMITER)));
 								for (String change : changes) {
 									String[] tokens = change.split("=");
 									if (tokens != null && tokens.length == 2) {
