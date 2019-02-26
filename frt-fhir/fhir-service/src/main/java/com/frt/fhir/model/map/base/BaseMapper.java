@@ -557,7 +557,7 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 				extension.setUrl(patientExtension.getUrl());
 				String value = patientExtension.getValue();
 				value = value.substring(value.indexOf("[") + 1, value.indexOf("]"));
-				extension.setValue(new org.hl7.fhir.dstu3.model.DateTimeType(value)); // => DateTimeType
+				extension.setValue(new org.hl7.fhir.dstu3.model.DateTimeType(value));
 				hapiPatient.getBirthDateElement().addExtension(extension);
 
 			}
