@@ -28,10 +28,10 @@ import javax.json.stream.JsonParsingException;
 import com.frt.fhir.mpi.resource.Parameter;
 import com.frt.fhir.mpi.resource.Parameters;
 
-public class Parser {
+public class ParameterParser {
 
 	public Parameters deserialize(String message) 
-		throws ParserException {		
+		throws ParameterParserException {		
 		try (InputStream in = new ByteArrayInputStream(message.getBytes())) {
 			Parameters parameters = null;
 			JsonReader jsonReader = Json.createReader(in);
@@ -43,10 +43,10 @@ public class Parser {
 				 //ToDo
 				 return parameters;
 			} else {
-				throw new ParserException("invalid resource type: " + resourceType);
+				throw new ParameterParserException("invalid resource type: " + resourceType);
 			}
 		} catch(Exception ex) {
-			throw new ParserException(ex);
+			throw new ParameterParserException(ex);
 		}
 	}
 		

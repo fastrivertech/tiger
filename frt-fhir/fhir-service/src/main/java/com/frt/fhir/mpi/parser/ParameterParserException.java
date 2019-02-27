@@ -10,12 +10,12 @@
  */
 package com.frt.fhir.mpi.parser;
 
-public class ParserException extends RuntimeException {
+public class ParameterParserException extends RuntimeException {
 
 	/**
 	 * ParserException Constructor
 	 */
-	public ParserException() {
+	public ParameterParserException() {
 		super();
 	}
 
@@ -24,7 +24,7 @@ public class ParserException extends RuntimeException {
 	 * 
 	 * @param m Message string
 	 */
-	public ParserException(String m) {
+	public ParameterParserException(String m) {
 		super(m);
 	}
 
@@ -34,7 +34,7 @@ public class ParserException extends RuntimeException {
 	 * @param m Message string
 	 * @param t Throwable inherited
 	 */
-	public ParserException(String m, Throwable t) {
+	public ParameterParserException(String m, Throwable t) {
 		super(m, t);
 	}
 
@@ -43,7 +43,7 @@ public class ParserException extends RuntimeException {
 	 * 
 	 * @param t Throwable inherited
 	 */
-	public ParserException(Throwable t) {
+	public ParameterParserException(Throwable t) {
 		super(t);
 	}
 }
