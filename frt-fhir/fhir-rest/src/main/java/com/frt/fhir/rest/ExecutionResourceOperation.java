@@ -24,6 +24,13 @@ import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.PathParam;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
+import org.hl7.fhir.dstu3.model.Bundle;
+import com.frt.fhir.mpi.MpiService;
+import com.frt.fhir.mpi.MpiServiceImpl;
+import com.frt.fhir.mpi.parser.ParameterParser;
+import com.frt.fhir.mpi.parser.ParameterParserException;
+import com.frt.fhir.mpi.resource.Parameter;
+import com.frt.fhir.mpi.resource.Parameters;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
@@ -37,10 +44,14 @@ public class ExecutionResourceOperation extends ResourceOperation {
 	@Context
 	private UriInfo uriInfo;
 	
-	private JsonParser parser;
+	private JsonParser jsonParser;
+	private ParameterParser paramParser;
+	private MpiService mpiService;
 	
 	public ExecutionResourceOperation() {
-		parser = new JsonParser();	
+		jsonParser = new JsonParser();	
+		paramParser = new ParameterParser();
+		mpiService = new MpiServiceImpl();
 	}
 	
 	/**
@@ -60,12 +71,26 @@ public class ExecutionResourceOperation extends ResourceOperation {
 						    final String body) {
 		
 		logger.info(localizer.x("FHR_I008: ExecutionResourceOperation executes the POST command ${0}", operation));										
-		
+		if ("match".equals(operation)) {
+			Parameters params = paramParser.deserialize(body);
+			Bundle bundle = mpiService.match(params);			
+		} else if ("search".equals(operation)) {
+			Parameters params = paramParser.deserialize(body);
+			Bundle bundle = mpiService.search(params);
+		} else {
+			String message = "Patient resource operation $" + operation + "invalid"; 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);		
+			String resourceInJson = jsonParser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
+			
+		}		
 		String message = "Patient resource operation $" + operation + " not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
 																						  OperationOutcome.IssueSeverity.INFORMATION, 
-																						  OperationOutcome.IssueType.INFORMATIONAL);
-		String resourceInJson = parser.serialize(outcome);
+																						  OperationOutcome.IssueType.INFORMATIONAL);		
+		String resourceInJson = jsonParser.serialize(outcome);
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
 	}
 
@@ -83,7 +108,7 @@ public class ExecutionResourceOperation extends ResourceOperation {
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
 																						  OperationOutcome.IssueSeverity.INFORMATION, 
 																						  OperationOutcome.IssueType.INFORMATIONAL);
-		String resourceInJson = parser.serialize(outcome);
+		String resourceInJson = jsonParser.serialize(outcome);
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
 	}
 
