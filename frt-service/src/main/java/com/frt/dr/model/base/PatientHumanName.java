@@ -168,4 +168,15 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
 	public void setPeriod(String period) {
 		this.period = period;
 	}
+
+	// added for auto narrative gen, does not handle extension
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Family: ").append(this.getFamily())
+		.append(",").append("\\n")
+		.append("Givens: ").append(this.getGiven())
+		.append(",").append("\\n")
+		.append("Desc: ").append(this.getTxt());
+		return sb.toString();
+	}
 }

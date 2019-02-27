@@ -164,4 +164,16 @@ public class PatientContact implements Serializable, ResourceComplexType {
 
 	}
 
+	// added for auto narrative gen, does not handle extension
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Name: ").append(this.getName())
+		.append(",").append("\\n")
+		.append("Relationship: ").append(this.getRelationship())
+		.append(",").append("\\n")
+		.append("Addr: ").append(this.getAddress())
+		.append(",").append("\\n")
+		.append("Telecom: ").append(this.getTelecom());
+		return sb.toString();
+	}
 }

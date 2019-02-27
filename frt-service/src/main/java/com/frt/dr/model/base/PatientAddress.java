@@ -203,4 +203,23 @@ public class PatientAddress implements Serializable, ResourceComplexType {
 	public void setPeriod(String period) {
 		this.period = period;
 	}
+
+	// added for auto narrative gen
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Use: ").append(this.getUse())
+		.append(",").append("\\n")
+		.append("Addr: ").append(this.getLine())
+		.append(",").append("\\n")
+		.append("City: ").append(this.getCity())
+		.append(",").append("\\n")
+		.append("District: ").append(this.getDistrict())
+		.append(",").append("\\n")
+		.append("State: ").append(this.getState())
+		.append(",").append("\\n")
+		.append("Postal Code: ").append(this.getPostalcode())
+		.append(",").append("\\n")
+		.append("Country: ").append(this.getCountry());
+		return sb.toString();
+	}
 }

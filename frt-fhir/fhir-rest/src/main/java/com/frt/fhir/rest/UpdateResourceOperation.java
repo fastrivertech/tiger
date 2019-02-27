@@ -26,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.Narrative;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 
 import com.frt.dr.cache.CacheService;
@@ -89,8 +90,9 @@ public class UpdateResourceOperation extends ResourceOperation {
 			OperationValidator.validateFormat(_format);			
 			R resource = parser.deserialize(type, body);	
 			R updated = fhirService.update(type, id, resource);			
+
 			String resourceInJson = parser.serialize(updated);
-		
+			
 			Optional<NamedCache> cache = CacheService.getInstance().getCache();
 			String action = (String)cache.get().get(NamedCache.ACTION_CODE);
 			String location = uriInfo.getAbsolutePath().getPath() + "/_history/" + updated.getMeta().getVersionId();				

@@ -12,7 +12,6 @@
 package com.frt.dr.service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,8 +54,9 @@ public class RepositoryApplication {
 		return resources;
 	}
 	
-	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, Object resource)
+	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, Object object)
 		throws RepositoryServiceException {
+		R resource = (R)object;
 		return this.repositoryService.update(resourceClazz, id, (R)resource); 
 	}
 	

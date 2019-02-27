@@ -18,12 +18,17 @@ import java.util.Optional;
 import javax.annotation.Nonnull;
 import javax.ws.rs.core.MultivaluedMap;
 import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.Narrative;
 import org.hl7.fhir.dstu3.model.Bundle;
 import com.frt.fhir.model.map.MapperException;
 import com.frt.fhir.model.map.ResourceMapperFactory;
 import com.frt.fhir.model.map.ResourceMapperInterface;
 import com.frt.fhir.service.validation.ValidationService;
 import com.frt.fhir.service.validation.ValidatorException;
+import com.google.gson.JsonObject;
+
+import ca.uhn.fhir.context.FhirContext;
+
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.dr.service.RepositoryApplication;
 import com.frt.dr.service.RepositoryContext;
@@ -50,7 +55,7 @@ public class FhirService {
 			repository = (RepositoryApplication)context.getBean(RepositoryApplication.class);			
 		} catch (RepositoryContextException rcex) {
 			throw new FhirServiceException(rcex);
-		}						
+		}	
 	}
 	
 	public <R extends DomainResource> Optional<R> create(@Nonnull String type, 
@@ -59,8 +64,21 @@ public class FhirService {
 		try {
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
-			
+
 			Object frtResource = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)hapiResource);		
+
+			if (frtResource instanceof com.frt.dr.model.DomainResource) {
+				com.frt.dr.model.DomainResource drs = (com.frt.dr.model.DomainResource)frtResource;
+				String narrative = drs.generateNarrative();
+				if (narrative!=null) {
+					// narrative not present in original, auto generation occurred
+					JsonObject text = new JsonObject();
+					text.addProperty("status", "generated");
+					text.addProperty("div", narrative);
+					drs.setTxt(text.toString());
+				}
+			}
+
 			repository.create(resourcePair.getFrt(), frtResource);
 			Object hapiResponse = mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)frtResource);
 			
@@ -124,6 +142,18 @@ public class FhirService {
 			Object frtResource = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)hapiResource);
 			
 			ValidationService.getInstance().validate(id, (com.frt.dr.model.Resource)frtResource);
+
+			if (frtResource instanceof com.frt.dr.model.DomainResource) {
+				com.frt.dr.model.DomainResource drs = (com.frt.dr.model.DomainResource)frtResource;
+				String narrative = drs.generateNarrative();
+				if (narrative!=null) {
+					// narrative not present in original, auto generation occurred
+					JsonObject text = new JsonObject();
+					text.addProperty("status", "generated");
+					text.addProperty("div", narrative);
+					drs.setTxt(text.toString());
+				}
+			}
 			
 			com.frt.dr.model.DomainResource updatedfrtResource = repository.update(resourcePair.getFrt(), id, frtResource);									
 			R updatedhapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)updatedfrtResource);

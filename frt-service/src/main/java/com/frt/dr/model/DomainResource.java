@@ -57,7 +57,7 @@ public class DomainResource extends Resource {
     //@Lob
     @Size(max=2048)
     @Column(name = "txt")                        
-	private String txt;
+	protected String txt;
 	
     @Lob
     @Column(name = "contained")                        
@@ -93,5 +93,9 @@ public class DomainResource extends Resource {
     public <R extends Extension> List<R> getExtensions() {
     	return new ArrayList<R>();
     }	
-    
+ 
+    public String generateNarrative() {
+    	// to be override by concrete domainResource type that will auto generate narrative when needed
+    	return null;
+    }
 }

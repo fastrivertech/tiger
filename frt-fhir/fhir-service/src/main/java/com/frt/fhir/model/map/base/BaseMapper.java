@@ -455,18 +455,11 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 			ResourcePair rp = ResourceDictionary.get(mapperName);
 			final ResourceMapperInterface m = ResourceDictionary.getMapper(mapperName).from(rp.getFhir())
 					.to(rp.getFrt());
-			if (jsonAttName.equals("generalPractitioner")) {
-				logger.error("jsonAttName=" + jsonAttName + ", array==================>>>>>>>>>>>>>");
-			}
 			jsonRoot.getAsJsonArray(jsonAttName).forEach(e -> {
 				T t = (T) m.map(e);
 				t.setPath(path);
 				t.setPatient(frtPatient);
 				lst.add(t);
-				if (jsonAttName.equals("generalPractitioner")) {
-					PatientReference ptref = ((PatientReference)t);
-					logger.error("jsonAttName=" + jsonAttName + ", object==================>>>>>>>>>>>>>, path=" + ptref.getPath() + ", display=" + ptref.getDisplay() + ", id=" + ptref.getIdentifier() + ", reference=" + ptref.getReference());
-				}
 			});
 		}
 		return lst;
@@ -478,19 +471,11 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 															 String path, 
 															 String mapperName) {
 		T ret = null;
-		if (jsonAttName.equals("managingOrganization")) {
-			PatientReference ptref = ((PatientReference)ret);
-			logger.error("jsonAttName=" + jsonAttName + ", object==================>>>>>>>>>>>>>, path=" + ptref.getPath() + ", display=" + ptref.getDisplay() + ", id=" + ptref.getIdentifier() + ", reference=" + ptref.getReference());
-		}
 		if (jsonRoot.getAsJsonObject(jsonAttName) != null) {
 			ResourcePair rp = ResourceDictionary.get(mapperName);
 			final ResourceMapperInterface m = ResourceDictionary.getMapper(mapperName).from(rp.getFhir())
 					.to(rp.getFrt());
 			ret = (T) m.map(jsonRoot.getAsJsonObject(jsonAttName));
-			if (jsonAttName.equals("managingOrganization")) {
-				PatientReference ptref = ((PatientReference)ret);
-				logger.error("jsonAttName=" + jsonAttName + ", object==================>>>>>>>>>>>>>, path=" + ptref.getPath() + ", display=" + ptref.getDisplay() + ", id=" + ptref.getIdentifier() + ", reference=" + ptref.getReference());
-			}
 		}
 		return ret;
 	}

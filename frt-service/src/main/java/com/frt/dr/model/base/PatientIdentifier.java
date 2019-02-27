@@ -129,46 +129,37 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
     	this.patient = patient;
     }
 
-//    public String getType() {
-//		return SqlHelper.toString(this.type);
-//	}
-
-//    public Clob getType() {
     public String getType() {
 		return this.type;
 	}
 
-//    public void setType(Clob type) {
     public void setType(String type) {
 		this.type = type;
 	}
 
-//    public String getPeriod() {
-//		return SqlHelper.toString(this.period);
-//	}
-
-//    public Clob getPeriod() {
     public String getPeriod() {
 		return this.period;
 	}
 
-//    public void setPeriod(Clob period) {
     public void setPeriod(String period) {
 		this.period = period;
 	}
-
-//    public String getAssigner() {
-//		return SqlHelper.toString(this.assigner);
-//	}
-
-//    public Clob getAssigner() {
     public String getAssigner() {
 		return this.assigner;
 	}
 
-//    public void setAssigner(Clob assigner) {
     public void setAssigner(String assigner) {
 		this.assigner = assigner;
 	}
 
+	// added for auto narrative gen, does not handle extension
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Use: ").append(this.getUse())
+		.append(",").append("\\n")
+		.append("Type: ").append(this.getType())
+		.append(",").append("\\n")
+		.append("Value: ").append(this.getValue());
+		return sb.toString();
+	}
 }

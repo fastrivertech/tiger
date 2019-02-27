@@ -11,8 +11,15 @@
 package com.frt.fhir.parser;
 
 import ca.uhn.fhir.context.FhirContext;
+
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.Narrative;
+import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.Resource;
-import ca.uhn.fhir.context.FhirContext;
+import org.hl7.fhir.dstu3.model.HumanName;
+import org.hl7.fhir.dstu3.model.Address;
+import org.hl7.fhir.dstu3.model.Identifier;
 import ca.uhn.fhir.parser.DataFormatException;
 
 /**
