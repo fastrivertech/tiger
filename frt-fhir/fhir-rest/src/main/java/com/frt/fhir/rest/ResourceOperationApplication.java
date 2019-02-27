@@ -37,6 +37,7 @@ public class ResourceOperationApplication extends Application {
 		resources.add(UpdateResourceOperation.class);
 		resources.add(ExecutionResourceOperation.class);	
 		resources.add(vReadResourceOperation.class);
+		resources.add(MpiResourceOperation.class);
 		return resources;
 	}
 }
