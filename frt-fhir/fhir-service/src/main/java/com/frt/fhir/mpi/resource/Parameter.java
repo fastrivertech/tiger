@@ -10,16 +10,14 @@
  */
 package com.frt.fhir.mpi.resource;
 
-import java.util.List;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAccessType;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class Parameter implements Serializable {
 	private static final long serialVersionUID = 1L;
 

@@ -10,44 +10,71 @@
  */
 package com.frt.fhir.mpi;
 
+import java.util.List;
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.DomainResource;
+import com.frt.fhir.mpi.resource.Parameter;
 import com.frt.fhir.mpi.resource.Parameters;
 
 /**
  * MpiServiceImpl class
  * @author cqye
  */
-public class MpiServiceImpl implements MpiService {
+public class MpiServiceImpl implements MpiService<DomainResource> {
 
 	public MpiServiceImpl() {
 	}
 
+	/**
+	 * @see com.frt.fhir.mpi.MpiService#match(Parameters) 
+	 */
+	@Override
 	public Bundle match(Parameters parameters) 
 		throws MpiServiceException {
 		throw new UnsupportedOperationException();
 	}
 
-	public void search() 
+	/**
+	 * @see com.frt.fhir.mpi.MpiService#search(Parameters)
+	 */
+	@Override
+	public Bundle search(Parameters parameters)
 		throws MpiServiceException {
 		throw new UnsupportedOperationException();
 	}
 
-	public Bundle merge(String sourceId, String targetId) 
+	/**
+	 * @see com.frt.fhir.mpi.MpiService#merge(String, String, List)
+	 */
+	@Override	
+	public Bundle merge(String sourceId, String targetId, List<Parameter> options)
 		throws MpiServiceException {
 		throw new UnsupportedOperationException();
 	}
 
-	public Bundle unmerge(String resourceId) 
+	/**
+	 * @see com.frt.fhir.mpi.MpiService#unmerge(String, List)
+	 */
+	@Override		
+	public Bundle unmerge(String resourceId, List<Parameter> options) 
 		throws MpiServiceException {
 		throw new UnsupportedOperationException();
 	}
 
-	public Bundle link(String sourceId, String targetId) 
+	/**
+	 * @see com.frt.fhir.mpi.MpiService#link(String, String, String, List)
+	 */
+	@Override		
+	public Bundle link(String domain, String sourceId, String targetId, List<Parameter> options) 
 		throws MpiServiceException {
 		throw new UnsupportedOperationException();
 	}
 
-	public Bundle unlink(String resourceId) 
+	/**
+	 * @see com.frt.fhir.mpi.MpiService#unlink(String, String, List)
+	 */
+	@Override		
+	public Bundle unlink(String domain, String resourceId, List<Parameter> options) 
 		throws MpiServiceException {
 		throw new UnsupportedOperationException();
 	}

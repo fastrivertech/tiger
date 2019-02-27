@@ -10,6 +10,7 @@
  */
 package com.frt.fhir.mpi;
 
+import java.util.List;
 import org.hl7.fhir.dstu3.model.Bundle;
 import com.frt.fhir.mpi.resource.Parameter;
 import com.frt.fhir.mpi.resource.Parameters;
@@ -20,22 +21,81 @@ import com.frt.fhir.mpi.resource.Parameters;
  */
 public interface MpiService<T> {
 
+   /**
+	 * Match domain resource with golden domain resources in the MPI database based on the MPI provider 
+	 * @param parameters match parameters containing domain resources and match options
+	 * resource: patient which includes match fields
+	 * onlyCertainMatch: if the flag sets true, only matched record with highest score return
+	 * 				 	 if the flag sets false, all matches records with match score return 
+	 * 					 onlyCertainMatch is similar with oneExactMacth  
+	 * count: maximum number of records that is above match thresholds 
+	 * @return Bundle contains a set of matched golden domain resources or potentially matched records 
+	 * resource: a list of golden patients matching above threshold 
+	 * search:	match-grade extension with mode and score, mode specifies 'match' or 'potential match'
+	 * operation outcome: operation result code
+	 * @throws MpiServiceException throws exception if any error occurs during process
+	 */
 	Bundle match(Parameters parameters) 
 		throws MpiServiceException;
-	
-	void search()
+
+	/**
+	 * Probabilistic search golden domain resources based on search criteria and options
+	 * @param parameters search parameters containing domain resource and search options
+	 * resource: patient which include search fields (can be extended to support range search)
+	 * option: vendor-specific such as different search types: BLOCKER-SEARCH/ALPHA-SEARCH/PHONETIC-SEARCH  
+	 * threshold: match threshold   			
+	 * @return Bundle contains a set of matched golden domain resources with score above the match threshold
+	 * resource:  a list of patients matching above threshold
+	 * search:	match-grade extension with mode and score, mode specifies 'match'
+	 * @throws MpiServiceException throws exception if any error occurs during process
+	 */
+	Bundle search(Parameters parameters)
 		throws MpiServiceException;
 	
-	Bundle merge(String sourceId, String targetId) 
+	/**
+	 * Merge a source golden domain resource with the sourceId to a target golden domain resource with the targetId
+	 * @param sourceId the global unique identifier of the source golden domain resource
+	 * @param targetId the global unique identifier of the target golden domain resource
+	 * @param options list of vendor specific options such as CalculateOnly = true / false
+	 * @return Bundle a set of merged golden domain resource and survived golden domain resource
+	 * operation outcome: operation result code
+	 * @throws MpiServiceException throws exception if any error occurs during process
+	 */
+	Bundle merge(String sourceId, String targetId, List<Parameter> options) 
 		throws MpiServiceException;
 	
-	Bundle unmerge(String resourceId) 
+	/**
+	 * Un-merge a survived golden domain resource 
+	 * @param resourceId the global unique identifier of the survived golden domain resource
+	 * @param options list of options vendor specific options such as CalculateOnly = true / false
+	 * @return Bundle a set of source golden domain resource and target golden domain resource
+	 * operation outcome: operation result code
+	 * @throws MpiServiceException throws exception if any error occurs during process
+	 */
+	Bundle unmerge(String resourceId, List<Parameter> options) 
 		throws MpiServiceException;
 	
-	Bundle link(String sourceId, String targetId) 
+	/**
+	 * Merge two domain resources from the same domain 
+	 * @param domain local domain
+	 * @param sourceId the unique identifier of the source golden domain resource from the domain
+	 * @param targetId the unique identifier of the target golden domain resource from the domain
+	 * @param list of options vendor specific options such as CalculateOnly = true / false
+	 * @return Bundle a set of merged domain resource and survived domain resource
+	 * @throws MpiServiceException throws exception if any error occurs during process
+	 */
+	Bundle link(String domain, String sourceId, String targetId, List<Parameter> options) 
 		throws MpiServiceException;
 	
-	Bundle unlink(String resourceId) 
+	/**
+	 * Un-merge a survived golden domain resource 
+	 * @param domain local domain
+	 * @param resourceId the unique identifier of the survived domain resource from the domain
+	 * @param options list of options vendor specific options such as CalculateOnly = true / false
+	 * @return Bundle a set of merged domain resource and survived domain resource
+	 * @throws MpiServiceException throws exception if any error occurs during process
+	 */
+	Bundle unlink(String domain, String resourceId, List<Parameter> options) 
 		throws MpiServiceException;
 	
 }
