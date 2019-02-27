@@ -13,6 +13,7 @@ package com.frt.fhir.mpi;
 import java.util.List;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.Identifier;
 import com.frt.fhir.mpi.resource.Parameter;
 import com.frt.fhir.mpi.resource.Parameters;
 
@@ -44,37 +45,37 @@ public class MpiServiceImpl implements MpiService<DomainResource> {
 	}
 
 	/**
-	 * @see com.frt.fhir.mpi.MpiService#merge(String, String, List)
+	 * @see com.frt.fhir.mpi.MpiService#merge(Identifier, Identifier, List)
 	 */
 	@Override	
-	public Bundle merge(String sourceId, String targetId, List<Parameter> options)
+	public Bundle merge(Identifier sourceId, Identifier targetId, List<Parameter> options)
 		throws MpiServiceException {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * @see com.frt.fhir.mpi.MpiService#unmerge(String, List)
+	 * @see com.frt.fhir.mpi.MpiService#unmerge(Identifier, List)
 	 */
 	@Override		
-	public Bundle unmerge(String resourceId, List<Parameter> options) 
+	public Bundle unmerge(Identifier resourceId, List<Parameter> options) 
 		throws MpiServiceException {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * @see com.frt.fhir.mpi.MpiService#link(String, String, String, List)
+	 * @see com.frt.fhir.mpi.MpiService#link(Identifier, Identifier, List)
 	 */
 	@Override		
-	public Bundle link(String domain, String sourceId, String targetId, List<Parameter> options) 
+	public Bundle link(Identifier sourceId, Identifier targetId, List<Parameter> options) 
 		throws MpiServiceException {
 		throw new UnsupportedOperationException();
 	}
 
 	/**
-	 * @see com.frt.fhir.mpi.MpiService#unlink(String, String, List)
+	 * @see com.frt.fhir.mpi.MpiService#unlink(Identifier, List)
 	 */
 	@Override		
-	public Bundle unlink(String domain, String resourceId, List<Parameter> options) 
+	public Bundle unlink(Identifier resourceId, List<Parameter> options) 
 		throws MpiServiceException {
 		throw new UnsupportedOperationException();
 	}

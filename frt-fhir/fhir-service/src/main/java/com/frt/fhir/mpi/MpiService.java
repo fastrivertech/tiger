@@ -12,6 +12,7 @@ package com.frt.fhir.mpi;
 
 import java.util.List;
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.Identifier;
 import com.frt.fhir.mpi.resource.Parameter;
 import com.frt.fhir.mpi.resource.Parameters;
 
@@ -53,49 +54,58 @@ public interface MpiService<T> {
 		throws MpiServiceException;
 	
 	/**
-	 * Merge a source golden domain resource with the sourceId to a target golden domain resource with the targetId
-	 * @param sourceId the global unique identifier of the source golden domain resource
-	 * @param targetId the global unique identifier of the target golden domain resource
+	 * Merge a source domain resource with the sourceId to a target domain resource with the targetId.
+	 * FHIR patient merge operation maps to HL7 ADT A40, identifier maps to PID-3 (Patient Identifier List) 
+	 * FHIR Identifier	=> HL7 PID-3 CX
+	 * 		use
+	 * 		type	    =>	   Identifier Type code
+	 * 		system 	    =>	   Assigning Authority 
+	 * 		value	    =>	   id
+	 * 		period
+	 *  	assigner    =>	   Assigning Authority
+	 * FHIR Merge operation is global merge or enterprise merge in MPI perspective, 
+	 * plus local merge or domain resource merge. After operation, the subsumed domain resource is not visible. 
+	 * @param sourceId the surviving unique identifier of the source domain resource
+	 * @param targetId the subsumed unique identifier of the target domain resource
 	 * @param options list of vendor specific options such as CalculateOnly = true / false
-	 * @return Bundle a set of merged golden domain resource and survived golden domain resource
-	 * operation outcome: operation result code
-	 * @throws MpiServiceException throws exception if any error occurs during process
-	 */
-	Bundle merge(String sourceId, String targetId, List<Parameter> options) 
-		throws MpiServiceException;
-	
-	/**
-	 * Un-merge a survived golden domain resource 
-	 * @param resourceId the global unique identifier of the survived golden domain resource
-	 * @param options list of options vendor specific options such as CalculateOnly = true / false
-	 * @return Bundle a set of source golden domain resource and target golden domain resource
-	 * operation outcome: operation result code
-	 * @throws MpiServiceException throws exception if any error occurs during process
-	 */
-	Bundle unmerge(String resourceId, List<Parameter> options) 
-		throws MpiServiceException;
-	
-	/**
-	 * Merge two domain resources from the same domain 
-	 * @param domain local domain
-	 * @param sourceId the unique identifier of the source golden domain resource from the domain
-	 * @param targetId the unique identifier of the target golden domain resource from the domain
-	 * @param list of options vendor specific options such as CalculateOnly = true / false
 	 * @return Bundle a set of merged domain resource and survived domain resource
+	 * operation outcome: operation result code
 	 * @throws MpiServiceException throws exception if any error occurs during process
 	 */
-	Bundle link(String domain, String sourceId, String targetId, List<Parameter> options) 
+	Bundle merge(Identifier sourceId, Identifier targetId, List<Parameter> options) 
 		throws MpiServiceException;
 	
 	/**
-	 * Un-merge a survived golden domain resource 
-	 * @param domain local domain
+	 * Un-merge a survived domain resource
+	 * @param resourceId the global unique identifier of the survived domain resource
+	 * @param options list of options vendor specific options such as CalculateOnly = true / false
+	 * @return Bundle a set of source domain resource and target domain resource
+	 * operation outcome: operation result code
+	 * @throws MpiServiceException throws exception if any error occurs during process
+	 */
+	Bundle unmerge(Identifier resourceId, List<Parameter> options) 
+		throws MpiServiceException;
+	
+	/**
+	 * Link two domain resources,  FHIR link operation is global merge or enterprise merge 
+	 * in MPI perspective, but does not perform local merge or domain resource merge.
+	 * @param sourceId the unique identifier of the source domain resource from the domain
+	 * @param targetId the unique identifier of the target domain resource from the domain
+	 * @param list of options vendor specific options such as CalculateOnly = true / false
+	 * @return Bundle a set of linked domain resources
+	 * @throws MpiServiceException throws exception if any error occurs during process
+	 */
+	Bundle link(Identifier sourceId, Identifier targetId, List<Parameter> options) 
+		throws MpiServiceException;
+	
+	/**
+	 * Un-merge a survived domain resource 
 	 * @param resourceId the unique identifier of the survived domain resource from the domain
 	 * @param options list of options vendor specific options such as CalculateOnly = true / false
 	 * @return Bundle a set of merged domain resource and survived domain resource
 	 * @throws MpiServiceException throws exception if any error occurs during process
 	 */
-	Bundle unlink(String domain, String resourceId, List<Parameter> options) 
+	Bundle unlink(Identifier resourceId, List<Parameter> options) 
 		throws MpiServiceException;
 	
 }
