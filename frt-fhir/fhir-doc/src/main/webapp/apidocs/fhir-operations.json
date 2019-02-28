@@ -4,25 +4,233 @@
   "basePath" : "/frt-fhir-rest",
   "resourcePath" : "/1.0",
   "apis" : [ {
-    "path" : "/1.0/Patient/${operation}",
+    "path" : "/1.0/Patient/$link",
     "operations" : [ {
       "method" : "POST",
-      "nickname" : "execute",
+      "nickname" : "link",
       "type" : "Response",
       "parameters" : [ {
         "type" : "string",
-        "description" : "$match, $merge and $unmerge, $link and $unlink",
-        "paramType" : "path",
-        "name" : "operation",
-        "required" : true
-      }, {
-        "type" : "string",
-        "description" : "json or xml, json supported",
+        "description" : "json or xml, default json and json supported",
         "defaultValue" : "json",
         "paramType" : "query",
         "name" : "_format"
+      }, {
+        "type" : "string",
+        "description" : "link parameters\n \t\t  sourceId the unique identifier of the source domain resource from the domain\n \t\t  targetId the unique identifier of the target domain resource from the domain\n \t\t  list of options vendor specific options such as CalculateOnly = true / false",
+        "paramType" : "body",
+        "name" : "body",
+        "required" : true
       } ],
-      "summary" : "Patient MPI operations\n POST [base]/Patient/$match, [base]/Patient/$merge, [base]/Patient/$link",
+      "summary" : "Link two domain resources,  FHIR link operation is global merge or enterprise merge \n in MPI perspective, but does not perform local merge or domain resource merge.",
+      "responseMessages" : [ {
+        "code" : 201,
+        "message" : "linked"
+      }, {
+        "code" : 202,
+        "message" : "has been linked"
+      }, {
+        "code" : 400,
+        "message" : "bad request"
+      }, {
+        "code" : 404,
+        "message" : "not found"
+      }, {
+        "code" : 500,
+        "message" : "internal server error"
+      } ],
+      "consumes" : [ "application/fhir+json", "application/json" ],
+      "produces" : [ "application/fhir+json", "application/json" ]
+    } ]
+  }, {
+    "path" : "/1.0/Patient/$match",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "match",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "description" : "json or xml, default json and json supported",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "description" : "match parameters containing domain resources and match options\n resource: patient which includes match fields\n onlyCertainMatch: if the flag sets true, only matched record with highest score return\n \t\t\t\t \tif the flag sets false, all matches records with match score return \n \t\t\t\t\tonlyCertainMatch is similar with oneExactMacth  \n count: maximum number of records that is above match thresholds",
+        "paramType" : "body",
+        "name" : "body",
+        "required" : true
+      } ],
+      "summary" : "Match domain resource with golden domain resources in the MPI database based on the MPI provider \n POST [base]/Patient/$match",
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "matched"
+      }, {
+        "code" : 201,
+        "message" : "no match and created"
+      }, {
+        "code" : 400,
+        "message" : "bad request"
+      }, {
+        "code" : 422,
+        "message" : "not processable resource"
+      }, {
+        "code" : 500,
+        "message" : "internal server error"
+      } ],
+      "consumes" : [ "application/fhir+json", "application/json" ],
+      "produces" : [ "application/fhir+json", "application/json" ]
+    } ]
+  }, {
+    "path" : "/1.0/Patient/$merge",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "merge",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "description" : "merge parameters\n \t\t  sourceId the surviving unique identifier of the source domain resource\n \t\t  targetId the subsumed unique identifier of the target domain resource\n        options list of vendor specific options such as CalculateOnly = true / false",
+        "paramType" : "body",
+        "name" : "body",
+        "required" : true
+      } ],
+      "summary" : "Merge a source domain resource with the sourceId to a target domain resource with the targetId.",
+      "notes" : "FHIR patient merge operation maps to HL7 ADT A40, identifier maps to PID-3 (Patient Identifier List) \n FHIR Identifier\t=> HL7 PID-3 CX\n \t\tuse\n \t\ttype\t    =>\t   Identifier Type code\n \t\tsystem \t    =>\t   Assigning Authority \n \t\tvalue\t    =>\t   id\n \t\tperiod\n  \tassigner    =>\t   Assigning Authority\n FHIR Merge operation is global merge or enterprise merge in MPI perspective, \n plus local merge or domain resource merge. After operation, the subsumed domain resource is not visible.",
+      "responseMessages" : [ {
+        "code" : 201,
+        "message" : "merged"
+      }, {
+        "code" : 202,
+        "message" : "has been merged"
+      }, {
+        "code" : 400,
+        "message" : "bad request"
+      }, {
+        "code" : 404,
+        "message" : "not found"
+      }, {
+        "code" : 500,
+        "message" : "internal server error"
+      } ],
+      "consumes" : [ "application/fhir+json", "application/json" ],
+      "produces" : [ "application/fhir+json", "application/json" ]
+    } ]
+  }, {
+    "path" : "/1.0/Patient/$search",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "search",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "description" : "json or xml, default json and json supported",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "description" : "search parameters containing domain resource and search options\n resource: patient which include search fields (can be extended to support range search)\n option: vendor-specific such as different search types: BLOCKER-SEARCH/ALPHA-SEARCH/PHONETIC-SEARCH  \n threshold: match threshold",
+        "paramType" : "body",
+        "name" : "body",
+        "required" : true
+      } ],
+      "summary" : "Probabilistic search golden domain resources based on search criteria and options",
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "matched"
+      }, {
+        "code" : 400,
+        "message" : "bad request"
+      }, {
+        "code" : 422,
+        "message" : "not processable resource"
+      }, {
+        "code" : 500,
+        "message" : "internal server error"
+      } ],
+      "consumes" : [ "application/fhir+json", "application/json" ],
+      "produces" : [ "application/fhir+json", "application/json" ]
+    } ]
+  }, {
+    "path" : "/1.0/Patient/$unlink",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "unlink",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "description" : "json or xml, default json and json supported",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "description" : "unlink parameters\n \t\t  resourceId the unique identifier of the survived domain resource from the domain\n        options list of options vendor specific options such as CalculateOnly = true / false",
+        "paramType" : "body",
+        "name" : "body",
+        "required" : true
+      } ],
+      "summary" : "Un-merge a survived domain resource",
+      "responseMessages" : [ {
+        "code" : 201,
+        "message" : "unlinked"
+      }, {
+        "code" : 202,
+        "message" : "has been unlinked"
+      }, {
+        "code" : 400,
+        "message" : "bad request"
+      }, {
+        "code" : 404,
+        "message" : "not found"
+      }, {
+        "code" : 500,
+        "message" : "internal server error"
+      } ],
+      "consumes" : [ "application/fhir+json", "application/json" ],
+      "produces" : [ "application/fhir+json", "application/json" ]
+    } ]
+  }, {
+    "path" : "/1.0/Patient/$unmerge",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "unmerge",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "description" : "json or xml, default json and json supported",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "description" : "unmerge parameters\n \t\t  resourceId the global unique identifier of the survived domain resource\n \t      options list of options vendor specific options such as CalculateOnly = true / false",
+        "paramType" : "body",
+        "name" : "body",
+        "required" : true
+      } ],
+      "summary" : "Unmerge a survived domain resource",
+      "responseMessages" : [ {
+        "code" : 201,
+        "message" : "unmerged"
+      }, {
+        "code" : 202,
+        "message" : "has been unmerged"
+      }, {
+        "code" : 400,
+        "message" : "bad request"
+      }, {
+        "code" : 404,
+        "message" : "not found"
+      }, {
+        "code" : 500,
+        "message" : "internal server error"
+      } ],
       "consumes" : [ "application/fhir+json", "application/json" ],
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
@@ -46,6 +254,36 @@
         "name" : "_format"
       } ],
       "summary" : "Retrieve the FHIR server capability statement resource\n GET [base]/frt-fhir-rest/1.0/metadata{?mode=[mode]} {&_format=[mime-type]}",
+      "produces" : [ "application/fhir+json", "application/json" ]
+    } ]
+  }, {
+    "path" : "/1.0/{resource}/${operation}",
+    "operations" : [ {
+      "method" : "POST",
+      "nickname" : "mpiPut",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "paramType" : "path",
+        "name" : "resource",
+        "required" : true
+      }, {
+        "type" : "string",
+        "paramType" : "path",
+        "name" : "operation",
+        "required" : true
+      }, {
+        "type" : "string",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "paramType" : "body",
+        "name" : "body",
+        "required" : true
+      } ],
+      "consumes" : [ "application/fhir+json", "application/json" ],
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
@@ -237,16 +475,16 @@
         "required" : true
       }, {
         "type" : "string",
-        "description" : "json or xml, default josn and json supported",
+        "description" : "json or xml, default json and json supported",
         "defaultValue" : "json",
         "paramType" : "query",
         "name" : "_format"
       } ],
       "summary" : "Retrieve the history of a resource by its logical Id\n GET [base]/frt-fhir-rest/1.0/[type]/[id]/_history{?_format=[mime-type]}",
-      "produces" : [ "application/json" ]
+      "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/1.0/{type}/{id}/_history/{id}",
+    "path" : "/1.0/{type}/{id}/_history/{vid}",
     "operations" : [ {
       "method" : "GET",
       "nickname" : "read",
@@ -277,7 +515,7 @@
         "name" : "_format"
       } ],
       "summary" : "Retrieve the resource version by its logical Id and version id\n GET [base]/frt-fhir-rest/1.0/[type]/[id]/_history/[vid]{?_format=[mime-type]}",
-      "produces" : [ "application/json" ]
+      "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   } ]
 }
