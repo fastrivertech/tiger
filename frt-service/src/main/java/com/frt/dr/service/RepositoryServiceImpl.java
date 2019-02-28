@@ -238,8 +238,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 						 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 						 transaction.setResource(found.get());			
 						 transactionDao.save(transaction);
-					 }
-					 else {
+					 } else {
 						 // the resource has been deleted previously
 						 found = Optional.empty();
 					 }
