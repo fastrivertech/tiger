@@ -14,7 +14,6 @@ package com.frt.dr.model;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorValue;
@@ -29,11 +28,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
-
 import com.frt.dr.model.base.PatientExtension;
 
 /**
- *  DomainResource class
+ * DomainResource class
  * @author chaye
  */
 @Entity
@@ -50,14 +48,14 @@ public class DomainResource extends Resource {
     private static final long serialVersionUID = -8321293485415818761L;
 
     //uncomment Seq Generator will cause Resource insert does not accept NULL error
-    //@GeneratedValue(strategy = GenerationType.AUTO, generator = "DOMAIN_RESOURCE_SEQ")  
+  //@GeneratedValue(strategy = GenerationType.AUTO, generator = "DOMAIN_RESOURCE_SEQ")  
     @Column(name = "domain_resource_id", insertable = false, updatable=false)
     private BigInteger domainResourceId;
 	
     //@Lob
     @Size(max=2048)
     @Column(name = "txt")                        
-	protected String txt;
+	private String txt;
 	
     @Lob
     @Column(name = "contained")                        
@@ -93,9 +91,5 @@ public class DomainResource extends Resource {
     public <R extends Extension> List<R> getExtensions() {
     	return new ArrayList<R>();
     }	
- 
-    public String generateNarrative() {
-    	// to be override by concrete domainResource type that will auto generate narrative when needed
-    	return null;
-    }
+
 }

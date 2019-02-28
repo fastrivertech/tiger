@@ -13,7 +13,6 @@ package com.frt.dr.service;
 
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
@@ -38,8 +37,7 @@ public class RepositoryApplication {
 	
     public <R extends DomainResource> void create(java.lang.Class<?> resourceClazz, Object object)
 		throws RepositoryServiceException {
-		R resource = (R)object;
-	    this.repositoryService.save(resourceClazz,resource);
+	    this.repositoryService.save(resourceClazz,(R)object);
 	}
      
     public <R extends DomainResource> Optional<R> read(java.lang.Class<R> resourceClazz, String id)
@@ -56,8 +54,7 @@ public class RepositoryApplication {
 	
 	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, Object object)
 		throws RepositoryServiceException {
-		R resource = (R)object;
-		return this.repositoryService.update(resourceClazz, id, (R)resource); 
+		return this.repositoryService.update(resourceClazz, id, (R)object); 
 	}
 	
 	public <R extends DomainResource> Optional<R> delete(java.lang.Class<?> resourceClazz, String id)

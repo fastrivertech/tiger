@@ -13,7 +13,6 @@ package com.frt.dr.model.base;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-
 import javax.persistence.Entity;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -169,7 +168,10 @@ public class PatientHumanName implements Serializable, ResourceComplexType {
 		this.period = period;
 	}
 
-	// added for auto narrative gen, does not handle extension
+	
+	/**
+	 * Return string representation for narrative 
+	 */
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Family: ").append(this.getFamily())

@@ -130,7 +130,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 		try {			
 		    ts.start();			
 		  //BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
-		  //Optional<R> created = resourceDao.save(resource);					
+		  //Optional<R> created = resourceDao.save(resource);		
+		    // generate default narrative
+		    RepositoryServiceHelper.generateDefaultNarrative(resource);
 			Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);				
 			RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());			
@@ -169,6 +171,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 String changedMeta = TransactionHelper.updateMeta(meta);
 					 changed.setMeta(changedMeta);
 					 resourceDao.update(changed);
+					 // generate default narrative
+					 RepositoryServiceHelper.generateDefaultNarrative(changed);
 					 // create transaction log
 					 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
 					 transaction.setMeta(meta);
@@ -191,6 +195,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 // create resource
 				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);
+				// generate default narrative
+				 RepositoryServiceHelper.generateDefaultNarrative(resource);
 				 resource.setMeta((new Meta()).toString());
 				 RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());
 				 transaction.setResource(resource);			

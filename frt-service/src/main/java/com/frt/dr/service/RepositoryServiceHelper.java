@@ -11,9 +11,9 @@
  */
 package com.frt.dr.service;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import com.frt.dr.model.Extension;
+import com.google.gson.JsonObject;
 import com.frt.dr.model.DomainResource;
 
 public interface RepositoryServiceHelper {
@@ -32,6 +32,16 @@ public interface RepositoryServiceHelper {
 			extension.setUrl("http://hl7.org/fhir/StructureDefinition/patient-status");
 			extensions.add(extension);
 		} catch (IllegalAccessException | InstantiationException | ClassNotFoundException ex) {			
+		}
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <D extends DomainResource> void generateDefaultNarrative(D resource) {
+		if (resource.getTxt() == null) {
+			JsonObject text = new JsonObject();
+			text.addProperty("status", "generated");
+			text.addProperty("div", resource.toString());
+			resource.setTxt(text.toString());
 		}
 	}
 	

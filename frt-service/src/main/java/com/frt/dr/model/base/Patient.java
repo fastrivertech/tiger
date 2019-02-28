@@ -343,19 +343,17 @@ public class Patient extends DomainResource {
         this.extensions = extensions;
     }    
     
-    public String generateNarrative() {
-    	// to be override by concrete domainResource type that will auto generate narrative when needed
-    	String result = null;
-    	if (this.getTxt()==null||this.getTxt().isEmpty()) {
-    		StringBuilder sb = new StringBuilder();
-    		sb.append("<div>");
-    		sb.append("Names: ").append(this.getNames()!=null?this.getNames().toString():"").append(",<br/>");
-    		sb.append("Addresses: ").append(this.getAddresses()!=null?this.getAddresses().toString():",<br/>");
-    		sb.append("Contacts: ").append(this.getContacts()!=null?this.getContacts().toString():",<br/>");
-    		sb.append("Identifiers: ").append(this.getIdentifiers()!=null?this.getIdentifiers().toString():",<br/>");
-    		sb.append("</div>");
-    		result = sb.toString();
-    	}
-    	return result;
-    }
+	/**
+	 * Return string representation for narrative 
+	 */	  
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("<div>");
+		sb.append("Names: ").append(this.getNames().toString()).append(",<br/>");
+		sb.append("Addresses: ").append(this.getAddresses().toString()).append(",<br/>");
+		sb.append("Contacts: ").append(this.getContacts().toString()).append (",<br/>");
+		sb.append("Identifiers: ").append(this.getIdentifiers().toString()).append(",<br/>");
+		sb.append("</div>");
+		return sb.toString();
+	}
 }

@@ -152,7 +152,6 @@ public class PatientIdentifier implements Serializable, ResourceComplexType {
 		this.assigner = assigner;
 	}
 
-	// added for auto narrative gen, does not handle extension
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Use: ").append(this.getUse())
