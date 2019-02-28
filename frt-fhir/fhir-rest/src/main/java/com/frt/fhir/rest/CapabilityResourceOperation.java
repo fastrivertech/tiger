@@ -56,6 +56,8 @@ public class CapabilityResourceOperation extends ResourceOperation {
 	 * @param mode return information mode: full, normative or terminology 
 	 * @param _format mime-type json or xml, default josn and json supported
 	 * @return the FHIR server capability statement resource
+	 * @status 200 Request succeeded
+	 * @status 500 Internal server error
 	 */
 	@GET
 	@Path(ResourcePath.METADATA_PATH)

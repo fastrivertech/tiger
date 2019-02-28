@@ -71,11 +71,11 @@ public class MpiResourceOperation extends ResourceOperation {
 	* resource: a list of golden patients matching above threshold 
 	* search:	match-grade extension with mode and score, mode specifies 'match' or 'potential match'
 	* operation outcome: operation result code
-	* @status 200 matched
-	* @status 201 no match and created
-	* @status 400 bad request
-	* @status 422 not processable resource 
-	* @status 500 internal server error
+	* @status 200 Matched
+	* @status 201 No match and created
+	* @status 400 Bad request
+	* @status 422 Not processable resource 
+	* @status 500 Internal server error
 	*/	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_MATCH_PATH)
@@ -112,10 +112,10 @@ public class MpiResourceOperation extends ResourceOperation {
 	 * @return Bundle contains a set of matched golden domain resources with score above the match threshold
 	 * resource:  a list of patients matching above threshold
 	 * search:	match-grade extension with mode and score, mode specifies 'match'
-	 * @status 200 matched
- 	 * @status 400 bad request
-	 * @status 422 not processable resource 
-	 * @status 500 internal server error
+	 * @status 200 Matched
+ 	 * @status 400 Bad request
+	 * @status 422 Not processable resource 
+	 * @status 500 Internal server error
 	 */	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_SEARCH_PATH)
@@ -150,11 +150,11 @@ public class MpiResourceOperation extends ResourceOperation {
 	 *        options list of vendor specific options such as CalculateOnly = true / false
 	 * @return Bundle a set of merged domain resource and survived domain resource
 	 * operation outcome: operation result code
-	 * @status 201 merged
-	 * @status 202 has been merged
-	 * @status 400 bad request
-	 * @status 404 not found
-	 * @status 500 internal server error
+	 * @status 201 Merged
+	 * @status 202 Has been merged
+	 * @status 400 Bad request
+	 * @status 404 Not found
+	 * @status 500 Internal server error
 	 */	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_MERGE_PATH)
@@ -179,11 +179,11 @@ public class MpiResourceOperation extends ResourceOperation {
 	 * @param _format json or xml, default json and json supported
 	 * @return Bundle a set of source domain resource and target domain resource
 	 * operation outcome: operation result code
-	 * @status 201 unmerged
-	 * @status 202 has been unmerged
-	 * @status 400 bad request
-	 * @status 404 not found
-	 * @status 500 internal server error	 
+	 * @status 201 Unmerged
+	 * @status 202 Has been unmerged
+	 * @status 400 Bad request
+	 * @status 404 Not found
+	 * @status 500 Internal server error	 
 	 */	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_UNMERGE_PATH)
@@ -209,11 +209,11 @@ public class MpiResourceOperation extends ResourceOperation {
 	 * 		  list of options vendor specific options such as CalculateOnly = true / false
 	 * @param _format json or xml, default json and json supported
 	 * @return Bundle a set of linked domain resources
-	 * @status 201 linked
-	 * @status 202 has been linked
-	 * @status 400 bad request
-	 * @status 404 not found
-	 * @status 500 internal server error
+	 * @status 201 Linked
+	 * @status 202 Has been linked
+	 * @status 400 Bad request
+	 * @status 404 Not found
+	 * @status 500 Internal server error
 	 */	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_LINK_PATH)
@@ -237,11 +237,11 @@ public class MpiResourceOperation extends ResourceOperation {
 	 *        options list of options vendor specific options such as CalculateOnly = true / false
 	 * @param _format json or xml, default json and json supported
 	 * @return Bundle a set of merged domain resource and survived domain resource
-	 * @status 201 unlinked
-	 * @status 202 has been unlinked
-	 * @status 400 bad request
-	 * @status 404 not found
-	 * @status 500 internal server error
+	 * @status 201 Unlinked
+	 * @status 202 Has been unlinked
+	 * @status 400 Bad request
+	 * @status 404 Not found
+	 * @status 500 Internal server error
 	 */	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_UNLINK_PATH)

@@ -127,10 +127,11 @@ public class ReadResourceOperation extends ResourceOperation {
 	 * @param _summary true for retrieving summary of Resource, false for retrieving entire Resource; default false
 	 * @return FHIR Resource retrieved
 	 * @status 200 Retrieved Success
-     * @status 400 Bad Request - Resource could not be parsed or failed basic FHIR validation rules
-     * Response includes ETag with versionId and Last-Modified
-     * 410 Gone - Resource deleted
-     * 404 Not Found - Unknown resource 
+     * @status 400 Bad request - Resource could not be parsed or failed basic FHIR validation rules
+     * @status 410 Gone - Resource deleted
+     * @status 404 Not found - Unknown resource 
+	 * @status 400 Bad request
+	 * @status 500 Internal server error
 	 */	
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)

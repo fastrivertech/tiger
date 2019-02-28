@@ -80,8 +80,10 @@ public class CreateResourceOperation extends ResourceOperation {
 	 * @param _format json or xml, default josn and json supported
 	 * @param body FHIR Resource
 	 * @return FHIR Resource created
-	 * @status 201 Created Success
-     * @status 400 Bad Request - Resource could not be parsed or failed basic FHIR validation rules
+	 * @status 201 Created success
+     * @status 400 Bad request - Resource could not be parsed or failed basic FHIR validation rules
+	 * @status 404 Not found - Resource type not supported, or not a FHIR end-point
+	 * @status 422 Unprocessable entity
 	 */
 	@POST
 	@Path(ResourcePath.TYPE_PATH)
@@ -93,18 +95,9 @@ public class CreateResourceOperation extends ResourceOperation {
 		try {
 			logger.info(localizer.x("CreateResourceInteraction creates a new resource"));
 			// Request includes resource, but no need id; id shall be ignored if given. versionId and lastUpdated shall be ignored 
-			// if meta provided.
-			
+			// if meta provided.			
 			// Response includes Location header: Location: [base]/[type]/[id]/_history/[vid]
-			//                   ETag header: versionId and Last-Modified
-			// 201 Created Success
-			// 400 Bad Request - Resource could not be parsed or failed basic FHIR validation rules
-			// 404 Not Found - Resource type not supported, or not a FHIR end-point
-			// 422 Unprocessable Entity - The proposed resource violated applicable FHIR profiles or server business rules. 
-			//                            This should be accompanied by an OperationOutcome resource providing additional detail
-			// 412 Precondition Failed - Conditional create not supported
-			// 200 OK status - Ignore request if some condition not match for conditional create
-			// Conditional create - Create a new resource only if some equivalent resource does not already exist on the server.			
+			//                   ETag header: versionId and Last-Modified			
 			OperationValidator.validateFormat(_format);
 			
 			String message;

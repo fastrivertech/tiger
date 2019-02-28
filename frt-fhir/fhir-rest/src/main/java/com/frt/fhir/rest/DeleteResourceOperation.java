@@ -65,13 +65,17 @@ public class DeleteResourceOperation extends ResourceOperation {
 	 * DELETE [base]/frt-fhir-rest/1.0/[type]/[id]
 	 * @param type resource type
 	 * @param id resource logical Id
-	 * @return status 200 OK
+	 * @return resource deleted
+	 * @status status 200 OK
+	 * @status status 404 Not found
+	 * @status 400 Bad request
+	 * @status 500 Internal server error
 	 */
 	@DELETE
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	public <R extends DomainResource> Response read(@PathParam("type") final String type,
-												    @PathParam("id") final String id) {
+	public <R extends DomainResource> Response delete(@PathParam("type") final String type,
+												      @PathParam("id") final String id) {
 		try {
 			logger.info(localizer.x("FHR_I004: DeleteResourceOperation deletes a resource {0} by its id {1}", type, id));										
 			OperationValidator.validateId(Optional.ofNullable(id));

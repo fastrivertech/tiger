@@ -65,13 +65,17 @@ public class HistoryResourceOperation extends ResourceOperation {
 	 * @param id Resource logical id, e.g., 1356
 	 * @param _format json or xml, default json and json supported
 	 * @return bundle bundle of resource history
+	 * @status 200 OK
+ 	 * @status 400 Bad request
+	 * @status 404 Not found 
+	 * @status 500 Internal server error
 	 */
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	public <R extends DomainResource> Response read(@PathParam("type") final String type, 
-						 						    @PathParam("id") final String id,
-						 						    @QueryParam("_format") @DefaultValue("json") final String _format) {
+	public <R extends DomainResource> Response history(@PathParam("type") final String type, 
+						 						       @PathParam("id") final String id,
+						 						       @QueryParam("_format") @DefaultValue("json") final String _format) {
 		
 		logger.info(localizer.x("FHR_I005: HistoryResourceOperation retrieves the hsitory of resource {0} by its id {1}", type, id));										
 		

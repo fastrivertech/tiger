@@ -72,7 +72,12 @@ public class UpdateResourceOperation extends ResourceOperation {
 	 * @param id Resource logical id, e.g., 1356
 	 * @param _format json or xml, default josn and json supported
 	 * @param body resource for updating
+	 * @return resource updated
+	 * @status 200 Updated Success
 	 * @status 201 Created Success
+	 * @status 404 Not found
+	 * @status 400 Bad request
+	 * @status 500 Internal server error
 	 */	
 	@PUT
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)

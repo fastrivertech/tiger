@@ -66,6 +66,10 @@ public class vReadResourceOperation extends ResourceOperation {
 	 * @param vid Resource version id, e.g., 1,3,5,6
 	 * @param _format json or xml, default josn and json supported
 	 * @return bundle bundle of resource history
+	 * @status 200 Success
+	 * @status 404 Not found
+	 * @status 400 Bad request
+	 * @status 500 Internal server error	 * 
 	 */
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH + ResourcePath.VID_PATH)
