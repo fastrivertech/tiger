@@ -228,16 +228,21 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 java.lang.Class<?> resourceExtensionClazz = Class.forName(resourceClazz.getName() + "Extension");
 				 BaseDao resourceExtensionDao = DaoFactory.getInstance().createResourceDao(resourceExtensionClazz);	
 				 Optional<Extension> extension = resourceExtensionDao.findById(deleted.getResourceId().toString());
-				 if (extension.isPresent() &&
-					 !Transaction.ActionCode.D.name().equals(extension.get().getValue())) {
-					 // change the status to 'deleted'
-					 extension.get().setValue(Transaction.ActionCode.D.name());
-					 ts.getEntityManager().merge(extension.get());
-					 // log transaction
-					 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
-					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
-					 transaction.setResource(found.get());			
-					 transactionDao.save(transaction);						 
+				 if (extension.isPresent()) {
+					 if(!Transaction.ActionCode.D.name().equals(extension.get().getValue())) {
+						 // change the status to 'deleted'
+						 extension.get().setValue(Transaction.ActionCode.D.name());
+						 ts.getEntityManager().merge(extension.get());
+						 // log transaction
+						 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
+						 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+						 transaction.setResource(found.get());			
+						 transactionDao.save(transaction);
+					 }
+					 else {
+						 // the resource has been deleted previously
+						 found = Optional.empty();
+					 }
 				 }
 				 ts.commit();			
 				 return found;
