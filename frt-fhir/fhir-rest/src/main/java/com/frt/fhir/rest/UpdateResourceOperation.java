@@ -26,9 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.Narrative;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
-
 import com.frt.dr.cache.CacheService;
 import com.frt.dr.cache.NamedCache;
 import com.frt.dr.transaction.model.Transaction;

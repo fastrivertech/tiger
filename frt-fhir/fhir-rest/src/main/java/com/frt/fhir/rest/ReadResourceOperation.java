@@ -33,7 +33,6 @@ import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
-
 import com.frt.dr.cache.CacheService;
 import com.frt.dr.cache.NamedCache;
 import com.frt.dr.service.query.CompositeParameter;
@@ -181,7 +180,6 @@ public class ReadResourceOperation extends ResourceOperation {
 				logger.info(localizer.x("FHR_I001: ReadResourceOperation reads a current resource by its logical Id {0}", id));				
 				Optional<R> found = fhirService.read(type, id, options);
 				if (found.isPresent()) {
-					// investigate: if need to auto gen narrative if not present
 					String resourceInJson = parser.serialize(found.get());  
 					String location = uriInfo.getAbsolutePath().getPath() + "/_history/" + found.get().getMeta().getVersionId();
 					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1", location, MimeType.APPLICATION_FHIR_JSON);
