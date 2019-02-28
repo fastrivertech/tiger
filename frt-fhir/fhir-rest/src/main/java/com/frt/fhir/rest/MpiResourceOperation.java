@@ -14,6 +14,7 @@ import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
+import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.Consumes;
@@ -25,7 +26,6 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.PathParam;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Bundle;
-
 import com.frt.fhir.model.BundleBuilder;
 import com.frt.fhir.mpi.MpiService;
 import com.frt.fhir.mpi.MpiServiceImpl;
@@ -257,6 +257,60 @@ public class MpiResourceOperation extends ResourceOperation {
 		String resourceInJson = jsonParser.serialize(outcome);
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
 	}
-		
+	
+
+   /**
+	 * Retrieve potential duplicates for the given patient identifier
+	 * @param identifer resource identifier
+	 * @param _format json or xml, default json and json supported
+	 * @return Bundle a set of potential duplicate patient resources 
+	 * @status 200 Success
+	 * @status 400 Bad request
+	 * @status 404 Not found
+	 * @status 500 Internal server error
+	 */	
+	@GET
+	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_PD_PATH)
+	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
+	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
+	public Response search_pd(@QueryParam("identifier") final String identifier,	
+							  @QueryParam("_format") @DefaultValue("json") final String _format) {		
+		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "search potentials"));													
+		String message = "Patient resource operation search potential duplicates not implemented yet"; 
+		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																						  OperationOutcome.IssueSeverity.INFORMATION, 
+																						  OperationOutcome.IssueType.INFORMATIONAL);
+		String resourceInJson = jsonParser.serialize(outcome);
+		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
+	}
+
+	/**
+	 * Resolve two potential duplicates
+	 * @param body parameters
+	 * 		  identifier1 the unique identifier of potential duplicate domain resource
+	 * 		  identifier2 the unique identifier of potential duplicate domain resource
+	 * 		  list of options vendor specific options: action: merge or separate  	 
+	 * @param _format json or xml, default json and json supported
+	 * @return Bundle a set of potential duplicate patient resources
+	 * @status 201 Resolved
+	 * @status 400 Bad request
+	 * @status 404 Not found
+	 * @status 500 Internal server error
+	 */
+	@POST
+	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_PD_PATH)
+	@Consumes({ MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON })
+	@Produces({ MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON })
+	public Response resolve_pd(@QueryParam("_format") @DefaultValue("json") final String _format,
+							   final String body) {
+		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "resolve potentials"));
+		String message = "Patient resource operation resolve potential duplicates not implemented yet";
+		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message,
+																						  OperationOutcome.IssueSeverity.INFORMATION, 
+																						  OperationOutcome.IssueType.INFORMATIONAL);
+		String resourceInJson = jsonParser.serialize(outcome);
+		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);
+	}
+
 }
 

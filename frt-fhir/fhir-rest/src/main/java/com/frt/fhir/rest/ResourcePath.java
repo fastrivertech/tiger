@@ -32,5 +32,6 @@ public interface ResourcePath {
 	 public static final String MPI_UNMERGE_PATH = "/$unmerge";	
 	 public static final String MPI_LINK_PATH = "/$link";	
 	 public static final String MPI_UNLINK_PATH = "/$unlink";		 
+	 public static final String MPI_PD_PATH = "/$potential";
 	 public static final String MPI_OPERATION_PATH = "/${operation:(macth)|(search)|(merge)|(unmerge)|(link)|(unlink)}";	 	
 }
