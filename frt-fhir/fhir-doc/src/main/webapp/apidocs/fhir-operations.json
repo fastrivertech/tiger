@@ -121,6 +121,73 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
+    "path" : "/1.0/Patient/$potential",
+    "operations" : [ {
+      "method" : "GET",
+      "nickname" : "search_pd",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "paramType" : "query",
+        "name" : "identifier"
+      }, {
+        "type" : "string",
+        "description" : "json or xml, default json and json supported",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      } ],
+      "summary" : "Retrieve potential duplicates for the given patient identifier",
+      "responseMessages" : [ {
+        "code" : 200,
+        "message" : "Success"
+      }, {
+        "code" : 400,
+        "message" : "Bad request"
+      }, {
+        "code" : 404,
+        "message" : "Not found"
+      }, {
+        "code" : 500,
+        "message" : "Internal server error"
+      } ],
+      "consumes" : [ "application/fhir+json", "application/json" ],
+      "produces" : [ "application/fhir+json", "application/json" ]
+    }, {
+      "method" : "POST",
+      "nickname" : "resolve_pd",
+      "type" : "Response",
+      "parameters" : [ {
+        "type" : "string",
+        "description" : "json or xml, default json and json supported",
+        "defaultValue" : "json",
+        "paramType" : "query",
+        "name" : "_format"
+      }, {
+        "type" : "string",
+        "description" : "parameters\n \t\t  identifier1 the unique identifier of potential duplicate domain resource\n \t\t  identifier2 the unique identifier of potential duplicate domain resource\n \t\t  list of options vendor specific options: action: merge or separate",
+        "paramType" : "body",
+        "name" : "body",
+        "required" : true
+      } ],
+      "summary" : "Resolve two potential duplicates",
+      "responseMessages" : [ {
+        "code" : 201,
+        "message" : "Resolved"
+      }, {
+        "code" : 400,
+        "message" : "Bad request"
+      }, {
+        "code" : 404,
+        "message" : "Not found"
+      }, {
+        "code" : 500,
+        "message" : "Internal server error"
+      } ],
+      "consumes" : [ "application/fhir+json", "application/json" ],
+      "produces" : [ "application/fhir+json", "application/json" ]
+    } ]
+  }, {
     "path" : "/1.0/Patient/$search",
     "operations" : [ {
       "method" : "POST",
