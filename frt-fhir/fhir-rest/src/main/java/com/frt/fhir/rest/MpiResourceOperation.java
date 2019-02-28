@@ -57,14 +57,26 @@ public class MpiResourceOperation extends ResourceOperation {
 		mpiService = new MpiServiceImpl();
 	}
 	
-	/**
-	 * Patient MPI operations
-	 * POST [base]/Patient/$match, [base]/Patient/$merge, [base]/Patient/$link
-	 * @param operation $match and $search
-	 * @param _format json or xml, json supported
-	 * @param body match message body
-	 * @return operation result 
-	 */
+  /**
+	* Match domain resource with golden domain resources in the MPI database based on the MPI provider 
+	* POST [base]/Patient/$match
+	* @param body match parameters containing domain resources and match options
+	* resource: patient which includes match fields
+	* onlyCertainMatch: if the flag sets true, only matched record with highest score return
+	* 				 	if the flag sets false, all matches records with match score return 
+	* 					onlyCertainMatch is similar with oneExactMacth  
+	* count: maximum number of records that is above match thresholds 
+	* @param _format json or xml, default json and json supported
+	* @return Bundle contains a set of matched golden domain resources or potentially matched records 
+	* resource: a list of golden patients matching above threshold 
+	* search:	match-grade extension with mode and score, mode specifies 'match' or 'potential match'
+	* operation outcome: operation result code
+	* @status 200 matched
+	* @status 201 no match and created
+	* @status 400 bad request
+	* @status 422 not processable resource 
+	* @status 500 internal server error
+	*/	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_MATCH_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
@@ -79,7 +91,7 @@ public class MpiResourceOperation extends ResourceOperation {
 			link.setRelation("self");
 			link.setUrl(uriInfo.getRequestUri().toString());					
 			String resourceInJson = jsonParser.serialize(bundle);
-			return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1.0", MimeType.APPLICATION_FHIR_JSON);			
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "1", MimeType.APPLICATION_FHIR_JSON);			
 		} catch (MpiServiceException | ParameterParserException ex) {
 			String message = "Patient resource operation macth invalid"; 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
@@ -90,6 +102,21 @@ public class MpiResourceOperation extends ResourceOperation {
 		}		
 	}
 	
+	/**
+	 * Probabilistic search golden domain resources based on search criteria and options
+	 * @param body search parameters containing domain resource and search options
+	 * resource: patient which include search fields (can be extended to support range search)
+	 * option: vendor-specific such as different search types: BLOCKER-SEARCH/ALPHA-SEARCH/PHONETIC-SEARCH  
+	 * threshold: match threshold 
+	 * @param _format json or xml, default json and json supported  			
+	 * @return Bundle contains a set of matched golden domain resources with score above the match threshold
+	 * resource:  a list of patients matching above threshold
+	 * search:	match-grade extension with mode and score, mode specifies 'match'
+	 * @status 200 matched
+ 	 * @status 400 bad request
+	 * @status 422 not processable resource 
+	 * @status 500 internal server error
+	 */	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_SEARCH_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
@@ -105,6 +132,30 @@ public class MpiResourceOperation extends ResourceOperation {
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
 	}
 
+	/**
+	 * Merge a source domain resource with the sourceId to a target domain resource with the targetId.
+	 * FHIR patient merge operation maps to HL7 ADT A40, identifier maps to PID-3 (Patient Identifier List) 
+	 * FHIR Identifier	=> HL7 PID-3 CX
+	 * 		use
+	 * 		type	    =>	   Identifier Type code
+	 * 		system 	    =>	   Assigning Authority 
+	 * 		value	    =>	   id
+	 * 		period
+	 *  	assigner    =>	   Assigning Authority
+	 * FHIR Merge operation is global merge or enterprise merge in MPI perspective, 
+	 * plus local merge or domain resource merge. After operation, the subsumed domain resource is not visible. 
+	 * @param body merge parameters
+	 * 		  sourceId the surviving unique identifier of the source domain resource
+	 * 		  targetId the subsumed unique identifier of the target domain resource
+	 *        options list of vendor specific options such as CalculateOnly = true / false
+	 * @return Bundle a set of merged domain resource and survived domain resource
+	 * operation outcome: operation result code
+	 * @status 201 merged
+	 * @status 202 has been merged
+	 * @status 400 bad request
+	 * @status 404 not found
+	 * @status 500 internal server error
+	 */	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_MERGE_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
@@ -119,7 +170,21 @@ public class MpiResourceOperation extends ResourceOperation {
 		String resourceInJson = jsonParser.serialize(outcome);
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
 	}
-
+	
+	/**
+	 * Unmerge a survived domain resource
+	 * @param body unmerge parameters
+	 * 		  resourceId the global unique identifier of the survived domain resource
+	 * 	      options list of options vendor specific options such as CalculateOnly = true / false
+	 * @param _format json or xml, default json and json supported
+	 * @return Bundle a set of source domain resource and target domain resource
+	 * operation outcome: operation result code
+	 * @status 201 unmerged
+	 * @status 202 has been unmerged
+	 * @status 400 bad request
+	 * @status 404 not found
+	 * @status 500 internal server error	 
+	 */	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_UNMERGE_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
@@ -135,6 +200,21 @@ public class MpiResourceOperation extends ResourceOperation {
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
 	}
 
+	/**
+	 * Link two domain resources,  FHIR link operation is global merge or enterprise merge 
+	 * in MPI perspective, but does not perform local merge or domain resource merge.
+	 * @param body link parameters
+	 * 		  sourceId the unique identifier of the source domain resource from the domain
+	 * 		  targetId the unique identifier of the target domain resource from the domain
+	 * 		  list of options vendor specific options such as CalculateOnly = true / false
+	 * @param _format json or xml, default json and json supported
+	 * @return Bundle a set of linked domain resources
+	 * @status 201 linked
+	 * @status 202 has been linked
+	 * @status 400 bad request
+	 * @status 404 not found
+	 * @status 500 internal server error
+	 */	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_LINK_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
@@ -150,6 +230,19 @@ public class MpiResourceOperation extends ResourceOperation {
 		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
 	}
 	
+	/**
+	 * Un-merge a survived domain resource 
+	 * @param body unlink parameters
+	 * 		  resourceId the unique identifier of the survived domain resource from the domain
+	 *        options list of options vendor specific options such as CalculateOnly = true / false
+	 * @param _format json or xml, default json and json supported
+	 * @return Bundle a set of merged domain resource and survived domain resource
+	 * @status 201 unlinked
+	 * @status 202 has been unlinked
+	 * @status 400 bad request
+	 * @status 404 not found
+	 * @status 500 internal server error
+	 */	
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_UNLINK_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
