@@ -64,6 +64,9 @@
 						<reportFormat>HTML</reportFormat> <!-- Pro only -->
 						<junitReport>true</junitReport>
 						<testFailIgnore>true</testFailIgnore>
+						<projectProperties>
+							<value>harness-folder=fhir-harness</value>
+						</projectProperties>
 					</configuration>
 					<phase>test</phase>
 					<goals>
