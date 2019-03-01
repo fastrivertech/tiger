@@ -93,7 +93,7 @@ public class DeleteResourceOperation extends ResourceOperation {
 			} else {
 				String resourceInJson = "";
 				return ResourceOperationResponseBuilder.build(resourceInJson, 
-						  									  Status.NO_CONTENT, 
+						  									  Status.NOT_FOUND, 
 						  									  "", 
 						  									  uriInfo.getAbsolutePath().getPath(),
 						  									  MimeType.APPLICATION_FHIR_JSON);				
