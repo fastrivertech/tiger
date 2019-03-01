@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<!-- saved from url=(0224)https://touchstone.aegis.net/touchstone/scriptexecution?exec=20190301041523063&qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json#WAITING_OPER -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Touchstone</title>
+
+<link rel="icon" type="image/png" href="https://touchstone.aegis.net/touchstone/static/touchstone/img/touchstone16x16_2.png">
+<link rel="stylesheet" href="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/bootstrap.min.css" integrity="sha256-7s5uDGW3AHqw6xtJmNNtr+OBRJUlgkNJEo78P4b0yRw=" crossorigin="anonymous">
+<link rel="stylesheet" href="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/bootstrap-theme.min.css" integrity="sha256-o8bM0Z5cFvrvvvQp0EJFi4LICvBA9FCx7iCNuojVsN8=" crossorigin="anonymous">
+<link rel="stylesheet" href="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/bootstrap-datetimepicker.min.css" integrity="sha256-yMjaV542P+q1RnH6XByCPDfUFhmOafWbeLPmqKh11zo=" crossorigin="anonymous">
+<link rel="stylesheet" href="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/font-awesome.min.css" integrity="sha256-k2/8zcNbxVIh5mnQ52A0r3a6jAgMGxFJFE2707UxGCk=" crossorigin="anonymous">
+<link rel="stylesheet" href="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/jquery-ui.min.css" integrity="sha256-bIm5dYrx5ArCy9p/Y/yaC8Y3xZdIIrXp2Kqdj6J5qR8=" crossorigin="anonymous">
+<link rel="stylesheet" href="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/chosen.min.css" integrity="sha256-4LdsL3Q2cUVVke0CPP9V7cKKromYbo1vBVtmGosZCEQ=" crossorigin="anonymous">
+<link rel="stylesheet" href="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/dataTables.bootstrap.min.css" integrity="sha256-7MXHrlaY+rYR1p4jeLI23tgiUamQVym2FWmiUjksFDc=" crossorigin="anonymous">
+<link href="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/touchstone-all-min-4.3.5.1.css" rel="stylesheet">
+
+<script async="" src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/analytics.js.download"></script><script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/jquery.min.js.download" integrity="sha256-ImQvICV38LovIsvla2zykaCTdEh1Z801Y+DSop91wMU=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/jquery-ui.min.js.download" integrity="sha256-xNjb53/rY+WmG+4L6tTl9m6PpqknWZvRt0rO1SRnJzw=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/chosen.jquery.min.js.download" integrity="sha256-86GOHgGCmkCetmI/XdnFZ5e3X3Jm7JjDm5lPpgcUJR4=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/jquery.cookie.min.js.download" integrity="sha256-1A78rJEdiWTzco6qdn3igTBv9VupN3Q1ozZNTR4WE/Y=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/bootstrap.min.js.download" integrity="sha256-KXn5puMvxCw+dAYznun+drMdG1IFl3agK0p/pqT9KAo=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/moment.min.js.download" integrity="sha256-De/cgZoAkgvqoxL9yJpJzPHyozUETFnSv7EQGfQWQ4o=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/moment-timezone-with-data-2012-2022.min.js.download" integrity="sha384-SS/d2wat9HpifgxjQpB2ssW5EnCR0c2DiQ7bVRVprR6hCJj/jmFp/lVO13SwhDxE" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/bootstrap-datetimepicker.min.js.download" integrity="sha256-5YmaxAwMjIpMrVlK84Y/+NjCpKnFYa8bWWBbUHSBGfU=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/d3.min.js.download" integrity="sha256-dsOXGNHAo/syFnazt+KTBsCQeRmlcW1XKL0bCK4Baec=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/jquery.dataTables.min.js.download" integrity="sha256-TX6POJQ2u5/aJmHTJ/XUL5vWCbuOw0AQdgUEzk4vYMc=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/dataTables.bootstrap.min.js.download" integrity="sha256-90YqnHom4j8OhcEQgyUI2IhmGYTBO54Adcf3YDZU9xM=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/jquery.hoverIntent.min.js.download" integrity="sha256-1PJD2CZ9yOhs6hDV0Z9EuvaZP4DUXB1b/RtUYPvzXro=" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/ua-parser.min.js.download" integrity="sha384-kPxIRVeBcaG8BnJwsyTCEkO5EnpWkslBtUaA3tgL/Itjw/D8ScjWXH6DEVwVF7or" crossorigin="anonymous"></script>
+<script src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/touchstone-all-min-4.3.5.1.js.download" type="text/javascript"></script>
+
+<script>
+	ts.setDtFormats(["MM/dd/yyyy hh:mm:ssa","dd/MM/yyyy hh:mm:ssa","MM/dd/yyyy HH:mm:ss","dd/MM/yyyy HH:mm:ss"],'America/Los_Angeles','MM/dd/yyyy hh:mm:ssa','hh:mm:ssa','MM/dd/yyyy hh:mm:ss.SSSa','hh:mm:ss.SSSa');
+</script>
+<script>
+			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+			m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+			})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+			ga('create', 'UA-78283-6', 'auto');
+			ga('send', 'pageview');
+		</script>
+	</head><body>
+    <div id="wrapper">
+        <!-- Navigation -->
+        <nav class="navbar navbar-default navbar-static-top " role="navigation" style="margin-bottom: 0;">
+			<div class="navbar-header">
+  	<a id="verytop"></a>
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand-nopad" href="https://touchstone.aegis.net/touchstone"><img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/TouchstoneAegiswhite50.png" alt="Touchstone 4.3.5 " style="width:273px;height:50px;" title="Touchstone 4.3.5 "></a>
+      </div>
+  <!-- /.navbar-header --><ul class="nav navbar-top-links navbar-right scrollSensitive" style="margin-right: 12px;">
+    <li class="toplink">
+	     	<a class="toplink" href="https://touchstone.aegis.net/touchstone/subscription"><i class="fa fa-coffee fa-fw"></i> Subscribe</a>
+	    </li>
+    <li class="dropdown visible-inline-block">
+		<div class="btn-group">
+		  <button type="button" class="btn dropdown-toggle toplink open" data-toggle="dropdown"><span class="m-r-5">HL7 FHIR</span><span class="caret"></span></button>
+		  <form id="chgDomainForm" role="form" action="https://touchstone.aegis.net/touchstone/changeDomain" method="POST"><ul class="dropdown-menu in" role="menu">
+				<li><a href="https://touchstone.aegis.net/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json" onclick="$(&#39;#sdomain&#39;).val(&#39;CDSH&#39;);ts.submitForm(&#39;chgDomainForm&#39;);return false;" class="active">CDS Hooks</a></li>
+					<li><a href="https://touchstone.aegis.net/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json" onclick="$(&#39;#sdomain&#39;).val(&#39;HL7_HL7v2&#39;);ts.submitForm(&#39;chgDomainForm&#39;);return false;" class="active">HL7 V2</a></li>
+					<li><a href="https://touchstone.aegis.net/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json" onclick="$(&#39;#sdomain&#39;).val(&#39;IHE_QRPH&#39;);ts.submitForm(&#39;chgDomainForm&#39;);return false;" class="active">IHE QRPH</a></li>
+					<li><a href="https://touchstone.aegis.net/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json" onclick="$(&#39;#sdomain&#39;).val(&#39;NEIM&#39;);ts.submitForm(&#39;chgDomainForm&#39;);return false;" class="active">NEIM</a></li>
+					<li><a href="https://touchstone.aegis.net/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json" onclick="$(&#39;#sdomain&#39;).val(&#39;NWHIN&#39;);ts.submitForm(&#39;chgDomainForm&#39;);return false;" class="active">NwHIN</a></li>
+					<li><a href="https://touchstone.aegis.net/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json" onclick="$(&#39;#sdomain&#39;).val(&#39;OMG&#39;);ts.submitForm(&#39;chgDomainForm&#39;);return false;" class="active">OMG</a></li>
+					<li><a href="https://touchstone.aegis.net/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json" onclick="$(&#39;#sdomain&#39;).val(&#39;SnI&#39;);ts.submitForm(&#39;chgDomainForm&#39;);return false;" class="active">SnI</a></li>
+					</ul>
+			<input type="hidden" name="sdomain" id="sdomain">
+			<input type="hidden" name="prevPath" value="/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json">			  
+		  </form></div>
+	</li>
+    <li class="dropdown  visible-md-inline-block visible-lg-inline-block">
+		<div class="btn-group">
+		  	<button type="button" class="btn dropdown-toggle toplink open" data-toggle="dropdown"><i class="fa fa-server fa-fw"></i> <span class="m-r-5">Test Systems</span><span class="caret"></span></button>
+		  	<ul class="dropdown-menu" role="menu">
+				<li>
+					<a href="https://touchstone.aegis.net/touchstone/testsystems"><i class="fa fa-list-ol fa-fw"></i> List</a>
+				</li>
+				<li>
+					<a href="https://touchstone.aegis.net/touchstone/newTestSystem"><i class="fa fa-file-o fa-fw"></i> New Test System</a>
+				</li>	
+			</ul>
+		</div>
+	</li>
+    <li class="dropdown visible-md-inline-block visible-lg-inline-block">
+		<div class="btn-group">
+		  <button type="button" class="btn dropdown-toggle toplink open" data-toggle="dropdown"><i class="fa fa-building fa-fw"></i> <span class="m-r-5">Organizations</span><span class="caret"></span></button>
+		  <ul class="dropdown-menu" role="menu">
+				<li>
+					<a href="https://touchstone.aegis.net/touchstone/organizations"><i class="fa fa-list-ol fa-fw"></i> List</a>
+				</li>
+				<li style="display: none;">
+					<a href="https://touchstone.aegis.net/touchstone/becomeMember"><i class="fa fa-object-group fa-fw"></i> Become a member</a>
+				</li>		
+				<li style="display: block;">
+					<a href="https://touchstone.aegis.net/touchstone/becomeMember"><i class="fa fa-object-group fa-fw"></i> Switch Membership</a>
+				</li>										
+				<li>
+					<a href="https://touchstone.aegis.net/touchstone/newOrganization"><i class="fa fa-file-o fa-fw"></i> New Organization</a>
+				</li>							
+				<li style="display: block;">
+					<a href="https://touchstone.aegis.net/touchstone/leaveOrganization"><i class="fa fa-user-times fa-fw"></i> Leave Organization</a>
+				</li>
+				<li style="display: none;">
+					<a href="https://touchstone.aegis.net/touchstone/cancelMembershipRequest"><i class="fa fa-user-times fa-fw"></i> Cancel Membership</a>
+				</li>						
+				<li style="display: block;">
+					<a href="https://touchstone.aegis.net/touchstone/editOrg?id=5bfd983e0a120e62303faf46"><i class="fa fa-edit fa-fw"></i> Edit Organization</a>
+				</li>
+				<li style="display: none;">
+					<a href="https://touchstone.aegis.net/touchstone/org?id=5bfd983e0a120e62303faf46"><i class="fa fa-building fa-fw"></i> My Organization</a>
+				</li>					
+				<li style="display: block;">
+					<a href="https://touchstone.aegis.net/touchstone/orgGroups"><i class="fa fa-cogs fa-fw"></i> Org Groups</a>
+				</li>			
+		  </ul>
+		</div>
+    </li>	
+    <li class="visible-md-inline-block visible-lg-inline-block">
+	     	<a class="toplink" href="https://touchstone.aegis.net/touchstone/users"><i class="fa fa-users fa-fw"></i> Users</a>
+	    </li>
+    <li class="visible-xs-inline-block visible-sm-inline-block visible-md-inline-block visible-lg-inline-block">
+     	<a class="toplink" href="https://touchstone.aegis.net/touchstone/userguide/html/index.html"><i class="fa fa-book fa-fw"></i> Docs</a>
+    </li>            	      
+    <li class="dropdown ">
+		<div class="btn-group">
+		  <button type="button" class="btn dropdown-toggle toplink open" data-toggle="dropdown"><span class="m-r-5">Charles</span><span class="caret"></span></button>
+		  <ul class="dropdown-menu" role="menu">
+       		<li><a href="https://touchstone.aegis.net/touchstone/changeMySettings"><i class="fa fa-cog fa-fw"></i> My Settings</a></li>
+       		<li><a href="https://touchstone.aegis.net/touchstone/TouchstoneUserAgreement-CloudSubscription" onclick="ts.popup(&#39;/touchstone/TouchstoneUserAgreement-CloudSubscription&#39;, &#39;1200&#39;);return false;" target="_blank"><i class="fa fa-thumbs-o-up"></i> User Agreement</a></li><li><a href="https://touchstone.aegis.net/touchstone/TouchstonePrivacyPolicy" onclick="ts.popup(&#39;/touchstone/TouchstonePrivacyPolicy&#39;, &#39;1200&#39;);return false;" target="_blank"><i class="fa fa-user-secret"></i> Privacy Policy</a></li><li><a href="https://touchstone.aegis.net/touchstone/placeholders?email=charles.ye%40fastrivertech.com"><i class="fa fa-fw">${}</i> My Placeholders</a></li>
+       		<li><a href="https://touchstone.aegis.net/touchstone/changePassword"><i class="fa fa-key fa-fw"></i> Change Password</a></li>
+       		<li><a href="mailto:touchstone_support@aegis.net"><i class="fa fa-question fa-fw"></i> Help / Support</a></li><li style="display: block"><a href="https://touchstone.aegis.net/touchstone/logout"><i class="fa fa-sign-out fa-fw"></i> Sign Out</a></li>
+		  </ul>
+		</div>
+    </li>
+    <!-- /.dropdown -->
+	<li style="display: none"><a href="https://touchstone.aegis.net/touchstone/login" class="toplink"><i class="fa fa-sign-in fa-fw"></i> Sign In</a></li>
+	<li style="display: none"><a href="https://touchstone.aegis.net/touchstone/register" class="toplink"><i class="fa fa-pencil fa-fw"></i> Register</a></li>
+</ul>
+<!-- /.navbar-top-links --><div id="sidebar">
+	<div class="navbar-default sidebar" role="navigation">
+		<div class="sidebar-nav navbar-collapse">
+			<ul class="nav" id="side-menu">
+			    <li class="navHeader">
+		          <div class="navHeaderPassive"><i class="fa fa-line-chart fa-fw"></i> Analytics<span class="fa"></span></div>
+					<ul class="nav nav-second-level in collapse" aria-expanded="false">
+						<li>
+								<a href="https://touchstone.aegis.net/touchstone/analytics/conformance"><i class="fa fa-fire fa-fw"></i> Conformance</a>
+							</li>
+						<li>
+							<a href="https://touchstone.aegis.net/touchstone/analytics/publishedList"><i class="fa fa-book fa-fw"></i> Published</a>
+						</li>
+						</ul>
+		        </li>	
+                <li class="navHeader" style="display: block;">
+                	<div class="navHeaderPassive"><i class="fa fa-space-shuttle fa-fw"></i> Test Executions<span class="fa"></span></div>
+					<ul class="nav nav-second-level in collapse" aria-expanded="false">
+						<li>
+							<a href="https://touchstone.aegis.net/touchstone/execution"><i class="fa fa-rocket fa-fw"></i> Test Execution</a>
+						</li>
+						<li>
+							<a href="https://touchstone.aegis.net/touchstone/testexecutions"><i class="fa fa-list fa-fw"></i> History</a>
+						</li>
+						<li>
+							<a href="https://touchstone.aegis.net/touchstone/exchanges"><i class="fa fa-arrows-h fa-fw"></i> Exchanges</a>
+						</li>													
+					</ul>
+                </li>	
+                <li class="navHeader" style="display: block;">
+                	<div class="navHeaderPassive" style="font-weight: normal;"><i class="fa fa-paw fa-fw"></i> Test Setups<span class="fa"></span></div>
+					<ul class="nav nav-second-level in collapse" aria-expanded="false">
+						<li>
+							<a href="https://touchstone.aegis.net/touchstone/testsetup"><i class="fa fa-wrench fa-fw"></i> Test Setup</a>
+						</li>
+						<li>
+							<a href="https://touchstone.aegis.net/touchstone/tsetups"><i class="fa fa-list-ol fa-fw"></i> List</a>
+						</li>							
+					</ul>
+                </li>								
+				<li class="">
+					<a href="https://touchstone.aegis.net/touchstone/testdefinitions" class=" navigateTo"><i class="fa fa-sitemap fa-fw"></i> Test Definitions<span class="fa"></span></a>
+					<ul class="nav nav-second-level  collapse" aria-expanded="false">
+						<div id="testDefTree" class="dynatree">
+							</div>
+					</ul>
+					</li>
+				<li class="navHeader visible-xs visible-sm">
+	                	<div class="navHeaderPassive"><i class="fa fa-server fa-fw"></i> Test Systems<span class="fa"></span></div>
+						<ul class="nav nav-second-level in collapse" aria-expanded="false">
+							<li>
+								<a href="https://touchstone.aegis.net/touchstone/testsystems"><i class="fa fa-list-ol fa-fw"></i> List</a>
+							</li>
+							<li>
+								<a href="https://touchstone.aegis.net/touchstone/newTestSystem"><i class="fa fa-file-o fa-fw"></i> New Test System</a>
+							</li>							
+						</ul>
+	                </li>		
+	                <li class="navHeader visible-xs visible-sm">
+	                    <a href="https://touchstone.aegis.net/touchstone/users" class="navHeaderPassive"><i class="fa fa-users fa-fw"></i> Users</a>
+	                </li>                  		
+	                <li class="navHeader visible-xs visible-sm">
+	                	<div class="navHeaderPassive"><i class="fa fa-building fa-fw"></i> Organizations<span class="fa"></span></div>
+						<ul class="nav nav-second-level in collapse" aria-expanded="false">
+							<li>
+								<a href="https://touchstone.aegis.net/touchstone/organizations"><i class="fa fa-list-ol fa-fw"></i> List</a>
+							</li>
+							<li style="display: none;">
+								<a href="https://touchstone.aegis.net/touchstone/becomeMember"><i class="fa fa-object-group fa-fw"></i> Become a member</a>
+							</li>		
+							<li style="display: none;">
+								<a href="https://touchstone.aegis.net/touchstone/becomeMember"><i class="fa fa-object-group fa-fw"></i> Switch Membership</a>
+							</li>										
+							<li style="display: none;">
+								<a href="https://touchstone.aegis.net/touchstone/newOrganization"><i class="fa fa-file-o fa-fw"></i> New Organization</a>
+							</li>							
+							<li style="display: block;">
+								<a href="https://touchstone.aegis.net/touchstone/leaveOrganization"><i class="fa fa-user-times fa-fw"></i> Leave Organization</a>
+							</li>
+							<li style="display: none;">
+								<a href="https://touchstone.aegis.net/touchstone/cancelMembershipRequest"><i class="fa fa-user-times fa-fw"></i> Cancel Membership</a>
+							</li>						
+							<li style="display: block;">
+								<a href="https://touchstone.aegis.net/touchstone/editOrg?id=5bfd983e0a120e62303faf46"><i class="fa fa-edit fa-fw"></i> Edit Organization</a>
+							</li>
+							<li style="display: none;">
+								<a href="https://touchstone.aegis.net/touchstone/org?id=5bfd983e0a120e62303faf46"><i class="fa fa-building fa-fw"></i> My Organization</a>
+							</li>					
+							<li style="display: block;">
+								<a href="https://touchstone.aegis.net/touchstone/orgGroups"><i class="fa fa-cogs fa-fw"></i> Org Groups</a>
+							</li>						
+						</ul>
+	                </li>
+                </ul>
+		</div>
+		<!-- /.sidebar-collapse -->
+	</div>
+	
+</div>
+</nav>
+
+    </div>
+    <!-- /#wrapper -->
+	<div id="page-wrapper" style="min-height: 617px;">
+		<div class="container">
+	<div class="row">
+		<div class="" style="">
+			</div>
+	</div>
+</div><div class="row">
+			<div class="col-lg-12">
+				<div class="page-header">
+					<h3 class="inline">Test Script Execution</h3><h4 class="inline"> - /FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json</h4>
+					<a class="btn btn-link pull-right" href="https://touchstone.aegis.net/touchstone/execution?exec=20190301041523063"><i class="fa fa-arrow-left"></i> To Test Execution</a>
+					<a class="btn btn-link pull-right" href="https://touchstone.aegis.net/touchstone/analytics/conformance#/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json"><i class="fa fa-arrow-left"></i> To Analytics</a>
+					</div>
+			</div>
+			<!-- /.col-lg-12 -->
+		</div>
+		<div class="row">
+			<div class="col-lg-8">
+				<div class="row">
+					<div class="col-lg-4">
+						<table class="tsTable">
+							<tbody><tr>
+								<th class="vtop text-right">Exec Id:</th>
+								<td>20190301041523063</td>
+							</tr>						
+							<tr>
+								<th class="vtop text-right">Start Time:</th>
+								<td>03/01/2019 01:15:23PM</td>
+							</tr>
+							<tr>
+								<th class="vtop text-right">End Time:</th>
+								<td>03/01/2019 01:15:27PM</td>
+							</tr>
+							<tr>
+								<th class="vtop text-right">Status:</th>
+								<td><span class="smallStatus statusPASS" title="Passed">Passed</span></td>
+							</tr>
+							<tr>
+								<th class="vtop text-right">Duration:</th>
+								<td>4.086s</td>
+							</tr>
+							<tr>
+								<th class="vtop text-right">Version:</th>
+								<td><span title="">1</span> </td>							
+							</tr>		
+							<tr>
+								<th class="vtop text-right">Specification:</th>
+								<td><a target="_blank" href="http://hl7.org/fhir/directory.html">FHIR 4.0.0</a> - R4 Official</td>							
+							</tr>							
+						</tbody></table>					
+					</div>
+					<div class="col-lg-8">
+						<table class="tsTable">
+							<tbody><tr>
+								<th class="vtop text-right">Description:</th>
+								<td>Patient Track - Formal Testing - tests FHIR Server using the JSON format to search for a Patient resource instance created in the test setup where the client assigns the resource id. The destination server must support conditional create using the update (PUT) operation, read, search and delete to insure the Patient resource does not exist or is removed prior to test execution.</td>
+							</tr>						
+							<tr>
+									<th class="vtop text-right">Test Setup:</th>
+									<td>FHIR4-0-0-Connectathon20-Patient-02-Formal-FHIRServer-06-PatientSearching--tests</td>
+								</tr>							
+							<tr>
+								<th class="vtop text-right">Executed By:</th>
+								<td>
+									<a href="https://touchstone.aegis.net/touchstone/user?name=Charles+YE">Charles YE</a>
+										</td>
+							</tr>
+							<tr>
+								<th class="vtop text-right">Organization:</th>
+								<td>
+									<a href="https://touchstone.aegis.net/touchstone/org?id=5bfd983e0a120e62303faf46">Fast River Tech</a></td>
+							</tr>
+							<tr>
+								<th class="vtop text-right">Origin:</th>
+								<td><div>
+			<span>TouchstoneFHIR</span>				
+				</div>
+	</td>
+							</tr>							
+							<tr>
+								<th class="vtop text-right">Destination:</th>
+								<td><div>
+			<span>
+					<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+						<span class="tsHovPopper linkNoColor" data-placement="auto right" title="" href="/touchstone/capabilitiesContent?id=0f941bdeefe3fd2cccfed362ece3ad5e28948fb140977a79dc0583ac97f0b242&amp;multiFormat=false&amp;org=Fast+River+Tech&amp;testSystem=FRT-EC2&amp;time=1551474923063&amp;tsId=5c5e46b40a120e32e071e1fd" onclick="ts.popup(&#39;/touchstone/capabilitiesContent?id=0f941bdeefe3fd2cccfed362ece3ad5e28948fb140977a79dc0583ac97f0b242&amp;multiFormat=false&amp;org=Fast+River+Tech&amp;testSystem=FRT-EC2&amp;time=1551474923063&amp;tsId=5c5e46b40a120e32e071e1fd&#39;, &#39;1200&#39;);return false;" target="_blank" role="navigation" tabindex="0" data-original-title="Capability Statement at 03/01/2019 01:15:23PM"><sup class="confPopperNP">C</sup></span>		
+				<div class="tsPContent" style="display: none;font-size: 5px;">
+			  <table class="tsTable" style="max-width: 400px;">
+			  	<tbody><tr><th class="text-nowrap text-right">Name</th><td class="text-nowrap">FastRiverTechFhir</td></tr>
+			  	<tr><th class="text-nowrap text-right">Version</th><td class="text-nowrap">20130510</td></tr>
+			  	<tr><th class="text-nowrap text-right">FHIR Version</th><td class="text-nowrap">4.0.0</td></tr>
+			  	<tr><th class="text-nowrap text-right">Software Name</th><td class="text-nowrap">FRT</td></tr>
+			  	<tr><th class="text-nowrap text-right">Software Version</th><td class="text-nowrap">0.00.020.2134</td></tr>	 
+			  	<tr><th class="text-nowrap text-right">Status</th><td class="text-nowrap">DRAFT</td></tr> 	
+			  	<tr><th class="text-nowrap text-right">Formats Supported</th><td class="text-nowrap">xml,json</td></tr> 
+			  	<tr><th class="text-nowrap text-right">Publisher</th><td class="text-nowrap">Fast River Technologies Inc.</td></tr>
+			  	<tr><th class="text-nowrap text-right">Publication Date</th><td class="text-nowrap">2019-02-18</td></tr>
+			  	<tr>
+			  		<th class="text-nowrap text-right">Validation Result</th>
+					<td><span class="error">Invalid 4.0.0 JSON Capability Statement.</span></td>
+						</tr>
+			  </tbody></table>
+			 <div class="lightWarning" style="max-width: 400px;">One or more interactions in this test script are unsupported by the Capability Statement.</div>
+					<hr class="m-t-2 m-b-2">
+					<table class="tsInteracTable">
+						<tbody><tr><th colspan="2">TestScript Interaction</th><th class="text-center">Supported</th></tr>
+						<tr><td class="text-nowrap">FHIR-JSON</td><td class="text-nowrap">rest/server/resource/patient/delete</td><td class="text-center"><i class="fa fa-check" aria-hidden="true"></i></td></tr>
+								<tr><td class="text-nowrap">FHIR-JSON</td><td class="text-nowrap">rest/server/resource/patient/read</td><td class="text-center"><i class="fa fa-check" aria-hidden="true"></i></td></tr>
+								<tr><td class="text-nowrap">FHIR-JSON</td><td class="text-nowrap">rest/server/resource/patient/search-type</td><td class="text-center"><i class="fa fa-times" aria-hidden="true"></i></td></tr>
+								<tr><td class="text-nowrap">FHIR-JSON</td><td class="text-nowrap">rest/server/resource/patient/search/identifier</td><td class="text-center"><i class="fa fa-check" aria-hidden="true"></i></td></tr>
+									<tr><td class="text-nowrap">FHIR-JSON</td><td class="text-nowrap">rest/server/resource/patient/search/given</td><td class="text-center"><i class="fa fa-times" aria-hidden="true"></i></td></tr>
+									<tr><td class="text-nowrap">FHIR-JSON</td><td class="text-nowrap">rest/server/resource/patient/search/family</td><td class="text-center"><i class="fa fa-times" aria-hidden="true"></i></td></tr>
+									<tr><td class="text-nowrap">FHIR-JSON</td><td class="text-nowrap">rest/server/resource/patient/updatecreate</td><td class="text-center"><i class="fa fa-check" aria-hidden="true"></i></td></tr>
+								</tbody></table>			
+				  </div>
+		http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>				
+				</div>
+	</td>
+							</tr>								
+							<tr>
+								<th class="vtop text-right">Test Script:</th>
+								<td class="vtop visible-md visible-lg">
+									<a href="https://touchstone.aegis.net/touchstone/testscriptex?eId=5c79a0eb0a120e0c1dd95894&amp;id=d12cd5da0b867e946e1c7824b311f8eea6c889528b4a378a75c961803ce0a272&amp;name=%2fFHIR4-0-0-Connectathon20%2fPatient-02-Formal%2fFHIRServer%2f06-PatientSearching%2fpatient-formal-c20-fhirserver-06-search-client-id-json&amp;version=1&amp;latestVersion=1&amp;itemId=&amp;spec=HL7_FHIR_4_0_0" style="margin-left: 5px;" onclick="ts.popup(&#39;/touchstone/testscriptex?eId=5c79a0eb0a120e0c1dd95894&amp;id=d12cd5da0b867e946e1c7824b311f8eea6c889528b4a378a75c961803ce0a272&amp;name=%2fFHIR4-0-0-Connectathon20%2fPatient-02-Formal%2fFHIRServer%2f06-PatientSearching%2fpatient-formal-c20-fhirserver-06-search-client-id-json&amp;version=1&amp;latestVersion=1&amp;itemId=&amp;spec=HL7_FHIR_4_0_0&#39;);return false;">/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json</a>
+								</td>								
+							</tr>																								
+						</tbody></table>					
+					</div>					
+				</div>
+				<div class="row row-buffer">
+					<div class="col-lg-12">
+						<div class="row" style="vertical-align: middle;">
+	<div class="statCounts">
+		<div class="sc totalTests currentStatusSelection clickable " onclick="ts.replaceLocation(&#39;/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json&#39;, true);" role="search" tabindex="0">
+				<div class="count">1</div>
+				<div class="countLabel">tests</div>		
+		</div>
+		<div class="sc statusSelection scPassed statusNonZeroCount" onclick="ts.replaceLocation(&#39;/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json&amp;status=PASS&#39;, true);" role="search" tabindex="0">
+			<div class="count">1</div>
+			<div class="countLabel">passes</div>
+		</div>
+		<div class="sc statusSelection scFailed  statusZeroCount" onclick="ts.replaceLocation(&#39;/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json&amp;status=FAIL&#39;, false);" role="search" tabindex="0">
+			<div class="count">0</div>
+			<div class="countLabel">failures</div>
+		</div>
+		<div class="sc statusSelection scSkipped statusZeroCount" onclick="ts.replaceLocation(&#39;/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json&amp;status=SKIPPED&#39;, false);" role="search" tabindex="0">
+			<div class="count">0</div>
+			<div class="countLabel">skipped</div>
+		</div>	
+	<div class="sc statusSelection scInProgress  statusZeroCount" onclick="ts.replaceLocation(&#39;/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json&amp;status=RUNNING&#39;, false);" role="search" tabindex="0">
+					<div class="count">0<i class=""></i></div>
+					<div class="countLabel">running</div>
+				</div>	
+			<div class="sc statusSelection scWaiting  statusZeroCount" onclick="ts.replaceLocation(&#39;/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json&amp;status=WAITING&#39;, false);" role="search" tabindex="0">
+			<div class="count">0</div>
+			<div class="countLabel">waiting</div>
+		</div>		
+		<div class="sc statusSelection scNotStarted  statusZeroCount" onclick="ts.replaceLocation(&#39;/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json&amp;status=NOT_STARTED&#39;, false);" role="search" tabindex="0">
+			<div class="count">0</div>
+			<div class="countLabel">not started</div>
+		</div>
+	</div>
+	<div class="sc statRateBox statBoxSuccess" role="search" tabindex="0">
+		<span class="percent">100%</span><br>successful</div>
+	<button class="btn btn-xs btn-success m-l-8 m-t-30" onclick="window.location.reload();return false;">Refresh</button>	
+</div></div>
+				</div>				
+			</div>
+			<div class="col-lg-4">
+				<h5 class="bold" style="margin: 3px;">Interactions</h5>
+	<table class="sbCountsTable">
+		<tbody><tr>
+			<th colspan="2"></th>
+			<th>100% passed</th>
+			<th>Pass</th>
+			<th>Fail</th>
+			<th>Other</th>
+			<th>Total</th>
+		</tr>
+		<tr class="statConfSummaryRow">
+			<th colspan="2" class="text-right vtop">Summary</th>
+			<td class="text-center vtop"><div class="test-meter" style="width: 79.5px; margin-top:1px;">
+	<span class="test-pass" title="3 of 3 interactions passed" style="height:10.95px;width:100.0%;"></span></div>
+</td>
+			<td class="text-right vtop" title="3 of 3 interactions passed">3</td>
+			<td class="text-right vtop" title="0 of 3 interactions failed">0</td>
+			<td class="text-right vtop" title="0 of 3 interactions not started">0</td>
+			<td class="text-right vtop" title="3 total interactions (operations)">3</td>
+		</tr>
+		<tr>
+					<td class="text-right vtop"><a href="http://hl7.org/fhir/R4/http.html#read" target="_blank">read</a>
+	</td>
+					<td class="vtop"><a href="http://hl7.org/fhir/R4/patient.html" target="_blank">Patient</a>
+	</td>
+					<td class="text-center vtop"><div class="test-meter" style="width: 79.5px; margin-top:1px;">
+	<span class="test-pass" title="1 of 1 interactions passed" style="height:10.95px;width:100.0%;"></span></div>
+</td>
+					<td class="text-right vtop" title="1 of 1 interactions passed">1</td>
+					<td class="text-right vtop" title="0 of 1 interactions failed">0</td>
+					<td class="text-right vtop" title="0 of 1 interactions not started">0</td>
+					<td class="text-right vtop" title="1 total interactions (operations)">1</td>
+				</tr>	
+			<tr>
+					<td class="text-right vtop"><a href="http://hl7.org/fhir/R4/http.html#search" target="_blank">search<wbr>-type</a>
+	</td>
+					<td class="vtop"><a href="http://hl7.org/fhir/R4/patient.html" target="_blank">Patient</a>
+	</td>
+					<td class="text-center vtop"><div class="test-meter" style="width: 79.5px; margin-top:1px;">
+	<span class="test-pass" title="1 of 1 interactions passed" style="height:10.95px;width:100.0%;"></span></div>
+</td>
+					<td class="text-right vtop" title="1 of 1 interactions passed">1</td>
+					<td class="text-right vtop" title="0 of 1 interactions failed">0</td>
+					<td class="text-right vtop" title="0 of 1 interactions not started">0</td>
+					<td class="text-right vtop" title="1 total interactions (operations)">1</td>
+				</tr>	
+			<tr>
+					<td class="text-right vtop"><a href="http://hl7.org/fhir/R4/http.html#update" target="_blank">update<wbr>Create</a>
+	</td>
+					<td class="vtop"><a href="http://hl7.org/fhir/R4/patient.html" target="_blank">Patient</a>
+	</td>
+					<td class="text-center vtop"><div class="test-meter" style="width: 79.5px; margin-top:1px;">
+	<span class="test-pass" title="1 of 1 interactions passed" style="height:10.95px;width:100.0%;"></span></div>
+</td>
+					<td class="text-right vtop" title="1 of 1 interactions passed">1</td>
+					<td class="text-right vtop" title="0 of 1 interactions failed">0</td>
+					<td class="text-right vtop" title="0 of 1 interactions not started">0</td>
+					<td class="text-right vtop" title="1 total interactions (operations)">1</td>
+				</tr>	
+			</tbody></table>
+</div>
+		</div>		
+		<div class="row row-buffer">
+			<div class="col-lg-12">
+				<h4 class="inline">Setup</h4>
+		<span class="showHide secHide" style="display:none;">[hide]</span><span class="showHide secShow" style="display:;">[show]</span><span class="m-l-15" style="font-size:0.9em;"><strong>Duration</strong>: 2.429s<strong class="m-l-15">Status</strong>: <span class="smallStatus statusPASS" title="Passed">Passed</span></span>
+	<div id="setupSec" class="secBody" style="display:none;">
+		<table class="tsTable">
+			</table>
+		<table class="sectionTable">
+				<tbody><tr>
+					<th class="sectionTableHeader visible-md visible-lg">Action</th>
+					<th class="sectionTableHeader">Description</th>
+					<th class="sectionTableHeader" style="text-align: center;">Status</th>
+					<th class="sectionTableHeader visible-md visible-lg">Duration</th>
+					<th class="sectionTableHeader visible-md visible-lg">Details</th>
+				</tr>
+				<tr>
+	<td class="vtop visible-md visible-lg">Operation</td>
+	<td class="vtop summaryCol">
+		<div class="operationSummary">
+			<a name="087b6d62-fe1b-4ded-93eb-cf1ffd6f7c8b" class="noLink"></a>
+			<strong>
+				search-type</strong>
+			
+				- Patient</div>
+		<table class="sectionSubTable" style="margin-top: 10px; min-width: 200px;">
+			<tbody><tr>
+				<th>Origin:</th>
+				<td><div>
+	TouchstoneFHIR</div>
+
+
+
+
+</td>
+			</tr>
+			<tr>
+				<th>Destination:</th>
+				<td class="visible-sm visible-xs text-break" style="width: 140px;"><div>
+	<span>
+		<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+				http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>
+	</div>
+
+
+
+
+</td>
+				<td class="visible-md visible-lg"><div>
+	<span>
+		<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+				http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>
+	</div>
+
+
+
+
+</td>
+			</tr>
+			<tr class="visible-xs visible-sm">
+					<th>Response:</th>
+					<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=80f7fe09-410f-45e7-80f0-05ace668d819-Resp&amp;itemId=last+response&amp;operation=search+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=80f7fe09-410f-45e7-80f0-05ace668d819-Resp&amp;itemId=last+response&amp;operation=search+Patient&#39;);return false;">Body</a></td>
+				</tr>
+			</tbody></table>
+		</td>
+	<td class="vtop text-center statusCol"><div class="">
+					200<br>OK</div>				
+			</td>
+	<td class="vtop text-center visible-md visible-lg">0.463s</td>
+	<td class="visible-md visible-lg vtop">
+			<div class="more" style="display: block;">...</div>
+<div class="moreContainer hideInitial " style="display: none;">
+	<div class="hideMoreContainer m-t-1">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+				<tbody><tr>
+					<th>Type:</th>
+					<td><a href="http://hl7.org/fhir/R4/http.html#search" target="_blank">search<wbr>-type</a>
+	</td>
+				</tr>
+				<tr>
+						<th>Resource:</th>
+						<td><a href="http://hl7.org/fhir/R4/patient.html" target="_blank">Patient</a>
+	</td>
+					</tr>
+				<tr>
+						<th>Params:</th>
+						<td>
+							<a href="http://hl7.org/fhir/R4/patient.html#search" target="_blank">given</a>
+	,<a href="http://hl7.org/fhir/R4/patient.html#search" target="_blank">family</a>
+	</td>
+					</tr>
+				<tr>
+							<th>URL:</th>
+							<td>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient?given=PeterNDlQAb&amp;family=ChalmersNDlQAb</td>
+						</tr>
+					<tr>
+						<th>Description:</th>
+						<td>System-generated search operation from conditional delete.</td>
+					</tr>
+				<tr>
+					<th>Definition:</th>
+					<td><div class="more">...</div>
+<div class="moreContainer hideInitial ">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "type" : "search",
+  "resource" : "Patient",
+  "accept" : "json",
+  "description" : "System-generated search operation from conditional delete.",
+  "params" : "?given=${patientGivenName}&family=${patientFamilyName}"
+}</xmp>
+</div>		</td>
+				</tr>
+				<tr>
+						<th>Request:</th>
+						<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+									<tbody><tr>
+										<th>Method:</th>
+										<td>GET</td>
+									</tr>
+									<tr>
+										<th>Path:</th>
+										<td>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient?given=PeterNDlQAb&amp;family=ChalmersNDlQAb</td>
+									</tr>
+									<tr>
+											<th>Headers:</th>
+											<td style="padding: 0; margin: 0;">
+												<table>
+													<tbody><tr>
+	<th class="text-nowrap">Accept</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr></tbody></table>
+											</td>
+										</tr>
+									</tbody></table>
+							</div>
+</div>		</td>
+					</tr>
+				<tr>
+						<th>Response:</th>
+						<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+									<tbody><tr>
+										<th>Status:</th>
+										<td>HTTP/1.1 200 </td>
+									</tr>
+									<tr>
+											<th>Headers:</th>
+											<td style="padding: 0; margin: 0;">
+												<table>
+													<tbody><tr>
+	<th class="text-nowrap">Content-Length</th>
+	<td><xmp class="headerValue">313</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Content-Type</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Date</th>
+	<td><xmp class="headerValue">Fri, 01 Mar 2019 21:15:23 GMT</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">ETag</th>
+	<td><xmp class="headerValue">"W/1.0"</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Last-Modified</th>
+	<td><xmp class="headerValue">Fri, 01 Mar 2019 21:15:24 GMT</xmp></td>
+</tr></tbody></table>
+											</td>
+										</tr>
+									</tbody></table>
+							</div>
+</div>		</td>
+					</tr>
+					<tr>
+							<th>Response:</th>
+							<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=80f7fe09-410f-45e7-80f0-05ace668d819-Resp&amp;itemId=last+response&amp;operation=search+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=80f7fe09-410f-45e7-80f0-05ace668d819-Resp&amp;itemId=last+response&amp;operation=search+Patient&#39;);return false;">Body</a></td>
+						</tr>
+					</tbody></table>
+		</div>
+</div>		</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response code is one of 200,404</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more">...</div>
+<div class="moreContainer hideInitial ">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "operatorType" : "in",
+  "responseCode" : "200,404"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr>
+	<td class="vtop visible-md visible-lg">Operation</td>
+	<td class="vtop summaryCol">
+		<div class="operationSummary">
+			<a name="607a6406-f5cd-4c78-91fe-d544e7fc57f4" class="noLink"></a>
+			<strong>
+				search-type</strong>
+			
+				- Patient</div>
+		<table class="sectionSubTable" style="margin-top: 10px; min-width: 200px;">
+			<tbody><tr>
+				<th>Origin:</th>
+				<td><div>
+	TouchstoneFHIR</div>
+
+
+
+
+</td>
+			</tr>
+			<tr>
+				<th>Destination:</th>
+				<td class="visible-sm visible-xs text-break" style="width: 140px;"><div>
+	<span>
+		<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+				http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>
+	</div>
+
+
+
+
+</td>
+				<td class="visible-md visible-lg"><div>
+	<span>
+		<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+				http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>
+	</div>
+
+
+
+
+</td>
+			</tr>
+			<tr class="visible-xs visible-sm">
+					<th>Response:</th>
+					<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=ae5feb7d-f107-4b05-8def-5609609fc0a2-Resp&amp;itemId=last+response&amp;operation=search+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=ae5feb7d-f107-4b05-8def-5609609fc0a2-Resp&amp;itemId=last+response&amp;operation=search+Patient&#39;);return false;">Body</a></td>
+				</tr>
+			</tbody></table>
+		</td>
+	<td class="vtop text-center statusCol"><div class="">
+					200<br>OK</div>				
+			</td>
+	<td class="vtop text-center visible-md visible-lg">0.356s</td>
+	<td class="visible-md visible-lg vtop">
+			<div class="more" style="display: block;">...</div>
+<div class="moreContainer hideInitial " style="display: none;">
+	<div class="hideMoreContainer m-t-1">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+				<tbody><tr>
+					<th>Type:</th>
+					<td><a href="http://hl7.org/fhir/R4/http.html#search" target="_blank">search<wbr>-type</a>
+	</td>
+				</tr>
+				<tr>
+						<th>Resource:</th>
+						<td><a href="http://hl7.org/fhir/R4/patient.html" target="_blank">Patient</a>
+	</td>
+					</tr>
+				<tr>
+						<th>Params:</th>
+						<td>
+							<a href="http://hl7.org/fhir/R4/patient.html#search" target="_blank">identifier</a>
+	</td>
+					</tr>
+				<tr>
+							<th>URL:</th>
+							<td>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient?identifier=QwElU2uhF9U1M1888247</td>
+						</tr>
+					<tr>
+						<th>Description:</th>
+						<td>System-generated search operation from conditional delete.</td>
+					</tr>
+				<tr>
+					<th>Definition:</th>
+					<td><div class="more">...</div>
+<div class="moreContainer hideInitial ">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "type" : "search",
+  "resource" : "Patient",
+  "accept" : "json",
+  "description" : "System-generated search operation from conditional delete.",
+  "params" : "?identifier=${patientIdentifier}"
+}</xmp>
+</div>		</td>
+				</tr>
+				<tr>
+						<th>Request:</th>
+						<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+									<tbody><tr>
+										<th>Method:</th>
+										<td>GET</td>
+									</tr>
+									<tr>
+										<th>Path:</th>
+										<td>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient?identifier=QwElU2uhF9U1M1888247</td>
+									</tr>
+									<tr>
+											<th>Headers:</th>
+											<td style="padding: 0; margin: 0;">
+												<table>
+													<tbody><tr>
+	<th class="text-nowrap">Accept</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr></tbody></table>
+											</td>
+										</tr>
+									</tbody></table>
+							</div>
+</div>		</td>
+					</tr>
+				<tr>
+						<th>Response:</th>
+						<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+									<tbody><tr>
+										<th>Status:</th>
+										<td>HTTP/1.1 200 </td>
+									</tr>
+									<tr>
+											<th>Headers:</th>
+											<td style="padding: 0; margin: 0;">
+												<table>
+													<tbody><tr>
+	<th class="text-nowrap">Content-Length</th>
+	<td><xmp class="headerValue">305</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Content-Type</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Date</th>
+	<td><xmp class="headerValue">Fri, 01 Mar 2019 21:15:24 GMT</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">ETag</th>
+	<td><xmp class="headerValue">"W/1.0"</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Last-Modified</th>
+	<td><xmp class="headerValue">Fri, 01 Mar 2019 21:15:24 GMT</xmp></td>
+</tr></tbody></table>
+											</td>
+										</tr>
+									</tbody></table>
+							</div>
+</div>		</td>
+					</tr>
+					<tr>
+							<th>Response:</th>
+							<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=ae5feb7d-f107-4b05-8def-5609609fc0a2-Resp&amp;itemId=last+response&amp;operation=search+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=ae5feb7d-f107-4b05-8def-5609609fc0a2-Resp&amp;itemId=last+response&amp;operation=search+Patient&#39;);return false;">Body</a></td>
+						</tr>
+					</tbody></table>
+		</div>
+</div>		</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response code is one of 200,404</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more">...</div>
+<div class="moreContainer hideInitial ">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "operatorType" : "in",
+  "responseCode" : "200,404"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr>
+	<td class="vtop visible-md visible-lg">Operation</td>
+	<td class="vtop summaryCol">
+		<div class="operationSummary">
+			<a name="ca675c38-bff5-4610-8706-3e42af935981" class="noLink"></a>
+			<strong>
+				updateCreate</strong>
+			
+				- Patient</div>
+		<table class="sectionSubTable" style="margin-top: 10px; min-width: 200px;">
+			<tbody><tr>
+				<th>Origin:</th>
+				<td><div>
+	TouchstoneFHIR</div>
+
+
+
+
+</td>
+			</tr>
+			<tr>
+				<th>Destination:</th>
+				<td class="visible-sm visible-xs text-break" style="width: 140px;"><div>
+	<span>
+		<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+				http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>
+	</div>
+
+
+
+
+</td>
+				<td class="visible-md visible-lg"><div>
+	<span>
+		<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+				http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>
+	</div>
+
+
+
+
+</td>
+			</tr>
+			<tr class="visible-xs visible-sm">
+					<th>Request:</th>
+					<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=e68c24a9-b326-417a-9d69-d2588bccc803-Req&amp;itemId=last+request&amp;operation=updateCreate+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=e68c24a9-b326-417a-9d69-d2588bccc803-Req&amp;itemId=last+request&amp;operation=updateCreate+Patient&#39;);return false;">Body</a></td>
+				</tr>
+			<tr class="visible-xs visible-sm">
+					<th>Response:</th>
+					<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=e68c24a9-b326-417a-9d69-d2588bccc803-Resp&amp;itemId=last+response&amp;operation=updateCreate+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=e68c24a9-b326-417a-9d69-d2588bccc803-Resp&amp;itemId=last+response&amp;operation=updateCreate+Patient&#39;);return false;">Body</a></td>
+				</tr>
+			</tbody></table>
+		</td>
+	<td class="vtop text-center statusCol"><div class="">
+					201<br>Created</div>				
+			</td>
+	<td class="vtop text-center visible-md visible-lg">0.877s</td>
+	<td class="visible-md visible-lg vtop">
+			<div class="more" style="display: block;">...</div>
+<div class="moreContainer hideInitial " style="display: none;">
+	<div class="hideMoreContainer m-t-1">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+				<tbody><tr>
+					<th>Type:</th>
+					<td><a href="http://hl7.org/fhir/R4/http.html#update" target="_blank">update<wbr>Create</a>
+	</td>
+				</tr>
+				<tr>
+						<th>Resource:</th>
+						<td><a href="http://hl7.org/fhir/R4/patient.html" target="_blank">Patient</a>
+	</td>
+					</tr>
+				<tr>
+							<th>URL:</th>
+							<td>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient/QwElU2uhF9U1M-1888247</td>
+						</tr>
+					<tr>
+						<th>Description:</th>
+						<td>Create patient with client assigned resource id.</td>
+					</tr>
+				<tr>
+					<th>Definition:</th>
+					<td><div class="more">...</div>
+<div class="moreContainer hideInitial ">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "type" : "updateCreate",
+  "resource" : "Patient",
+  "accept" : "json",
+  "contentType" : "json",
+  "description" : "Create patient with client assigned resource id.",
+  "params" : "/${patientResourceId}",
+  "encodeRequestUrl" : true,
+  "sourceId" : "patient-create"
+}</xmp>
+</div>		</td>
+				</tr>
+				<tr>
+						<th>Request:</th>
+						<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+									<tbody><tr>
+										<th>Method:</th>
+										<td>PUT</td>
+									</tr>
+									<tr>
+										<th>Path:</th>
+										<td>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient/QwElU2uhF9U1M-1888247</td>
+									</tr>
+									<tr>
+											<th>Headers:</th>
+											<td style="padding: 0; margin: 0;">
+												<table>
+													<tbody><tr>
+	<th class="text-nowrap">Accept</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Content-Type</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr></tbody></table>
+											</td>
+										</tr>
+									</tbody></table>
+							</div>
+</div>		</td>
+					</tr>
+				<tr>
+						<th>Request:</th>
+						<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=e68c24a9-b326-417a-9d69-d2588bccc803-Req&amp;itemId=last+request&amp;operation=updateCreate+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=e68c24a9-b326-417a-9d69-d2588bccc803-Req&amp;itemId=last+request&amp;operation=updateCreate+Patient&#39;);return false;">Body</a></td>
+					</tr>
+				<tr>
+						<th>Response:</th>
+						<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+									<tbody><tr>
+										<th>Status:</th>
+										<td>HTTP/1.1 201 </td>
+									</tr>
+									<tr>
+											<th>Headers:</th>
+											<td style="padding: 0; margin: 0;">
+												<table>
+													<tbody><tr>
+	<th class="text-nowrap">Content-Length</th>
+	<td><xmp class="headerValue">1790</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Content-Type</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Date</th>
+	<td><xmp class="headerValue">Fri, 01 Mar 2019 21:15:24 GMT</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">ETag</th>
+	<td><xmp class="headerValue">"W/1"</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Last-Modified</th>
+	<td><xmp class="headerValue">Fri, 01 Mar 2019 21:15:25 GMT</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Location</th>
+	<td><xmp class="headerValue">http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient/QwElU2uhF9U1M-1888247/_history/1</xmp></td>
+</tr></tbody></table>
+											</td>
+										</tr>
+									</tbody></table>
+							</div>
+</div>		</td>
+					</tr>
+					<tr>
+							<th>Response:</th>
+							<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=e68c24a9-b326-417a-9d69-d2588bccc803-Resp&amp;itemId=last+response&amp;operation=updateCreate+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=e68c24a9-b326-417a-9d69-d2588bccc803-Resp&amp;itemId=last+response&amp;operation=updateCreate+Patient&#39;);return false;">Body</a></td>
+						</tr>
+					</tbody></table>
+		</div>
+</div>		</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response code is one of 200,201</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned HTTP status is 200(OK) or 201(Created).</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more">...</div>
+<div class="moreContainer hideInitial ">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "operatorType" : "in",
+  "description" : "Confirm that the returned HTTP status is 200(OK) or 201(Created).",
+  "responseCode" : "200,201",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr>
+	<td class="vtop visible-md visible-lg">Operation</td>
+	<td class="vtop summaryCol">
+		<div class="operationSummary">
+			<a name="b9d11319-f154-4ca9-863e-e3f69b79d59e" class="noLink"></a>
+			<strong>
+				read</strong>
+			
+				- Patient</div>
+		<table class="sectionSubTable" style="margin-top: 10px; min-width: 200px;">
+			<tbody><tr>
+				<th>Origin:</th>
+				<td><div>
+	TouchstoneFHIR</div>
+
+
+
+
+</td>
+			</tr>
+			<tr>
+				<th>Destination:</th>
+				<td class="visible-sm visible-xs text-break" style="width: 140px;"><div>
+	<span>
+		<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+				http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>
+	</div>
+
+
+
+
+</td>
+				<td class="visible-md visible-lg"><div>
+	<span>
+		<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+				http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>
+	</div>
+
+
+
+
+</td>
+			</tr>
+			<tr class="visible-xs visible-sm">
+					<th>Response:</th>
+					<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=148237c7-952e-4297-92e1-5deb1edccbc1-Resp&amp;itemId=patient-create-read-response&amp;operation=read+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=148237c7-952e-4297-92e1-5deb1edccbc1-Resp&amp;itemId=patient-create-read-response&amp;operation=read+Patient&#39;);return false;">Body</a></td>
+				</tr>
+			</tbody></table>
+		</td>
+	<td class="vtop text-center statusCol"><div class="">
+					200<br>OK</div>				
+			</td>
+	<td class="vtop text-center visible-md visible-lg">0.591s</td>
+	<td class="visible-md visible-lg vtop">
+			<div class="more" style="display: block;">...</div>
+<div class="moreContainer hideInitial " style="display: none;">
+	<div class="hideMoreContainer m-t-1">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+				<tbody><tr>
+					<th>Type:</th>
+					<td><a href="http://hl7.org/fhir/R4/http.html#read" target="_blank">read</a>
+	</td>
+				</tr>
+				<tr>
+						<th>Resource:</th>
+						<td><a href="http://hl7.org/fhir/R4/patient.html" target="_blank">Patient</a>
+	</td>
+					</tr>
+				<tr>
+							<th>URL:</th>
+							<td>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient/QwElU2uhF9U1M-1888247</td>
+						</tr>
+					<tr>
+						<th>Description:</th>
+						<td>Read the created patient by the known patient resource id in order to save the current version id.</td>
+					</tr>
+				<tr>
+					<th>Definition:</th>
+					<td><div class="more">...</div>
+<div class="moreContainer hideInitial ">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "type" : "read",
+  "resource" : "Patient",
+  "accept" : "json",
+  "description" : "Read the created patient by the known patient resource id in order to save the current version id.",
+  "params" : "/${patientResourceId}",
+  "responseId" : "patient-create-read-response",
+  "encodeRequestUrl" : true
+}</xmp>
+</div>		</td>
+				</tr>
+				<tr>
+						<th>Request:</th>
+						<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+									<tbody><tr>
+										<th>Method:</th>
+										<td>GET</td>
+									</tr>
+									<tr>
+										<th>Path:</th>
+										<td>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient/QwElU2uhF9U1M-1888247</td>
+									</tr>
+									<tr>
+											<th>Headers:</th>
+											<td style="padding: 0; margin: 0;">
+												<table>
+													<tbody><tr>
+	<th class="text-nowrap">Accept</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr></tbody></table>
+											</td>
+										</tr>
+									</tbody></table>
+							</div>
+</div>		</td>
+					</tr>
+				<tr>
+						<th class="text-nowrap">Response Id:</th>
+						<td>patient-create-read-response</td>
+					</tr>
+				<tr>
+						<th>Response:</th>
+						<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+									<tbody><tr>
+										<th>Status:</th>
+										<td>HTTP/1.1 200 </td>
+									</tr>
+									<tr>
+											<th>Headers:</th>
+											<td style="padding: 0; margin: 0;">
+												<table>
+													<tbody><tr>
+	<th class="text-nowrap">Content-Length</th>
+	<td><xmp class="headerValue">1790</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Content-Type</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Date</th>
+	<td><xmp class="headerValue">Fri, 01 Mar 2019 21:15:26 GMT</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">ETag</th>
+	<td><xmp class="headerValue">"W/1"</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Last-Modified</th>
+	<td><xmp class="headerValue">Fri, 01 Mar 2019 21:15:26 GMT</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Location</th>
+	<td><xmp class="headerValue">http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient/QwElU2uhF9U1M-1888247/_history/1</xmp></td>
+</tr></tbody></table>
+											</td>
+										</tr>
+									</tbody></table>
+							</div>
+</div>		</td>
+					</tr>
+					<tr>
+							<th>Response:</th>
+							<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=148237c7-952e-4297-92e1-5deb1edccbc1-Resp&amp;itemId=patient-create-read-response&amp;operation=read+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=148237c7-952e-4297-92e1-5deb1edccbc1-Resp&amp;itemId=patient-create-read-response&amp;operation=read+Patient&#39;);return false;">Body</a></td>
+						</tr>
+					</tbody></table>
+		</div>
+</div>		</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response is '200 OK'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned HTTP status is 200(OK).</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more">...</div>
+<div class="moreContainer hideInitial ">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "description" : "Confirm that the returned HTTP status is 200(OK).",
+  "response" : "okay",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				<tr>
+					<th>Source:</th>
+					<td>
+						<a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=148237c7-952e-4297-92e1-5deb1edccbc1-Resp&amp;itemId=patient-create-read-response&amp;operation=read+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=148237c7-952e-4297-92e1-5deb1edccbc1-Resp&amp;itemId=patient-create-read-response&amp;operation=read+Patient&#39;);return false;">patient-create-read-response</a>
+					</td>
+				</tr>			
+			</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response 'Content-Type' header is 'json'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned format is the FHIR JSON format.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more">...</div>
+<div class="moreContainer hideInitial ">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "contentType" : "json",
+  "description" : "Confirm that the returned format is the FHIR JSON format.",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				<tr>
+					<th>Source:</th>
+					<td>
+						<a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=148237c7-952e-4297-92e1-5deb1edccbc1-Resp&amp;itemId=patient-create-read-response&amp;operation=read+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=148237c7-952e-4297-92e1-5deb1edccbc1-Resp&amp;itemId=patient-create-read-response&amp;operation=read+Patient&#39;);return false;">patient-create-read-response</a>
+					</td>
+				</tr>			
+			</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response Resource type is 'Patient'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned resource type is Patient.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more">...</div>
+<div class="moreContainer hideInitial ">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "description" : "Confirm that the returned resource type is Patient.",
+  "resource" : "Patient",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				<tr>
+					<th>Source:</th>
+					<td>
+						<a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=148237c7-952e-4297-92e1-5deb1edccbc1-Resp&amp;itemId=patient-create-read-response&amp;operation=read+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=148237c7-952e-4297-92e1-5deb1edccbc1-Resp&amp;itemId=patient-create-read-response&amp;operation=read+Patient&#39;);return false;">patient-create-read-response</a>
+					</td>
+				</tr>			
+			</tbody></table>
+	</td>
+</tr>
+</tbody></table>	
+		</div>
+</div>
+		</div>
+		<div class="row row-buffer">
+			<div class="col-lg-12">
+				<h4 class="inline">Tests</h4>
+				<table class="tsScExTbl row-buffer">
+					<tbody><tr>
+						<th class="tsScExTblHdr">Test Name</th>
+						<th class="tsScExTblHdr visible-md visible-lg">Description</th>
+						<th class="tsScExTblHdr text-center" style="text-align: center;">Status</th>
+						<th class="tsScExTblHdr text-center visible-md visible-lg">Duration</th>
+					</tr>
+					<tr id="TsRowSearchPatient" style="display: none;">
+							<td class="tsScExTblCell link" onclick="$(&#39;#TsRowSearchPatient&#39;).hide();$(&#39;#TsRowDtlSearchPatient&#39;).show();$(&#39;#TsRowODtlSearchPatient&#39;).slideDown();$(&#39;#TsRowODtlSecSearchPatient&#39;).slideDown(500);"><small>Test:</small> SearchPatient</td>
+							<td class="tsScExTblCell visible-md visible-lg">Test the search operation with JSON content. The expected response content is a searchset Bundle resource where the first (and only entry) is the created version of the Patient resource in JSON format.</td>
+							<td class="tsScExTblCell text-center link" onclick="$(&#39;#TsRowSearchPatient&#39;).hide();$(&#39;#TsRowDtlSearchPatient&#39;).show();$(&#39;#TsRowODtlSearchPatient&#39;).slideDown();$(&#39;#TsRowODtlSecSearchPatient&#39;).slideDown(500);"><span class="smallStatus statusPASS" title="Passed">Passed</span></td>
+							<td class="tsScExTblCell visible-md visible-lg text-right">0.770s</td>
+						</tr>
+						<tr id="TsRowDtlSearchPatient" style="">
+							<td class="tsScExTblDtlCell tsScExTblDtlCellLB link" style="font-size: 1.2em;font-weight:bold;" onclick="$(&#39;#TsRowSearchPatient&#39;).show();$(&#39;#TsRowDtlSearchPatient&#39;).hide();$(&#39;#TsRowODtlSearchPatient&#39;).hide();"><small>Test:</small> SearchPatient</td>
+							<td class="tsScExTblDtlCell visible-md visible-lg">Test the search operation with JSON content. The expected response content is a searchset Bundle resource where the first (and only entry) is the created version of the Patient resource in JSON format.</td>
+							<td class="tsScExTblDtlCell text-center link" onclick="$(&#39;#TsRowSearchPatient&#39;).show();$(&#39;#TsRowDtlSearchPatient&#39;).hide();$(&#39;#TsRowODtlSearchPatient&#39;).hide();"><span class="smallStatus statusPASS" title="Passed">Passed</span></td>
+							<td class="tsScExTblDtlCell tsScExTblDtlCellRB visible-md visible-lg text-right">0.770s</td>
+						</tr>
+						<tr id="TsRowODtlSearchPatient" style="">
+							<td class="tsScExTblDtlAcCell" colspan="5">
+								<div id="TsRowODtlSecSearchPatient" class="secBody" style="">
+		<table class="tsTable">
+			</table>
+		<table class="sectionTable">
+				<tbody><tr>
+					<th class="sectionTableHeader visible-md visible-lg">Action</th>
+					<th class="sectionTableHeader">Description</th>
+					<th class="sectionTableHeader" style="text-align: center;">Status</th>
+					<th class="sectionTableHeader visible-md visible-lg">Duration</th>
+					<th class="sectionTableHeader visible-md visible-lg">Details</th>
+				</tr>
+				<tr>
+	<td class="vtop visible-md visible-lg">Operation</td>
+	<td class="vtop summaryCol">
+		<div class="operationSummary">
+			<a name="62604617-d2f0-4d51-ab1e-9a6502260a38" class="noLink"></a>
+			<strong>
+				search-type</strong>
+			
+				- Patient</div>
+		<table class="sectionSubTable" style="margin-top: 10px; min-width: 200px;">
+			<tbody><tr>
+				<th>Origin:</th>
+				<td><div>
+	TouchstoneFHIR</div>
+
+
+
+
+</td>
+			</tr>
+			<tr>
+				<th>Destination:</th>
+				<td class="visible-sm visible-xs text-break" style="width: 140px;"><div>
+	<span>
+		<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+				http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>
+	</div>
+
+
+
+
+</td>
+				<td class="visible-md visible-lg"><div>
+	<span>
+		<a href="https://touchstone.aegis.net/touchstone/testsys?id=5c5e46b40a120e32e071e1fd">Fast River Tech - FRT-EC2</a>
+				http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0</span>
+	</div>
+
+
+
+
+</td>
+			</tr>
+			<tr class="visible-xs visible-sm">
+					<th>Response:</th>
+					<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=3f5bea9d-5357-4c26-934b-1d8806328fd3-Resp&amp;itemId=last+response&amp;operation=search+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=3f5bea9d-5357-4c26-934b-1d8806328fd3-Resp&amp;itemId=last+response&amp;operation=search+Patient&#39;);return false;">Body</a></td>
+				</tr>
+			</tbody></table>
+		</td>
+	<td class="vtop text-center statusCol"><div class="">
+					200<br>OK</div>				
+			</td>
+	<td class="vtop text-center visible-md visible-lg">0.494s</td>
+	<td class="visible-md visible-lg vtop">
+			<div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer m-t-1">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+				<tbody><tr>
+					<th>Type:</th>
+					<td><a href="http://hl7.org/fhir/R4/http.html#search" target="_blank">search<wbr>-type</a>
+	</td>
+				</tr>
+				<tr>
+						<th>Resource:</th>
+						<td><a href="http://hl7.org/fhir/R4/patient.html" target="_blank">Patient</a>
+	</td>
+					</tr>
+				<tr>
+						<th>Params:</th>
+						<td>
+							<a href="http://hl7.org/fhir/R4/patient.html#search" target="_blank">identifier</a>
+	,<a href="http://hl7.org/fhir/R4/patient.html#search" target="_blank">given</a>
+	,<a href="http://hl7.org/fhir/R4/patient.html#search" target="_blank">family</a>
+	</td>
+					</tr>
+				<tr>
+							<th>URL:</th>
+							<td>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient?identifier=QwElU2uhF9U1M1888247&amp;given=PeterNDlQAb&amp;family=ChalmersNDlQAb</td>
+						</tr>
+					<tr>
+						<th>Description:</th>
+						<td>Search for the Patient and verify the search results only contain the created version of the patient.</td>
+					</tr>
+				<tr>
+					<th>Definition:</th>
+					<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "type" : "search",
+  "resource" : "Patient",
+  "accept" : "json",
+  "description" : "Search for the Patient and verify the search results only contain the created version of the patient.",
+  "params" : "?identifier=${patientIdentifier}&given=${patientGivenName}&family=${patientFamilyName}",
+  "encodeRequestUrl" : true
+}</xmp>
+</div>		</td>
+				</tr>
+				<tr>
+						<th>Request:</th>
+						<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+									<tbody><tr>
+										<th>Method:</th>
+										<td>GET</td>
+									</tr>
+									<tr>
+										<th>Path:</th>
+										<td>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088/frt-fhir-rest/1.0/Patient?identifier=QwElU2uhF9U1M1888247&amp;given=PeterNDlQAb&amp;family=ChalmersNDlQAb</td>
+									</tr>
+									<tr>
+											<th>Headers:</th>
+											<td style="padding: 0; margin: 0;">
+												<table>
+													<tbody><tr>
+	<th class="text-nowrap">Accept</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr></tbody></table>
+											</td>
+										</tr>
+									</tbody></table>
+							</div>
+</div>		</td>
+					</tr>
+				<tr>
+						<th>Response:</th>
+						<td><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div>
+	<div>
+		<table class="sectionSubTable">
+									<tbody><tr>
+										<th>Status:</th>
+										<td>HTTP/1.1 200 </td>
+									</tr>
+									<tr>
+											<th>Headers:</th>
+											<td style="padding: 0; margin: 0;">
+												<table>
+													<tbody><tr>
+	<th class="text-nowrap">Content-Length</th>
+	<td><xmp class="headerValue">2281</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Content-Type</th>
+	<td><xmp class="headerValue">application/fhir+json;charset=UTF-8</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Date</th>
+	<td><xmp class="headerValue">Fri, 01 Mar 2019 21:15:26 GMT</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">ETag</th>
+	<td><xmp class="headerValue">"W/1.0"</xmp></td>
+</tr><tr>
+	<th class="text-nowrap">Last-Modified</th>
+	<td><xmp class="headerValue">Fri, 01 Mar 2019 21:15:26 GMT</xmp></td>
+</tr></tbody></table>
+											</td>
+										</tr>
+									</tbody></table>
+							</div>
+</div>		</td>
+					</tr>
+					<tr>
+							<th>Response:</th>
+							<td><a href="https://touchstone.aegis.net/touchstone/tsMessage?msgId=3f5bea9d-5357-4c26-934b-1d8806328fd3-Resp&amp;itemId=last+response&amp;operation=search+Patient" onclick="ts.popup(&#39;/touchstone/tsMessage?msgId=3f5bea9d-5357-4c26-934b-1d8806328fd3-Resp&amp;itemId=last+response&amp;operation=search+Patient&#39;);return false;">Body</a></td>
+						</tr>
+					</tbody></table>
+		</div>
+</div>		</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response code is 200</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.001s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned HTTP status is 200(OK).</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "description" : "Confirm that the returned HTTP status is 200(OK).",
+  "responseCode" : "200",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response 'Content-Type' header is 'json'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned HTTP Header Content-Type contains the FHIR mime-type 'application/fhir+json'.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "contentType" : "json",
+  "description" : "Confirm that the returned HTTP Header Content-Type contains the FHIR mime-type 'application/fhir+json'.",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response Resource type is 'Bundle'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned resource type is Bundle.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "description" : "Confirm that the returned resource type is Bundle.",
+  "resource" : "Bundle",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response validates against the profile id 'bundle-profile'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.104s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned Bundle conforms to the base FHIR specification.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "description" : "Confirm that the returned Bundle conforms to the base FHIR specification.",
+  "validateProfileId" : "bundle-profile",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response "Bundle/type" value is 'searchset'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned Bundle type is searchset.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "operatorType" : "equals",
+  "description" : "Confirm that the returned Bundle type is searchset.",
+  "path" : "Bundle/type",
+  "value" : "searchset",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response "Bundle/total" value is '1'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned searchset Bundle contains 1 entry.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "operatorType" : "equals",
+  "description" : "Confirm that the returned searchset Bundle contains 1 entry.",
+  "path" : "Bundle/total",
+  "value" : "1",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response Bundle.total.toInteger() &gt;= entry.count()</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.090s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the Bundle total value matches or is greater than the number of entries in the Bundle.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "description" : "Confirm that the Bundle total value matches or is greater than the number of entries in the Bundle.",
+  "expression" : "Bundle.total.toInteger() >= entry.count()",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response ".entry[0].resource.identifier[0].value" value is 'QwElU2uhF9U1M1888247'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.001s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned Bundle resource first entry contains the expected Patient identifier element and value.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "operatorType" : "equals",
+  "description" : "Confirm that the returned Bundle resource first entry contains the expected Patient identifier element and value.",
+  "path" : ".entry[0].resource.identifier[0].value",
+  "value" : "${patientIdentifier}",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response ".entry[0].resource.name[0].family" value is 'ChalmersNDlQAb'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.001s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned Bundle resource first entry contains the expected Patient family name element and value.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "operatorType" : "equals",
+  "description" : "Confirm that the returned Bundle resource first entry contains the expected Patient family name element and value.",
+  "path" : ".entry[0].resource.name[0].family",
+  "value" : "${patientFamilyName}",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response ".entry[0].resource.name[0].given[0]" value is 'PeterNDlQAb'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.001s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned Bundle resource first entry contains the expected Patient given name element and value.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "operatorType" : "equals",
+  "description" : "Confirm that the returned Bundle resource first entry contains the expected Patient given name element and value.",
+  "path" : ".entry[0].resource.name[0].given[0]",
+  "value" : "${patientGivenName}",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response ".entry[0].resource.gender" value is 'male'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.000s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned Bundle resource first entry contains the expected Patient retained gender element and value.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "operatorType" : "equals",
+  "description" : "Confirm that the returned Bundle resource first entry contains the expected Patient retained gender element and value.",
+  "path" : ".entry[0].resource.gender",
+  "value" : "${patientGender}",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+<tr class="assertionRow">
+	<td class="vtop visible-md visible-lg">Assert</td>
+	<td class="vtop summaryCol">
+		<span class="visible-xs visible-sm">Assert</span><span>Response ".entry[0].resource.birthDate" value is '1974-12-25'</span>
+		</td>
+	<td class="vtop statusCol text-center" style="padding: 5px;">
+		<img src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/check-green_a1.gif" class="checkImage">
+			</td>
+	<td class="vtop visible-md visible-lg text-center">0.001s</td>
+	<td class="visible-md visible-lg vtop">
+		<table class="sectionSubTable">
+			<tbody><tr>
+					<th>Description:</th>
+					<td>Confirm that the returned Bundle resource first entry contains the expected Patient retained birthDate element and value.</td>
+				</tr>
+			<tr>
+						<th>Definition:</th>
+						<td><div class="m-t-1"><div class="more" style="display: none;">...</div>
+<div class="moreContainer hideInitial " style="display: block;">
+	<div class="hideMoreContainer ">[hide]</div><xmp class="codeXmp">{
+  "operatorType" : "equals",
+  "description" : "Confirm that the returned Bundle resource first entry contains the expected Patient retained birthDate element and value.",
+  "path" : ".entry[0].resource.birthDate",
+  "value" : "${patientBirthDate}",
+  "warningOnly" : false,
+  "direction" : "response"
+}</xmp>
+</div>		</div></td>
+					</tr>
+				</tbody></table>
+	</td>
+</tr>
+</tbody></table>	
+		</div>
+</td>
+						</tr>
+					</tbody></table>
+				<div class="row row-buffer">
+					<div class="col-lg-12 row-buffer">
+						</div>
+				</div>					
+			</div>
+		</div>
+		<div class="row row-buffer">
+				<div class="col-lg-12 row-buffer">
+					<h4>Fixtures</h4>
+					<div class="secBody">
+						<table class="sectionTable">
+							<thead>
+								<tr>
+									<th class="sectionTableHeader">Id</th>
+									<th class="sectionTableHeader center">Resource</th>
+									<th class="sectionTableHeader text-center">Version</th>
+									<th class="sectionTableHeader text-center">Latest</th>										
+									<th class="sectionTableHeader text-center">Type</th>
+									<th class="sectionTableHeader visible-md visible-lg">Contents</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+										<td class="vtop">patient-create</td>
+										<td class="vtop">Patient</td>
+										<td class="vtop text-center" title="">1</td>
+										<td class="vtop text-center" title=""><span class="">1</span></td>											
+										<td class="vtop text-center">JSON</td>
+										<td class="vtop visible-md visible-lg">
+											<a href="https://touchstone.aegis.net/touchstone/rawFixture?eId=5c79a0eb0a120e0c1dd95894&amp;id=48fd821d96e1ba587f723a9fcd199e1324fd21f814187c12cb4d4f5c65947e1c&amp;name=%2fFHIR4-0-0-Connectathon20%2fPatient-02-Formal%2fFHIRServer%2f_reference%2fresources%2fpatient-create-client-id.json&amp;desc=Original+Fixture&amp;version=1&amp;latestVersion=1&amp;itemId=patient-create&amp;spec=HL7_FHIR_4_0_0" onclick="ts.popup(&#39;/touchstone/rawFixture?eId=5c79a0eb0a120e0c1dd95894&amp;id=48fd821d96e1ba587f723a9fcd199e1324fd21f814187c12cb4d4f5c65947e1c&amp;name=%2fFHIR4-0-0-Connectathon20%2fPatient-02-Formal%2fFHIRServer%2f_reference%2fresources%2fpatient-create-client-id.json&amp;desc=Original+Fixture&amp;version=1&amp;latestVersion=1&amp;itemId=patient-create&amp;spec=HL7_FHIR_4_0_0&#39;);return false;">Raw</a>
+											<a href="https://touchstone.aegis.net/touchstone/resolvedFixture?eId=5c79a0eb0a120e0c1dd95894&amp;id=43825e54e7337ffefa43510ec68828d16edf2bfb1842dec2df91a3ebb94e59ef&amp;name=%2fFHIR4-0-0-Connectathon20%2fPatient-02-Formal%2fFHIRServer%2f_reference%2fresources%2fpatient-create-client-id.json&amp;desc=Resolved+Fixture&amp;version=1&amp;latestVersion=1&amp;itemId=patient-create&amp;spec=HL7_FHIR_4_0_0" style="margin-left: 5px;" onclick="ts.popup(&#39;/touchstone/resolvedFixture?eId=5c79a0eb0a120e0c1dd95894&amp;id=43825e54e7337ffefa43510ec68828d16edf2bfb1842dec2df91a3ebb94e59ef&amp;name=%2fFHIR4-0-0-Connectathon20%2fPatient-02-Formal%2fFHIRServer%2f_reference%2fresources%2fpatient-create-client-id.json&amp;desc=Resolved+Fixture&amp;version=1&amp;latestVersion=1&amp;itemId=patient-create&amp;spec=HL7_FHIR_4_0_0&#39;);return false;">Resolved</a>
+										</td>
+									</tr>
+								</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		<div class="row row-buffer">
+				<div class="col-lg-12 row-buffer">
+					<h4>Profiles</h4>
+					<div class="secBody">
+						<table class="sectionTable">
+							<thead>
+								<tr>
+									<th class="sectionTableHeader">Id</th>
+									<th class="sectionTableHeader">Source</th>
+									<th class="sectionTableHeader visible-md visible-lg">Contents</th>
+									</tr>
+							</thead>
+							<tbody>
+								<tr>
+										<td class="vtop">bundle-profile</td>
+										<td class="vtop">http://hl7.org/fhir/StructureDefinition/Bundle</td>
+										<td class="vtop visible-md visible-lg">
+											<a href="https://touchstone.aegis.net/touchstone/profileContent?id=bd85c0839ce0d5a9487948c2f1957753ae032b67a1d691e7e12fc61e60bf8224&amp;desc=Profile+-+bundle-profile+-+http%3a%2f%2fhl7.org%2ffhir%2fStructureDefinition%2fBundle" style="margin-left: 5px;" onclick="ts.popup(&#39;/touchstone/profileContent?id=bd85c0839ce0d5a9487948c2f1957753ae032b67a1d691e7e12fc61e60bf8224&amp;desc=Profile+-+bundle-profile+-+http%3a%2f%2fhl7.org%2ffhir%2fStructureDefinition%2fBundle&#39;);return false;">XML</a>
+											<a href="https://touchstone.aegis.net/touchstone/profileContent?id=b81266b2c2e40bab0388c74c18452d8e99026cc0e4e8809541941567329cdf04&amp;desc=Profile+-+bundle-profile+-+http%3a%2f%2fhl7.org%2ffhir%2fStructureDefinition%2fBundle" style="margin-left: 5px;" onclick="ts.popup(&#39;/touchstone/profileContent?id=b81266b2c2e40bab0388c74c18452d8e99026cc0e4e8809541941567329cdf04&amp;desc=Profile+-+bundle-profile+-+http%3a%2f%2fhl7.org%2ffhir%2fStructureDefinition%2fBundle&#39;);return false;">JSON</a>
+										</td>
+										</tr>
+								</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		<div class="row row-buffer">
+				<div class="col-lg-12 row-buffer">
+					<h4>Variables</h4>
+					<div class="secBody">
+						<table class="sectionTable">
+							<thead>
+							<tr>
+								<th class="sectionTableHeader">Name</th>
+								<th class="sectionTableHeader">Definition</th>	
+							</tr>
+							</thead>
+							<tbody>
+								<tr>
+										<td>patientResourceId</td>
+										<td>
+											<strong>sourceId: </strong>patient-create<strong> path: </strong>Patient/id</td>
+									</tr>
+								<tr>
+										<td>patientVersionId</td>
+										<td>
+											<strong>sourceId: </strong>patient-create-read-response<strong> path: </strong>Patient/meta/versionId</td>
+									</tr>
+								<tr>
+										<td>patientIdentifier</td>
+										<td>
+											<strong>sourceId: </strong>patient-create<strong> path: </strong>Patient/identifier/value</td>
+									</tr>
+								<tr>
+										<td>patientFamilyName</td>
+										<td>
+											<strong>sourceId: </strong>patient-create<strong> path: </strong>Patient/name/family</td>
+									</tr>
+								<tr>
+										<td>patientGivenName</td>
+										<td>
+											<strong>sourceId: </strong>patient-create<strong> path: </strong>Patient/name/given</td>
+									</tr>
+								<tr>
+										<td>patientGender</td>
+										<td>
+											<strong>sourceId: </strong>patient-create<strong> path: </strong>Patient/gender</td>
+									</tr>
+								<tr>
+										<td>patientBirthDate</td>
+										<td>
+											<strong>sourceId: </strong>patient-create<strong> path: </strong>Patient/birthDate</td>
+									</tr>
+								</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		<script type="text/javascript">
+					$(function() {
+						ts.scrollTo('WAITING_OPER');
+					});
+				</script></div>
+	<span id="top-link-block" class="affix-top">
+		    <a href="https://touchstone.aegis.net/touchstone/scriptexecution?exec=20190301041523063&amp;qn=/FHIR4-0-0-Connectathon20/Patient-02-Formal/FHIRServer/06-PatientSearching/patient-formal-c20-fhirserver-06-search-client-id-json#top" class="btn btn-xs btn-default" onclick="$(&#39;html,body&#39;).animate({scrollTop:0},&#39;slow&#39;);return false;">
+		        <i class="glyphicon glyphicon-chevron-up"></i> Back to Top
+		    </a>
+		</span><!-- /top-link-block -->
+			
+	
+
+
+<iframe frameborder="0" scrolling="no" style="background-color: transparent; border: 0px; display: none;" src="./assert_rules_patient-formal-c20-fhirserver-06-search-client-id-json-mar-01-2019_files/saved_resource.html"></iframe><div id="GOOGLE_INPUT_CHEXT_FLAG" input="" input_stat="{&quot;tlang&quot;:true,&quot;tsbc&quot;:true,&quot;pun&quot;:true,&quot;mk&quot;:true,&quot;ss&quot;:true}" style="display: none;"></div></body></html>
