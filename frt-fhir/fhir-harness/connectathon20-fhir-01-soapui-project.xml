@@ -474,17 +474,9 @@ for(n in propNames)
 		}
 	}
 	else {
-		log.info("Not a json template property, property skipped.")
+		log.info("Not a json template property, property skipped, prop name=" + n)
 	}
 }
-context.genBoundedString={len ->
-	def array = new byte[len]
-	new java.util.Random().nextBytes(array)
-	def str = new java.lang.String(array)
-	return str
-}
-
-log.info("random string of len 16: " + RandomStringUtils.randomAlphabetic(16))
 
 context.valueIdentical={v1, v2 ->
 //	log.info("OBJ1="+v1)
@@ -584,10 +576,19 @@ context.mapContains={m1, m2 ->
 	}
 	return isContained
 }
+
 context.parser = new JsonSlurper()
+
 context.resourceContains={baseDirProp, pathProp, resp ->
 	def projectPath = new com.eviware.soapui.support.GroovyUtils(context).projectPath
 	log.info "ProjectPath:"+projectPath
+	println "ProjectPath ::: $projectPath"
+	def harnessFolderProp = testRunner.testCase.project.properties["harness-folder"]
+	if (harnessFolderProp!=null) {
+		// executed from maven
+		projectPath = projectPath + '/' + harnessFolderProp.value
+		log.info "ProjectPath(modified):"+projectPath
+	}
 	def baseDir = testRunner.testCase.project.properties[baseDirProp].value
 	def path = testRunner.testCase.project.properties[pathProp].value
 	def jsonFile = new File(projectPath, baseDir+path)
@@ -861,15 +862,6 @@ for(n in propNames)
 		log.info("Not a json template property, property skipped.")
 	}
 }
-context.genBoundedString={len ->
-	def array = new byte[len]
-	new java.util.Random().nextBytes(array)
-	def str = new java.lang.String(array)
-	return str
-}
-
-log.info("random string of len 16: " + RandomStringUtils.randomAlphabetic(16))
-
 context.valueIdentical={v1, v2 ->
 //	log.info("OBJ1="+v1)
 //	log.info("OBJ2="+v2)
@@ -968,10 +960,18 @@ context.mapContains={m1, m2 ->
 	}
 	return isContained
 }
+
 context.parser = new JsonSlurper()
+
 context.resourceContains={baseDirProp, pathProp, resp ->
 	def projectPath = new com.eviware.soapui.support.GroovyUtils(context).projectPath
 	log.info "ProjectPath:"+projectPath
+	def harnessFolderProp = testRunner.testCase.project.properties["harness-folder"]
+	if (harnessFolderProp!=null) {
+		// executed from maven
+		projectPath = projectPath + '/' + harnessFolderProp.value
+		log.info "ProjectPath(modified):"+projectPath
+	}
 	def baseDir = testRunner.testCase.project.properties[baseDirProp].value
 	def path = testRunner.testCase.project.properties[pathProp].value
 	def jsonFile = new File(projectPath, baseDir+path)
@@ -997,4 +997,4 @@ context.resourceContains={baseDirProp, pathProp, resp ->
 	return context.mapContains(min, resp)
 }
 
-]]></con:setupScript><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties><con:property><con:name>CD16</con:name><con:value>Z1wE9NRhemy4HErx</con:value></con:property><con:property><con:name>C8</con:name><con:value>cmhIPhjK</con:value></con:property><con:property><con:name>C9</con:name><con:value>EMHrcFJdM</con:value></con:property><con:property><con:name>D4</con:name><con:value>6718</con:value></con:property><con:property><con:name>Service.Remote.Endpoint</con:name><con:value>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088</con:value></con:property><con:property><con:name>Service.Resource.Path</con:name><con:value>/frt-fhir-rest/1.0/Patient</con:value></con:property><con:property><con:name>Service.Local.Endpoint</con:name><con:value>http://localhost:8080</con:value></con:property><con:property><con:name>CD13</con:name><con:value>0H7LxxvrfqZTV</con:value></con:property><con:property><con:name>D1</con:name><con:value>1</con:value></con:property><con:property><con:name>D3</con:name><con:value>484</con:value></con:property><con:property><con:name>D7</con:name><con:value>5644156</con:value></con:property><con:property><con:name>C6</con:name><con:value>CwBYLa</con:value></con:property><con:property><con:name>createResourceId</con:name><con:value>X7gJKcMAxItnHF4q</con:value></con:property><con:property><con:name>RESOURCE.TEMPLATE.BASE.DIR</con:name><con:value>src/test/fhir4-0-0-connectathon20/</con:value></con:property><con:property><con:name>PT01BONUS.PT.CREATE.BONUS.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/messages/patient-create-bonus-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.CREATE.BONUS.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/messages/patient-create-bonus-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS1.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/messages/patient-update-bonus1-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS1.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/messages/patient-update-bonus1-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS2.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/messages/patient-update-bonus2-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS2.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/messages/patient-update-bonus2-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT02FORMAL.PT.CREATE.CLIENT.ID.JSON</con:name><con:value>patient-02-formal-fhirserver/messages/patient-create-client-id.json</con:value></con:property><con:property><con:name>PT02FORMAL.PT.UPDATE.CLIENT.ID.JSON</con:name><con:value>patient-02-formal-fhirserver/messages/patient-update-client-id.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.CLIENT.ID.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/messages/patient-create-client-id-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-intro/messages/patient-create-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.SERVER.ID.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/messages/patient-create-server-id-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.UPDATE.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/messages/patient-update-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.UPDATE.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-intro/messages/patient-update-peterchalmers-min.json</con:value></con:property></con:properties><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
+]]></con:setupScript><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties><con:property><con:name>CD16</con:name><con:value>u3cCTQdNolUjIJOE</con:value></con:property><con:property><con:name>C8</con:name><con:value>KESkTepR</con:value></con:property><con:property><con:name>C9</con:name><con:value>FtMNIcptW</con:value></con:property><con:property><con:name>D4</con:name><con:value>4427</con:value></con:property><con:property><con:name>Service.Remote.Endpoint</con:name><con:value>http://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:8088</con:value></con:property><con:property><con:name>Service.Resource.Path</con:name><con:value>/frt-fhir-rest/1.0/Patient</con:value></con:property><con:property><con:name>Service.Local.Endpoint</con:name><con:value>http://localhost:8080</con:value></con:property><con:property><con:name>CD13</con:name><con:value>H4DapjJpAcHTD</con:value></con:property><con:property><con:name>D1</con:name><con:value>6</con:value></con:property><con:property><con:name>D3</con:name><con:value>647</con:value></con:property><con:property><con:name>D7</con:name><con:value>6972608</con:value></con:property><con:property><con:name>C6</con:name><con:value>jvZJvO</con:value></con:property><con:property><con:name>createResourceId</con:name><con:value>X7gJKcMAxItnHF4q</con:value></con:property><con:property><con:name>RESOURCE.TEMPLATE.BASE.DIR</con:name><con:value>src/test/fhir4-0-0-connectathon20/</con:value></con:property><con:property><con:name>PT01BONUS.PT.CREATE.BONUS.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/messages/patient-create-bonus-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.CREATE.BONUS.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/messages/patient-create-bonus-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS1.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/messages/patient-update-bonus1-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS1.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/messages/patient-update-bonus1-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS2.PETERCHALMERS.JSON</con:name><con:value>patient-01-bonus/messages/patient-update-bonus2-peterchalmers.json</con:value></con:property><con:property><con:name>PT01BONUS.PT.UPDATE.BONUS2.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-bonus/messages/patient-update-bonus2-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT02FORMAL.PT.CREATE.CLIENT.ID.JSON</con:name><con:value>patient-02-formal-fhirserver/messages/patient-create-client-id.json</con:value></con:property><con:property><con:name>PT02FORMAL.PT.UPDATE.CLIENT.ID.JSON</con:name><con:value>patient-02-formal-fhirserver/messages/patient-update-client-id.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.CLIENT.ID.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/messages/patient-create-client-id-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-intro/messages/patient-create-peterchalmers-min.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.CREATE.SERVER.ID.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/messages/patient-create-server-id-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.UPDATE.PETERCHALMERS.JSON</con:name><con:value>patient-01-intro/messages/patient-update-peterchalmers.json</con:value></con:property><con:property><con:name>PT01INTRO.PT.UPDATE.PETERCHALMERS.MIN.JSON</con:name><con:value>patient-01-intro/messages/patient-update-peterchalmers-min.json</con:value></con:property></con:properties><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/><con:sensitiveInformation/></con:soapui-project>
