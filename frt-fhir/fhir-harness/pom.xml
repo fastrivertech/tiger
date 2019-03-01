@@ -30,23 +30,13 @@
 	
 	<pluginRepositories>
 		<pluginRepository>
-			<id>smartbear-sweden-plugin-repository</id>
+			<id>smartbear-plugin-repository</id>
 			<url>http://www.soapui.org/repository/maven2/</url>
 		</pluginRepository>
 	</pluginRepositories>
 
 	<build>
 	<plugins>
-		<plugin>
-		    <groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<configuration>
-				<!-- compiler does not recognize 1.11 yet -->
-				<source>1.10</source>
-				<target>1.10</target>
-				<release>${maven.compiler.plugin.version.release}</release>
-			</configuration>
-		</plugin>	  
       	<plugin>
 			<groupId>com.smartbear.soapui</groupId>
 			<artifactId>soapui-maven-plugin</artifactId>
@@ -57,14 +47,23 @@
 					<artifactId>forms</artifactId>
 					<version>1.0.7</version>
 				</dependency>
+				<dependency>
+					<groupId>org.codehaus.groovy</groupId>
+					<artifactId>groovy-all</artifactId>
+					<version>2.4.4</version>
+				</dependency>		
 			</dependencies>
 			<executions>
 				<execution>
 					<configuration>
-						<projectFile>${basedir}/connectathon20-fhir-01-soapui-project.xml</projectFile>
+						<projectFile>${basedir}/connectathon20-fhir-01-soapui-project.xml</projectFile>						
+						<testSuite>FHIR4-0-0-Connectathon20-Patient-01-Intro-TestSuite</testSuite>
+						<endpoint>http://localhost:8080</endpoint>						
 						<settingsFile>${basedir}/soapui-settings.xml</settingsFile>
 						<outputFolder>${basedir}/target</outputFolder>
-						<reportFormat>HTML</reportFormat>
+						<reportFormat>HTML</reportFormat> <!-- Pro only -->
+						<junitReport>true</junitReport>
+						<testFailIgnore>true</testFailIgnore>
 					</configuration>
 					<phase>test</phase>
 					<goals>
@@ -76,7 +75,7 @@
 	</plugins>
 	</build>
 
-    <dependencies>
+    <dependencies>					
 	<!-- junit -->
 	<dependency>
 		<groupId>junit</groupId>
@@ -84,4 +83,5 @@
 		<scope>test</scope>
 	</dependency>				
     </dependencies>
+	
 </project>
