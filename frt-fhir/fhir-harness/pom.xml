@@ -68,6 +68,47 @@
 							<value>harness-folder=fhir-harness</value>
 						</projectProperties>
 					</configuration>
+					<id>connectathon20-fhir-01-soapui-TEST</id>
+					<phase>test</phase>
+					<goals>
+						<goal>test</goal>
+					</goals>
+				</execution>
+				<execution>
+					<configuration>
+						<projectFile>${basedir}/connectathon20-fhir-02-soapui-project.xml</projectFile>						
+						<testSuite>FHIR4-0-0-Connectathon20-Patient-01-Bonus-TestSuite</testSuite>
+						<endpoint>http://localhost:8080</endpoint>						
+						<settingsFile>${basedir}/soapui-settings.xml</settingsFile>
+						<outputFolder>${basedir}/target</outputFolder>
+						<reportFormat>HTML</reportFormat> <!-- Pro only -->
+						<junitReport>true</junitReport>
+						<testFailIgnore>true</testFailIgnore>
+						<projectProperties>
+							<value>harness-folder=fhir-harness</value>
+						</projectProperties>
+					</configuration>
+					<id>connectathon20-fhir-02-soapui-TEST</id>
+					<phase>test</phase>
+					<goals>
+						<goal>test</goal>
+					</goals>
+				</execution>
+				<execution>
+					<configuration>
+						<projectFile>${basedir}/connectathon20-fhir-03A-soapui-project.xml</projectFile>						
+						<testSuite>FHIR4-0-0-Connectathon20-Patient-02-Formal-FhirServer-Server-Id-TestSuite</testSuite>
+						<endpoint>http://localhost:8080</endpoint>						
+						<settingsFile>${basedir}/soapui-settings.xml</settingsFile>
+						<outputFolder>${basedir}/target</outputFolder>
+						<reportFormat>HTML</reportFormat> <!-- Pro only -->
+						<junitReport>true</junitReport>
+						<testFailIgnore>true</testFailIgnore>
+						<projectProperties>
+							<value>harness-folder=fhir-harness</value>
+						</projectProperties>
+					</configuration>
+					<id>connectathon20-fhir-03A-soapui-TEST</id>
 					<phase>test</phase>
 					<goals>
 						<goal>test</goal>
