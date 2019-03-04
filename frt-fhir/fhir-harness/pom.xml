@@ -52,6 +52,11 @@
 					<artifactId>groovy-all</artifactId>
 					<version>2.4.4</version>
 				</dependency>		
+				<dependency>
+					<groupId>org.apache.derby</groupId>
+					<artifactId>derbyclient</artifactId>
+					<version>${org.apache.derby.version}</version>
+				</dependency>       							
 			</dependencies>
 			<executions>
 				<execution>
@@ -96,7 +101,7 @@
 				</execution>
 				<execution>
 					<configuration>
-						<projectFile>${basedir}/connectathon20-fhir-03A-soapui-project.xml</projectFile>						
+						<projectFile>${basedir}/connectathon20-fhir-03-soapui-project.xml</projectFile>						
 						<testSuite>FHIR4-0-0-Connectathon20-Patient-02-Formal-FhirServer-Server-Id-TestSuite</testSuite>
 						<endpoint>http://localhost:8080</endpoint>						
 						<settingsFile>${basedir}/soapui-settings.xml</settingsFile>
@@ -108,7 +113,7 @@
 							<value>harness-folder=fhir-harness</value>
 						</projectProperties>
 					</configuration>
-					<id>connectathon20-fhir-03A-soapui-TEST</id>
+					<id>connectathon20-fhir-03-soapui-TEST</id>
 					<phase>test</phase>
 					<goals>
 						<goal>test</goal>
@@ -120,12 +125,12 @@
 	</build>
 
     <dependencies>					
-	<!-- junit -->
-	<dependency>
-		<groupId>junit</groupId>
-		<artifactId>junit</artifactId>
-		<scope>test</scope>
-	</dependency>				
+		<!-- junit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<scope>test</scope>
+		</dependency>				
     </dependencies>
 	
 </project>
