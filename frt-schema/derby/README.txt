@@ -45,11 +45,13 @@ default user: APP/null or app/null
 	derby-client.bat
 	ij> connect 'jdbc:derby://localhost:1527/tiger_db;create=true' user 'frt' password 'frt';
 	ij> run 'create_patient_tables.sql';
+	ij> run 'create_patient_indexes.sql';
 
 2.8 drop patient tables
 	derby-client.bat
 	ij> connect 'jdbc:derby://localhost:1527/tiger_db;create=true' user 'frt' password 'frt';	
 	ij> run 'drop_patient_tables.sql';
+	ij> run 'drop_patient_indexes.sql';
 	
 3. Persistence Configuration
 	Enable Derby network mode in persistence.xml
