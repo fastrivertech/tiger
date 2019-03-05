@@ -23,10 +23,13 @@ Setup
    bin/sqlshell.sh
    splice>connect 'jdbc:splice://localhost:1527/splicedb;user=frt;password=frt';
    splice>run '/home/ec2-user/frt/create_patient_tables.sql';
+   splice>run '/home/ec2-user/frt/create_patient_indexes.sql';
 
    drop tables
    splice>run '/home/ec2-user/frt/drop_patient_tables.sql';
+   splice>run '/home/ec2-user/frt/drop_patient_indexes.sql';
       
+	  
 Command Reference
 splice>describe [table name];
 splice>values current_user;
