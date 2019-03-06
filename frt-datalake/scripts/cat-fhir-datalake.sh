@@ -1,3 +1,3 @@
 #!/bin/bash
 set -e
-hadoop fs -cat /user/cloudera/frt/datalake/patient $1
+hadoop fs -cat /user/cloudera/frt/datalake/fhir/patient $1
