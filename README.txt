@@ -21,6 +21,7 @@ note: need to get frt server up and running with frt-fhir-rest.war deployed
 usage:
 cd <tiger-project-base-dir>
 .\load_synthea.bat <path-to-patient-json-file-folder> [<max-record-to-be-load>]
+note: to generate synthetic patients using synthea, refer to <tiger-project-base-dir>\frt-fhir\fhir-load\README.txt
 
 sample output:
 D:\FHIR_TIGER\tiger-refactor>.\load_synthea.bat "D:\SYNTHEA\synthea\output\fhir" 300
