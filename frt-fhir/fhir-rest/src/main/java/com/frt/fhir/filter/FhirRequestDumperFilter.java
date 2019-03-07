@@ -32,6 +32,8 @@ import java.sql.Timestamp;
 import java.util.Enumeration;
 import java.util.Locale;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpServletResponseWrapper;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
@@ -87,13 +89,14 @@ public class FhirRequestDumperFilter implements Filter {
 	 * @exception ServletException
 	 *                if a servlet error occurs
 	 */
-	public void doFilter(ServletRequest req, ServletResponse response, FilterChain chain)
+	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
 
 		if (filterConfig == null)
 			return;
 
 		FhirRequestWrapper request = new FhirRequestWrapper((HttpServletRequest) req);
+		FhirResponseWrapper response = new FhirResponseWrapper((HttpServletResponse) resp);
 		// Render the generic servlet request properties
 		long suffix = System.currentTimeMillis();
 		File dumpDir = new File(new File(System.getProperty("java.io.tmpdir")),
@@ -140,52 +143,50 @@ public class FhirRequestDumperFilter implements Filter {
 		outputDiv(writer, "          isSecure=" + request.isSecure());
 
 		// Render the HTTP servlet request properties
-		if (request instanceof HttpServletRequestWrapper) {
-			outputDiv(writer, "HttpServletRequest---------------------------------------------");
-			HttpServletRequest hrequest = (HttpServletRequest) request;
-			outputDiv(writer, "       contextPath=" + hrequest.getContextPath());
-			Cookie cookies[] = hrequest.getCookies();
-			if (cookies == null)
-				cookies = new Cookie[0];
-			for (int i = 0; i < cookies.length; i++) {
-				outputDiv(writer, "            cookie=" + cookies[i].getName() + "=" + cookies[i].getValue());
+		outputDiv(writer, "HttpServletRequest---------------------------------------------");
+		HttpServletRequest hrequest = (HttpServletRequest) request;
+		outputDiv(writer, "       contextPath=" + hrequest.getContextPath());
+		Cookie cookies[] = hrequest.getCookies();
+		if (cookies == null)
+			cookies = new Cookie[0];
+		for (int i = 0; i < cookies.length; i++) {
+			outputDiv(writer, "            cookie=" + cookies[i].getName() + "=" + cookies[i].getValue());
+		}
+		names = hrequest.getHeaderNames();
+		while (names.hasMoreElements()) {
+			String name = (String) names.nextElement();
+			String value = hrequest.getHeader(name);
+			outputDiv(writer, "            header=" + name + "=" + value);
+		}
+		outputDiv(writer, "            method=" + hrequest.getMethod());
+		outputDiv(writer, "          pathInfo=" + hrequest.getPathInfo());
+		outputDiv(writer, "       queryString=" + hrequest.getQueryString());
+		outputDiv(writer, "        remoteUser=" + hrequest.getRemoteUser());
+		outputDiv(writer, "requestedSessionId=" + hrequest.getRequestedSessionId());
+		outputDiv(writer, "        requestURI=" + hrequest.getRequestURI());
+		outputDiv(writer, "       servletPath=" + hrequest.getServletPath());
+		outputDiv(writer, "REQUEST BODY ---------------------------------------------");
+		if (hrequest.getInputStream() != null) {
+			try {
+				Thread.currentThread().sleep(50);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-			names = hrequest.getHeaderNames();
-			while (names.hasMoreElements()) {
-				String name = (String) names.nextElement();
-				String value = hrequest.getHeader(name);
-				outputDiv(writer, "            header=" + name + "=" + value);
+			File bodyFile = new File(dumpDir, "request_body_" + suffix + ".json");
+			PrintWriter bodywriter = new PrintWriter(bodyFile);
+			BufferedInputStream bis = new BufferedInputStream(hrequest.getInputStream());
+			ByteArrayOutputStream buf = new ByteArrayOutputStream();
+			int result = bis.read();
+			while (result != -1) {
+				buf.write((byte) result);
+				result = bis.read();
 			}
-			outputDiv(writer, "            method=" + hrequest.getMethod());
-			outputDiv(writer, "          pathInfo=" + hrequest.getPathInfo());
-			outputDiv(writer, "       queryString=" + hrequest.getQueryString());
-			outputDiv(writer, "        remoteUser=" + hrequest.getRemoteUser());
-			outputDiv(writer, "requestedSessionId=" + hrequest.getRequestedSessionId());
-			outputDiv(writer, "        requestURI=" + hrequest.getRequestURI());
-			outputDiv(writer, "       servletPath=" + hrequest.getServletPath());
-			outputDiv(writer, "REQUEST BODY ---------------------------------------------");
-			if (hrequest.getInputStream() != null) {
-				try {
-					Thread.currentThread().sleep(50);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				File bodyFile = new File(dumpDir, "request_body_" + suffix + ".json");
-				PrintWriter bodywriter = new PrintWriter(bodyFile);
-				BufferedInputStream bis = new BufferedInputStream(hrequest.getInputStream());
-				ByteArrayOutputStream buf = new ByteArrayOutputStream();
-				int result = bis.read();
-				while (result != -1) {
-					buf.write((byte) result);
-					result = bis.read();
-				}
-				// StandardCharsets.UTF_8.name() > JDK 7
-				String body = buf.toString("UTF-8");
-				bodywriter.println(body);
-				bodywriter.close();
-				outputDiv(writer, "<a href=\"" + bodyFile.getName() + "\">REQUEST BODY (json)</a><br>");
-			}
+			// StandardCharsets.UTF_8.name() > JDK 7
+			String body = buf.toString("UTF-8");
+			bodywriter.println(body);
+			bodywriter.close();
+			outputDiv(writer, "<a href=\"" + bodyFile.getName() + "\">REQUEST BODY (json)</a><br>");
 		}
 		outputDiv(writer, "END REQUEST DUMP =============================================");
 		// Log the resulting string
@@ -197,8 +198,88 @@ public class FhirRequestDumperFilter implements Filter {
 		requestwriter.println(sw.getBuffer().toString());
 		requestwriter.println(HTML_POSTLOG);
 		requestwriter.close();
+
 		// Pass control on to the next filter
 		chain.doFilter(request, response);
+//		
+//		sw = new StringWriter();
+//		writer = new PrintWriter(sw);
+//		outputDiv(writer, "Response Received at " + (new Timestamp(System.currentTimeMillis())));
+//		outputDiv(writer, " characterEncoding=" + response.getCharacterEncoding());
+//		outputDiv(writer, "     contentLength=" + response.getContentLength());
+//		outputDiv(writer, "       contentType=" + response.getContentType());
+//		outputDiv(writer, "            locale=" + response.getLocale());
+//		Locale locale = response.getLocale();
+//		sb = new StringBuilder();
+//		sb.append(locale.toString());
+//		outputDiv(writer, "           locale=" + sb.toString());
+//		outputDiv(writer, "        remoteHost=" + request.getRemoteHost());
+//		outputDiv(writer, "            scheme=" + request.getScheme());
+//		outputDiv(writer, "        serverName=" + request.getServerName());
+//		outputDiv(writer, "        serverPort=" + request.getServerPort());
+//		outputDiv(writer, "          isSecure=" + request.isSecure());
+//
+//		// Render the HTTP servlet request properties
+//		if (request instanceof FhirRequestWrapper) {
+//			outputDiv(writer, "HttpServletRequest---------------------------------------------");
+//			HttpServletRequest hrequest = (HttpServletRequest) request;
+//			outputDiv(writer, "       contextPath=" + hrequest.getContextPath());
+//			Cookie cookies[] = hrequest.getCookies();
+//			if (cookies == null)
+//				cookies = new Cookie[0];
+//			for (int i = 0; i < cookies.length; i++) {
+//				outputDiv(writer, "            cookie=" + cookies[i].getName() + "=" + cookies[i].getValue());
+//			}
+//			names = hrequest.getHeaderNames();
+//			while (names.hasMoreElements()) {
+//				String name = (String) names.nextElement();
+//				String value = hrequest.getHeader(name);
+//				outputDiv(writer, "            header=" + name + "=" + value);
+//			}
+//			outputDiv(writer, "            method=" + hrequest.getMethod());
+//			outputDiv(writer, "          pathInfo=" + hrequest.getPathInfo());
+//			outputDiv(writer, "       queryString=" + hrequest.getQueryString());
+//			outputDiv(writer, "        remoteUser=" + hrequest.getRemoteUser());
+//			outputDiv(writer, "requestedSessionId=" + hrequest.getRequestedSessionId());
+//			outputDiv(writer, "        requestURI=" + hrequest.getRequestURI());
+//			outputDiv(writer, "       servletPath=" + hrequest.getServletPath());
+//			outputDiv(writer, "REQUEST BODY ---------------------------------------------");
+//			if (hrequest.getInputStream() != null) {
+//				try {
+//					Thread.currentThread().sleep(50);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//				File bodyFile = new File(dumpDir, "request_body_" + suffix + ".json");
+//				PrintWriter bodywriter = new PrintWriter(bodyFile);
+//				BufferedInputStream bis = new BufferedInputStream(hrequest.getInputStream());
+//				ByteArrayOutputStream buf = new ByteArrayOutputStream();
+//				int result = bis.read();
+//				while (result != -1) {
+//					buf.write((byte) result);
+//					result = bis.read();
+//				}
+//				// StandardCharsets.UTF_8.name() > JDK 7
+//				String body = buf.toString("UTF-8");
+//				bodywriter.println(body);
+//				bodywriter.close();
+//				outputDiv(writer, "<a href=\"" + bodyFile.getName() + "\">REQUEST BODY (json)</a><br>");
+//			}
+//		}
+//		outputDiv(writer, "END REQUEST DUMP =============================================");
+//		// Log the resulting string
+//		writer.flush();
+//		filterConfig.getServletContext().log(sw.getBuffer().toString());
+//		File headersFile = new File(dumpDir, "request_dump_" + suffix + ".html");
+//		PrintWriter requestwriter = new PrintWriter(headersFile);
+//		requestwriter.println(HTML_PRELOG);
+//		requestwriter.println(sw.getBuffer().toString());
+//		requestwriter.println(HTML_POSTLOG);
+//		requestwriter.close();
+//			
+//		}
+		
 	}
 
 	private void outputDiv(PrintWriter writer, String line) {

@@ -45,7 +45,8 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	
 	private static Logger logger = Logger.getLog(BaseMapper.class.getName());
 	private static Localization localizer = Localization.getInstance();
-	
+	protected static SimpleDateFormat DATETIME_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX");
+
 	protected static String CUST_RS_BEGIN = "{\"resourceType\": \"HAPIComplexTypesResource\",";
 	protected static String CUST_RS_END = "}";
 	protected static String PAT_RS_BEGIN = "{\"resourceType\": \"Patient\",";

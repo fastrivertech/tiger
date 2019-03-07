@@ -1,0 +1,127 @@
+package com.frt.fhir.store;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.dstu3.model.ResourceType;
+
+import com.frt.fhir.service.FhirService;
+
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.parser.JsonParser;
+
+public class Loader {
+	private File sourceDir; // where patient json files located
+	private Integer limit; // load number of files from source location
+	private FhirService storeService; // data base persist store
+	private JsonParser jsonParser; // HAPI json parser
+	
+	public Loader(File sourceDir) {
+		this(sourceDir, -1);
+	}
+
+	public Loader(File sourceDir, int limit) {
+		this.sourceDir = sourceDir;
+		this.limit = limit;
+		this.storeService = new FhirService();
+		FhirContext context = FhirContext.forDstu3();
+		this.jsonParser=(ca.uhn.fhir.parser.JsonParser)context.newJsonParser();
+		
+	}
+
+	public static void main(String[] args) {
+		// command line args: sourceDir, number of json files to be loaded
+		File sourceDir = null;
+		int limit = -1;
+		if (args.length<=2&&args.length>=1) {
+			// source dir
+			sourceDir = new File(args[0]);
+			if (args.length==2) {
+				limit = Integer.parseInt(args[1]);
+			}
+		} else {
+			printUsage();
+			System.exit(0);
+		}
+		if (!(sourceDir.exists() && sourceDir.isDirectory())) {
+			System.err.println("<sourceDir> does not exist or is not a directory, path=[" + sourceDir.getPath() + "]");
+			printUsage();
+			System.exit(-1);
+		}
+		Loader loader = new Loader(sourceDir, limit);
+		loader.load();
+	}
+
+	private static void printUsage() {
+		System.out.println("Persist Store Loader Usage:");
+		System.out.println(
+				"java -jar frt-fhir-rest.war com.frt.fhir.store.Loader <sourceDir> [<load json file limit>]");
+		System.out.println(
+				"Parameter <sourceDir> (required): folder where synthea generated patient json files are located");
+		System.out.println(
+				"Parameter <load json file limit> (optional): max number of files to be loaded, default: load all files");
+	}
+	
+	public void load() {
+		File[] jsonFiles = sourceDir.listFiles(new FilenameFilter() {
+		    public boolean accept(File dir, String name) {
+		        return name.toLowerCase().endsWith(".json");
+		    }
+		});
+		FileReader fr=null;
+		int count = 0;
+		Map<String, List<Patient>> bundle2Pt = new HashMap<String, List<Patient>>();
+		List<Bundle> bundle0Pt = new ArrayList<Bundle>();
+		long start = System.currentTimeMillis();
+		for (File f: jsonFiles) {
+			if (count>limit&&limit>0) {
+				System.out.print("bundle processed reached limit:" + limit);
+				break;
+			}
+			try {
+				fr = new FileReader(f);
+				org.hl7.fhir.dstu3.model.Bundle bundle = this.jsonParser.doParseResource(org.hl7.fhir.dstu3.model.Bundle.class, fr);
+				List<Patient> pts = new ArrayList<Patient>();
+				for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry: bundle.getEntry()) {
+					if (entry.getResource().getResourceType()==ResourceType.Patient) {
+						pts.add((Patient)entry.getResource());
+						this.storeService.create("Patient", (DomainResource)entry.getResource());
+						count++;
+						System.out.print(".");
+					}
+				}
+				if (pts.size()>1) {
+					// report bundle with >1 patient
+					bundle2Pt.put(bundle.getId(), pts);
+				}
+				if (pts.size()==0) {
+					// report bundle with no patient
+					bundle0Pt.add(bundle);
+				}
+			} catch (FileNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		long elapsed = System.currentTimeMillis() - start;
+		System.out.println("time elapsed: " + elapsed/1000 + " sec., records loaded: " + count);
+		System.out.println("below bundle has more than one patient entry>>>>>>>>>>>>>>>>");
+		bundle2Pt.forEach((k, v) ->	{
+			System.out.println("bundle:"+k);
+			v.forEach((p) -> System.out.println("patient: id="+p.getId()+", name="+p.getName()));
+			}
+		);
+			
+		System.out.println("below bundle has 0 patient entry>>>>>>>>>>>>>>>>");
+		bundle0Pt.forEach(b-> System.out.println("b-id:"+b.getId()));
+	}
+}

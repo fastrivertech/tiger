@@ -27,7 +27,7 @@
         <servlet-name>com.frt.fhir.rest.servlet.ResourceOperationApplication</servlet-name>
         <url-pattern>/*</url-pattern>
     </servlet-mapping>
-	<!-- Dump incoming HTTP requests -->
+	<!-- Dump incoming HTTP requests 
 	<filter>
 	    <filter-name>fhir-request-filter</filter-name>
 	    <filter-class>com.frt.fhir.filter.FhirRequestDumperFilter</filter-class>
@@ -36,4 +36,5 @@
 	    <filter-name>fhir-request-filter</filter-name>
 	    <url-pattern>/*</url-pattern>
 	</filter-mapping>
+	-->
 </web-app>

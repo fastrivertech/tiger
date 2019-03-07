@@ -13,6 +13,7 @@ package com.frt.fhir.model.map.base;
 
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
@@ -179,7 +180,16 @@ public class PatientResourceMapper extends BaseMapper {
 		}
 		
 		// patient.deceased[x].deceasedDateTime
-		frtPatient.setDeceasedDateTime(root.get("deceasedDateTime") != null ? new Timestamp(Date.valueOf(root.get("deceasedDateTime").getAsString()).getTime()) : null);
+		if (root.get("deceasedDateTime") != null) {
+			java.util.Date d = null;
+			try {
+				d=BaseMapper.DATETIME_FORMAT.parse(root.get("deceasedDateTime").getAsString());
+			} catch (ParseException e) {
+				throw new MapperException(e);
+			}
+			frtPatient.setDeceasedDateTime(new Timestamp(d.getTime()));
+		}
+
 		try {
 			if (hapiPatient.hasDeceasedDateTimeType() &&
 				hapiPatient.getDeceasedDateTimeType().hasExtension()) {
