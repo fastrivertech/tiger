@@ -8,14 +8,14 @@ Install(unzip) to C:\apache\kafka\kafka_2.12-2.1.0
 2. Start a single node Kafka server
    tiger\frt-stream\scripts\start
    
-3. Create FhirTopic
-   tiger\frt-stream\scripts\create-topic.bat
+3. Create FhirTopic/FhirDiscoveryTopic
+   tiger\frt-stream\scripts\create-topic.bat FhirTopic/FhirDiscoveryTopic
    
 4. List topics
    tiger\frt-stream\scripts\list-topics.bat
 
-5. View message count of FhirTopi
-   tiger\frt-stream\scripts\view-topic.bat
+5. View message count of FhirTopic/FhirDiscoveryTopic
+   tiger\frt-stream\scripts\read-topic.bat
 
 6. Stop a single node Kafka server   
    tiger\frt-stream\scripts\stop
