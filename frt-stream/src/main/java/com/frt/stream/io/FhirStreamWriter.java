@@ -29,14 +29,14 @@ import com.frt.stream.application.StreamApplicationException;
 import com.frt.stream.service.StreamServiceConfig;
 import com.frt.stream.service.StreamServiceException;
 
-public class FhirMessageWriter implements ParticipatingApplication {
+public class FhirStreamWriter implements ParticipatingApplication {
 
 	private static int id = 0; 
 	private Producer<String, String> producer;
 	private StreamServiceConfig config;
 	private ApplicationThread applicationThread;		
 	
-	public FhirMessageWriter() {
+	public FhirStreamWriter() {
 	}
 	
 	@Override

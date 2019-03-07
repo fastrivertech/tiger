@@ -23,14 +23,14 @@ import com.frt.stream.application.StreamApplicationException;
 import com.frt.stream.service.StreamServiceConfig;
 import com.frt.stream.service.StreamServiceException;
 
-public class FhirMessageReader implements ParticipatingApplication {
+public class FhirStreamReader implements ParticipatingApplication {
 
 	private Consumer<Long, String> consumer;
 	private StreamServiceConfig config;
 	private ApplicationThread applicationThread;		
 	private CountDownLatch latch;
 
-	public FhirMessageReader() {
+	public FhirStreamReader() {
 	}
 
 	@Override
@@ -117,7 +117,7 @@ public class FhirMessageReader implements ParticipatingApplication {
 
 	public static void main(String[] args) {
 		try {
-			FhirMessageReader reader = new FhirMessageReader();
+			FhirStreamReader reader = new FhirStreamReader();
 			reader.initialize();
 			
 			System.out.println("fhir message reader application exit(0)");
