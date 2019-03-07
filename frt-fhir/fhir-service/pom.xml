@@ -29,7 +29,6 @@
   <description>Fast River FHIR CORE SERVICE ${frt.fhir.service.version}</description>
    
   <build>
-    <finalName>frt-fhir-service</finalName>
     <plugins>
       <plugin>
 		<groupId>org.apache.maven.plugins</groupId>
