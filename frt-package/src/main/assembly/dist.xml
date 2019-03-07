@@ -21,6 +21,7 @@
 				<include>frt-common-*.jar</include>
 			</includes>
 		</fileSet>        
+		<!-- package datalake -->
 		<fileSet>
 			<directory>${project.basedir}/../frt-datalake/target</directory>
 			<outputDirectory>lib</outputDirectory>            
@@ -35,6 +36,7 @@
 				<include>*.*</include>
 			</includes>
 		</fileSet>     		
+		<!-- package stream -->
 		<fileSet>
 			<directory>${project.basedir}/../frt-stream/target</directory>
 			<outputDirectory>lib</outputDirectory>            
@@ -48,21 +50,24 @@
 			<includes>
 				<include>*.*</include>
 			</includes>
-		</fileSet>        		
+		</fileSet>    
+		<!-- package fhir rest api doc app -->
 		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-doc/target</directory>
 			<outputDirectory>app</outputDirectory>            
 			<includes>
 				<include>frt-fhir-doc*.war</include>
 			</includes>
-		</fileSet>        		
+		</fileSet>  
+		<!-- package fhir rest api app -->		
 		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-rest/target</directory>
 			<outputDirectory>app</outputDirectory>            
 			<includes>
 				<include>frt-fhir-rest*.war</include>
 			</includes>
-		</fileSet>        				
+		</fileSet>
+		<!-- package schema -->
 		<fileSet>
 			<directory>${project.basedir}/../frt-schema/sp</directory>
 			<outputDirectory>schema/sp</outputDirectory>            
@@ -93,6 +98,49 @@
 				<include>*.*</include>
 			</includes>
 		</fileSet> 
+		<!-- package fhir loader -->
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-load/target</directory>
+			<outputDirectory>lib</outputDirectory>            
+			<includes>
+				<include>frt-fhir-load*.jar</include>
+			</includes>
+		</fileSet>        
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-load/scripts</directory>
+			<outputDirectory>load</outputDirectory>            
+			<includes>
+				<include>*.*</include>
+			</includes>
+		</fileSet>        	
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-load</directory>
+			<outputDirectory>load</outputDirectory>            
+			<includes>
+				<include>README.*</include>
+			</includes>
+		</fileSet>   
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-load/data</directory>
+			<outputDirectory>load/data</outputDirectory>            
+			<includes>
+				<include>*.*</include>
+			</includes>
+		</fileSet>   		
+		<fileSet>
+			<directory>${project.basedir}/../frt-service/target</directory>
+			<outputDirectory>lib</outputDirectory>            
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>        		
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-service/target</directory>
+			<outputDirectory>lib</outputDirectory>            
+			<includes>
+				<include>*.jar</include>
+			</includes>
+		</fileSet>        		
 	</fileSets>
 	<dependencySets>	
 		<dependencySet>
