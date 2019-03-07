@@ -10,6 +10,25 @@ Refer to https://synthetichealth.github.io/synthea
 3. Generate synthetic patients
    ./synthea.bat  -p <generatedPatientPopulationSize> <State> [<City>]
 
+synthea command line usage:
+
+Usage: run_synthea [options] [state [city]]
+Options: [-s seed] [-p populationSize]
+         [-g gender] [-a minAge-maxAge]");
+         [-o overflowPopulation]");
+         [--config* value]");
+          * any setting from src/main/resources/synthea.properties");
+Examples:");
+run_synthea Massachusetts
+run_synthea Alaska Juneau
+run_synthea -s 12345
+run_synthea -p 1000
+run_synthea -s 987 Washington Seattle
+run_synthea -s 21 -p 100 Utah \"Salt Lake City\"
+run_synthea -g M -a 60-65
+run_synthea -p 10 --exporter.fhir.export true
+run_synthea --exporter.baseDirectory \"./output_tx/\" Texas
+
 e.g. 
 
 ./synthea.bat  -p 100 Utah "Salt Lake City"

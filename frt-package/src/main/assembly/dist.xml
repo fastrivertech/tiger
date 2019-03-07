@@ -98,7 +98,7 @@
 				<include>*.*</include>
 			</includes>
 		</fileSet> 
-		<!-- package fhir loader -->
+		<!-- package fhir loader + synthea synthetic patient generator -->
 		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-load/target</directory>
 			<outputDirectory>lib</outputDirectory>            
@@ -120,6 +120,20 @@
 				<include>README.*</include>
 			</includes>
 		</fileSet>   
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-load/synthea/bin</directory>
+			<outputDirectory>load/synthea/bin</outputDirectory>            
+			<includes>
+				<include>*.*</include>
+			</includes>
+		</fileSet>   		
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-load/synthea/lib</directory>
+			<outputDirectory>load/synthea/lib</outputDirectory>            
+			<includes>
+				<include>*.*</include>
+			</includes>
+		</fileSet>   		
 		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-load/data</directory>
 			<outputDirectory>load/data</outputDirectory>            
