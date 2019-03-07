@@ -1,3 +1,3 @@
 #!/bin/bash
 set -e
-hadoop fs -mkdir -r /user/cloudera/frt/datalake/fhir/patient
+hadoop fs -mkdir -p /user/cloudera/frt/datalake/fhir/patient
