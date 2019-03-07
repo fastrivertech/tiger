@@ -34,3 +34,18 @@ run_synthea -s 21 -p 100 Utah "Salt Lake City"
 Some settings can be changed in ./src/main/resources/synthea.properties.
 
 SyntheaTM will output patient records in C-CDA and FHIR formats in ./output.
+
+FRT FHIR Load
+-------------
+1. Build Tiger Project
+
+2. Unzip \frt-package\target\frt-service-package-1.0.0-SNAPSHOT to any working folder
+   load folder contains load tool
+   load\data folder contains sample data
+   
+3. Execute env.bat to setup environment
+
+4. Run load
+   .\load\load.bat [data folder] [maximum number of data files to load]
+   E.g.,    
+   .\load\load.bat .\data 5
