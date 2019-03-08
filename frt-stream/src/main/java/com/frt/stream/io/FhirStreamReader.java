@@ -41,7 +41,7 @@ public class FhirStreamReader implements ParticipatingApplication {
 			consumer = new KafkaConsumer<>(config.getConsumerConfig());
 			consumer.subscribe(Collections.singletonList(config.get(StreamServiceConfig.STREAM_TOPIC)));
 			
-			System.out.println("fhir message reader connecting to fhir stream [" + 
+			System.out.println("fhir stream reader connecting to fhir stream [" + 
 					config.get(StreamServiceConfig.STREAM_TOPIC) + 
 					"] on stream broker [" +
 					config.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
@@ -49,7 +49,7 @@ public class FhirStreamReader implements ParticipatingApplication {
 			applicationThread = new ApplicationThread(this);	
 			
 			latch = new CountDownLatch(1);
-			Runtime.getRuntime().addShutdownHook(new Thread("fhir-message-reader-shutdown-hook") {
+			Runtime.getRuntime().addShutdownHook(new Thread("fhir-stream-reader-shutdown-hook") {
 				@Override
 				public void run() {
 					latch.countDown();
@@ -92,11 +92,11 @@ public class FhirStreamReader implements ParticipatingApplication {
 	public void start() 
 		throws StreamApplicationException {
 		try {			
-			System.out.println("fhir message reader running ...");
+			System.out.println("fhir stream reader running ...");
 			applicationThread.start();
 			latch.await();
 			close();
-			System.out.println("fhir message reader stopped ...");			
+			System.out.println("fhir stream reader stopped ...");			
 		} catch (KafkaException | IllegalStateException | InterruptedException ex) {
 			throw new StreamApplicationException(ex);
 		}
@@ -120,11 +120,11 @@ public class FhirStreamReader implements ParticipatingApplication {
 			FhirStreamReader reader = new FhirStreamReader();
 			reader.initialize();
 			
-			System.out.println("fhir message reader application exit(0)");
+			System.out.println("fhir stream reader application exit(0)");
 			System.exit(0);			
 		} catch (StreamApplicationException ex) {
 			System.exit(1);
-			System.out.println("fhir message reader application exit(1)");			
+			System.out.println("fhir stream reader application exit(1)");			
 		}
 	}
 	
