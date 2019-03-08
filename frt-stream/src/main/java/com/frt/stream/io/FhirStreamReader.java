@@ -10,6 +10,7 @@
  */
 package com.frt.stream.io;
 
+import java.time.Duration;
 import java.util.Collections;
 import java.util.concurrent.CountDownLatch;
 import org.apache.kafka.clients.consumer.Consumer;
@@ -44,7 +45,7 @@ public class FhirStreamReader implements ParticipatingApplication {
 			System.out.println("fhir stream reader connecting to fhir stream [" + 
 					config.get(StreamServiceConfig.STREAM_TOPIC) + 
 					"] on stream broker [" +
-					config.get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
+					config.getConsumerConfig().get(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
 			
 			applicationThread = new ApplicationThread(this);	
 			
@@ -71,16 +72,8 @@ public class FhirStreamReader implements ParticipatingApplication {
 	}
 	
 	public void receives() {
-		int count = 0;
 		while (true) {
-			ConsumerRecords<Long, String> consumerRecords = consumer.poll(1000);
-			if (consumerRecords.count() == 0) {
-				count++;
-				if (count > 300)
-					break;
-				else
-					continue;
-			}
+			ConsumerRecords<Long, String> consumerRecords = consumer.poll(Duration.ZERO);
 			consumerRecords.forEach(record -> {
 				System.out.printf("    received: (%s, %s, %d, %d)\n", 
 						           record.key(), record.value(), record.partition(), record.offset());
@@ -119,7 +112,7 @@ public class FhirStreamReader implements ParticipatingApplication {
 		try {
 			FhirStreamReader reader = new FhirStreamReader();
 			reader.initialize();
-			
+			reader.start();
 			System.out.println("fhir stream reader application exit(0)");
 			System.exit(0);			
 		} catch (StreamApplicationException ex) {

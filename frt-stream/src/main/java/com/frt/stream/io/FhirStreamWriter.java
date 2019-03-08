@@ -39,8 +39,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 	private Producer<String, String> producer;
 	private StreamServiceConfig config;
 	private String dataFolder;
-	private Integer limit;
-	
+
 	public FhirStreamWriter() {
 	}
 	
@@ -51,23 +50,24 @@ public class FhirStreamWriter implements ParticipatingApplication {
 			config = StreamServiceConfig.getInstance();														
 			Properties props = config.getProducerConfig(); 
 			producer = new KafkaProducer<String, String>(props);
-			producer.initTransactions();			
+			producer.initTransactions();		
+						
+			System.out.println("fhir stream writer connecting to fhir stream [" + 
+					config.get(StreamServiceConfig.STREAM_TOPIC) + 
+					"] on stream broker [" +
+					config.getProducerConfig().get(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
+			
 		} catch (StreamServiceException ssex) {
 			throw new StreamApplicationException(ssex);
 		}
 	}
 
-	public void initialize(String folder, String limit) 
+	public void initialize(String folder) 
 		throws StreamApplicationException {
 		if (folder == null) {
 			dataFolder = "./data";
 		} else {
 			dataFolder = folder;
-		}
-		if (limit == null || limit.isEmpty()) {
-			this.limit = Integer.valueOf(1);
-		} else {
-			this.limit = Integer.getInteger(limit);
 		}
 		this.initialize();
 	}	
@@ -83,7 +83,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 					if (file.getName().endsWith(".json")) {
 						String message = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
 						send(message);
-						rename(file.getName());
+						rename(file.getAbsolutePath());						
 					}
 				} catch (IOException ioex) {																																																																																																																						
 				}
@@ -97,7 +97,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 		try {
 			producer.beginTransaction();
 			String messageId = "message_" + ++id;
-			producer.send(new ProducerRecord<String, String>("FhirTopic", messageId + " " + message));
+			producer.send(new ProducerRecord<String, String>(config.get(StreamServiceConfig.STREAM_TOPIC), messageId, message));
 			producer.commitTransaction();
 			System.out.println("    sent " + messageId + " " + message);
 		} catch (Exception ex) {
@@ -105,7 +105,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 	}
 	
 	public void rename(String name) 
-		throws StreamApplicationException { 
+		throws StreamApplicationException { 		
 		File oldName = new File(name);
 		if (!oldName.exists()) {
 			throw new StreamApplicationException("old file '" + name + "' does not exist");			
@@ -117,6 +117,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 		if (!oldName.renameTo(newName)) {
 			throw new StreamApplicationException("failed to rename '" + name + "' to '" + name + "~'");
 		}
+		System.out.println(oldName.getName() + " renamed to " + newName.getName());
 	}
 	
 	@Override
@@ -132,7 +133,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 	public static void main(String[] args) {
 		try {
 			FhirStreamWriter writer = new FhirStreamWriter();
-			writer.initialize(args[0], args[1]);
+			writer.initialize(args[0]);
 			writer.run();
 			writer.close();
 			System.out.println("fhir stream writer application exit(0)");
