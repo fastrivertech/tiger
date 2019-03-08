@@ -89,12 +89,13 @@ public class DataLakeIngestion implements ParticipatingApplication {
 			ConsumerRecords<String, String> consumerRecords = consumer.poll(Duration.ofMillis(1000));
 			consumerRecords.forEach(record -> {
 				System.out.println("received fhir message<k>: " + record.key());
-				if (record.key().contains("POST")) {
+				//if (record.key().contains("POST")) {
 					try {
 						dataLakeService.write(record.value());
 					} catch (DataLakeServiceException ex) {
-				 }
-				}
+						ex.printStackTrace();
+					}
+				//}
 			});									
 			consumer.commitSync();
 		} catch (KafkaException ex) {

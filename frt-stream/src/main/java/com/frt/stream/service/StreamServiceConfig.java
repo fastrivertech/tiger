@@ -13,6 +13,7 @@ package com.frt.stream.service;
 import java.io.File;
 import java.io.InputStream;
 import java.io.FileInputStream;
+import java.util.Objects;
 import java.util.Properties;
 import java.io.IOException;
 import java.io.FileNotFoundException;
@@ -27,7 +28,7 @@ public class StreamServiceConfig {
 	public static final String STREAM_DISCOVERY_TOPIC="frt.stream.discovery.topic";
 	public static final String STREAM_ENABLE="frt.stream.enable";	
 	
-	private final static String STREAMSERVICE_CONFIGURATION_PATH = "./config/frt_stream.properties";
+	private final static String STREAMSERVICE_CONFIGURATION_PATH = "config/frt_stream.properties";
 	private final static String PRODUCER_APPLICATION = "p.";
 	private final static String CONSUMER_APPLICATION = "c.";
 	
@@ -43,6 +44,9 @@ public class StreamServiceConfig {
 		try {
 			ClassLoader classLoader = this.getClass().getClassLoader();
 			is = classLoader.getResourceAsStream(STREAMSERVICE_CONFIGURATION_PATH);
+			if (Objects.isNull(is)) {
+				is = classLoader.getResourceAsStream("./" + STREAMSERVICE_CONFIGURATION_PATH);			
+			}						
 			props = new Properties();
 			props.load(is);			
 		} catch (FileNotFoundException fnfex) {
@@ -53,7 +57,7 @@ public class StreamServiceConfig {
 			if (is != null) {
 				try {
 					is.close();
-				} catch (IOException ioex) {
+				} catch (Exception ignore) {					
 				}
 			}
 		}
