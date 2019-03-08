@@ -25,7 +25,7 @@ public class DataLakeServiceConfig {
 	public static final String DATALAKE_URL="frt.datalake.url";
 	public static final String DATALAKE_PATH="frt.datalake.path";
 
-	private static final String DATALAKESERVICE_CONFIGURATION_PATH = "./config/frt_datalake.properties";		
+	private static final String DATALAKESERVICE_CONFIGURATION_PATH = "config/frt_datalake.properties";		
 	private final static String FS_HDFS = "fs.";
 
 	private static DataLakeServiceConfig instance;

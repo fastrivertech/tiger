@@ -68,6 +68,7 @@ public class DataLakeService {
 	public void write(String message) 
 		throws DataLakeServiceException {
 		try { 
+			System.out.println("Data lake service ...");
 			String date = dateFormat.format(new Date()) + "-" + System.currentTimeMillis();
 			FileSystem fs = FileSystem.get(new URI(config.get(DataLakeServiceConfig.DATALAKE_URL)), hdfsConfig);
 			String fileName = config.get(DataLakeServiceConfig.DATALAKE_PATH) + date + ".json";
