@@ -13,6 +13,7 @@ package com.frt.dl.service;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 import java.util.Properties;
 
 /*
@@ -36,6 +37,9 @@ public class DataLakeServiceConfig {
 		try {
 			ClassLoader classLoader = this.getClass().getClassLoader();
 			is = classLoader.getResourceAsStream(DATALAKESERVICE_CONFIGURATION_PATH);
+			if (Objects.isNull(is)) {
+				is = classLoader.getResourceAsStream("./" + DATALAKESERVICE_CONFIGURATION_PATH);				
+			}
 			props = new Properties();
 			props.load(is);
 		} catch (FileNotFoundException fnfex) {
