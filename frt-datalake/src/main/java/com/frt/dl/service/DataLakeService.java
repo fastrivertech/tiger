@@ -11,11 +11,11 @@
  */
 package com.frt.dl.service;
 
-import java.util.Date;
-import java.text.SimpleDateFormat;
 import java.util.Properties;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.BufferedWriter;
@@ -30,6 +30,8 @@ import org.apache.hadoop.fs.permission.FsPermission;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.security.UserGroupInformation;
 
+import com.frt.dl.DataLakeUtils;
+
 /**
  * DataLakeService class
  * 
@@ -39,15 +41,13 @@ public class DataLakeService {
 
 	private DataLakeServiceConfig config;
 	private Configuration hdfsConfig;
-	private SimpleDateFormat dateFormat;
 	
 	public DataLakeService() {
 	}
 
 	public void initialize() 
 		throws DataLakeServiceException {
-		
-		dateFormat = new SimpleDateFormat("yyyyMMdd");
+
 		config = DataLakeServiceConfig.getInstance();
 		System.setProperty("HADOOP_USER_NAME", config.get(DataLakeServiceConfig.DATALAKE_USER));
 
@@ -68,26 +68,26 @@ public class DataLakeService {
 	public void write(String message) 
 		throws DataLakeServiceException {
 		try { 
-			System.out.println("Data lake service ...");
-			String date = dateFormat.format(new Date()) + "-" + System.currentTimeMillis();
-			FileSystem fs = FileSystem.get(new URI(config.get(DataLakeServiceConfig.DATALAKE_URL)), hdfsConfig);
-			String fileName = config.get(DataLakeServiceConfig.DATALAKE_PATH) + date + ".json";
-			Path path = new Path(fileName);
-	        OutputStream outputStream = fs.create(path);
-			fs.setPermission(path, new FsPermission("777"));        	        
+			System.out.println("Data Lake Service is writting a message ...");
+			FileSystem fs = FileSystem.get(new URI(config.get(DataLakeServiceConfig.DATALAKE_URL)), hdfsConfig);			
+			String path = config.get(DataLakeServiceConfig.DATALAKE_PATH) + DataLakeUtils.partitioned();			
+			Path fileName = new Path(path + System.currentTimeMillis() + ".json");
+			
+	        OutputStream outputStream = fs.create(fileName);
+			fs.setPermission(fileName, new FsPermission("777"));        	        
 	        BufferedWriter br = new BufferedWriter(new OutputStreamWriter(outputStream));
 	        
-	        System.out.println("started to ingest " + fileName + " to fhir datalake ...");	
+	        System.out.println("started to ingest " + path + fileName.getName() + " to fhir datalake ...");	
 	        br.write(message);
 	        br.close();		
 			fs.close();
-			System.out.println("finished ingesting " + fileName + " to fhir datalake ...");
+			System.out.println("finished ingesting " + path + fileName.getName() + " to fhir datalake ...");
 			
 		} catch (Exception ex) {
 			throw new DataLakeServiceException(ex);
 		}
 	}
-
+	
 	public void read(String message) 
 		throws DataLakeServiceException {
 		try {
