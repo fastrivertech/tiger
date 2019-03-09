@@ -86,9 +86,9 @@ FRT FHIR Load
 
    web loader usage:
 
-   .\load\webload.bat [fhir patient rest service URL] [data folder] [maximum number of data files to load]
+   .\load\restload.bat [fhir patient rest service URL] [data folder] [maximum number of data files to load]
    E.g.,    
-   .\load\webload.bat "http://localhost:8080/frt-fhir-rest/1.0/Patient" ".\data"
+   .\load\restload.bat "http://localhost:8080/frt-fhir-rest/1.0/Patient" ".\data"
    E.g.,
-   .\load\webload.bat "http://localhost:8080/frt-fhir-rest/1.0/Patient" ".\synthea\bin\output" 500
+   .\load\restload.bat "http://localhost:8080/frt-fhir-rest/1.0/Patient" ".\synthea\bin\output" 500
    
