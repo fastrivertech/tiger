@@ -101,7 +101,7 @@
 		<!-- package fhir loader + synthea synthetic patient generator -->
 		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-rest/target/frt-fhir-rest/WEB-INF/lib</directory>
-			<outputDirectory>lib/loader</outputDirectory>            
+			<outputDirectory>lib/load</outputDirectory>            
 			<includes>
 				<include>commons-lang3-*.jar</include>
 				<include>hapi-fhir-*.jar</include>
@@ -109,7 +109,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-rest/target/frt-fhir-rest/WEB-INF/lib</directory>
-			<outputDirectory>lib/loader/db</outputDirectory>            
+			<outputDirectory>lib/load/db</outputDirectory>            
 			<includes>
 				<include>db-client-*.jar</include>
 				<include>derbyclient-*.jar</include>
@@ -128,7 +128,7 @@
 		</fileSet>
 		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-rest/target/frt-fhir-rest/WEB-INF/lib</directory>
-			<outputDirectory>lib/loader/web</outputDirectory>            
+			<outputDirectory>lib/load/rest</outputDirectory>            
 			<includes>
 				<include>hk2-locator-*.jar</include>
 				<include>hk2-utils-*.jar</include>
