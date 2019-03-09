@@ -86,6 +86,11 @@ public class FhirLoad {
 		});
 		FileReader fr=null;
 		int count = 0;
+
+		
+		ClassLoader classLoader = getClass().getClassLoader();
+		File file = new File(classLoader.getResource("META-INF/persistence.xml").getFile());
+		System.out.println("JPA persistence.xml:::" + file.getAbsolutePath());
 		Map<String, List<Patient>> bundle2Pt = new HashMap<String, List<Patient>>();
 		List<Bundle> bundle0Pt = new ArrayList<Bundle>();
 		long start = System.currentTimeMillis();

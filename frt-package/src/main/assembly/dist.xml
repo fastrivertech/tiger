@@ -127,6 +127,13 @@
 			</includes>
 		</fileSet>
 		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-rest/target/frt-fhir-rest/WEB-INF/classes/META-INF</directory>
+			<outputDirectory>lib/loader/db/META-INF</outputDirectory>            
+			<includes>
+				<include>persistence.xml</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-rest/target/frt-fhir-rest/WEB-INF/lib</directory>
 			<outputDirectory>lib/load/rest</outputDirectory>            
 			<includes>
