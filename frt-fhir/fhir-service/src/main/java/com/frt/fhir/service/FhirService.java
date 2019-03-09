@@ -13,12 +13,10 @@ package com.frt.fhir.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import javax.ws.rs.core.MultivaluedMap;
 import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.Bundle;
+import org.springframework.beans.factory.annotation.Autowired;
 import com.frt.fhir.model.map.MapperException;
 import com.frt.fhir.model.map.ResourceMapperFactory;
 import com.frt.fhir.model.map.ResourceMapperInterface;
@@ -29,10 +27,7 @@ import com.frt.dr.service.RepositoryApplication;
 import com.frt.dr.service.RepositoryContext;
 import com.frt.dr.service.RepositoryContextException;
 import com.frt.dr.service.RepositoryServiceException;
-import com.frt.dr.service.query.CompositeParameter;
 import com.frt.dr.service.query.QueryOption;
-import com.frt.dr.service.query.ResourceQueryUtils;
-import com.frt.dr.transaction.model.Transaction;
 import com.frt.dr.service.query.QueryCriteria;
 
 /**
@@ -40,7 +35,7 @@ import com.frt.dr.service.query.QueryCriteria;
  * @author chaye
  */
 public class FhirService {
-
+	@Autowired
 	private RepositoryApplication repository;
 	
 	public FhirService() 

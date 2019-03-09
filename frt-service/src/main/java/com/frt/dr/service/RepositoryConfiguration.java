@@ -20,7 +20,6 @@ import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.core.env.Environment;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalEntityManagerFactoryBean;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
  * RepositoryConfiguration class

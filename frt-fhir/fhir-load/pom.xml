@@ -69,6 +69,11 @@
 	  <groupId>ca.uhn.hapi.fhir</groupId>
        <artifactId>hapi-fhir-structures-dstu3</artifactId>
 	</dependency>
+	<!-- rest loader -->
+	<dependency>
+		<groupId>javax.ws.rs</groupId>
+		<artifactId>javax.ws.rs-api</artifactId>
+	</dependency>	
 	<!-- junit -->
 	<dependency>
 		<groupId>junit</groupId>

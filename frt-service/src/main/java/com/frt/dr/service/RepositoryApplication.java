@@ -16,6 +16,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.ComponentScans;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.service.query.QueryCriteria;
@@ -27,7 +28,6 @@ import com.frt.dr.service.query.QueryCriteria;
 @EnableTransactionManagement
 @ComponentScans(value = { @ComponentScan("com.frt.dr.service")})
 public class RepositoryApplication {
-
 	private RepositoryServiceImpl repositoryService;
 	
 	@Autowired

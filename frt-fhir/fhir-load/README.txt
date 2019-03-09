@@ -73,10 +73,22 @@ FRT FHIR Load
    
 3. Execute env.bat to setup environment
 
-4. Run load
+4. Run load - there are 2 loaders, one that loads patients directly into persistence storage (e.g. Splice Machine - db loader),
+   another that loads patients to persistence store through FHIR Patient RESTful service API (web loader)
+
+   db loader usage:
+
    .\load\load.bat [data folder] [maximum number of data files to load]
    E.g.,    
    .\load\load.bat .\data 5
    E.g.,
    .\load\load.bat .\synthea\bin\output 500
 
+   web loader usage:
+
+   .\load\webload.bat [fhir patient rest service URL] [data folder] [maximum number of data files to load]
+   E.g.,    
+   .\load\webload.bat "http://localhost:8080/frt-fhir-rest/1.0/Patient" ".\data"
+   E.g.,
+   .\load\webload.bat "http://localhost:8080/frt-fhir-rest/1.0/Patient" ".\synthea\bin\output" 500
+   

@@ -100,6 +100,47 @@
 		</fileSet> 
 		<!-- package fhir loader + synthea synthetic patient generator -->
 		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-rest/target/frt-fhir-rest/WEB-INF/lib</directory>
+			<outputDirectory>lib/loader</outputDirectory>            
+			<includes>
+				<include>commons-lang3-*.jar</include>
+				<include>hapi-fhir-*.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-rest/target/frt-fhir-rest/WEB-INF/lib</directory>
+			<outputDirectory>lib/loader/db</outputDirectory>            
+			<includes>
+				<include>db-client-*.jar</include>
+				<include>derbyclient-*.jar</include>
+				<include>org.eclipse.persistence.*.jar</include>
+				<include>spring-core-*.jar</include>
+				<include>spring-context-*.jar</include>
+				<include>spring-beans-*.jar</include>
+				<include>spring-orm-*.jar</include>
+				<include>spring-tx-*.jar</include>
+				<include>spring-aop-*.jar</include>
+				<include>spring-expression-*.jar</include>
+				<include>spring-jdbc-*.jar</include>
+				<include>spring-data-commons-*.jar</include>
+				<include>jakarta.persistence-*.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-rest/target/frt-fhir-rest/WEB-INF/lib</directory>
+			<outputDirectory>lib/loader/web</outputDirectory>            
+			<includes>
+				<include>hk2-locator-*.jar</include>
+				<include>hk2-utils-*.jar</include>
+				<include>hk2-api-*.jar</include>
+				<include>jersey-client-*.jar</include>
+				<include>jersey-common-*.jar</include>
+				<include>jersey-hk2-2.27.jar</include>
+				<include>javax.annotation-api-1.3.2.jar</include>
+				<include>javax.inject-2.5.0-b42.jar</include>
+			</includes>
+		</fileSet>
+		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-load/target</directory>
 			<outputDirectory>lib</outputDirectory>            
 			<includes>
@@ -158,8 +199,22 @@
 	</fileSets>
 	<dependencySets>	
 		<dependencySet>
-		<outputDirectory>lib</outputDirectory>
-		<scope>runtime</scope>
-		</dependencySet>
+			<outputDirectory>lib</outputDirectory>
+			<scope>runtime</scope>
+			<excludes>
+				<exclude>com.sun.jersey:jersey-core:jar:1.9</exclude>
+				<exclude>com.sun.jersey:jersey-server:jar:1.9</exclude>
+				<exclude>com.sun.jersey:jersey-json:jar:1.9</exclude>
+			</excludes>
+   		</dependencySet>
+		<dependencySet>
+			<outputDirectory>lib/jersey1.9</outputDirectory>
+			<scope>runtime</scope>
+			<includes>
+				<include>com.sun.jersey:jersey-core:jar:1.9</include>
+				<include>com.sun.jersey:jersey-server:jar:1.9</include>
+				<include>com.sun.jersey:jersey-json:jar:1.9</include>
+			</includes>
+   		</dependencySet>
 	</dependencySets>  
 </assembly>
