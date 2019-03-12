@@ -44,4 +44,25 @@ scp -i tiger.pem C:\frt-dev\tiger\frt-schema\sp\create_patient_tables.sql ec2-us
 select p.patient_id, p.active, p.gender, n.humanname_id, n.use, n.family from Patient p inner join patient_humanname n on p.patient_id = n.patient_id;
 delete from patient where patient_id = 10000;
 delete from patient_humanname where patient_id = 10000;
-   
+
+bulk export & import fhir patient resource tables:
+
+Export:
+
+(1) logon to EC2
+(2) connect to splice machine with source schema e.g. user 'frt' password 'frt'
+   bin/sqlshell.sh
+   splice>connect 'jdbc:splice://localhost:1527/splicedb;user=frt;password=frt';
+(3) export tables into csv files
+   splice>run '/home/ec2-user/frt/export_patients.sql';
+
+Import:
+
+(1) logon to EC2
+(2) connect to splice machine with admin priviledge, e.g. user 'splice' password 'admin'
+   bin/sqlshell.sh
+   splice>connect 'jdbc:splice://localhost:1527/splicedb;user=splice;password=admin';
+(3) import into tables from their csv files
+   splice>run '/home/ec2-user/frt/import_patients.sql';
+
+Note, import_patients.sql hard coded target schema as 'frt2', change it accordingly.
