@@ -149,6 +149,7 @@
 		<module>fhir-rest</module>	
 		<module>fhir-load</module>			
 		<module>fhir-harness</module>	
+		<module>fhir-api</module>
 		<module>fhir-doc</module>
     </modules>
 

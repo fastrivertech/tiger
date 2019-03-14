@@ -7,8 +7,8 @@
  * 
  * $Id:					$: Id of last commit                
  * $Revision:			$: Revision of last commit 
- * $Author: cye			$: Author of last commit       
- * $Date:	10-10-2018	$: Date of last commit
+ * $Author: jfu			$: Author of last commit       
+ * $Date:	03-13-2019	$: Date of last commit
  */
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" 
@@ -22,39 +22,26 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.frt</groupId>
-	<artifactId>frt-fhir-doc</artifactId>
+	<artifactId>frt-fhir-api</artifactId>
 	<packaging>war</packaging>  
 	<version>${frt.fhir.service.version}</version>
-	<name>FRT FHIR REST API Doc ${frt.fhir.service.version}</name>
-	<description>Fast River FHIR API Documentation ${frt.fhir.service.version}</description>
+	<name>FRT FHIR REST API Doc (New) ${frt.fhir.service.version}</name>
+	<description>Fast River FHIR API Documentation (New) ${frt.fhir.service.version}</description>
 
     <properties>
-        <endorsed.dir>${project.build.directory}/endorsed</endorsed.dir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>javax</groupId>
-            <artifactId>javaee-web-api</artifactId>
-            <version>6.0</version>
-            <scope>provided</scope>
-        </dependency>
-    </dependencies>
-
     <build>
-	    <finalName>frt-fhir-doc</finalName>
+	    <finalName>frt-fhir-api</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>2.3.2</version>
                 <configuration>
-                    <source>1.10</source>
-                    <target>1.10</target>
-                    <compilerArguments>
-                        <endorseddirs>${endorsed.dir}</endorseddirs>
-                    </compilerArguments>
+                    <source>1.6</source>
+                    <target>1.6</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -65,7 +52,7 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
-            <plugin>
+            <!--plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.1</version>
@@ -89,7 +76,7 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin-->
         </plugins>
     </build>
 

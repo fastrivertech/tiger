@@ -21,7 +21,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
@@ -29,7 +28,7 @@ import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import com.frt.dr.cache.CacheService;
 import com.frt.dr.cache.NamedCache;
-import com.frt.dr.transaction.model.Transaction;
+import com.frt.dr.model.base.Patient;
 import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.service.validation.IdValidatorException;
@@ -39,6 +38,11 @@ import com.frt.fhir.service.FhirService;
 import com.frt.fhir.service.FhirServiceException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * CreateResourceInteraction class
@@ -83,6 +87,20 @@ public class UpdateResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
+	@Operation(summary = "Update an existing Patient",
+    tags = {"Patients"},
+//    security = @SecurityRequirement(
+//                            name = "oauth2-auth",
+//                            scopes = "update:resource"),
+    responses = {
+            @ApiResponse(
+               content = @Content(mediaType = "application/fhir+json",
+                       schema = @Schema(implementation = Patient.class))),
+            @ApiResponse(responseCode = "200", description = "Resource updated successfully"),
+            @ApiResponse(responseCode = "201", description = "Resource created successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
+            @ApiResponse(responseCode = "404", description = "Not found - Resource type not supported, or not a FHIR end-point"),
+            @ApiResponse(responseCode = "500", description = "Server internal error") })
 	public <R extends DomainResource> Response update(@PathParam("type") final String type,
 						   							  @PathParam("id") final String id,
 						   							  @QueryParam("_format") @DefaultValue("json") final String _format, 

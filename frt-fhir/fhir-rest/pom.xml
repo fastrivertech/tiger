@@ -50,7 +50,30 @@
 				<packagingExcludes>WEB-INF/lib/jersey-*-1.9.jar</packagingExcludes>				
 			</configuration>
 		</plugin>
-		<!-- swagger REST API doc
+		<!-- swagger maven plugin -->
+		<plugin>
+	        <groupId>io.swagger.core.v3</groupId>
+	        <artifactId>swagger-maven-plugin</artifactId>
+	        <version>2.0.7</version>
+	        <configuration>
+	            <outputFileName>fhir-operations</outputFileName>
+	            <outputPath>${basedir}/../fhir-api/src/main/webapp/</outputPath>
+	            <outputFormat>JSONANDYAML</outputFormat>
+	            <resourcePackages>
+	                <package>com.frt.fhir.rest</package>
+	            </resourcePackages>
+	            <prettyPrint>TRUE</prettyPrint>
+	        </configuration>
+	        <executions>
+	            <execution>
+	                <phase>compile</phase>
+	                <goals>
+	                    <goal>resolve</goal>
+	                </goals>
+	            </execution>
+	        </executions>
+        </plugin>
+        <!-- swagger REST API doc --> 
 	    <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-javadoc-plugin</artifactId>
@@ -60,15 +83,15 @@
                     <id>generate-service-docs</id>
                     <phase>generate-resources</phase>
                     <configuration>
-                        <doclet>com.carma.swagger.doclet.ServiceDoclet</doclet>
-                        <docletArtifact>
-                            <groupId>com.carma</groupId>
-                            <artifactId>swagger-doclet</artifactId>
-                            <version>1.0.5</version>
-                        </docletArtifact>
-                        <reportOutputDirectory>../fhir-doc/src/main/webapp</reportOutputDirectory>
+						<doclet>com.carma.swagger.doclet.ServiceDoclet</doclet>
+                           <docletArtifact>
+                               <groupId>com.carma</groupId>
+							<artifactId>swagger-doclet</artifactId>
+       						<version>1.0.5</version>
+       					</docletArtifact>
+       					<reportOutputDirectory>../fhir-doc/src/main/webapp</reportOutputDirectory>
                         <useStandardDocletOptions>false</useStandardDocletOptions>
-                        <additionalparam>-apiVersion 1.0                                 
+                        <additionalparam>-apiVersion 3.0                                 
 										 -docBasePath /frt-fhir-doc/apidocs
 										 -apiBasePath /frt-fhir-rest
 										 -apiInfoFile apiinfo.json
@@ -81,7 +104,7 @@
                 </execution>
             </executions>
         </plugin>
-		-->
+        
     </plugins>
   </build>
   
@@ -166,5 +189,27 @@
 		<artifactId>junit</artifactId>
 		<scope>test</scope>
 	</dependency>				
-    </dependencies>
+	<!-- https://mvnrepository.com/artifact/com.carma/swagger-doclet -->
+	<dependency>
+	    <groupId>com.carma</groupId>
+	    <artifactId>swagger-doclet</artifactId>
+	    <version>1.0.5</version>
+	</dependency>
+ 	<!-- swagger annotation 2.0.7 -->
+    <dependency>
+        <groupId>javax.ws.rs</groupId>
+        <artifactId>javax.ws.rs-api</artifactId>
+        <version>2.1</version>
+    </dependency>
+    <dependency>
+        <groupId>javax.servlet</groupId>
+        <artifactId>javax.servlet-api</artifactId>
+        <version>3.1.0</version>
+    </dependency>
+	<dependency>
+	    <groupId>io.swagger.core.v3</groupId>
+	    <artifactId>swagger-annotations</artifactId>
+	    <version>2.0.7</version>
+	</dependency>
+  </dependencies>
 </project>
