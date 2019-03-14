@@ -141,19 +141,20 @@ public class CreateResourceOperation extends ResourceOperation {
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Operation(summary = "Create a new Patient",
-    tags = {"Patients"},
-//    security = @SecurityRequirement(
-//                            name = "petstore-auth",
-//                            scopes = "write:pets"),
-    responses = {
+		tags = {"Patients"},
+	  //security = @SecurityRequirement(name = "petstore-auth",
+	  //                                scopes = "write:pets"),
+		responses = {
             @ApiResponse(
                content = @Content(mediaType = "application/json",
-                       schema = @Schema(implementation = Patient.class))),
+								  schema = @Schema(implementation = Patient.class))),
             @ApiResponse(responseCode = "201", description = "Resource created successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
             @ApiResponse(responseCode = "404", description = "Not found - Resource type not supported, or not a FHIR end-point"),
-            @ApiResponse(responseCode = "422", description = "Unprocessable entity") }
-)	public <R extends DomainResource> Response create(@PathParam("type") final String type,
+            @ApiResponse(responseCode = "422", description = "Unprocessable entity") 
+		}
+	)	
+	public <R extends DomainResource> Response create(@PathParam("type") final String type,
 						   						      @QueryParam("_format") @DefaultValue("json") final String _format, 
 						   						      final String body) {
 		try {

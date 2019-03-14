@@ -114,16 +114,17 @@ public class ReadResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.TYPE_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Operation(summary = "Search Patient Resource by query parameters",
-    responses = {
+		responses = {
             @ApiResponse(description = "FHIR DomainResource: Patient that satisfied query parameters",
-                    content = @Content(mediaType = "application/fhir+json",
-                            schema = @Schema(implementation = Patient.class))),
+						 content = @Content(mediaType = "application/fhir+json",
+                         schema = @Schema(implementation = Patient.class))),
             @ApiResponse(responseCode = "200", description = "Resource retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
             @ApiResponse(responseCode = "410", description = "Gone - Resource deleted"),
             @ApiResponse(responseCode = "404", description = "Not found - Unknown resource"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
-            })
+        }
+	)
 	public <R extends DomainResource> Response read(@PathParam("type") final String type, 
 												    @QueryParam("_id") String _id,
 												    @QueryParam("_format") @DefaultValue("json") final String _format,
@@ -154,16 +155,17 @@ public class ReadResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Operation(summary = "Get Patient Resource by Logical ID",
-    responses = {
+		responses = {
             @ApiResponse(description = "FHIR DomainResource: Patient",
-                    content = @Content(mediaType = "application/fhir+json",
-                            schema = @Schema(implementation = Patient.class))),
+						 content = @Content(mediaType = "application/fhir+json",
+                         schema = @Schema(implementation = Patient.class))),
             @ApiResponse(responseCode = "200", description = "Resource retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
             @ApiResponse(responseCode = "410", description = "Gone - Resource deleted"),
             @ApiResponse(responseCode = "404", description = "Not found - Unknown resource"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
-            })
+        }
+	)			
 	public <R extends DomainResource> Response read(@PathParam("type") final String type,
 											  		@PathParam("id") final String id, 
 												    @QueryParam("_format") @DefaultValue("json") final String _format,

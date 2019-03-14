@@ -11,7 +11,6 @@
 package com.frt.fhir.rest;
 
 import java.util.Optional;
-
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
@@ -88,19 +87,20 @@ public class UpdateResourceOperation extends ResourceOperation {
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Operation(summary = "Update an existing Patient",
-    tags = {"Patients"},
-//    security = @SecurityRequirement(
-//                            name = "oauth2-auth",
-//                            scopes = "update:resource"),
-    responses = {
+		tags = {"Patients"},
+	  //security = @SecurityRequirement(name = "oauth2-auth",
+	  //                                scopes = "update:resource"),
+		responses = {
             @ApiResponse(
                content = @Content(mediaType = "application/fhir+json",
-                       schema = @Schema(implementation = Patient.class))),
+								  schema = @Schema(implementation = Patient.class))),
             @ApiResponse(responseCode = "200", description = "Resource updated successfully"),
             @ApiResponse(responseCode = "201", description = "Resource created successfully"),
             @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
             @ApiResponse(responseCode = "404", description = "Not found - Resource type not supported, or not a FHIR end-point"),
-            @ApiResponse(responseCode = "500", description = "Server internal error") })
+            @ApiResponse(responseCode = "500", description = "Server internal error") 
+		}
+	)
 	public <R extends DomainResource> Response update(@PathParam("type") final String type,
 						   							  @PathParam("id") final String id,
 						   							  @QueryParam("_format") @DefaultValue("json") final String _format, 
