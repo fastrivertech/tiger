@@ -21,10 +21,17 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.CapabilityStatement;
+
+import com.frt.dr.model.base.Patient;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.service.FhirConformanceService;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * CreateResourceInteraction class
@@ -50,7 +57,7 @@ public class CapabilityResourceOperation extends ResourceOperation {
 	
 	/**
 	 * Retrieve the FHIR server capability statement resource
-	 * GET [base]/frt-fhir-rest/1.0/metadata{?mode=[mode]} {&_format=[mime-type]}
+	 * GET [base]/frt-fhir-rest/API/metadata{?mode=[mode]} {&_format=[mime-type]}
 	 * @param mode return information mode: full, normative or terminology 
 	 * @param _format mime-type json or xml, default josn and json supported
 	 * @return the FHIR server capability statement resource
@@ -60,8 +67,19 @@ public class CapabilityResourceOperation extends ResourceOperation {
 	@GET
 	@Path(ResourcePath.METADATA_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	public Response read(@QueryParam("mode") @DefaultValue("normative") final String mode,
-						 @QueryParam("_format") @DefaultValue("json") final String _format) {	
+	@Operation(summary = "Get CapabilityStatement", description= "Get CapabilityStatement Resource of the server",
+    tags = {ResourceOperation.READ},
+    responses = {
+            @ApiResponse(description = "FHIR DomainResource: CapabilityStatement",
+                    content = @Content(mediaType = "application/fhir+json",
+                            schema = @Schema(implementation = Patient.class))),
+            @ApiResponse(responseCode = "200", description = "Resource (CapabilityStatement) retrieved successfully"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+	public Response read(
+			@QueryParam("mode") @DefaultValue("normative") final String mode,
+			@QueryParam("_format") @DefaultValue("json") final String _format
+			) {	
 		
 		logger.info(localizer.x("FHR_I003: CapabilityResourceOperation reads the capability statement by mode {0}", mode));										
 		

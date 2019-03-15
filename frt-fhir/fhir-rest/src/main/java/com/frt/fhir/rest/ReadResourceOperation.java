@@ -53,6 +53,7 @@ import com.frt.stream.service.StreamService;
 import com.frt.stream.service.StreamServiceException;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -96,8 +97,8 @@ public class ReadResourceOperation extends ResourceOperation {
 	
 	/**
 	 * Get FHIR Resource by its Id and search string 
-	 * GET [base]/frt-fhir-rest/1.0[type]{?[parameters]{&_format=[mime-type]}} 
-	 * GET [base]/frt-fhir-rest/1.0/Patient?_id=[id] or [base]/frt-fhir-rest/1.0/Patient/given=eve
+	 * GET [base]/frt-fhir-rest/API/[type]{?[parameters]{&_format=[mime-type]}} 
+	 * GET [base]/frt-fhir-rest/API/Patient?_id=[id] or [base]/frt-fhir-rest/API/Patient/given=eve
 	 * @param type Resource type, e.g., Patient
 	 * @param _id Resource logical id, e.g., 1356
 	 * @param _format json or xml, json supported
@@ -113,7 +114,8 @@ public class ReadResourceOperation extends ResourceOperation {
 	@GET
 	@Path(ResourcePath.TYPE_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	@Operation(summary = "Search Patient Resource by query parameters",
+	@Operation(summary = "Search Patient", description= "Search Patient Resource Using Query Parameters",
+    tags = {ResourceOperation.READ},
 		responses = {
             @ApiResponse(description = "FHIR DomainResource: Patient that satisfied query parameters",
 						 content = @Content(mediaType = "application/fhir+json",
@@ -125,20 +127,23 @@ public class ReadResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
         }
 	)
-	public <R extends DomainResource> Response read(@PathParam("type") final String type, 
-												    @QueryParam("_id") String _id,
-												    @QueryParam("_format") @DefaultValue("json") final String _format,
-												    @QueryParam("_summary") @DefaultValue("false") final String _summary,
-													@Context UriInfo uInfo) {		
+	public <R extends DomainResource> Response read(
+			@Parameter(description = "FHIR Resource Type, the type of the resource to be retrieved, e.g. Patient", required = true) @PathParam("type") final String type, 
+			@Parameter(description = "FHIR Resource Id, it is the logical ID of the resource, e.g. Patient MRN", required = true) @PathParam("id") final String _id, 
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
+			@Parameter(description = "_summary parameter requests the server to return a subset of the resource", required = false) @QueryParam("_summary") @DefaultValue("false") final String _summary,		
+			@Parameter(description = "Map of query parameters", required = true) @Context UriInfo uInfo) 
+	{		
+		String id = _id;
 		if (uriInfo.getQueryParameters().get("_id") != null ) {
-			_id = uriInfo.getQueryParameters().get("_id").get(0);
+			id = uriInfo.getQueryParameters().get("_id").get(0);
 		}
-		return readResource(type, _id, _format, _summary, uInfo);
+		return readResource(type, id, _format, _summary, uInfo);
 	}
 	
 	/**
 	 * Get FHIR Resource by its Id
-	 * GET [base]/frt-fhir-rest/1.0/[type]/[id] {?_format=[mime-type]} {&_format=[mime-type]}
+	 * GET [base]/frt-fhir-rest/API/[type]/[id] {?_format=[mime-type]} {&_format=[mime-type]}
 	 * @param type Resource type, e.g., Patient
 	 * @param id Resource logical id, e.g., 1356
 	 * @param _format json or xml, default josn and json supported
@@ -154,7 +159,8 @@ public class ReadResourceOperation extends ResourceOperation {
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	@Operation(summary = "Get Patient Resource by Logical ID",
+	@Operation(summary = "Get Patient", description= "Get Patient Resource By Logical ID",
+    tags = {ResourceOperation.READ},
 		responses = {
             @ApiResponse(description = "FHIR DomainResource: Patient",
 						 content = @Content(mediaType = "application/fhir+json",
@@ -166,10 +172,11 @@ public class ReadResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
         }
 	)			
-	public <R extends DomainResource> Response read(@PathParam("type") final String type,
-											  		@PathParam("id") final String id, 
-												    @QueryParam("_format") @DefaultValue("json") final String _format,
-												    @QueryParam("_summary") @DefaultValue("false") final String _summary) {		
+	public <R extends DomainResource> Response read(
+			@Parameter(description = "FHIR Resource Type, the type of the resource to be retrieved, e.g. Patient", required = true) @PathParam("type") final String type,
+			@Parameter(description = "FHIR Resource Id, it is the logical ID of the resource, e.g. Patient MRN", required = true) @PathParam("id") final String id, 
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
+			@Parameter(description = "_summary parameter requests the server to return a subset of the resource", required = false) @QueryParam("_summary") @DefaultValue("false") final String _summary) {		
 		return readResource(type, id, _format, _summary, null);
 	}
 

@@ -27,6 +27,10 @@ import com.frt.fhir.parser.JsonParser;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+
 @Path(ResourcePath.BASE_PATH)
 @PermitAll
 public class ExecutionResourceOperation extends ResourceOperation {
@@ -57,6 +61,15 @@ public class ExecutionResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.RESOURCE_PATH + ResourcePath.OPERATION_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
+	@Operation(summary = "Operations on any resource", description="Operations on any resource",
+    tags = {ResourceOperation.EXECUTE},
+    responses = {
+            @ApiResponse(
+               content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "201", description = "OK, Operation completed successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "422", description = "Not processable resource"),
+            @ApiResponse(responseCode = "500", description = "Server Internal Error") })
 	public Response execute(@PathParam("resource") final String resource, 
 						    @PathParam("operation") final String operation,
 						    @QueryParam("_format") @DefaultValue("json") final String _format,

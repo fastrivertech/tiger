@@ -28,6 +28,8 @@ import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Bundle.BundleType;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
+
+import com.frt.dr.model.base.Patient;
 import com.frt.dr.service.query.QueryOption;
 import com.frt.fhir.model.BundleBuilder;
 import com.frt.fhir.parser.JsonParser;
@@ -36,6 +38,11 @@ import com.frt.fhir.service.FhirService;
 import com.frt.fhir.service.FhirServiceException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * HistoryResourceOperation class
@@ -60,7 +67,7 @@ public class HistoryResourceOperation extends ResourceOperation {
 	
 	/**
 	 * Retrieve the history of a resource by its logical Id
-	 * GET [base]/frt-fhir-rest/1.0/[type]/[id]/_history{?_format=[mime-type]}
+	 * GET [base]/frt-fhir-rest/API/[type]/[id]/_history{?_format=[mime-type]}
 	 * @param type Resource type, e.g., Patient
 	 * @param id Resource logical id, e.g., 1356
 	 * @param _format json or xml, default json and json supported
@@ -73,9 +80,22 @@ public class HistoryResourceOperation extends ResourceOperation {
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	public <R extends DomainResource> Response history(@PathParam("type") final String type, 
-						 						       @PathParam("id") final String id,
-						 						       @QueryParam("_format") @DefaultValue("json") final String _format) {
+	@Operation(summary = "Retrieve History of A Patient", description= "Retrieve the history of a patient resource by its logical Id",
+    tags = {ResourceOperation.READ},
+    responses = {
+            @ApiResponse(description = "FHIR DomainResource: Bundle of Resource History",
+                    content = @Content(mediaType = "application/fhir+json",
+                            schema = @Schema(implementation = Patient.class))),
+            @ApiResponse(responseCode = "200", description = "OK, Resource History Retrieved Successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad Request"),
+            @ApiResponse(responseCode = "404", description = "Resource Not Found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+	public <R extends DomainResource> Response history(
+			@PathParam("type") final String type, 
+			@PathParam("id") final String id,
+			@QueryParam("_format") @DefaultValue("json") final String _format) 
+	{
 		
 		logger.info(localizer.x("FHR_I005: HistoryResourceOperation retrieves the hsitory of resource {0} by its id {1}", type, id));										
 		

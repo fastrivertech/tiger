@@ -23,6 +23,12 @@ import com.frt.util.logging.Localization;
  * @author cqye
  */
 public abstract class ResourceOperation {
+	public static final String CREATE = "CREATE";
+	public static final String READ = "READ";
+	public static final String UPDATE = "UPDATE";
+	public static final String DELETE = "DELETE";
+	public static final String MPI = "MPI";
+	public static final String EXECUTE = "EXECUTE";
 	private static Logger logger = Logger.getLog(ResourceOperation.class.getName());
 	private static Localization localizer = Localization.getInstance();
 

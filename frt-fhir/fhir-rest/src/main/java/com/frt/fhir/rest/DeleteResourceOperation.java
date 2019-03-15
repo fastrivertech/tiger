@@ -26,6 +26,8 @@ import javax.ws.rs.core.Response.Status;
 import org.hl7.fhir.dstu3.model.CapabilityStatement;
 import org.hl7.fhir.dstu3.model.DomainResource;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
+
+import com.frt.dr.model.base.Patient;
 import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.rest.validation.OperationValidator;
@@ -36,6 +38,11 @@ import com.frt.fhir.service.FhirServiceException;
 import com.frt.stream.service.StreamServiceException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 /**
  * CreateResourceInteraction class
@@ -62,7 +69,7 @@ public class DeleteResourceOperation extends ResourceOperation {
 	
 	/**
 	 * Delete a resource by its id
-	 * DELETE [base]/frt-fhir-rest/1.0/[type]/[id]
+	 * DELETE [base]/frt-fhir-rest/API/[type]/[id]
 	 * @param type resource type
 	 * @param id resource logical Id
 	 * @return resource deleted
@@ -74,8 +81,19 @@ public class DeleteResourceOperation extends ResourceOperation {
 	@DELETE
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	public <R extends DomainResource> Response delete(@PathParam("type") final String type,
-												      @PathParam("id") final String id) {
+	@Operation(summary = "Delete Patient", description="Delete A Patient",
+    tags = {ResourceOperation.DELETE},
+    responses = {
+            @ApiResponse(
+               content = @Content(mediaType = "application/json")),
+            @ApiResponse(responseCode = "200", description = "OK, Resource deleted successfully"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not found - Resource with the given ID not found"),
+            @ApiResponse(responseCode = "500", description = "Server Internal Error") })
+	public <R extends DomainResource> Response delete(
+			@PathParam("type") final String type,
+			@PathParam("id") final String id) 
+	{
 		try {
 			logger.info(localizer.x("FHR_I004: DeleteResourceOperation deletes a resource {0} by its id {1}", type, id));										
 			OperationValidator.validateId(Optional.ofNullable(id));

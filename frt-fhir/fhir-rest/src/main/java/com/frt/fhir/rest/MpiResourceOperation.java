@@ -26,6 +26,8 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.PathParam;
 import org.hl7.fhir.dstu3.model.OperationOutcome;
 import org.hl7.fhir.dstu3.model.Bundle;
+
+import com.frt.dr.model.base.Patient;
 import com.frt.fhir.model.BundleBuilder;
 import com.frt.fhir.mpi.MpiService;
 import com.frt.fhir.mpi.MpiServiceImpl;
@@ -37,6 +39,11 @@ import com.frt.fhir.mpi.resource.Parameters;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
+
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
 @Path(ResourcePath.BASE_PATH)
 @PermitAll
@@ -81,8 +88,21 @@ public class MpiResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_MATCH_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
-	public Response match(@QueryParam("_format") @DefaultValue("json") final String _format,
-						  final String body) {		
+	@Operation(summary = "Match Domain Resource", description= "Match domain resource with golden domain resources in the MPI database based on the MPI provider.",
+    tags = {ResourceOperation.MPI},
+    responses = {
+            @ApiResponse(description = "FHIR DomainResource: Bundle Contains A Set of Matched Golden Domain Resources or Potentially Matched Records",
+                    content = @Content(mediaType = "application/fhir+json",
+                            schema = @Schema(implementation = Patient.class))),
+            @ApiResponse(responseCode = "200", description = "Matched: Resources Matched Successfully"),
+            @ApiResponse(responseCode = "201", description = "No Match and Created"),
+            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
+            @ApiResponse(responseCode = "422", description = "Not Processable Resource"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+	public Response match(
+			@QueryParam("_format") @DefaultValue("json") final String _format,
+			final String body) {		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "match"));		
 		try {
 			Parameters params = paramParser.deserialize(body);			
@@ -121,8 +141,19 @@ public class MpiResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_SEARCH_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
-	public Response search(@QueryParam("_format") @DefaultValue("json") final String _format,
-						   final String body) {		
+	@Operation(summary = "Probabilistic search golden domain resources based on search criteria and options", description= "Probabilistic search golden domain resources based on search criteria and options.",
+    tags = {ResourceOperation.MPI},
+    responses = {
+            @ApiResponse(description = "FHIR DomainResource: Bundle contains a set of matched golden domain resources with score above the match threshold",
+                    content = @Content(mediaType = "application/fhir+json")),
+            @ApiResponse(responseCode = "200", description = "Matched"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "422", description = "Not processable resource"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+	public Response search(
+			@QueryParam("_format") @DefaultValue("json") final String _format,
+			final String body) {		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "search"));													
 		String message = "Patient resource operation search not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
@@ -160,8 +191,22 @@ public class MpiResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_MERGE_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
-	public Response merge(@QueryParam("_format") @DefaultValue("json") final String _format,
-						  final String body) {		
+	@Operation(summary = "Merge Two Domain Resource (Source & Target)", description= "Merge a source domain resource with the sourceId to a target domain resource with the targetId..",
+    tags = {ResourceOperation.MPI},
+    responses = {
+            @ApiResponse(description = "FHIR DomainResource: Bundle a Set of Merged Domain Resource and Survived Domain Resource",
+                    content = @Content(mediaType = "application/fhir+json",
+                            schema = @Schema(implementation = Patient.class))),
+            @ApiResponse(responseCode = "201", description = "Merged: Resources Merged Successfully"),
+            @ApiResponse(responseCode = "202", description = "Has Been Merged"),
+            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
+            @ApiResponse(responseCode = "404", description = "Not Found Resource"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+	public Response merge(
+			@QueryParam("_format") @DefaultValue("json") final String _format,
+			final String body) 
+	{		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "merge"));												
 		String message = "Patient resource operation merge not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
@@ -189,8 +234,22 @@ public class MpiResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_UNMERGE_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
-	public Response unmerge(@QueryParam("_format") @DefaultValue("json") final String _format,
-						    final String body) {		
+	@Operation(summary = "Unmerge A Survived Domain Resource", description= "Unmerge A Survived Domain Resource.",
+    tags = {ResourceOperation.MPI},
+    responses = {
+            @ApiResponse(description = "FHIR DomainResource: Bundle of A Set Of Source Domain Resource And target Domain Resource",
+                    content = @Content(mediaType = "application/fhir+json",
+                            schema = @Schema(implementation = Patient.class))),
+            @ApiResponse(responseCode = "201", description = "Unmerged"),
+            @ApiResponse(responseCode = "202", description = "Has Been Merged"),
+            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
+            @ApiResponse(responseCode = "404", description = "Not found - Unknown resource"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+	public Response unmerge(
+			@QueryParam("_format") @DefaultValue("json") final String _format,
+			final String body) 
+	{		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "unmerge"));													
 		String message = "Patient resource operation unmerge not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
@@ -219,8 +278,22 @@ public class MpiResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_LINK_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
-	public Response link(@QueryParam("_format") @DefaultValue("json") final String _format,
-						 final String body) {		
+	@Operation(summary = "Link Two Domain Resources", description= "Link two domain resources,  FHIR link operation is global merge or enterprise merge \r\n in MPI perspective, but does not perform local merge or domain resource merge.",
+    tags = {ResourceOperation.MPI},
+    responses = {
+            @ApiResponse(description = "FHIR DomainResource: Bundle of A Set of Linked Domain Resources",
+                    content = @Content(mediaType = "application/fhir+json",
+                            schema = @Schema(implementation = Patient.class))),
+            @ApiResponse(responseCode = "201", description = "Linked: Resources Linked Successfully"),
+            @ApiResponse(responseCode = "202", description = "Has Been Linked, Resources Has Been Linked"),
+            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
+            @ApiResponse(responseCode = "404", description = "Not found - Unknown resource"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+	public Response link(
+			@QueryParam("_format") @DefaultValue("json") final String _format,
+			 final String body) 
+	{		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "link"));													
 		String message = "Patient resource operation link not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
@@ -247,8 +320,20 @@ public class MpiResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_UNLINK_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
-	public Response unlink(@QueryParam("_format") @DefaultValue("json") final String _format,
-						   final String body) {		
+	@Operation(summary = "Un-merge a survived domain resource", description= "Un-merge a survived domain resource.",
+    tags = {ResourceOperation.MPI},
+    responses = {
+            @ApiResponse(description = "FHIR DomainResource: Bundle a set of merged domain resource and survived domain resource",
+                    content = @Content(mediaType = "application/fhir+json")),
+            @ApiResponse(responseCode = "201", description = "Unlinked"),
+            @ApiResponse(responseCode = "202", description = "Has Been Unlinked"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+	public Response unlink(
+			@QueryParam("_format") @DefaultValue("json") final String _format,
+			final String body) {		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "unlink"));													
 		String message = "Patient resource operation unlink not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
@@ -273,8 +358,20 @@ public class MpiResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_PD_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
-	public Response search_pd(@QueryParam("identifier") final String identifier,	
-							  @QueryParam("_format") @DefaultValue("json") final String _format) {		
+	@Operation(summary = "Retrieve potential duplicates for the given patient identifier", description= "Retrieve potential duplicates for the given patient identifier.",
+    tags = {ResourceOperation.MPI},
+    responses = {
+            @ApiResponse(description = "FHIR DomainResource: Bundle a set of potential duplicate patient resources",
+                    content = @Content(mediaType = "application/fhir+json")),
+            @ApiResponse(responseCode = "200", description = "Success"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+	public Response search_pd(
+			@QueryParam("identifier") final String identifier,	
+			@QueryParam("_format") @DefaultValue("json") final String _format) 
+	{		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "search potentials"));													
 		String message = "Patient resource operation search potential duplicates not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
@@ -301,8 +398,20 @@ public class MpiResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_PD_PATH)
 	@Consumes({ MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON })
 	@Produces({ MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON })
-	public Response resolve_pd(@QueryParam("_format") @DefaultValue("json") final String _format,
-							   final String body) {
+	@Operation(summary = "Resolve two potential duplicates", description= "Resolve two potential duplicates.",
+    tags = {ResourceOperation.MPI},
+    responses = {
+            @ApiResponse(description = "FHIR DomainResource: Bundle a Set of Potential Duplicate Patient Resources",
+                    content = @Content(mediaType = "application/fhir+json")),
+            @ApiResponse(responseCode = "201", description = "Resolved"),
+            @ApiResponse(responseCode = "400", description = "Bad request"),
+            @ApiResponse(responseCode = "404", description = "Not Found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+            })
+	public Response resolve_pd(
+			@QueryParam("_format") @DefaultValue("json") final String _format,
+			final String body) 
+	{
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "resolve potentials"));
 		String message = "Patient resource operation resolve potential duplicates not implemented yet";
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message,

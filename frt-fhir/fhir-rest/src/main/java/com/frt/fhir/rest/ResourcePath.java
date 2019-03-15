@@ -16,7 +16,7 @@ package com.frt.fhir.rest;
  * @author cqye
  */
 public interface ResourcePath {
-	 public static final String BASE_PATH = "/1.0";
+	 public static final String BASE_PATH = "/API";
 	 public static final String TYPE_PATH = "/{type:[a-ln-zA-Z]+}";
 	 public static final String ID_PATH = "/{id:[A-Za-z0-9\\-\\.]+}";
 	 public static final String VID_PATH = "/{vid:[A-Za-z0-9\\-\\.]+}";	 

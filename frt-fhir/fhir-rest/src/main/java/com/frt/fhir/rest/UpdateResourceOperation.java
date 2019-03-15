@@ -87,10 +87,8 @@ public class UpdateResourceOperation extends ResourceOperation {
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Operation(summary = "Update an existing Patient",
-		tags = {"Patients"},
-	  //security = @SecurityRequirement(name = "oauth2-auth",
-	  //                                scopes = "update:resource"),
-		responses = {
+    tags = {ResourceOperation.UPDATE},
+    responses = {
             @ApiResponse(
                content = @Content(mediaType = "application/fhir+json",
 								  schema = @Schema(implementation = Patient.class))),
@@ -101,10 +99,11 @@ public class UpdateResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Server internal error") 
 		}
 	)
-	public <R extends DomainResource> Response update(@PathParam("type") final String type,
-						   							  @PathParam("id") final String id,
-						   							  @QueryParam("_format") @DefaultValue("json") final String _format, 
-						   							  final String body) {		
+	public <R extends DomainResource> Response update(
+			@PathParam("type") final String type,
+			@PathParam("id") final String id,
+			@QueryParam("_format") @DefaultValue("json") final String _format, 
+			final String body) {		
 		logger.info(localizer.x("FHR_I006: UpdateResourceOperatio updates the resource {0} by its id {1}", type, id));										
 		CacheService.getInstance().createCache();
 		try {
