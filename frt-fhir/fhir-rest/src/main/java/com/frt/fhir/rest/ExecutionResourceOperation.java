@@ -28,6 +28,7 @@ import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
@@ -70,10 +71,11 @@ public class ExecutionResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "422", description = "Not processable resource"),
             @ApiResponse(responseCode = "500", description = "Server Internal Error") })
-	public Response execute(@PathParam("resource") final String resource, 
-						    @PathParam("operation") final String operation,
-						    @QueryParam("_format") @DefaultValue("json") final String _format,
-						    final String body) {		
+	public Response execute(
+			@Parameter(description = "FHIR Resource Type, the type of target resource, e.g. Patient", required = true) @PathParam("resource") final String resource, 
+			@Parameter(description = "FHIR Resource Operation executed, the operation executed on the resource", required = true) @PathParam("operation") final String operation,
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
+			@Parameter(description = "Operation Parameters: the parameters required to perform the operation.", required = false) final String body) {		
 		logger.info(localizer.x("FHR_I008: ExecutionResourceOperation executes the POST command ${0} on resource {1}", operation, resource));												
 		String message = "Patient resource operation $" + operation + " not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 

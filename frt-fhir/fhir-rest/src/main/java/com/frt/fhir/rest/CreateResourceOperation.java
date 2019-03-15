@@ -38,6 +38,7 @@ import com.frt.util.logging.Logger;
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.responses.*;
@@ -65,16 +66,15 @@ import com.frt.stream.service.StreamServiceException;
 @OpenAPIDefinition(
         info = @Info(
             title = "Fast River Technologies FHIR Service API",
-            version = "1.0",
-            description = "FHIR Compliant and Streaming-Enabled REST API https://www.hl7.org/fhir",
-            license = @License(name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0"),
-            contact = @Contact(url = "http://fastrivertech.com", name = "info", email = "info@fastrivertech.com")
+            version = "",
+            description = "FHIR Compliant and Streaming-Enabled REST API",
+            contact = @Contact(url = "http://fastrivertech.com", name = "Fast River Tech Inc.")
         ),
-        tags = {
-            @Tag(name = "Fast River FHIR API", description = "Enabling Big Data Based AI Streaming Analytics In Healthcare", externalDocs = @ExternalDocumentation(description = "Fast River Technologies", url="http://fastrivertech.com/")),
-            @Tag(name = "HL7 FHIR 4.0", description = "HL7 FHIR 4.0", externalDocs = @ExternalDocumentation(description = "FHIR 4.0 Spec", url="https://www.hl7.org/fhir/")),
-        },
-        externalDocs = @ExternalDocumentation(description = "HL7 FHIR Overview"),
+//        tags = {
+//            @Tag(name = "Fast River FHIR API", description = "Enabling Big Data Based AI Streaming Analytics In Healthcare", externalDocs = @ExternalDocumentation(description = "Fast River Technologies", url="http://fastrivertech.com/")),
+//            @Tag(name = "HL7 FHIR 4.0", description = "HL7 FHIR 4.0", externalDocs = @ExternalDocumentation(description = "FHIR 4.0 Spec", url="https://www.hl7.org/fhir/")),
+//        },
+//        externalDocs = @ExternalDocumentation(description = "HL7 FHIR Overview"),
 //        security = {
 //                @SecurityRequirement(name = "req 1", scopes = {"a", "b"}),
 //                @SecurityRequirement(name = "req 2", scopes = {"b", "c"})
@@ -148,9 +148,10 @@ public class CreateResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
             @ApiResponse(responseCode = "404", description = "Not found - Resource type not supported, or not a FHIR end-point"),
             @ApiResponse(responseCode = "422", description = "Unprocessable entity")})
-	public <R extends DomainResource> Response create(@PathParam("type") final String type,
-						   						      @QueryParam("_format") @DefaultValue("json") final String _format, 
-						   						      final String body) {
+	public <R extends DomainResource> Response create(
+			@Parameter(description = "FHIR Resource Type, the type of the resource to be created, e.g. Patient", required = true) @PathParam("type") final String type,
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format, 
+			@Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) final String body) {
 		try {
 			logger.info(localizer.x("CreateResourceInteraction creates a new resource"));
 			// Request includes resource, but no need id; id shall be ignored if given. versionId and lastUpdated shall be ignored 

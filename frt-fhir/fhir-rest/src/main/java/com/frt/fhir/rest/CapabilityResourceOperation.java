@@ -29,6 +29,7 @@ import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -77,8 +78,8 @@ public class CapabilityResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 	public Response read(
-			@QueryParam("mode") @DefaultValue("normative") final String mode,
-			@QueryParam("_format") @DefaultValue("json") final String _format
+			@Parameter(description = "Mode: return information mode: full, normative or terminology", required = false) @QueryParam("mode") @DefaultValue("normative") final String mode,
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource (json/xml))", required = false) @QueryParam("_format") @DefaultValue("json") final String _format
 			) {	
 		
 		logger.info(localizer.x("FHR_I003: CapabilityResourceOperation reads the capability statement by mode {0}", mode));										

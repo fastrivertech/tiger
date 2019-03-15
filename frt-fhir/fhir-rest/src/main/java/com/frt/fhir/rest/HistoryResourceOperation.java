@@ -40,6 +40,7 @@ import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -92,9 +93,9 @@ public class HistoryResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 	public <R extends DomainResource> Response history(
-			@PathParam("type") final String type, 
-			@PathParam("id") final String id,
-			@QueryParam("_format") @DefaultValue("json") final String _format) 
+			@Parameter(description = "FHIR Resource Type, the type of the resource to be retrieved of history, e.g. Patient", required = true) @PathParam("type") final String type, 
+			@Parameter(description = "FHIR Resource Id, it is the logical ID of the resource, e.g. Patient MRN", required = true) @PathParam("id") final String id,
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format) 
 	{
 		
 		logger.info(localizer.x("FHR_I005: HistoryResourceOperation retrieves the hsitory of resource {0} by its id {1}", type, id));										

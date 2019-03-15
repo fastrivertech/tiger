@@ -11,30 +11,28 @@
 package com.frt.fhir.rest;
 
 import javax.annotation.security.PermitAll;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.PathParam;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
+import javax.ws.rs.core.UriInfo;
+
 import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.dstu3.model.OperationOutcome;
 
 import com.frt.dr.model.base.Patient;
-import com.frt.fhir.model.BundleBuilder;
 import com.frt.fhir.mpi.MpiService;
-import com.frt.fhir.mpi.MpiServiceImpl;
 import com.frt.fhir.mpi.MpiServiceException;
+import com.frt.fhir.mpi.MpiServiceImpl;
 import com.frt.fhir.mpi.parser.ParameterParser;
 import com.frt.fhir.mpi.parser.ParameterParserException;
-import com.frt.fhir.mpi.resource.Parameter;
+//import com.frt.fhir.mpi.resource.Parameter; <== causing swagger @Parameter import conflict
 import com.frt.fhir.mpi.resource.Parameters;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.util.logging.Localization;
@@ -42,6 +40,7 @@ import com.frt.util.logging.Logger;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
@@ -101,8 +100,8 @@ public class MpiResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 	public Response match(
-			@QueryParam("_format") @DefaultValue("json") final String _format,
-			final String body) {		
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
+			@Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) final String body) {		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "match"));		
 		try {
 			Parameters params = paramParser.deserialize(body);			
@@ -152,8 +151,8 @@ public class MpiResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 	public Response search(
-			@QueryParam("_format") @DefaultValue("json") final String _format,
-			final String body) {		
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
+			@Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) final String body) {		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "search"));													
 		String message = "Patient resource operation search not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
@@ -204,8 +203,8 @@ public class MpiResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 	public Response merge(
-			@QueryParam("_format") @DefaultValue("json") final String _format,
-			final String body) 
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
+			@Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) final String body) 
 	{		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "merge"));												
 		String message = "Patient resource operation merge not implemented yet"; 
@@ -247,8 +246,8 @@ public class MpiResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 	public Response unmerge(
-			@QueryParam("_format") @DefaultValue("json") final String _format,
-			final String body) 
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
+			@Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) final String body) 
 	{		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "unmerge"));													
 		String message = "Patient resource operation unmerge not implemented yet"; 
@@ -291,8 +290,8 @@ public class MpiResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 	public Response link(
-			@QueryParam("_format") @DefaultValue("json") final String _format,
-			 final String body) 
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
+			@Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) final String body) 
 	{		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "link"));													
 		String message = "Patient resource operation link not implemented yet"; 
@@ -332,8 +331,8 @@ public class MpiResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 	public Response unlink(
-			@QueryParam("_format") @DefaultValue("json") final String _format,
-			final String body) {		
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
+			@Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) final String body) {		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "unlink"));													
 		String message = "Patient resource operation unlink not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
@@ -369,8 +368,8 @@ public class MpiResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 	public Response search_pd(
-			@QueryParam("identifier") final String identifier,	
-			@QueryParam("_format") @DefaultValue("json") final String _format) 
+			@Parameter(description = "FHIR Resource Id, it is the logical ID of the resource, e.g. Patient MRN", required = true) @QueryParam("identifier") final String identifier,	
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format) 
 	{		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "search potentials"));													
 		String message = "Patient resource operation search potential duplicates not implemented yet"; 
@@ -409,8 +408,8 @@ public class MpiResourceOperation extends ResourceOperation {
             @ApiResponse(responseCode = "500", description = "Internal server error")
             })
 	public Response resolve_pd(
-			@QueryParam("_format") @DefaultValue("json") final String _format,
-			final String body) 
+			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
+			@Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) final String body) 
 	{
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "resolve potentials"));
 		String message = "Patient resource operation resolve potential duplicates not implemented yet";
