@@ -112,7 +112,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 		}
 		File newName = new File(name + "~");
 		if (newName.exists()) {
-			throw new StreamApplicationException("nex file '" + name + "' exists");			
+		    newName.delete();	
 		}		
 		if (!oldName.renameTo(newName)) {
 			throw new StreamApplicationException("failed to rename '" + name + "' to '" + name + "~'");
