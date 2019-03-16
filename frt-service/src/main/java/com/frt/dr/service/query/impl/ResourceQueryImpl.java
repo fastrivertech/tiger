@@ -62,18 +62,23 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 		checkState(QUERY_STATES.CREATED);
 		
 		CriteriaQuery<T> cq = getQueryCriteria(resourceClazz, parameters);
+		
 		this.query = em.createQuery(cq);
-
+		
+		if (parameters==null&&parameters.size()==0) {
+			this.query.setMaxResults(3);
+		}
+		
 		Set<Parameter<?>> qparams = query.getParameters();
 
-		if (qparams.size() > parameters.size()) {
-			System.out.println("Query parameters count: " + qparams.size() + " > actual parameters count: "
-					+ parameters.size());
-		} else if (qparams.size() < parameters.size()) {
-			System.out.println("Query parameters count: " + qparams.size() + " < actual parameters count: "
-					+ parameters.size());
-		}
-
+//		if (qparams.size() > parameters.size()) {
+//			System.out.println("Query parameters count: " + qparams.size() + " > actual parameters count: "
+//					+ parameters.size());
+//		} else if (qparams.size() < parameters.size()) {
+//			System.out.println("Query parameters count: " + qparams.size() + " < actual parameters count: "
+//					+ parameters.size());
+//		}
+//
 		Iterator<Class<?>> it = parameters.keySet().iterator();
 		
 		while (it.hasNext()) {
@@ -127,7 +132,7 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 		Predicate where = cb.conjunction();
 
 		Iterator<Class<?>> it = parameters.keySet().iterator();
-		
+
 		while (it.hasNext()) {
 			Class<?> clazz = (Class<?>)it.next();
 			List<CompositeParameter> paramsPerClazz = parameters.get(clazz);
