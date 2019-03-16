@@ -18,6 +18,7 @@ step to build rest api docs
    After first time the challenge is answered, it is memorized (cookie is saved), no challenge for sub-sequent operations.
    
    To test the authorization in action, make sure to clean the browser's cookies (browser specific, check browser doc for details)
+   for each new session, or go incognito mode, e.g. for Chrome CTRL+SHFT+N
    
    
  
