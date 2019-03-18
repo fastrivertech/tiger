@@ -25,8 +25,8 @@
 	<artifactId>frt-fhir-api</artifactId>
 	<packaging>war</packaging>  
 	<version>${frt.fhir.service.version}</version>
-	<name>FRT FHIR REST API Doc (New) ${frt.fhir.service.version}</name>
-	<description>Fast River FHIR API Documentation (New) ${frt.fhir.service.version}</description>
+	<name>FRT FHIR REST OpenAPI Doc ${frt.fhir.service.version}</name>
+	<description>Fast River FHIR OpenAPI Documentation (New) ${frt.fhir.service.version}</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -52,7 +52,8 @@
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
-            <!--plugin>
+			<!--
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <version>2.1</version>
@@ -76,7 +77,8 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin-->
+            </plugin>
+			-->
         </plugins>
     </build>
 
