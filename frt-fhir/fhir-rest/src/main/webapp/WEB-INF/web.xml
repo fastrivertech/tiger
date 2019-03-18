@@ -38,7 +38,8 @@
 	</filter-mapping>
 	-->
 	<!-- enable basic authentication for frt-fhir-rest -->
-<!-- enable basic authentication for frt-fhir-rest -->
+    <!-- enable basic authentication for frt-fhir-rest -->
+	<!--
 	<security-constraint>
     	<web-resource-collection>
       		<web-resource-name>*</web-resource-name>
@@ -56,5 +57,5 @@
     	<auth-method>BASIC</auth-method>
     	<realm-name>ProtectedResources</realm-name>
   	</login-config>
-  	  	
+  	-->  	
 </web-app>
