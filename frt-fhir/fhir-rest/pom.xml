@@ -30,6 +30,7 @@
   <description>Fast River FHIR REST API ${frt.fhir.rest.version}</description>
 
   <build>
+     <!-- frt#fhir#1.0.war context root /frt/fhir/1.0 -->
     <finalName>frt-fhir-rest</finalName>
     <plugins>
 		<plugin>
