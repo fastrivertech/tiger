@@ -1,5 +1,5 @@
 {
-		"title": "  Fast River Technologies FHIR REST API v1.0.0",
-		"description": "  FHIR Compliant and Streaming-Enabled REST API https://www.hl7.org/fhir",
-		"termsOfServiceUrl": "  http://www.fastrivertech.com"
+		"title":"  Fast River Technologies FHIR R4 REST API v1.0.0",
+		"description":"  FHIR-Based and Streaming-Enabled Healthcare Data Repoistory",
+		"termsOfServiceUrl":"  http://www.fastrivertech.com",
 }
