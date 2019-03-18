@@ -24,7 +24,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.frt</groupId>
 	<artifactId>frt-fhir-rest-test</artifactId>
-	<version>1.0</version>
+	<version>${frt.fhir.rest.test.version}</version>
 	<name>FRT FHIR REST API TEST ${frt.fhir.rest.test.version}</name>
 	<description>FRT FHIR REST API TEST ${frt.fhir.rest.test.version}</description>
 	
