@@ -38,8 +38,8 @@
     <spring.boot.version>2.1.0.RELEASE</spring.boot.version> 	
 	<!-- eclipselink -->
 	<org.eclipse.version>2.7.4</org.eclipse.version>
-	<!-- apache kafka -->
-	<org.apache.kafka.version>2.0.0</org.apache.kafka.version>	
+	<!-- apache kafka 2.0.0 -->
+	<org.apache.kafka.version>2.1.1</org.apache.kafka.version>	
 	<!-- apache derby -->
 	<org.apache.derby.version>10.14.2.0</org.apache.derby.version>	
 	<!-- hadoop -->

@@ -6,6 +6,6 @@ if ["$HOST" = ""]; then
 	HOST="localhost"
 fi 
 
-source ../setEnv.sh
+source ../env.sh
 
 $KAFKA_HOME/bin/kafka-topics.sh --delete --zookeeper $HOST:12181 --topic $1

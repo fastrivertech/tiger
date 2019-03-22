@@ -6,6 +6,6 @@ if ["$HOST" = ""]; then
 	HOST="localhost"
 fi
 
-source ../setEnv.sh
+source ../env.sh
 
 $KAFKA_HOME/bin/kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list $HOST:19092 --topic $1

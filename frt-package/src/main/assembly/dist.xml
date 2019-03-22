@@ -12,7 +12,7 @@
 			<outputDirectory></outputDirectory>            
 			<includes>
 				<include>env.bat</include>
-				<include>setEnv.sh</include>
+				<include>env.sh</include>
 			</includes>
 		</fileSet>  	
 		<fileSet>

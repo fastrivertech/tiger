@@ -31,7 +31,7 @@ unzip frt-service-package-1.0.0-SNAPSHOT.zip into a folder e.g. ~/frt-services
 the folder structure is as below:
 /home/ec2-user/frt-services/
 /home/ec2-user/
-setEnv.sh
+env.sh
 -----------------------------+ app
                              |
                              + bin --- datalake-ingestion.bat
@@ -50,10 +50,9 @@ setEnv.sh
                                           list-topic.bat
                                           list-topic.sh
                                           start.bat
-                                          start-zookeeper.sh
-                                          start-kafka.sh
-                                          stop-zookeeper.sh
-                                          stop-kafka.sh
+                                          start.sh
+                                          stop.bat
+										  stop.sh
                                           ... ... ...
 
 chmod 777 to all the *.sh if necessary.
@@ -61,7 +60,7 @@ chmod 777 to all the *.sh if necessary.
 start single node kafka server:
 
 * go to frt-services/stream/
-* execute ./start-zookeeper.sh, then ./start-kafka.sh (kafka start will fail if zookeeper is down)
+* execute ./start-zookeeper.sh, then ./start.sh (kafka start will fail if zookeeper is down)
 
 create fhir topics:
 * execute ./create-topic FhirTopic or FhirDiscoveryTopic
@@ -71,5 +70,4 @@ then you can go to ../bin, to write and read messages to the topics created in p
 
 stop the kafka:
 
-* ./stop-kafka.sh
-* ./stop-zookeeper
+* ./stop.sh
