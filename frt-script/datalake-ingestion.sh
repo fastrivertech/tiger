@@ -3,6 +3,5 @@
 ## @echo off
 
 source ../setEnv.sh
-exec ./showEnv.sh
 
-$JAVA_HOME/bin/java -classpath "..\lib\jersey1.9\*:..\lib\*" com.frt.stream.application.DataLakeIngestion
+$JAVA_HOME/bin/java -classpath "../lib/jersey1.9/*:../lib/*" com.frt.stream.application.DataLakeIngestion

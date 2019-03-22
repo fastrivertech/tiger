@@ -3,6 +3,5 @@
 ## @echo off
 
 source ../setEnv.sh
-exec ./showEnv.sh
 
 $JAVA_HOME/bin/java -classpath "../lib/*" com.frt.stream.io.FhirStreamReader

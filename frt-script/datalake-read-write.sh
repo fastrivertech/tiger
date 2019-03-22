@@ -3,6 +3,5 @@
 ## @echo off
 
 source ../setEnv.sh
-exec ./showEnv.sh
 
-$JAVA_HOME/bin/java -classpath "..\lib\jersey1.9\*:..\lib\*" com.frt.dl.service.DataLakeService $1 $2
+$JAVA_HOME/bin/java -classpath "../lib/jersey1.9/*:../lib/*" com.frt.dl.service.DataLakeService $1 $2
