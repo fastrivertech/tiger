@@ -26,3 +26,50 @@ Install(unzip) to C:\apache\kafka\kafka_2.12-2.1.0
    7.2) manually delete C:\tmp\kafka-logs and C:\tmp\zookeeper
    7.3) restart the kafka server
    
+On linux:
+unzip frt-service-package-1.0.0-SNAPSHOT.zip into a folder e.g. ~/frt-services
+the folder structure is as below:
+/home/ec2-user/frt-services/
+/home/ec2-user/
+setEnv.sh
+-----------------------------+ app
+                             |
+                             + bin --- datalake-ingestion.bat
+                                       datalake-ingestion.sh
+                                       datalake-read-write.bat
+                                       datalake-read-write.sh
+                                       fhir-stream-reader.bat
+                                       fhir-stream-reader.sh
+                                       fhir-stream-writer.bat
+                                       fhir-stream-writer.sh
+                                       ....
+-----------------------------+ stream --- create-topic.bat
+                                          create-topic.sh
+                                          read-topic.bat
+                                          read-topic.sh
+                                          list-topic.bat
+                                          list-topic.sh
+                                          start.bat
+                                          start-zookeeper.sh
+                                          start-kafka.sh
+                                          stop-zookeeper.sh
+                                          stop-kafka.sh
+                                          ... ... ...
+
+chmod 777 to all the *.sh if necessary.
+                                                                         
+start single node kafka server:
+
+* go to frt-services/stream/
+* execute ./start-zookeeper.sh, then ./start-kafka.sh (kafka start will fail if zookeeper is down)
+
+create fhir topics:
+* execute ./create-topic FhirTopic or FhirDiscoveryTopic
+* then read metrics of the topics : ./read-metrics.sh FhirTopic etc.
+
+then you can go to ../bin, to write and read messages to the topics created in previous steps.
+
+stop the kafka:
+
+* ./stop-kafka.sh
+* ./stop-zookeeper
