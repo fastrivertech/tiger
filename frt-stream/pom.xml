@@ -44,16 +44,19 @@
     <!-- stream -->
 	<dependency>
       <groupId>org.apache.kafka</groupId>
-      <artifactId>kafka-streams</artifactId>   
+      <artifactId>kafka-streams</artifactId>
+      <version>2.1.1</version>   
     </dependency>
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-clients</artifactId>
+      <version>2.1.1</version>   
     </dependency>
 	<!-- kafka -->
     <dependency>
       <groupId>org.apache.kafka</groupId>
       <artifactId>kafka-log4j-appender</artifactId>
+      <version>2.1.1</version>   
     </dependency>	
 	<!-- frt common -->
     <dependency>
