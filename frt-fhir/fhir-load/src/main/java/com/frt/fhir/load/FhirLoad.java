@@ -48,17 +48,17 @@ public class FhirLoad {
 	public static void main(String[] args) {
 		// command line args: sourceDir, number of json files to be loaded
 		File sourceDir = null;
-		int limit = -1;
-		if (args.length<=2&&args.length>=1) {
+		int limit = -1;		
+		if (args.length<=2 && args.length>=1 ) {
 			// source dir
 			sourceDir = new File(args[0]);
-			if (args.length==2) {
+			if (args.length == 2) {
 				limit = Integer.parseInt(args[1]);
 			}
 		} else {
 			printUsage();
 			System.exit(0);
-		}
+		}		
 		if (!(sourceDir.exists() && sourceDir.isDirectory())) {
 			System.err.println("<patient-json-source-dir> given does not exist or is not a directory, path=[" + sourceDir.getPath() + "]");
 			printUsage();
