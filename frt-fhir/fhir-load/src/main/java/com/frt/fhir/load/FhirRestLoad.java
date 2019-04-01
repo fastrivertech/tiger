@@ -57,7 +57,7 @@ public class FhirRestLoad {
 		File sourceDir = null;
 		String restURL = null;
 		int limit = -1;
-		if (args.length<=3&&args.length>=2) {
+		if (args.length<=3 && args.length>=2) {
 			restURL = args[0];
 			// source dir
 			sourceDir = new File(args[1]);
