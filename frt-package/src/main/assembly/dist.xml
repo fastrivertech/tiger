@@ -170,6 +170,13 @@
 			</includes>
 		</fileSet>   
 		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-load/config</directory>
+			<outputDirectory>load/config</outputDirectory>            
+			<includes>
+				<include>*.properties</include>
+			</includes>
+		</fileSet>        			
+		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-load/synthea/bin</directory>
 			<outputDirectory>load/synthea/bin</outputDirectory>            
 			<includes>
