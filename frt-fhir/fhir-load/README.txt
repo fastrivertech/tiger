@@ -92,3 +92,7 @@ FRT FHIR Load
    E.g.,
    .\load\restload.bat "http://localhost:8080/frt-fhir-rest/1.0/Patient" ".\synthea\bin\output" 500
    
+FRT FHIR Bundle Extract
+-----------------------
+1) Configure frt.fhir.load.source.dir and frt.fhir.load.target.dir in .\load\config\frt_load.properties   
+2) Execute extract.bat 
