@@ -43,27 +43,30 @@ public class FhirBundleExtract {
 		        return name.toLowerCase().endsWith(".json");
 		    }
 		});
+		if (sourceFiles == null || sourceFiles.length < 1) {
+			System.out.println(sourceDir + " no json files");
+		}
 		String targetDir = FhirLoadConfig.getInstance().get(FhirLoadConfig.FHIRLOAD_TARGET_DIR);
 				
 		Arrays.stream(sourceFiles).forEach(sourceFile-> {			
 			try (FileReader fr = new FileReader(sourceFile)){				
-				IBaseResource resource = this.jsonParser.parseResource(fr);
-				if (resource instanceof Bundle) {
-					Bundle bundle = (Bundle)resource;
-					for (BundleEntryComponent entry : bundle.getEntry()) {
-						if (entry.getResource().getResourceType() == ResourceType.Patient) {
-							String jsonEncoded = jsonParser.encodeResourceToString((Patient)entry.getResource());
-							String targetFilePath = "patient_" + System.currentTimeMillis() + ".json"; 								
-							try (PrintWriter pr = new PrintWriter(targetFilePath)) {
-								pr.println(jsonEncoded);
-								pr.flush();
-							} catch (IOException ex) {
-								System.err.println("failed to process patient '" + 
-												   ((Patient)entry.getResource()).getId() + 
-												   "' in " + sourceFile);							
-							}
+				Bundle bundle = this.jsonParser.parseResource(Bundle.class, fr);
+				for (BundleEntryComponent entry : bundle.getEntry()) {
+					if (entry.getResource().getResourceType() == ResourceType.Patient) {
+						String jsonEncoded = jsonParser.encodeResourceToString((Patient)entry.getResource());
+						String targetFilePath = targetDir + "/" + "patient_" + System.currentTimeMillis() + ".json"; 																				
+						try (PrintWriter pr = new PrintWriter(targetFilePath)) {
+							pr.println(jsonEncoded);
+							pr.flush();
+							System.out.println("succeeded to process patient '" + 
+									   		   ((Patient)entry.getResource()).getId() + 
+									   		   "' in " + targetFilePath);														
+						} catch (IOException ex) {
+							System.err.println("failed to process patient '" + 
+											   ((Patient)entry.getResource()).getId() + 
+											   "' in " + sourceFile);							
 						}
-					}				
+					}
 				}				
 			} catch (IOException ex) {	
 				System.err.println("failed to process " + sourceFile);
