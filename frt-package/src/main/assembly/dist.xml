@@ -177,19 +177,26 @@
 			</includes>
 		</fileSet>        			
 		<fileSet>
-			<directory>${project.basedir}/../frt-fhir/fhir-load/synthea/bin</directory>
-			<outputDirectory>load/synthea/bin</outputDirectory>            
+			<directory>${project.basedir}/../frt-fhir/fhir-synthea/bin</directory>
+			<outputDirectory>synthea/bin</outputDirectory>            
 			<includes>
 				<include>*.*</include>
 			</includes>
 		</fileSet>   		
 		<fileSet>
-			<directory>${project.basedir}/../frt-fhir/fhir-load/synthea/lib</directory>
-			<outputDirectory>load/synthea/lib</outputDirectory>            
+			<directory>${project.basedir}/../frt-fhir/fhir-synthea/lib</directory>
+			<outputDirectory>synthea/lib</outputDirectory>            
 			<includes>
 				<include>*.*</include>
 			</includes>
 		</fileSet>   		
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-synthea</directory>
+			<outputDirectory>synthea</outputDirectory>            
+			<includes>
+				<include>README.*</include>
+			</includes>
+		</fileSet>   				
 		<fileSet>
 			<directory>${project.basedir}/../frt-fhir/fhir-load/data</directory>
 			<outputDirectory>load/data</outputDirectory>            
