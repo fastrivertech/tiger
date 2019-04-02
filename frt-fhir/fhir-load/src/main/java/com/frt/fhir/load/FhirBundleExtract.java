@@ -47,13 +47,16 @@ public class FhirBundleExtract {
 			System.out.println(sourceDir + " no json files");
 		}
 		String targetDir = FhirLoadConfig.getInstance().get(FhirLoadConfig.FHIRLOAD_TARGET_DIR);
-				
+		File tgtDir = new File(targetDir);
+		tgtDir.mkdirs();
 		Arrays.stream(sourceFiles).forEach(sourceFile-> {			
 			try (FileReader fr = new FileReader(sourceFile)){				
 				Bundle bundle = this.jsonParser.parseResource(Bundle.class, fr);
 				for (BundleEntryComponent entry : bundle.getEntry()) {
 					if (entry.getResource().getResourceType() == ResourceType.Patient) {
 						String jsonEncoded = jsonParser.encodeResourceToString((Patient)entry.getResource());
+						// will throw FileNotFoundException when the sub dir dataextracted is not pre-created
+						// PrintWriter(file) will create the file but does not create the path (at least on linux)
 						String targetFilePath = targetDir + "/" + "patient_" + System.currentTimeMillis() + ".json"; 																				
 						try (PrintWriter pr = new PrintWriter(targetFilePath)) {
 							pr.println(jsonEncoded);
@@ -62,6 +65,8 @@ public class FhirBundleExtract {
 									   		   ((Patient)entry.getResource()).getId() + 
 									   		   "' in " + targetFilePath);														
 						} catch (IOException ex) {
+							// be verbose
+							ex.printStackTrace();
 							System.err.println("failed to process patient '" + 
 											   ((Patient)entry.getResource()).getId() + 
 											   "' in " + sourceFile);							
