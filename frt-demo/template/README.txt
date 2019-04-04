@@ -19,28 +19,30 @@ Execute
 3. create demo streams converting from json stream to avro stream
    ./ksql
    ksql>RUN SCRIPT '/home/ec2-user/demo/create-demo-streams.sql';
-
+4. modify the demo schema 
+   from Confluent Center/Topics/TESTTOPIC_AS using  demo_schema.avsc
+ 
 DataFlow: TestTopic -> demo-mysql-avro-sink -> MySQL
-4. start demo-mysql-avro-sink connector
+5. start demo-mysql-avro-sink connector
    cd /home/ec2-user/confluent-5.2.0/bin
    ./start-demo-mysql-avro-sink.sh    
-5. feed data
+6. feed data
    cd /home/ec2-user/confluent-5.2.0/bin
    ./feed-demo-data.sh data.txt
 
 DataFlow: TestTopic -> demo-mysql-json-sink -> MySQL
-6. start demo-mysql-json-sink connector
+7. start demo-mysql-json-sink connector
    cd /home/ec2-user/confluent-5.2.0/bin
    ./start-demo-mysql-json-sink.sh    
-7. feed data
+8. feed data
    cd /home/ec2-user/confluent-5.2.0/bin
    ./feed-demo-data.sh data-w-schema.txt
 
 DataFlow: demo-file-source -> TestTopic -> demo-file-sink
-8. start demo-file-source-sink connector
+9. start demo-file-source-sink connector
    cd /home/ec2-user/confluent-5.2.0/bin
    ./start-demo-file-source-sink.sh    
-9. feed data
+10. feed data
    /home/ec2-user/data/data.txt
    /home/ec2-user/data/output.txt
       
