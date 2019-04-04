@@ -1,0 +1,15 @@
+{
+  "type": "record",
+  "name": "patient",
+  "namespace": "www.fastrivertech.com",
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    }
+  ]
+}
