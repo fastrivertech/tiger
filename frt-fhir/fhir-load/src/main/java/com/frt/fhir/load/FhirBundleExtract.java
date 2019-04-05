@@ -11,26 +11,37 @@
 package com.frt.fhir.load;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
+import java.util.Random;
 import java.io.File;
 import java.io.FileReader;
+import java.io.BufferedReader;
 import java.io.PrintWriter;
 import java.io.FilenameFilter;
-import java.io.InputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.JsonParser;
-import org.hl7.fhir.dstu3.model.Element;
 import org.hl7.fhir.dstu3.model.Bundle;
 import org.hl7.fhir.dstu3.model.Patient;
 import org.hl7.fhir.dstu3.model.ResourceType;
 import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.instance.model.api.IBaseResource;
+import org.hl7.fhir.dstu3.model.Reference;
+import org.hl7.fhir.dstu3.model.Organization;
+import org.hl7.fhir.dstu3.model.Practitioner;
 
 public class FhirBundleExtract {
-	private JsonParser jsonParser;
+	private static Random random = new Random();
+	private static String[] organizations = new String[]{"6a777679","cb2c590e",
+													     "23cab562","8ad84ff8",
+													     "06066802","194f938f",
+													     "76c72b22","5ddfe33b",
+													     "8ad84ff8","06066802"}; 
+	private static String[] practitioners = new String[]{"0f5f9b3e","254d3102",
+														 "e294f205","5826716e",
+														 "8c66c002","e3440d3f",
+														 "f0117735","c4a72900",
+														 "c4a72900","1b0656e5"};
 	
+	private JsonParser jsonParser;
 	public void execute() 
 		throws FhirLoadException {
 		
@@ -57,8 +68,10 @@ public class FhirBundleExtract {
 			try (FileReader fr = new FileReader(sourceFile)){				
 				Bundle bundle = this.jsonParser.parseResource(Bundle.class, fr);
 				for (BundleEntryComponent entry : bundle.getEntry()) {
-					if (entry.getResource().getResourceType() == ResourceType.Patient) {
-						String jsonEncoded = jsonParser.encodeResourceToString((Patient)entry.getResource());
+					if (entry.getResource().getResourceType() == ResourceType.Patient) {						
+						Patient patient = (Patient)entry.getResource();
+						enrich(patient);
+						String jsonEncoded = jsonParser.encodeResourceToString(patient);
 						String targetFilePath = targetDir + "/" + "patient_" + System.currentTimeMillis() + ".json"; 																				
 						try (PrintWriter pr = new PrintWriter(targetFilePath)) {
 							pr.println(jsonEncoded);
@@ -77,6 +90,21 @@ public class FhirBundleExtract {
 				System.err.println("failed to process " + sourceFile);
 			}			
 		});		
+	}
+	
+	public void enrich(Patient patient) {
+		if (!patient.hasManagingOrganization()) {
+			Reference theReference = new Reference();			
+			int i = random.nextInt(10);			
+			theReference.setId(organizations[i]);
+			patient.setManagingOrganization(theReference);			
+		}
+		if (!patient.hasGeneralPractitioner()) {
+			Reference theReference = new Reference();
+			int i = random.nextInt(10);			
+			theReference.setId(practitioners[i]);
+			patient.addGeneralPractitioner(theReference);
+		}		
 	}
 	
 	public static void main(String[] args) {
