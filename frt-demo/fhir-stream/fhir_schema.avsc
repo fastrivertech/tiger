@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "organization",
+  "namespace": "www.fastrivertech.com",
+  "fields": [
+    {
+      "name": "resourceType",
+      "type": "string"
+    },
+    {
+      "name": "gender",
+      "type": "string"
+    },
+    {
+      "name": "managingOrganization",
+      "type": "string"
+    }	
+  ]
+}
