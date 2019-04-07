@@ -3,7 +3,7 @@
 DataFlow: managingOrganization.csv
 				     -> FHIR ORG File Source Connector
 					 -> FhirOrgTopic 					  
-	  			     -> FHIR_ORG_STREAM stream with patient schema
+	  			     -> FHIR_ORG_STREAM stream with organization schema
 					 -> FHIR_ORG_SINK table
 					 -> FHIR MySQL Sink Connector
 					 -> MySQL FHIR_ORG_SINK table
