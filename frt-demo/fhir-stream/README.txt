@@ -34,7 +34,7 @@ Setup
 2)cp /home/ec2-user/fhir-stream/etc/kafka-connect-jdbc/*.* to /home/ec2-user/confluent-5.2.0/etc/kafka-connect-jdbc
 3)cp /home/ec2-user/fhir-stream/etc/schema-registry/*.* to /home/ec2-user/confluent-5.2.0/etc/schema-registry
 4)cp /home/ec2-user/fhir-stream/shared/java/kafka-connect-jdbc/*.jar to /home/ec2-user/confluent-5.2.0/shared/java/kafka-connect-jdbc
-5)cp /home/ec2-user/fhir-stream/*.sh /home/ec2-user/confluent-5.2.0/bin
+5)cp /home/ec2-user/fhir-stream/bin/*.* /home/ec2-user/confluent-5.2.0/bin
 6)unzip frt-service-package-1.0.0-SNAPSHOT.zip to /home/ec2-user/frt-service
 
 Generate Patient Data
@@ -46,14 +46,14 @@ Generate Patient Data
 
 Start up Services	
 -----------------
-1)launch Confluent Center
-  - http://ec2-54-202-179-213.us-west-2.compute.amazonaws.com:9021   
-2)create FHIR_GROUPBY_ORG_SINK table 
+1)create FHIR_GROUPBY_ORG_SINK table 
   - /home/ec2-user/fhir-stream/mysql/create_fhir_tables.sql
-3)start confluent
-  - /home/ec2-user/confluent-5.2.0/bin/confluent start
-4) stop connect
-  - /home/ec2-user/confluent-5.2.0/bin/confluent stop connect  
+2)start confluent
+  - /home/ec2-user/confluent-5.2.0/bin/confluent start  
+3) stop connect
+  - /home/ec2-user/confluent-5.2.0/bin/confluent stop connect
+4)launch Confluent Center
+  - http://ec2-54-202-179-213.us-west-2.compute.amazonaws.com:9021     
 5)create FhirTopic
   - /home/ec2-user/confluent-5.2.0/bin/create-fhir-topics.sh
 6)create fhir streams
