@@ -1,19 +1,203 @@
 {
   "type": "record",
-  "name": "organization",
+  "name": "fhir_patient",
   "namespace": "www.fastrivertech.com",
   "fields": [
     {
-      "name": "resourceType",
-      "type": "string"
+      "name": "RESOURCETYPE",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
     },
     {
-      "name": "gender",
-      "type": "string"
+      "name": "GENDER",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
     },
     {
-      "name": "managingOrganization",
-      "type": "string"
-    }	
+      "name": "BIRTHDATE",
+      "type": [
+        "null",
+        "string"
+      ],
+      "default": null
+    },
+    {
+      "name": "MARITALSTATUS",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "KsqlDataSourceSchema_MARITALSTATUS",
+          "fields": [
+            {
+              "name": "CODING",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": [
+                    "null",
+                    {
+                      "type": "record",
+                      "name": "KsqlDataSourceSchema_MARITALSTATUS_CODING",
+                      "fields": [
+                        {
+                          "name": "SYSTEM",
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "default": null
+                        },
+                        {
+                          "name": "CODE",
+                          "type": [
+                            "null",
+                            "string"
+                          ],
+                          "default": null
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ],
+              "default": null
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "NAME",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "record",
+              "name": "KsqlDataSourceSchema_NAME",
+              "fields": [
+                {
+                  "name": "FAMILY",
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "default": null
+                },
+                {
+                  "name": "GIVEN",
+                  "type": [
+                    "null",
+                    {
+                      "type": "array",
+                      "items": [
+                        "null",
+                        "string"
+                      ]
+                    }
+                  ],
+                  "default": null
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "ADDRESS",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "record",
+              "name": "KsqlDataSourceSchema_ADDRESS",
+              "fields": [
+                {
+                  "name": "CITY",
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "default": null
+                },
+                {
+                  "name": "STATE",
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "default": null
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "GENERALPRACTITIONER",
+      "type": [
+        "null",
+        {
+          "type": "array",
+          "items": [
+            "null",
+            {
+              "type": "record",
+              "name": "KsqlDataSourceSchema_GENERALPRACTITIONER",
+              "fields": [
+                {
+                  "name": "ID",
+                  "type": [
+                    "null",
+                    "string"
+                  ],
+                  "default": null
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "default": null
+    },
+    {
+      "name": "MANAGINGORGANIZATION",
+      "type": [
+        "null",
+        {
+          "type": "record",
+          "name": "KsqlDataSourceSchema_MANAGINGORGANIZATION",
+          "fields": [
+            {
+              "name": "ID",
+              "type": [
+                "null",
+                "string"
+              ],
+              "default": null
+            }
+          ]
+        }
+      ],
+      "default": null
+    }
   ]
 }
