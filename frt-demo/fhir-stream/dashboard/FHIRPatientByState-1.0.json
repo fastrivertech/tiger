@@ -12,6 +12,7 @@
       }
     ]
   },
+  "description": "FHIR Patient Grouped by State",
   "editable": true,
   "gnetId": null,
   "graphTooltip": 0,
@@ -20,11 +21,11 @@
   "panels": [
     {
       "aliasColors": {},
-      "bars": true,
+      "bars": false,
       "dashLength": 10,
       "dashes": false,
-      "datasource": "MySQLFhir",
-      "description": "FHIR PATIENT COUNT BY STATES TIME SERIES",
+      "datasource": "DEMO-MySQL",
+      "description": "FHIR Patient Count By State in Time Series",
       "fill": 1,
       "gridPos": {
         "h": 9,
@@ -61,7 +62,7 @@
           "hide": false,
           "metricColumn": "ADDR_STATE",
           "rawQuery": true,
-          "rawSql": "SELECT\n  FROM_UNIXTIME(TS) AS \"time\",\n  ADDR_STATE AS metric,\n  CNT\nFROM FHIR_PATIENT_GROUPBY_STATE\nWHERE\n  $__unixEpochFilter(TS)\nORDER BY TS",
+          "rawSql": "SELECT\n  FROM_UNIXTIME(TS) AS \"time\",\n  ADDR_STATE AS metric,\n  CNT\nFROM FHIR_GROUPBY_STATE\nWHERE\n  $__unixEpochFilter(TS)\nORDER BY TS",
           "refId": "A",
           "select": [
             [
@@ -89,7 +90,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "FHIR PATIENT COUNT BY STATES TIME SERIES",
+      "title": "FHIR Patient Count By State in Time Series",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -99,7 +100,7 @@
       "type": "graph",
       "xaxis": {
         "buckets": null,
-        "mode": "field",
+        "mode": "time",
         "name": null,
         "show": true,
         "values": []
@@ -107,7 +108,7 @@
       "yaxes": [
         {
           "format": "short",
-          "label": null,
+          "label": "Patient Count",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -115,7 +116,7 @@
         },
         {
           "format": "short",
-          "label": null,
+          "label": "Patient Count",
           "logBase": 1,
           "max": null,
           "min": null,
@@ -157,7 +158,7 @@
     ]
   },
   "timezone": "",
-  "title": "FHIR-PATIENT-INFLUX-GENDER-COUNT",
+  "title": "FHIR Patient By State",
   "uid": "3yl50L6iz",
-  "version": 11
+  "version": 6
 }
