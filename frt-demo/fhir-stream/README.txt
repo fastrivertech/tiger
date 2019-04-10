@@ -10,6 +10,25 @@ DataFlow:
 					 -> MySQL FHIR_GROUPBY_ORG_SINK table
 					 -> Grafana dashboard
 --------------------------------------------------------------------------
+DataFlow: managingOrganization.csv
+				     -> FHIR ORG File Source Connector
+					 -> FhirOrgTopic 					  
+	  			     -> FHIR_ORG_STREAM stream with organization schema
+					 -> FHIR_ORG_SINK table
+					 -> FHIR MySQL Sink Connector
+					 -> MySQL FHIR_ORG_SINK table
+					 -> Grafana dashboard
+--------------------------------------------------------------------------
+DataFlow: generalPractitioner.csv
+				     -> FHIR PG File Source Connector
+					 -> FhirPgTopic 					  
+	  			     -> FHIR_PG_STREAM stream with Practitioner schema
+					 -> FHIR_PG_SINK table
+					 -> FHIR MySQL Sink Connector
+					 -> MySQL FHIR_PG_SINK table
+					 -> Grafana dashboard
+---------------------------------------------------------------------------
+
 
 Prerequisites
 -------------
@@ -55,18 +74,21 @@ Start up Services
 4)launch Confluent Center
   - http://ec2-54-202-179-213.us-west-2.compute.amazonaws.com:9021     
 5)create FhirTopic
-  - /home/ec2-user/confluent-5.2.0/bin/create-fhir-topics.sh
+  - /home/ec2-user/confluent-5.2.0/bin/create-fhir-topics.sh  
 6)create fhir streams
   - ksql>RUN SCRIPT './create-fhir-streams.sql';
 7)modify connection.url of mysql-sink connector
   - /home/ec2-user/confluent-5.2.0/etc/kafka-connect-jdbc/fhir-groupby-org-mysql-sink.properties 
-8)start connect
+8)load organization and practitioner records
+  - /home/ec2-user/confluent-5.2.0/bin/start-fhir-file-mysql-sink.sh
+  - you only need to load once
+9)start connect
   - /home/ec2-user/confluent-5.2.0/bin/start-fhir-mysql-sink.sh
-9)feed patient records
+10)feed patient records
   - /home/ec2-user/frt-service/bin/fhir-stream-writer.sh ..\data  
-10)launch Grafana
+11)launch Grafana
   - http://ec2-54-202-179-213.us-west-2.compute.amazonaws.com:3000 
-11)create the FHIR dashboard
+12)create the FHIR dashboard
 
 Clean up
 --------
