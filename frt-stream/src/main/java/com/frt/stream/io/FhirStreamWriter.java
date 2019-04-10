@@ -108,7 +108,8 @@ public class FhirStreamWriter implements ParticipatingApplication {
 
 	private File[] messages;
 	private long interval;
-
+	private int messageSent;
+	
 	public FhirStreamWriter(String folder, File[] messages, int interval) {
 		if (folder == null) {
 			this.dataFolder = "./data";
@@ -139,6 +140,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 
 	@Override
 	public void run() {
+		this.messageSent = 0;
 		try {
 			File folder = new File(dataFolder);
 			File[] files = folder.listFiles();
@@ -158,6 +160,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 					if (file.getName().endsWith(".json")) {
 						String message = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
 						send(message);
+						this.messageSent++;
 						rename(file.getAbsolutePath());
 					}
 				} catch (IOException ioex) {
@@ -253,7 +256,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 					for (FhirStreamWriter w : writers) {
 						w.setProportionInterval(maxCnt);
 						w.initialize();
-						tasks.add(new FutureTask<>(w, "Stream task is complete: " + w.getDataFolder()));
+						tasks.add(new FutureTask<>(w, "Stream task is complete: " + w.getDataFolder() + ", proportioned interval:" + w.getInterval() + ", messages in folder:" + w.getMessageTotal() + ", messages sent:" + w.getMessageSent()));
 					}
 
 					ExecutorService executor = Executors.newFixedThreadPool(writers.size());
@@ -324,5 +327,13 @@ public class FhirStreamWriter implements ParticipatingApplication {
 
 	public void setDataFolder(String dataFolder) {
 		this.dataFolder = dataFolder;
+	}
+
+	public int getMessageTotal() {
+		return messages!=null?messages.length:0;
+	}
+
+	public int getMessageSent() {
+		return messageSent;
 	}
 }
