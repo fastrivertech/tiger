@@ -37,6 +37,7 @@ import com.frt.stream.service.StreamServiceException;
 import java.util.concurrent.*;
 
 public class FhirStreamWriter implements ParticipatingApplication {
+	
 	private static int DEFAULT_INTERVAL = 1000;
 	private static final Map<String, String> STATES = new HashMap<String, String>();
 	static { // not used - may use for validation
@@ -119,7 +120,8 @@ public class FhirStreamWriter implements ParticipatingApplication {
 	}
 
 	@Override
-	public void initialize() throws StreamApplicationException {
+	public void initialize() 
+		throws StreamApplicationException {
 		try {
 			config = StreamServiceConfig.getInstance();
 			Properties props = config.getProducerConfig();
@@ -142,14 +144,16 @@ public class FhirStreamWriter implements ParticipatingApplication {
 			File[] files = folder.listFiles();
 			Stream<File> stream = Arrays.stream(files);
 			stream.forEach(file -> {
+				
+			 // random sleep pattern
 				Random seed = new Random();
 				int factor = seed.nextInt(5);
 				try {
 					Thread.sleep(this.interval + factor*100);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+				} catch (InterruptedException ex) {
+					throw new RuntimeException(ex);
 				}
+					
 				try {
 					if (file.getName().endsWith(".json")) {
 						String message = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
@@ -158,7 +162,9 @@ public class FhirStreamWriter implements ParticipatingApplication {
 					}
 				} catch (IOException ioex) {
 				}
+		 
 			});
+			
 		} catch (Exception ex) {
 			throw new StreamApplicationException(ex);
 		}
@@ -168,15 +174,16 @@ public class FhirStreamWriter implements ParticipatingApplication {
 		try {
 			producer.beginTransaction();
 			String messageId = "message_" + ++id;
-			producer.send(new ProducerRecord<String, String>(config.get(StreamServiceConfig.STREAM_TOPIC), messageId,
-					message));
+			producer.send(new ProducerRecord<String, String>(config.get(StreamServiceConfig.STREAM_TOPIC), messageId, message));			
 			producer.commitTransaction();
 			System.out.println("    sent " + messageId + " " + message);
 		} catch (Exception ex) {
 		}
 	}
 
-	public void rename(String name) throws StreamApplicationException {
+	public void rename(String name) 
+		throws StreamApplicationException {
+		
 		File oldName = new File(name);
 		if (!oldName.exists()) {
 			throw new StreamApplicationException("old file '" + name + "' does not exist");
@@ -189,6 +196,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 			throw new StreamApplicationException("failed to rename '" + name + "' to '" + name + "~'");
 		}
 		System.out.println(oldName.getName() + " renamed to " + newName.getName());
+		
 	}
 
 	@Override
@@ -203,15 +211,16 @@ public class FhirStreamWriter implements ParticipatingApplication {
 
 	public static void main(String[] args) {
 		try {
-			// enhance the writer:
-			// input parameters:
-			// <BaseDir> - required directory where patient json files located
-			// when state paremeters present, patient json files
-			// for each state is located in sub folder <baseDir>/<state>
-			// the writer will spin off a thread processing json files at base dir level and
-			// each sub dir level simutaneously
-			// <interval> - interval (milli-sec) between publish to topic
+			
+			// Input parameters:
+			// <BaseDir> - required directory where patient JSON files located
+			//             for each state is located in sub folder <baseDir>/<state>
+			// 		       the writer will spin off a thread processing JSON files at base folder level and
+			// 			   each sub folder level simultaneously
+			// <Interval> - interval (milli-seconds) between publish to topic
+			
 			if (args.length > 0 && args.length <= 2) {
+				
 				String baseDir = args[0];
 				int interval = DEFAULT_INTERVAL;
 				if (args.length == 2) {
@@ -219,14 +228,15 @@ public class FhirStreamWriter implements ParticipatingApplication {
 					if (interval < DEFAULT_INTERVAL)
 						interval = DEFAULT_INTERVAL;
 				}
+				
 				File base = new File(baseDir);
 				int maxCnt = 0;
 				if (base.exists() && base.isDirectory()) {
+					
 					List<FhirStreamWriter> writers = new ArrayList<FhirStreamWriter>();
 					List<FutureTask<String>> tasks = new ArrayList<FutureTask<String>>();
 
 					int msgCnt = addWriter(writers, base, interval);
-
 					maxCnt = Math.max(maxCnt, msgCnt);
 
 					File[] subDirs = base.listFiles(new FilenameFilter() {
@@ -235,13 +245,13 @@ public class FhirStreamWriter implements ParticipatingApplication {
 						}
 					});
 
-					for (File sd : subDirs) {
-						msgCnt = addWriter(writers, sd, interval);
+					for (File subDir : subDirs) {
+						msgCnt = addWriter(writers, subDir, interval);
 						maxCnt = Math.max(maxCnt, msgCnt);
 					}
 
 					for (FhirStreamWriter w : writers) {
-						w.proportionInterval(maxCnt);
+						w.setProportionInterval(maxCnt);
 						w.initialize();
 						tasks.add(new FutureTask<>(w, "Stream task is complete: " + w.getDataFolder()));
 					}
@@ -257,8 +267,6 @@ public class FhirStreamWriter implements ParticipatingApplication {
 							try {
 								System.out.println(t.get());
 							} catch (InterruptedException | ExecutionException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
 							}
 						}
 					} finally {
@@ -276,11 +284,13 @@ public class FhirStreamWriter implements ParticipatingApplication {
 	}
 
 	private static int addWriter(List<FhirStreamWriter> writers, File folder, int interval) {
+		
 		File[] files = folder.listFiles(new FilenameFilter() {
 			public boolean accept(File d, String name) {
 				return name.toLowerCase().endsWith(".json");
 			}
 		});
+		
 		if (files.length > 0) {
 			writers.add(new FhirStreamWriter(folder.getPath(), files, interval));
 		}
@@ -290,14 +300,17 @@ public class FhirStreamWriter implements ParticipatingApplication {
 	private static void printUsage() {
 		System.out.println("Usage: <baseDir> [<publish-interval>]");
 		System.out.println("<baseDir> patient json files to be published (required)");
-		System.out.println("<publish-interval> interval between publish to topic, default 1000 milli-sec");
+		System.out.println("<publish-interval> interval between publish to topic, default 1000 milli-seconds");
 	}
 
 	public long getInterval() {
 		return interval;
 	}
 
-	public void proportionInterval(long maxSize) {
+	public void setProportionInterval(long maxSize) {
+		// pattern:
+		// maxSize (total number of messages) / messages.length
+		// more messages, wait less time
 		setInterval((long) Math.ceil((getInterval() * maxSize) / messages.length));
 	}
 

@@ -59,7 +59,9 @@ public class FhirBundleExtract {
 		FhirContext context = FhirContext.forDstu3();
 		jsonParser=(JsonParser)context.newJsonParser();
 		
-		String sourceDir = this.getSrcDir()!=null?this.getSrcDir():FhirLoadConfig.getInstance().get(FhirLoadConfig.FHIRLOAD_SOURCE_DIR);				
+		String sourceDir = this.getSrcDir() != null ?
+				this.getSrcDir():FhirLoadConfig.getInstance().get(FhirLoadConfig.FHIRLOAD_SOURCE_DIR);		
+				
 		File[] sourceFiles = new File(sourceDir).listFiles(new FilenameFilter() {
 		    public boolean accept(File dir, String name) {
 		        return name.toLowerCase().endsWith(".json");
@@ -69,7 +71,8 @@ public class FhirBundleExtract {
 			System.out.println(sourceDir + " no json files");
 		}
 		
-		String targetDir = this.getDestDir()!=null?this.getDestDir():FhirLoadConfig.getInstance().get(FhirLoadConfig.FHIRLOAD_TARGET_DIR);
+		String targetDir = this.getDestDir() != null ?
+				this.getDestDir():FhirLoadConfig.getInstance().get(FhirLoadConfig.FHIRLOAD_TARGET_DIR);
 		
 		File targetDirExits = new File(targetDir);
 		if (!targetDirExits.exists()) {
