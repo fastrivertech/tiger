@@ -50,10 +50,10 @@ Prerequisites
 Setup
 -----
 1)cp tiger\frt-demo\fhir-stream to /home/ec2-user/fhir-stream (on EC2)
-2)cp /home/ec2-user/fhir-stream/etc/kafka-connect-jdbc/*.* to /home/ec2-user/confluent-5.2.0/etc/kafka-connect-jdbc
-3)cp /home/ec2-user/fhir-stream/etc/schema-registry/*.* to /home/ec2-user/confluent-5.2.0/etc/schema-registry
-4)cp /home/ec2-user/fhir-stream/shared/java/kafka-connect-jdbc/*.jar to /home/ec2-user/confluent-5.2.0/shared/java/kafka-connect-jdbc
-5)cp /home/ec2-user/fhir-stream/bin/*.* /home/ec2-user/confluent-5.2.0/bin
+2)cp /home/ec2-user/fhir-stream/confluent/etc/kafka-connect-jdbc/*.* to /home/ec2-user/confluent-5.2.0/etc/kafka-connect-jdbc
+3)cp /home/ec2-user/fhir-stream/confluent/etc/schema-registry/*.* to /home/ec2-user/confluent-5.2.0/etc/schema-registry
+4)cp /home/ec2-user/fhir-stream/confluent/shared/java/kafka-connect-jdbc/*.jar to /home/ec2-user/confluent-5.2.0/shared/java/kafka-connect-jdbc
+5)cp /home/ec2-user/fhir-stream/confluent/bin/*.* /home/ec2-user/confluent-5.2.0/bin
 6)unzip frt-service-package-1.0.0-SNAPSHOT.zip to /home/ec2-user/frt-service
 
 Generate Patient Data
