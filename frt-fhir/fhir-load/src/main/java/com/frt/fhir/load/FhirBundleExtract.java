@@ -42,13 +42,24 @@ public class FhirBundleExtract {
 														 "c4a72900","1b0656e5"};
 	
 	private JsonParser jsonParser;
+	private String srcDir;
+	private String destDir;
+	
+	public FhirBundleExtract() {
+	}
+	
+	public FhirBundleExtract(String srcDir, String destDir) {
+		this.srcDir=srcDir;
+		this.destDir=destDir;
+	}
+	
 	public void execute() 
 		throws FhirLoadException {
 		
 		FhirContext context = FhirContext.forDstu3();
 		jsonParser=(JsonParser)context.newJsonParser();
 		
-		String sourceDir = FhirLoadConfig.getInstance().get(FhirLoadConfig.FHIRLOAD_SOURCE_DIR);				
+		String sourceDir = this.getSrcDir()!=null?this.getSrcDir():FhirLoadConfig.getInstance().get(FhirLoadConfig.FHIRLOAD_SOURCE_DIR);				
 		File[] sourceFiles = new File(sourceDir).listFiles(new FilenameFilter() {
 		    public boolean accept(File dir, String name) {
 		        return name.toLowerCase().endsWith(".json");
@@ -57,7 +68,8 @@ public class FhirBundleExtract {
 		if (sourceFiles == null || sourceFiles.length < 1) {
 			System.out.println(sourceDir + " no json files");
 		}
-		String targetDir = FhirLoadConfig.getInstance().get(FhirLoadConfig.FHIRLOAD_TARGET_DIR);
+		
+		String targetDir = this.getDestDir()!=null?this.getDestDir():FhirLoadConfig.getInstance().get(FhirLoadConfig.FHIRLOAD_TARGET_DIR);
 		
 		File targetDirExits = new File(targetDir);
 		if (!targetDirExits.exists()) {
@@ -107,9 +119,33 @@ public class FhirBundleExtract {
 		}		
 	}
 	
+	public String getSrcDir() {
+		return srcDir;
+	}
+
+	public void setSrcDir(String srcDir) {
+		this.srcDir = srcDir;
+	}
+
+	public String getDestDir() {
+		return destDir;
+	}
+
+	public void setDestDir(String destDir) {
+		this.destDir = destDir;
+	}
+
 	public static void main(String[] args) {
+		// used in data feeding requires source and destination dirs from command line
+		FhirBundleExtract extractor = null;
 		try {
-			new FhirBundleExtract().execute();
+			if (args.length==2) {
+				extractor = new FhirBundleExtract(args[0], args[1]);
+			}
+			else {
+				extractor = new FhirBundleExtract();
+			}
+			extractor.execute();
 			System.out.println("FhirBundleExtract succeeded.");
 			System.exit(0);
 		} catch (FhirLoadException ex) {
