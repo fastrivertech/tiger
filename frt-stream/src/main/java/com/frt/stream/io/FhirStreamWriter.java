@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Random;
 import java.util.stream.Stream;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
@@ -38,7 +39,7 @@ import java.util.concurrent.*;
 public class FhirStreamWriter implements ParticipatingApplication {
 	private static int DEFAULT_INTERVAL = 1000;
 	private static final Map<String, String> STATES = new HashMap<String, String>();
-	static {
+	static { // not used - may use for validation
 		STATES.put("AL", "Alabama");
 		STATES.put("AK", "Alaska");
 		STATES.put("AS", "American Samoa");
@@ -134,10 +135,6 @@ public class FhirStreamWriter implements ParticipatingApplication {
 		}
 	}
 
-	public void initialize(String folder) throws StreamApplicationException {
-		this.initialize();
-	}
-
 	@Override
 	public void run() {
 		try {
@@ -145,6 +142,14 @@ public class FhirStreamWriter implements ParticipatingApplication {
 			File[] files = folder.listFiles();
 			Stream<File> stream = Arrays.stream(files);
 			stream.forEach(file -> {
+				Random seed = new Random();
+				int factor = seed.nextInt(5);
+				try {
+					Thread.sleep(this.interval + factor*100);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				try {
 					if (file.getName().endsWith(".json")) {
 						String message = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
