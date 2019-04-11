@@ -37,7 +37,6 @@ import com.frt.stream.service.StreamServiceException;
 import java.util.concurrent.*;
 
 public class FhirStreamWriter implements ParticipatingApplication {
-	
 	private static int DEFAULT_INTERVAL = 1000;
 	private static final Map<String, String> STATES = new HashMap<String, String>();
 	static { // not used - may use for validation
@@ -103,32 +102,32 @@ public class FhirStreamWriter implements ParticipatingApplication {
 	};
 	private static int id = 0;
 	private Producer<String, String> producer;
-	private StreamServiceConfig config;
+	//private StreamServiceConfig config;
 	private String dataFolder;
 
 	private File[] messages;
 	private long interval;
-	private int messageSent;
-	
-	public FhirStreamWriter(String folder, File[] messages, int interval) {
+	private volatile int messageSent;
+
+	public FhirStreamWriter(Producer<String, String> producer, String folder, File[] messages, int interval) {
 		if (folder == null) {
 			this.dataFolder = "./data";
 		} else {
 			this.dataFolder = folder;
 		}
+		this.producer = producer;
 		this.messages = messages;
 		this.interval = interval;
+		this.messageSent = 0;
 	}
 
 	@Override
-	public void initialize() 
-		throws StreamApplicationException {
+	public void initialize() throws StreamApplicationException {
 		try {
-			config = StreamServiceConfig.getInstance();
+			StreamServiceConfig config = StreamServiceConfig.getInstance();
 			Properties props = config.getProducerConfig();
 			producer = new KafkaProducer<String, String>(props);
 			producer.initTransactions();
-
 			System.out.println("fhir stream writer connecting to fhir stream ["
 					+ config.get(StreamServiceConfig.STREAM_TOPIC) + "] on stream broker ["
 					+ config.getProducerConfig().get(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
@@ -138,24 +137,38 @@ public class FhirStreamWriter implements ParticipatingApplication {
 		}
 	}
 
+	public static Producer<String, String> createProducer() throws StreamApplicationException {
+		try {
+			StreamServiceConfig cfg = StreamServiceConfig.getInstance();
+			KafkaProducer<String, String> p = new KafkaProducer<String, String>(cfg.getProducerConfig());
+			p.initTransactions();
+			System.out.println("fhir stream writer connecting to fhir stream ["
+					+ cfg.get(StreamServiceConfig.STREAM_TOPIC) + "] on stream broker ["
+					+ cfg.getProducerConfig().get(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG) + "] ...");
+
+			return p;
+		} catch (StreamServiceException ssex) {
+			throw new StreamApplicationException(ssex);
+		}
+	}
+
 	@Override
 	public void run() {
-		this.messageSent = 0;
 		try {
 			File folder = new File(dataFolder);
 			File[] files = folder.listFiles();
 			Stream<File> stream = Arrays.stream(files);
 			stream.forEach(file -> {
-				
-			 // random sleep pattern
+
+				// random sleep pattern
 				Random seed = new Random();
 				int factor = seed.nextInt(5);
 				try {
-					Thread.sleep(this.interval + factor*100);
+					Thread.sleep(this.interval + factor * 100);
 				} catch (InterruptedException ex) {
 					throw new RuntimeException(ex);
 				}
-					
+
 				try {
 					if (file.getName().endsWith(".json")) {
 						String message = new String(Files.readAllBytes(Paths.get(file.getAbsolutePath())));
@@ -165,9 +178,9 @@ public class FhirStreamWriter implements ParticipatingApplication {
 					}
 				} catch (IOException ioex) {
 				}
-		 
+
 			});
-			
+
 		} catch (Exception ex) {
 			throw new StreamApplicationException(ex);
 		}
@@ -175,18 +188,22 @@ public class FhirStreamWriter implements ParticipatingApplication {
 
 	public void send(String message) {
 		try {
-			producer.beginTransaction();
-			String messageId = "message_" + ++id;
-			producer.send(new ProducerRecord<String, String>(config.get(StreamServiceConfig.STREAM_TOPIC), messageId, message));			
-			producer.commitTransaction();
-			System.out.println("    sent " + messageId + " " + message);
+			synchronized(this.producer) {
+				this.producer.beginTransaction();
+				String messageId = "message_" + ++id;
+				this.producer.send(new ProducerRecord<String, String>(StreamServiceConfig.getInstance().get(StreamServiceConfig.STREAM_TOPIC), messageId,
+						message));
+				this.producer.commitTransaction();
+				this.producer.flush();
+				// System.out.println(" sent " + messageId + " " + message);
+			}
 		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 	}
 
-	public void rename(String name) 
-		throws StreamApplicationException {
-		
+	public void rename(String name) throws StreamApplicationException {
+
 		File oldName = new File(name);
 		if (!oldName.exists()) {
 			throw new StreamApplicationException("old file '" + name + "' does not exist");
@@ -199,7 +216,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 			throw new StreamApplicationException("failed to rename '" + name + "' to '" + name + "~'");
 		}
 		System.out.println(oldName.getName() + " renamed to " + newName.getName());
-		
+
 	}
 
 	@Override
@@ -214,16 +231,17 @@ public class FhirStreamWriter implements ParticipatingApplication {
 
 	public static void main(String[] args) {
 		try {
-			
+
 			// Input parameters:
 			// <BaseDir> - required directory where patient JSON files located
-			//             for each state is located in sub folder <baseDir>/<state>
-			// 		       the writer will spin off a thread processing JSON files at base folder level and
-			// 			   each sub folder level simultaneously
+			// for each state is located in sub folder <baseDir>/<state>
+			// the writer will spin off a thread processing JSON files at base folder level
+			// and
+			// each sub folder level simultaneously
 			// <Interval> - interval (milli-seconds) between publish to topic
-			
+
 			if (args.length > 0 && args.length <= 2) {
-				
+
 				String baseDir = args[0];
 				int interval = DEFAULT_INTERVAL;
 				if (args.length == 2) {
@@ -231,15 +249,15 @@ public class FhirStreamWriter implements ParticipatingApplication {
 					if (interval < DEFAULT_INTERVAL)
 						interval = DEFAULT_INTERVAL;
 				}
-				
+
 				File base = new File(baseDir);
 				int maxCnt = 0;
 				if (base.exists() && base.isDirectory()) {
-					
+					Producer<String, String> singleProducer = createProducer();
 					List<FhirStreamWriter> writers = new ArrayList<FhirStreamWriter>();
 					List<FutureTask<String>> tasks = new ArrayList<FutureTask<String>>();
 
-					int msgCnt = addWriter(writers, base, interval);
+					int msgCnt = addWriter(singleProducer, writers, base, interval);
 					maxCnt = Math.max(maxCnt, msgCnt);
 
 					File[] subDirs = base.listFiles(new FilenameFilter() {
@@ -249,14 +267,17 @@ public class FhirStreamWriter implements ParticipatingApplication {
 					});
 
 					for (File subDir : subDirs) {
-						msgCnt = addWriter(writers, subDir, interval);
+						msgCnt = addWriter(singleProducer, writers, subDir, interval);
 						maxCnt = Math.max(maxCnt, msgCnt);
 					}
 
 					for (FhirStreamWriter w : writers) {
 						w.setProportionInterval(maxCnt);
-						w.initialize();
-						tasks.add(new FutureTask<>(w, "Stream task is complete: " + w.getDataFolder() + ", proportioned interval:" + w.getInterval() + ", messages in folder:" + w.getMessageTotal() + ", messages sent:" + w.getMessageSent()));
+//						w.initialize();
+						tasks.add(new FutureTask<>(w,
+								"Stream task is complete: " + w.getDataFolder() + ", proportioned interval:"
+										+ w.getInterval() + ", messages in folder:" + w.getMessageTotal()
+										+ ", messages sent:" + w.getMessageSent()));
 					}
 
 					ExecutorService executor = Executors.newFixedThreadPool(writers.size());
@@ -286,16 +307,16 @@ public class FhirStreamWriter implements ParticipatingApplication {
 		}
 	}
 
-	private static int addWriter(List<FhirStreamWriter> writers, File folder, int interval) {
-		
+	private static int addWriter(Producer<String, String> singleProducer, List<FhirStreamWriter> writers, File folder, int interval) {
+
 		File[] files = folder.listFiles(new FilenameFilter() {
 			public boolean accept(File d, String name) {
 				return name.toLowerCase().endsWith(".json");
 			}
 		});
-		
+
 		if (files.length > 0) {
-			writers.add(new FhirStreamWriter(folder.getPath(), files, interval));
+			writers.add(new FhirStreamWriter(singleProducer, folder.getPath(), files, interval));
 		}
 		return files.length;
 	}
@@ -330,7 +351,7 @@ public class FhirStreamWriter implements ParticipatingApplication {
 	}
 
 	public int getMessageTotal() {
-		return messages!=null?messages.length:0;
+		return messages != null ? messages.length : 0;
 	}
 
 	public int getMessageSent() {
