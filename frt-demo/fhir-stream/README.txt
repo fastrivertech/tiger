@@ -86,6 +86,8 @@ Start up Services
   - /home/ec2-user/confluent-5.2.0/bin/start-fhir-mysql-sink.sh
 10)feed patient records
   - /home/ec2-user/frt-service/bin/fhir-stream-writer.sh ..\data  
+  OR
+  - /home/ec2-user/frt-service/bin/fhir-stream-feeder.sh ..\data_feeder 1000 California 3000 Arizona 1900 Washington 900 Oregon 500
 11)launch Grafana
   - http://ec2-54-202-179-213.us-west-2.compute.amazonaws.com:3000 
 12)create the FHIR dashboard
