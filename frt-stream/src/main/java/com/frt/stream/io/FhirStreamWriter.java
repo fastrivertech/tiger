@@ -102,12 +102,10 @@ public class FhirStreamWriter implements ParticipatingApplication {
 	};
 	private static int id = 0;
 	private Producer<String, String> producer;
-	//private StreamServiceConfig config;
 	private String dataFolder;
-
 	private File[] messages;
 	private long interval;
-	private volatile int messageSent;
+	private int messageSent;
 
 	public FhirStreamWriter(Producer<String, String> producer, String folder, File[] messages, int interval) {
 		if (folder == null) {

@@ -21,16 +21,76 @@
   "panels": [
     {
       "aliasColors": {},
-      "bars": false,
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "DEMO-MySQL",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 4,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Under graph",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "PATIENT_GENDER",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  TS AS \"time\",\n  PATIENT_GENDER AS metric,\n  CNT\nFROM FHIR_GROUPBY_STATE_SINK\nORDER BY TS",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "CNT"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "FHIR_GROUPBY_STATE_SINK",
+          "timeColumn": "TS",
+          "timeColumnType": "bigint",
+          "where": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "QUAD STATES GENDER TOTAL",
+      "transparent": true,
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
       "dashLength": 10,
       "dashes": false,
       "datasource": "DEMO-MySQL",
       "description": "FHIR Patient Count By State in Time Series",
-      "fill": 1,
+      "fill": 2,
       "gridPos": {
         "h": 9,
         "w": 12,
-        "x": 0,
+        "x": 12,
         "y": 0
       },
       "id": 2,
@@ -44,25 +104,25 @@
         "values": false
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 3,
       "links": [],
-      "nullPointMode": "null",
+      "nullPointMode": "connected",
       "paceLength": 10,
       "percentage": false,
       "pointradius": 2,
-      "points": false,
+      "points": true,
       "renderer": "flot",
       "seriesOverrides": [],
       "stack": false,
-      "steppedLine": false,
+      "steppedLine": true,
       "targets": [
         {
           "format": "time_series",
           "group": [],
           "hide": false,
           "metricColumn": "ADDR_STATE",
-          "rawQuery": true,
-          "rawSql": "SELECT\n  FROM_UNIXTIME(TS) AS \"time\",\n  ADDR_STATE AS metric,\n  CNT\nFROM FHIR_GROUPBY_STATE\nWHERE\n  $__unixEpochFilter(TS)\nORDER BY TS",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  TS AS \"time\",\n  ADDR_STATE AS metric,\n  CNT\nFROM FHIR_GROUPBY_STATE_SINK\nORDER BY TS",
           "refId": "A",
           "select": [
             [
@@ -74,16 +134,10 @@
               }
             ]
           ],
-          "table": "FHIR_PATIENT_GROUPBY_STATE",
+          "table": "FHIR_GROUPBY_STATE_SINK",
           "timeColumn": "TS",
           "timeColumnType": "bigint",
-          "where": [
-            {
-              "name": "$__unixEpochFilter",
-              "params": [],
-              "type": "macro"
-            }
-          ]
+          "where": []
         }
       ],
       "thresholds": [],
@@ -160,5 +214,5 @@
   "timezone": "",
   "title": "FHIR Patient By State",
   "uid": "3yl50L6iz",
-  "version": 6
+  "version": 14
 }
