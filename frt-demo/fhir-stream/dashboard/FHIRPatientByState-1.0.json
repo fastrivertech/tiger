@@ -21,94 +21,6 @@
   "panels": [
     {
       "aliasColors": {},
-      "breakPoint": "50%",
-      "cacheTimeout": null,
-      "combine": {
-        "label": "Others",
-        "threshold": 0
-      },
-      "datasource": "DEMO-MySQL",
-      "description": "PATIENT COUNT BY STATES",
-      "fontSize": "80%",
-      "format": "short",
-      "gridPos": {
-        "h": 8,
-        "w": 12,
-        "x": 0,
-        "y": 0
-      },
-      "id": 6,
-      "interval": null,
-      "legend": {
-        "header": "",
-        "percentage": true,
-        "show": true,
-        "values": true
-      },
-      "legendType": "Right side",
-      "links": [],
-      "maxDataPoints": 3,
-      "nullPointMode": "connected",
-      "pieType": "pie",
-      "strokeWidth": 1,
-      "targets": [
-        {
-          "format": "time_series",
-          "group": [
-            {
-              "params": [
-                "$__interval",
-                "none"
-              ],
-              "type": "time"
-            },
-            {
-              "params": [
-                "ADDR_STATE"
-              ],
-              "type": "column"
-            }
-          ],
-          "metricColumn": "ADDR_STATE",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  $__unixEpochGroupAlias(TS,$__interval),\n  ADDR_STATE AS metric,\n  max(CNT) AS \"CNT\"\nFROM FHIR_GROUPBY_STATE_SINK\nGROUP BY 1, ADDR_STATE,2\nORDER BY $__unixEpochGroup(TS,$__interval)",
-          "refId": "A",
-          "select": [
-            [
-              {
-                "params": [
-                  "CNT"
-                ],
-                "type": "column"
-              },
-              {
-                "params": [
-                  "max"
-                ],
-                "type": "aggregate"
-              },
-              {
-                "params": [
-                  "CNT"
-                ],
-                "type": "alias"
-              }
-            ]
-          ],
-          "table": "FHIR_GROUPBY_STATE_SINK",
-          "timeColumn": "TS",
-          "timeColumnType": "bigint",
-          "where": []
-        }
-      ],
-      "timeFrom": null,
-      "timeShift": null,
-      "title": "PATIENT COUNT BY STATES",
-      "type": "grafana-piechart-panel",
-      "valueName": "current"
-    },
-    {
-      "aliasColors": {},
       "bars": true,
       "dashLength": 10,
       "dashes": false,
@@ -116,9 +28,9 @@
       "description": "FHIR Patient Count By State in Time Series",
       "fill": 2,
       "gridPos": {
-        "h": 9,
+        "h": 8,
         "w": 12,
-        "x": 12,
+        "x": 0,
         "y": 0
       },
       "id": 2,
@@ -212,6 +124,94 @@
     },
     {
       "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "DEMO-MySQL",
+      "description": "PATIENT COUNT BY STATES",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "id": 6,
+      "interval": null,
+      "legend": {
+        "header": "",
+        "percentage": true,
+        "show": true,
+        "values": true
+      },
+      "legendType": "Right side",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "ADDR_STATE"
+              ],
+              "type": "column"
+            }
+          ],
+          "metricColumn": "ADDR_STATE",
+          "rawQuery": false,
+          "rawSql": "SELECT\n  $__unixEpochGroupAlias(TS,$__interval),\n  ADDR_STATE AS metric,\n  max(CNT) AS \"CNT\"\nFROM FHIR_GROUPBY_STATE_SINK\nGROUP BY 1, ADDR_STATE,2\nORDER BY $__unixEpochGroup(TS,$__interval)",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "CNT"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "max"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "CNT"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "FHIR_GROUPBY_STATE_SINK",
+          "timeColumn": "TS",
+          "timeColumnType": "bigint",
+          "where": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "PATIENT COUNT BY STATES",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "aliasColors": {},
       "bars": true,
       "cacheTimeout": null,
       "dashLength": 10,
@@ -221,7 +221,7 @@
       "fill": 1,
       "gridPos": {
         "h": 8,
-        "w": 12,
+        "w": 24,
         "x": 0,
         "y": 8
       },
