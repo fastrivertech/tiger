@@ -269,13 +269,14 @@ public class FhirStreamWriter implements ParticipatingApplication {
 						maxCnt = Math.max(maxCnt, msgCnt);
 					}
 
+					Map<FutureTask, FhirStreamWriter> task2writer = new HashMap<FutureTask, FhirStreamWriter>();
 					for (FhirStreamWriter w : writers) {
 						w.setProportionInterval(maxCnt);
-//						w.initialize();
-						tasks.add(new FutureTask<>(w,
+						FutureTask ft = new FutureTask<>(w,
 								"Stream task is complete: " + w.getDataFolder() + ", proportioned interval:"
-										+ w.getInterval() + ", messages in folder:" + w.getMessageTotal()
-										+ ", messages sent:" + w.getMessageSent()));
+										+ w.getInterval() + ", messages in folder:" + w.getMessageTotal());
+						tasks.add(ft);
+						task2writer.put(ft, w);
 					}
 
 					ExecutorService executor = Executors.newFixedThreadPool(writers.size());
@@ -287,8 +288,10 @@ public class FhirStreamWriter implements ParticipatingApplication {
 
 						for (FutureTask<String> t : tasks) {
 							try {
-								System.out.println(t.get());
+								System.out.print(t.get());
+								System.out.println("messages sent:" + task2writer.get(t).getMessageSent());
 							} catch (InterruptedException | ExecutionException e) {
+								e.printStackTrace();
 							}
 						}
 					} finally {
