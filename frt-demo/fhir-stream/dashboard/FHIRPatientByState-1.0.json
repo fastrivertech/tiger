@@ -28,6 +28,7 @@
         "threshold": 0
       },
       "datasource": "DEMO-MySQL",
+      "description": "PATIENT COUNT BY STATES",
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
@@ -36,13 +37,15 @@
         "x": 0,
         "y": 0
       },
-      "id": 4,
+      "id": 6,
       "interval": null,
       "legend": {
+        "header": "",
+        "percentage": true,
         "show": true,
         "values": true
       },
-      "legendType": "Under graph",
+      "legendType": "Right side",
       "links": [],
       "maxDataPoints": 3,
       "nullPointMode": "connected",
@@ -51,10 +54,24 @@
       "targets": [
         {
           "format": "time_series",
-          "group": [],
-          "metricColumn": "PATIENT_GENDER",
+          "group": [
+            {
+              "params": [
+                "$__interval",
+                "none"
+              ],
+              "type": "time"
+            },
+            {
+              "params": [
+                "ADDR_STATE"
+              ],
+              "type": "column"
+            }
+          ],
+          "metricColumn": "ADDR_STATE",
           "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  PATIENT_GENDER AS metric,\n  CNT\nFROM FHIR_GROUPBY_STATE_SINK\nORDER BY TS",
+          "rawSql": "SELECT\n  $__unixEpochGroupAlias(TS,$__interval),\n  ADDR_STATE AS metric,\n  max(CNT) AS \"CNT\"\nFROM FHIR_GROUPBY_STATE_SINK\nGROUP BY 1, ADDR_STATE,2\nORDER BY $__unixEpochGroup(TS,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -63,6 +80,18 @@
                   "CNT"
                 ],
                 "type": "column"
+              },
+              {
+                "params": [
+                  "max"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "CNT"
+                ],
+                "type": "alias"
               }
             ]
           ],
@@ -74,8 +103,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "QUAD STATES GENDER TOTAL",
-      "transparent": true,
+      "title": "PATIENT COUNT BY STATES",
       "type": "grafana-piechart-panel",
       "valueName": "current"
     },
@@ -181,6 +209,171 @@
         "align": false,
         "alignLevel": null
       }
+    },
+    {
+      "aliasColors": {},
+      "bars": true,
+      "cacheTimeout": null,
+      "dashLength": 10,
+      "dashes": false,
+      "datasource": "DEMO-MySQL",
+      "description": "PATIENT TOTAL BY STATES & GENDER",
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "id": 4,
+      "legend": {
+        "avg": false,
+        "current": true,
+        "max": true,
+        "min": true,
+        "show": false,
+        "total": false,
+        "values": true
+      },
+      "lines": false,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "paceLength": 10,
+      "percentage": false,
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "seriesOverrides": [
+        {}
+      ],
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [
+            {
+              "params": [
+                "ADDR_STATE"
+              ],
+              "type": "column"
+            },
+            {
+              "params": [
+                "PATIENT_GENDER"
+              ],
+              "type": "column"
+            }
+          ],
+          "metricColumn": "PATIENT_GENDER",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  TS AS \"time_sec\",\n  CONCAT(ADDR_STATE, \":\", PATIENT_GENDER) AS metric,\n  max(CNT) AS \"TOTAL\"\nFROM FHIR_GROUPBY_STATE_SINK\nGROUP BY TS, ADDR_STATE, PATIENT_GENDER\nORDER BY ADDR_STATE",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "CNT"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "max"
+                ],
+                "type": "aggregate"
+              },
+              {
+                "params": [
+                  "CNT"
+                ],
+                "type": "alias"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "CNT"
+                ],
+                "type": "column"
+              },
+              {
+                "params": [
+                  "CNT"
+                ],
+                "type": "alias"
+              }
+            ]
+          ],
+          "table": "FHIR_GROUPBY_STATE_SINK",
+          "timeColumn": "TS",
+          "timeColumnType": "bigint",
+          "where": [
+            {
+              "name": "",
+              "params": [
+                "value",
+                "ADDR_STATE",
+                "\"California\""
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [
+        {
+          "colorMode": "gray",
+          "fill": true,
+          "fillColor": "rgba(234, 112, 112, 0.12)",
+          "line": false,
+          "lineColor": "rgba(237, 46, 24, 0.60)",
+          "op": "time"
+        }
+      ],
+      "timeShift": null,
+      "title": "PATIENT TOTAL BY STATES & GENDER",
+      "tooltip": {
+        "shared": false,
+        "sort": 1,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "series",
+        "name": null,
+        "show": true,
+        "values": [
+          "max"
+        ]
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
     }
   ],
   "refresh": "10s",
@@ -191,7 +384,7 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-1h",
     "to": "now"
   },
   "timepicker": {
@@ -214,5 +407,5 @@
   "timezone": "",
   "title": "FHIR Patient By State",
   "uid": "3yl50L6iz",
-  "version": 14
+  "version": 16
 }
