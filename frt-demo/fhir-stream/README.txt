@@ -88,6 +88,14 @@ Start up Services
   - /home/ec2-user/frt-service/bin/fhir-stream-writer.sh ..\data  
   OR
   - /home/ec2-user/frt-service/bin/fhir-stream-feeder.sh ..\data_feeder 1000 California 3000 Arizona 1900 Washington 900 Oregon 500
+  note, fhir-stream-feeder.sh takes command line parameters and call open source / frt tools to:
+  a) generate fhir patient bundle json files per states and sample population sizes (using synthea) - results are stored in per state folders under base folder 
+     (e.g. ../data_feeder/California/fhir, ../data_feeder/Arizona/fhir, ...)
+  b) extract fhir patient json files from bundle json files (using frt java tool extract.sh) - the results are stored in per state folders under base folder 
+     (e.g. ../data_feeder_EXT_MESSAGES/California, ../data_feeder_EXT_MESSAGES/Arizona, ...)
+  c) call fhir-stream-writer given base folder (e.g. ../data_feeder_EXT_MESSAGES), each states patient jsons are read and send to kafka topic: FhirTopic
+  d) in step c), each state's patient json files are read and sent by a java task (thread), the tasks are running in paralelle, generating an infux of patients across the states into the kafka streaming system.
+  
 11)launch Grafana
   - http://ec2-54-202-179-213.us-west-2.compute.amazonaws.com:3000 
 12)create the FHIR dashboard
