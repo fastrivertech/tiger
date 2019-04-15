@@ -88,7 +88,7 @@
     {
       "folderId": 0,
       "gridPos": {
-        "h": 5,
+        "h": 7,
         "w": 12,
         "x": 0,
         "y": 3
@@ -173,5 +173,5 @@
   "timezone": "",
   "title": "Fast River Tech FHIR Patient  Real-Time Analytics & Management",
   "uid": "xBNrdRRZk",
-  "version": 18
+  "version": 21
 }
