@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<parent>
+		<groupId>com.frt</groupId>
+		<artifactId>frt-parent</artifactId>
+		<version>${frt.version}</version>
+	</parent>
+	<modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.frt</groupId>
+    <artifactId>frt-stream-demo-package</artifactId>
+    <version>${frt.version}</version>
+    <name>FRT STREAM DEMO PACKAGE</name>
+    <description>Fast River STREAM DEMO PACKAGE ${frt.version}</description>
+
+	<build>
+		<finalName>frt-stream-demo-package</finalName>
+		<plugins>		
+		<plugin>
+  		<groupId>org.apache.maven.plugins</groupId>
+  		<artifactId>maven-assembly-plugin</artifactId>
+  		<version>${maven.assembly.plugin.version}</version>
+  		<configuration>
+    		<descriptor>./src/main/assembly/dist.xml</descriptor>
+    		<finalName>frt-stream-demo-package-${frt.version}</finalName>
+    		<outputDirectory>target</outputDirectory>  
+ 			<appendAssemblyId>false</appendAssemblyId> 
+  		</configuration>
+  		<executions>
+    		<execution>
+      		<phase>package</phase>
+      		<goals><goal>single</goal></goals>
+    		</execution>
+  		</executions>
+		</plugin>      					
+		</plugins>
+	</build>
+	
+</project>

@@ -74,7 +74,8 @@
     <module>frt-datalake</module>	
     <module>frt-service</module>    
 	<module>frt-fhir</module>	
-	<module>frt-package</module>		
+	<module>frt-package</module>	
+	<module>frt-demo</module>		
   </modules>
   	
   <dependencyManagement>
