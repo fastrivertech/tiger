@@ -24,7 +24,7 @@
   <groupId>com.frt</groupId>
   <artifactId>frt-service-package</artifactId>
   <version>${frt.version}</version>
-  <name>FRT SERVICE PACKAGE</name>
+  <name>FRT SERVICE PACKAGE ${frt.version}</name>
   <description>Fast River SERVICE PACKAGE ${frt.version}</description>
 
 	<build>
