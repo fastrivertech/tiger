@@ -45,18 +45,16 @@ CREATE TABLE FHIR_GROUPBY_STATE_SINK WITH (VALUE_FORMAT='AVRO') AS
 											CNT 
 									 FROM FHIR_GROUPBY_STATE;
 
-CREATE STREAM FHIR_DL_JSON_STREAM (patient_gender VARCHAR,
-								   age_group VARCHAR,
-								   patient_count VARCHAR)								
-								   WITH (KAFKA_TOPIC='FhirDlTopic',VALUE_FORMAT='JSON');								   
-CREATE STREAM FHIR_DL_AVRO_STREAM WITH (VALUE_FORMAT='AVRO') AS 
-						  	      SELECT * FROM FHIR_DL_JSON_STREAM;								 
-CREATE STREAM FHIR_GROUPBY_AGE_SINK WITH (VALUE_FORMAT='AVRO') AS 
-			 					    SELECT ROWTIME AS TS,
-									   	   PATIENT_GENDER,
-										   AGE_GROUP,
-										   PATIENT_COUNT
-								    FROM FHIR_DL_AVRO_STREAM;
+CREATE STREAM FHIR_DL_STREAM (patient_gender VARCHAR,
+							  age_group VARCHAR,
+							  patient_count VARCHAR)								
+							  WITH (KAFKA_TOPIC='FhirDlTopic',VALUE_FORMAT='JSON');								   								  
+CREATE STREAM FHIR_GROUPBY_AGE WITH (VALUE_FORMAT='AVRO') AS 
+			 				   SELECT ROWTIME AS TS,
+									  PATIENT_GENDER,
+									  AGE_GROUP,
+									  PATIENT_COUNT
+							   FROM FHIR_DL_STREAM;
 																
 CREATE STREAM FHIR_ORG_STREAM (id VARCHAR, 
 							   name VARCHAR, 
