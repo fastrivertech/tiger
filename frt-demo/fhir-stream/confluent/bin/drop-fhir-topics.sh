@@ -8,7 +8,6 @@
 ./kafka-topics --delete --zookeeper localhost:2181 --topic FHIR_AVRO_STREAM
 ./kafka-topics --delete --zookeeper localhost:2181 --topic FhirTopic
 
-./kafka-topics --delete --zookeeper localhost:2181 --topic FHIR_DL_STREAM
 ./kafka-topics --delete --zookeeper localhost:2181 --topic FHIR_GROUPBY_AGE
 ./kafka-topics --delete --zookeeper localhost:2181 --topic FhirDlTopic
 
