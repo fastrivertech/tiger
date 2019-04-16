@@ -21,48 +21,55 @@
   "panels": [
     {
       "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
+      "avgLineShow": true,
+      "cacheTimeout": null,
+      "chartType": "stacked bar chart",
+      "colorSch": [
+        "#FADE2A",
+        "#73BF69"
+      ],
+      "colorSet": [
+        {
+          "color": "#FADE2A",
+          "text": "male"
+        },
+        {
+          "color": "#73BF69",
+          "text": "female"
+        }
+      ],
       "datasource": "DEMO-MySQL",
       "description": "Dynamically computing from FHIR  message streams",
-      "fill": 1,
+      "fontColor": "#5794F2",
+      "fontSize": "80%",
+      "format": "short",
       "gridPos": {
-        "h": 7,
-        "w": 18,
+        "h": 9,
+        "w": 15,
         "x": 0,
         "y": 0
       },
+      "height": "200",
       "id": 2,
+      "interval": null,
+      "labelOrientation": "vertical",
+      "labelSpace": 40,
       "legend": {
-        "alignAsTable": false,
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
+        "position": "On graph",
+        "show": true
       },
-      "lines": false,
-      "linewidth": 1,
       "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "stack": false,
-      "steppedLine": false,
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "orientation": "vertical",
+      "strokeWidth": 1,
       "targets": [
         {
-          "format": "time_series",
+          "format": "table",
           "group": [],
           "metricColumn": "ORG_ID",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  ORG_ID AS metric,\n  CNT\nFROM FHIR_GROUPBY_ORG_SINK\nWHERE\n  $__timeFilter(TS)\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  CONCAT(ORG_ID, \":\", FHIR_ORG_SINK.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_ORG_SINK, FHIR_ORG_SINK \nWHERE\nFHIR_GROUPBY_ORG_SINK.ORG_ID=FHIR_ORG_SINK.ID \nGROUP BY FHIR_GROUPBY_ORG_SINK.ORG_ID, FHIR_ORG_SINK.NAME, PATIENT_GENDER\nORDER BY 1 ASC",
           "refId": "A",
           "select": [
             [
@@ -86,51 +93,18 @@
           ]
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [],
       "timeShift": null,
       "title": "FHIR  Patient  Count Grouped By Health Organization",
-      "tooltip": {
-        "shared": false,
-        "sort": 0,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "series",
-        "name": null,
-        "show": true,
-        "values": [
-          "total"
-        ]
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": "Patient Count",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": "Patient Count",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "grafana-groupedbarchart-panel",
+      "valueName": "current",
+      "width": "800"
     },
     {
-      "aliasColors": {},
+      "aliasColors": {
+        "female": "#73BF69",
+        "male": "#FADE2A"
+      },
       "breakPoint": "50%",
       "cacheTimeout": null,
       "combine": {
@@ -142,10 +116,10 @@
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
-        "h": 5,
-        "w": 5,
-        "x": 0,
-        "y": 7
+        "h": 9,
+        "w": 9,
+        "x": 15,
+        "y": 0
       },
       "id": 4,
       "interval": null,
@@ -202,10 +176,10 @@
       "description": "Dynamically updating the FHIR Health Organizations",
       "fontSize": "80%",
       "gridPos": {
-        "h": 5,
-        "w": 13,
-        "x": 5,
-        "y": 7
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 9
       },
       "id": 6,
       "links": [],
@@ -330,7 +304,7 @@
     ]
   },
   "timezone": "browser",
-  "title": "FHIR Patient By Organization",
+  "title": "FHIR Patient By Organization ( FHIR Stream )",
   "uid": "0R6ysC6mk",
-  "version": 35
+  "version": 51
 }

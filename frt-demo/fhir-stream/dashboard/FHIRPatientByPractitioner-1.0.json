@@ -21,48 +21,56 @@
   "panels": [
     {
       "aliasColors": {},
-      "bars": true,
-      "dashLength": 10,
-      "dashes": false,
+      "avgLineShow": true,
+      "cacheTimeout": null,
+      "chartType": "stacked bar chart",
+      "colorSch": [
+        "#F2495C",
+        "#FF9830"
+      ],
+      "colorSet": [
+        {
+          "color": "#F2495C",
+          "text": "female"
+        },
+        {
+          "color": "#FF9830",
+          "text": "male"
+        }
+      ],
       "datasource": "DEMO-MySQL",
       "description": "FHIR Patient Count Grouped By Practitioner",
-      "fill": 1,
+      "fontColor": "#fff",
+      "fontSize": "80%",
+      "format": "short",
       "gridPos": {
-        "h": 8,
-        "w": 12,
+        "h": 17,
+        "w": 24,
         "x": 0,
         "y": 0
       },
+      "height": 400,
       "hideTimeOverride": true,
       "id": 4,
+      "interval": null,
+      "labelOrientation": "45 degrees",
+      "labelSpace": 40,
       "legend": {
-        "avg": false,
-        "current": false,
-        "max": false,
-        "min": false,
-        "show": false,
-        "total": false,
-        "values": false
+        "position": "On graph",
+        "show": true
       },
-      "lines": false,
-      "linewidth": 1,
       "links": [],
-      "nullPointMode": "null",
-      "paceLength": 10,
-      "percentage": false,
-      "pointradius": 2,
-      "points": false,
-      "renderer": "flot",
-      "seriesOverrides": [],
-      "stack": false,
-      "steppedLine": false,
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "orientation": "vertical",
+      "strokeWidth": 1,
       "targets": [
         {
-          "format": "time_series",
+          "format": "table",
           "group": [],
           "metricColumn": "NPI",
           "rawQuery": true,
-          "rawSql": "SELECT\n  UNIX_TIMESTAMP(TS) AS \"time\",\n  NPI AS metric,\n  CNT\nFROM FHIR_GROUPBY_GP\nORDER BY  UNIX_TIMESTAMP(TS)",
+          "rawSql": "SELECT\n  CONCAT(NPI, \":\",  FHIR_GP_SINK.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_GP, FHIR_GP_SINK\nWHERE FHIR_GROUPBY_GP.NPI=FHIR_GP_SINK.ID\nGROUP BY FHIR_GROUPBY_GP.NPI, FHIR_GP_SINK.NAME, FHIR_GROUPBY_GP.PATIENT_GENDER\nORDER BY  FHIR_GROUPBY_GP.NPI, FHIR_GP_SINK.NAME",
           "refId": "A",
           "select": [
             [
@@ -86,57 +94,12 @@
           ]
         }
       ],
-      "thresholds": [],
       "timeFrom": null,
-      "timeRegions": [
-        {
-          "colorMode": "background6",
-          "fill": true,
-          "fillColor": "rgba(234, 112, 112, 0.12)",
-          "line": false,
-          "lineColor": "rgba(237, 46, 24, 0.60)",
-          "op": "time"
-        }
-      ],
       "timeShift": null,
       "title": "FHIR Patient Count Grouped By Practitioner",
-      "tooltip": {
-        "shared": false,
-        "sort": 1,
-        "value_type": "individual"
-      },
-      "type": "graph",
-      "xaxis": {
-        "buckets": null,
-        "mode": "series",
-        "name": null,
-        "show": true,
-        "values": [
-          "total"
-        ]
-      },
-      "yaxes": [
-        {
-          "format": "short",
-          "label": "Patient Count",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        },
-        {
-          "format": "short",
-          "label": "Patient Count",
-          "logBase": 1,
-          "max": null,
-          "min": null,
-          "show": true
-        }
-      ],
-      "yaxis": {
-        "align": false,
-        "alignLevel": null
-      }
+      "type": "grafana-groupedbarchart-panel",
+      "valueName": "current",
+      "width": "1200"
     },
     {
       "columns": [],
@@ -144,10 +107,10 @@
       "description": "A list of practitioners of the Patients",
       "fontSize": "100%",
       "gridPos": {
-        "h": 8,
-        "w": 10,
-        "x": 12,
-        "y": 0
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 17
       },
       "id": 2,
       "links": [],
@@ -235,8 +198,8 @@
     "list": []
   },
   "time": {
-    "from": "0378-10-03T23:19:24.365Z",
-    "to": "3295-03-25T00:37:24.798Z"
+    "from": "now-6h",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -266,5 +229,5 @@
   "timezone": "",
   "title": "FHIR Patient By Practitioner",
   "uid": "Vm_YJngZz",
-  "version": 17
+  "version": 27
 }
