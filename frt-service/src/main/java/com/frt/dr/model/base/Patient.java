@@ -339,7 +339,7 @@ public class Patient extends DomainResource {
         return extensions;
     }
 
-    public void setExtensions( List<PatientExtension> extensions) {
+    public void setExtensions(List<PatientExtension> extensions) {
         this.extensions = extensions;
     }    
     

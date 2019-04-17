@@ -47,8 +47,8 @@ import com.frt.dr.model.base.PatientExtension;
 public class DomainResource extends Resource {
     private static final long serialVersionUID = -8321293485415818761L;
 
-    //uncomment Seq Generator will cause Resource insert does not accept NULL error
-  //@GeneratedValue(strategy = GenerationType.AUTO, generator = "DOMAIN_RESOURCE_SEQ")  
+    //Uncomment Sequence Generator will cause Resource insert does not accept NULL error    
+    //@GeneratedValue(strategy = GenerationType.AUTO, generator = "DOMAIN_RESOURCE_SEQ")  
     @Column(name = "domain_resource_id", insertable = false, updatable=false)
     private BigInteger domainResourceId;
 	

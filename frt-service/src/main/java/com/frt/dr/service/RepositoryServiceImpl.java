@@ -129,7 +129,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		    ts.start();			
 		  //BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
 		  //Optional<R> created = resourceDao.save(resource);		
-		    // generate default narrative
+		  //Generate default narrative
 		    RepositoryServiceHelper.generateDefaultNarrative(resource);
 			Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);				
@@ -234,12 +234,22 @@ public class RepositoryServiceImpl implements RepositoryService {
 						 // log transaction
 						 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
 						 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
-						 transaction.setResource(found.get());			
+						 transaction.setResource(deleted);			
 						 transactionDao.save(transaction);
 					 } else {
 						 // the resource has been deleted previously
 						 found = Optional.empty();
 					 }
+				 } else {
+					 // for a case that a resource does not have a status extension, 
+					 // this is not valid case, need to fix when the resource gets created or updated 
+					 // with the right status extension 
+					 RepositoryServiceHelper.setResourceStatus(resourceClazz, deleted, Transaction.ActionCode.D.name());
+					 resourceDao.update(deleted);
+					 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.D);
+					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+					 transaction.setResource(deleted);			
+					 transactionDao.save(transaction);					 
 				 }
 				 ts.commit();			
 				 return found;
