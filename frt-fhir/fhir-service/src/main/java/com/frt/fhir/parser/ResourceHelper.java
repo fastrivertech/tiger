@@ -12,7 +12,7 @@
 package com.frt.fhir.parser;
 
 import java.lang.reflect.Method;
-import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.r4.model.Resource;
 import com.frt.dr.update.ResourceUpdateException;
 
 /**

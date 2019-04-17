@@ -142,9 +142,9 @@ public class HAPIDataTypeParserTest {
 	
 	@Test
 	public void test() {
-		org.hl7.fhir.dstu3.model.CodeableConcept ms = mapper.parseComplexType(org.hl7.fhir.dstu3.model.CodeableConcept.class, MARITAL_STATUS_VAL);
+		org.hl7.fhir.r4.model.CodeableConcept ms = mapper.parseComplexType(org.hl7.fhir.r4.model.CodeableConcept.class, MARITAL_STATUS_VAL);
 		
-		List<org.hl7.fhir.dstu3.model.Identifier> ids = mapper.parseComplexTypeArray(org.hl7.fhir.dstu3.model.Identifier.class, BUSINESS_IDENTIFIERS_VAL);
+		List<org.hl7.fhir.r4.model.Identifier> ids = mapper.parseComplexTypeArray(org.hl7.fhir.r4.model.Identifier.class, BUSINESS_IDENTIFIERS_VAL);
 		// check CodeableConcept object
 		assertTrue("Expect 1 coding element in a coding[] in a CodeableConcept object.", ms.getCoding()!=null&&ms.getCoding().size()==1);
 		assertTrue("Expect text in CodeableConcept object.", (ms.getText()!=null&&ms.getText().equals("Getrouwd")));

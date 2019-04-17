@@ -10,7 +10,7 @@
  */
 package com.frt.fhir.mpi.resource;
 
-import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.r4.model.Patient;
 
 public class ResourceType extends DataType<Patient> {
 	private static final long serialVersionUID = 1L;

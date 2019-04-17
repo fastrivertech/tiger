@@ -48,14 +48,14 @@ public class PatientLinkMapper extends BaseMapper {
 		}
 
 		com.frt.dr.model.base.PatientLink frt = null;
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.BackboneElement")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.BackboneElement")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientLink")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_LINK);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			frt.setType(root.get("type")!=null?root.get("type").getAsString():null);
 			frt.setOther(root.getAsJsonObject("other")!=null?root.getAsJsonObject("other").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientLink")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.BackboneElement")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.BackboneElement")) {
 			throw new IllegalStateException("PatientLinkMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("PatientLinkMapper.map() from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");

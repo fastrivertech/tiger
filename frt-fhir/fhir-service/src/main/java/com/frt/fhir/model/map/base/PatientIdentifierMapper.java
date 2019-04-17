@@ -47,7 +47,7 @@ public class PatientIdentifierMapper extends BaseMapper {
 					+ source.getClass().getCanonicalName());
 		}
 		com.frt.dr.model.base.PatientIdentifier frt = null;
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Identifier")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.Identifier")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_IDENTIFIER);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
@@ -58,7 +58,7 @@ public class PatientIdentifierMapper extends BaseMapper {
 			frt.setType(root.getAsJsonObject("type")!=null?root.getAsJsonObject("type").toString():null);
 			frt.setAssigner(root.getAsJsonObject("assigner")!=null?root.getAsJsonObject("assigner").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientIdentifier")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Identifier")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.Identifier")) {
 			throw new IllegalStateException("PatientIdentifierMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("PatientIdentifierMapper.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");

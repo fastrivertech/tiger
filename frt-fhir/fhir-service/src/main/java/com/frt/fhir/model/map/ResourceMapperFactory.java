@@ -11,7 +11,7 @@
  */
 package com.frt.fhir.model.map;
 
-import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.r4.model.DomainResource;
 
 import com.frt.fhir.model.map.base.PatientResourceMapper;
 

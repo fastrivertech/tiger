@@ -45,7 +45,7 @@
 	<!-- hadoop -->
 	<org.apache.hadoop.version>2.6.0-cdh5.13.3</org.apache.hadoop.version>
 	<!-- hapi -->
-	<hapi.fhir.version>3.4.0</hapi.fhir.version>		
+	<hapi.fhir.version>3.7.0</hapi.fhir.version>		
 	<!-- gson -->
 	<com.google.code.gson.version>2.8.0</com.google.code.gson.version>
 	<!-- java ee -->	
@@ -157,7 +157,7 @@
 		</dependency>
 		<dependency>
 			<groupId>ca.uhn.hapi.fhir</groupId>
-			<artifactId>hapi-fhir-structures-dstu3</artifactId>
+			<artifactId>hapi-fhir-structures-r4</artifactId>
 			<version>${hapi.fhir.version}</version>
 		</dependency>
 		<dependency>
@@ -167,7 +167,7 @@
 		</dependency>	
 		<dependency>
 			<groupId>ca.uhn.hapi.fhir</groupId>
-			<artifactId>hapi-fhir-validation-resources-dstu3</artifactId>
+			<artifactId>hapi-fhir-validation-resources-r4</artifactId>
 			<version>${hapi.fhir.version}</version>
 		</dependency>		
 		<!-- java ee -->

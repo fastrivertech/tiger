@@ -10,7 +10,7 @@
  */
 package com.frt.fhir.parser;
 
-import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.r4.model.Resource;
 
 /**
  * XmlParser class

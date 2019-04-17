@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import javax.annotation.Nonnull;
-import org.hl7.fhir.dstu3.model.DomainResource;
+import org.hl7.fhir.r4.model.DomainResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.frt.fhir.model.map.MapperException;
 import com.frt.fhir.model.map.ResourceMapperFactory;

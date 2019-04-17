@@ -24,11 +24,10 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Bundle.BundleType;
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
-
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Bundle.BundleType;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.service.query.QueryOption;
 import com.frt.fhir.model.BundleBuilder;
@@ -52,7 +51,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @Path(ResourcePath.BASE_PATH)
 @PermitAll
 public class HistoryResourceOperation extends ResourceOperation {
-	
 	private static Logger logger = Logger.getLog(HistoryResourceOperation.class.getName());
 	private static Localization localizer = Localization.getInstance("com.frt.fhir");
 		
@@ -68,7 +66,7 @@ public class HistoryResourceOperation extends ResourceOperation {
 	
 	/**
 	 * Retrieve the history of a resource by its logical Id
-	 * GET [base]/frt-fhir-rest/API/[type]/[id]/_history{?_format=[mime-type]}
+	 * GET [base]/frt-fhir-rest/1.0/[type]/[id]/_history{?_format=[mime-type]}
 	 * @param type Resource type, e.g., Patient
 	 * @param id Resource logical id, e.g., 1356
 	 * @param _format json or xml, default json and json supported
@@ -81,25 +79,27 @@ public class HistoryResourceOperation extends ResourceOperation {
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	@Operation(summary = "Retrieve History of A Patient", description= "Retrieve the history of a patient resource by its logical Id",
-    tags = {ResourceOperation.READ},
-    responses = {
-            @ApiResponse(description = "FHIR DomainResource: Bundle of Resource History",
-                    content = @Content(mediaType = "application/fhir+json",
-                            schema = @Schema(implementation = Patient.class))),
-            @ApiResponse(responseCode = "200", description = "OK, Resource History Retrieved Successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad Request"),
-            @ApiResponse(responseCode = "404", description = "Resource Not Found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-            })
-	public <R extends DomainResource> Response history(
-			@Parameter(description = "FHIR Resource Type, the type of the resource to be retrieved of history, e.g. Patient", required = true) @PathParam("type") final String type, 
-			@Parameter(description = "FHIR Resource Id, it is the logical ID of the resource, e.g. Patient MRN", required = true) @PathParam("id") final String id,
-			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format) 
-	{
+	@Operation(summary = "Retrieve History of A Patient", 
+			   description= "Retrieve the history of a patient resource by its logical Id",
+			   tags = {ResourceOperation.READ},
+			   responses = {
+					   		@ApiResponse(description = "FHIR DomainResource: Bundle of Resource History",
+					   					 content = @Content(mediaType = "application/fhir+json",
+					   					 schema = @Schema(implementation = Patient.class))),
+				            @ApiResponse(responseCode = "200", description = "OK, Resource History Retrieved Successfully"),
+				            @ApiResponse(responseCode = "400", description = "Bad Request"),
+				            @ApiResponse(responseCode = "404", description = "Resource Not Found"),
+				            @ApiResponse(responseCode = "500", description = "Internal server error")
+            			    }
+			  )
+	public <R extends DomainResource> Response history(@Parameter(description = "FHIR Resource Type, the type of the resource to be retrieved of history, e.g. Patient", required = true) 
+													   @PathParam("type") final String type, 
+													   @Parameter(description = "FHIR Resource Id, it is the logical ID of the resource, e.g. Patient MRN", required = true) 
+													   @PathParam("id") final String id,
+													   @Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) 
+													   @QueryParam("_format") @DefaultValue("json") final String _format) {
 		
-		logger.info(localizer.x("FHR_I005: HistoryResourceOperation retrieves the hsitory of resource {0} by its id {1}", type, id));										
-		
+		logger.info(localizer.x("FHR_I005: HistoryResourceOperation retrieves the hsitory of resource {0} by its id {1}", type, id));												
 		try {
 			QueryOption options = new QueryOption();
 			Optional<List<R>> history = fhirService.history(type, id, options);

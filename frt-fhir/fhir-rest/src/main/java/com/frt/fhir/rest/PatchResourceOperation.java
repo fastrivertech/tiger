@@ -10,9 +10,14 @@
  */
 package com.frt.fhir.rest;
 
+/**
+ * PatchResourceOperation class
+ * @author cqye
+ */
 public class PatchResourceOperation {
 
 	public PatchResourceOperation() {
 		throw new UnsupportedOperationException();
 	}
+	
 }

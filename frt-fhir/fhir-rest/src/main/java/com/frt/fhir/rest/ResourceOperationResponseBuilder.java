@@ -14,8 +14,8 @@ import java.net.URI;
 import java.util.Date;
 import javax.ws.rs.core.Response;
 import com.frt.util.logging.Localization;
-import org.hl7.fhir.dstu3.model.CodeableConcept;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
+import org.hl7.fhir.r4.model.CodeableConcept;
+import org.hl7.fhir.r4.model.OperationOutcome;
 
 /**
  * ResourceOperationResponseBuilder class

@@ -20,7 +20,7 @@ import java.util.List;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.r4.model.StringType;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Resource;
 import com.frt.dr.model.ResourceComplexType;
@@ -75,7 +75,7 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	protected JsonParser gparser = new JsonParser();
 
 	public BaseMapper() {
-		FhirContext context = FhirContext.forDstu3();
+		FhirContext context = FhirContext.forR4();
 		parser = (ca.uhn.fhir.parser.JsonParser) context.newJsonParser();
 		context.registerCustomType(ComplexTypesResource.class);
 	}
@@ -105,7 +105,7 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	 *            <code>type</code>
 	 * @return the HAPI object of the type;
 	 */
-	public <T extends org.hl7.fhir.dstu3.model.Type> T parseComplexType(Class<T> type, String message) {
+	public <T extends org.hl7.fhir.r4.model.Type> T parseComplexType(Class<T> type, String message) {
 		return (T) parseComplexType(type.getSimpleName().toLowerCase(), message);
 	}
 
@@ -118,7 +118,7 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	 *            <code>type</code>
 	 * @return the array of elements of HAPI complex type
 	 */
-	public <T extends org.hl7.fhir.dstu3.model.Type> List<T> parseComplexTypeArray(Class<T> type, String message) {
+	public <T extends org.hl7.fhir.r4.model.Type> List<T> parseComplexTypeArray(Class<T> type, String message) {
 		return (List) parseComplexType(type.getSimpleName().toLowerCase() + "Array", message);
 	}
 
@@ -144,7 +144,7 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 		return value;
 	}
 
-	// public <T extends org.hl7.fhir.dstu3.model.Type> Map<Class<T>, Object>
+	// public <T extends org.hl7.fhir.r4.model.Type> Map<Class<T>, Object>
 	// parseComplexTypeArray(Class<T>[] types, String[] messages, Boolean[] isArray)
 	// {
 	// StringBuilder sb = new StringBuilder();
@@ -510,7 +510,7 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	}
 
 	protected void addExtensions(com.frt.dr.model.base.Patient frtPatient,
-							     List<org.hl7.fhir.dstu3.model.Extension> extensions, 
+							     List<org.hl7.fhir.r4.model.Extension> extensions, 
 							     String path) {
 
 		List<PatientExtension> patientExtensions = frtPatient.getExtensions();
@@ -526,24 +526,24 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 		});
 	}
 
-	protected void getExtensions(org.hl7.fhir.dstu3.model.Patient hapiPatient, 
+	protected void getExtensions(org.hl7.fhir.r4.model.Patient hapiPatient, 
 								 List<PatientExtension> patientExtensions,
 								 String path) {
 		patientExtensions.forEach(patientExtension -> {
 			// patient.extension
 			if (path.equalsIgnoreCase("patient") && path.equalsIgnoreCase(patientExtension.getPath())) {
-				org.hl7.fhir.dstu3.model.Extension extension = new org.hl7.fhir.dstu3.model.Extension();
+				org.hl7.fhir.r4.model.Extension extension = new org.hl7.fhir.r4.model.Extension();
 				extension.setUrl(patientExtension.getUrl());
 				extension.setValue(new StringType(patientExtension.getValue()));
 				hapiPatient.addExtension(extension);
 			}
 			// patient.birthdate.extension
 			if (path.equalsIgnoreCase("patient.birthdate") && path.equalsIgnoreCase(patientExtension.getPath())) {
-				org.hl7.fhir.dstu3.model.Extension extension = new org.hl7.fhir.dstu3.model.Extension();
+				org.hl7.fhir.r4.model.Extension extension = new org.hl7.fhir.r4.model.Extension();
 				extension.setUrl(patientExtension.getUrl());
 				String value = patientExtension.getValue();
 				value = value.substring(value.indexOf("[") + 1, value.indexOf("]"));
-				extension.setValue(new org.hl7.fhir.dstu3.model.DateTimeType(value));
+				extension.setValue(new org.hl7.fhir.r4.model.DateTimeType(value));
 				hapiPatient.getBirthDateElement().addExtension(extension);
 
 			}

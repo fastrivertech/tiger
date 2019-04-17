@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.FileNotFoundException;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.XmlParser;
-import org.hl7.fhir.dstu3.model.SearchParameter;
-import org.hl7.fhir.dstu3.model.Bundle;
+import org.hl7.fhir.r4.model.SearchParameter;
+import org.hl7.fhir.r4.model.Bundle;
 
 public class SearchParameterRegistry {
 

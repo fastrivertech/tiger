@@ -3,13 +3,13 @@
 			 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 			 xsi:schemaLocation="http://www.w3.org fhir-mapping.xsd" >					 
 	<resources>	 
-		<resource source="org.hl7.fhir.dstu3.model.Patient" target="com.frt.dr.model.base.Patient">
+		<resource source="org.hl7.fhir.r4.model.Patient" target="com.frt.dr.model.base.Patient">
             <attribute source="id" source-type="java.lang.String" target="id" target-type="java.lang.String" cardinality="1..1" />
             <attribute source="gender" source-type="java.lang.String" target="gender" target-type="java.lang.String" cardinality="1..1"/>	
 		</resource>
 	</resources>	 
 	<complexes>	 
-		<complex source="org.hl7.fhir.dstu3.model.HumanName" target="com.frt.dr.model.base.PatientHumanName">
+		<complex source="org.hl7.fhir.r4.model.HumanName" target="com.frt.dr.model.base.PatientHumanName">
             <attribute source="family" source-type="java.lang.String" target="family" target-type="java.lang.String" cardinality="1..1"/>
 		</complex>
 	</complexes>	 

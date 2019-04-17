@@ -16,14 +16,16 @@ package com.frt.fhir.rest;
  * @author cqye
  */
 public interface ResourcePath {
-	 public static final String BASE_PATH = "/API";
+	 
+	 public static final String BASE_PATH = "/1.0";
 	 public static final String TYPE_PATH = "/{type:[a-ln-zA-Z]+}";
 	 public static final String ID_PATH = "/{id:[A-Za-z0-9\\-\\.]+}";
 	 public static final String VID_PATH = "/{vid:[A-Za-z0-9\\-\\.]+}";	 
 	 public static final String HISTORY_PATH = "/_history";	 	
 	 public static final String METADATA_PATH = "/metadata";	
 	 public static final String RESOURCE_PATH = "/{resource:[a-ln-zA-Z]+}";	 
-	 public static final String OPERATION_PATH = "/${operation:[A-Za-z]+}";		 
+	 public static final String OPERATION_PATH = "/${operation:[A-Za-z]+}";	
+	 
 	 // FHIR MPI operations
 	 public static final String PATIENT_PATH = "/Patient";	 	
 	 public static final String MPI_MATCH_PATH = "/$match";	

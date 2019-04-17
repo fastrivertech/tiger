@@ -49,7 +49,7 @@ public class PatientContactPointMapper extends BaseMapper {
 
 		com.frt.dr.model.base.PatientContactPoint frt = null;
 		
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.ContactPoint")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.ContactPoint")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientContactPoint")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_CONTACTPOINT);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
@@ -60,7 +60,7 @@ public class PatientContactPointMapper extends BaseMapper {
 			frt.setRank(root.get("rank")!=null?root.get("rank").getAsInt():null);
 			frt.setPeriod(root.getAsJsonObject("period")!=null?root.getAsJsonObject("period").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientContactPoint")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.ContactPoint")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.ContactPoint")) {
 			throw new IllegalStateException("PatientContactPointMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("PatientContactPointMapper.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");

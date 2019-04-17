@@ -49,7 +49,7 @@ public class PatientContactMapper extends BaseMapper {
 
 		com.frt.dr.model.base.PatientContact frt = null;
 
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.BackboneElement")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.BackboneElement")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientContact")) {
 
 			frt = ResourceDictionary.getComplexInstance(PATIENT_CONTACT);
@@ -62,7 +62,7 @@ public class PatientContactMapper extends BaseMapper {
 			frt.setPeriod(root.get("period")!=null?root.get("period").toString():null);
 			frt.setOrganization(root.get("organization")!=null?root.get("organization").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientContact")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.BackboneElement")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.BackboneElement")) {
 			throw new IllegalStateException("PatientContactMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("PatientContactMapper.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");

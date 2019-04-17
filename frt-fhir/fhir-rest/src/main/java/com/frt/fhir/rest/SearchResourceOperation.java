@@ -10,6 +10,11 @@
  */
 package com.frt.fhir.rest;
 
+/**
+ * SearchResourceOperation class
+ * 
+ * @author cqye
+ */
 public class SearchResourceOperation {
 
 	public SearchResourceOperation() {

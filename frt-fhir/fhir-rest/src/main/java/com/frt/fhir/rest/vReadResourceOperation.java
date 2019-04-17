@@ -12,7 +12,6 @@ package com.frt.fhir.rest;
 
 import java.util.List;
 import java.util.Optional;
-
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -25,11 +24,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
-
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import com.frt.dr.model.base.Patient;
 import com.frt.dr.service.query.QueryOption;
 import com.frt.fhir.model.BundleBuilder;
@@ -50,7 +47,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 @Path(ResourcePath.BASE_PATH)
 @PermitAll
 public class vReadResourceOperation extends ResourceOperation {
-	
 	private static Logger logger = Logger.getLog(vReadResourceOperation.class.getName());
 	private static Localization localizer = Localization.getInstance("com.frt.fhir");
 		
@@ -67,7 +63,7 @@ public class vReadResourceOperation extends ResourceOperation {
 	
 	/**
 	 * Retrieve the resource version by its logical Id and version id
-	 * GET [base]/frt-fhir-rest/API/[type]/[id]/_history/[vid]{?_format=[mime-type]}
+	 * GET [base]/frt-fhir-rest/1.0/[type]/[id]/_history/[vid]{?_format=[mime-type]}
 	 * @param type Resource type, e.g., Patient
 	 * @param id Resource logical id, e.g., 1356
 	 * @param vid Resource version id, e.g., 1,3,5,6
@@ -81,22 +77,26 @@ public class vReadResourceOperation extends ResourceOperation {
 	@GET
 	@Path(ResourcePath.TYPE_PATH + ResourcePath.ID_PATH + ResourcePath.HISTORY_PATH + ResourcePath.VID_PATH)
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
-	@Operation(summary = "Retrieve Patient Version", description= "Retrieve the resource version by its logical Id and version id",
-    tags = {ResourceOperation.READ},
-    responses = {
-            @ApiResponse(description = "FHIR DomainResource: Bundle of resource versions by its logical Id and version id",
-                    content = @Content(mediaType = "application/fhir+json")),
-            @ApiResponse(responseCode = "200", description = "Resource versions retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "404", description = "Not found - Unknown resource"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-            })
-	public <R extends DomainResource> Response read(
-			@Parameter(description = "FHIR Resource Type, the type of the resource to be read, e.g. Patient", required = true) @PathParam("type") final String type, 
-			@Parameter(description = "FHIR Resource Id, it is the logical ID of the resource, e.g. Patient MRN", required = true) @PathParam("id") final String id,
-			@Parameter(description = "FHIR Resource Version Id, it is version id the resource, e.g. 1, 3, 5, 6", required = true) @PathParam("vid") final String vid,						 						    
-			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource bundle", required = false) @QueryParam("_format") @DefaultValue("json") final String _format) 
-	{
+	@Operation(summary = "Retrieve Patient Version", 
+			   description= "Retrieve the resource version by its logical Id and version id",
+			   tags = {ResourceOperation.READ},
+			   responses = {
+				            @ApiResponse(description = "FHIR DomainResource: Bundle of resource versions by its logical Id and version id",
+				                         content = @Content(mediaType = "application/fhir+json")),
+				            @ApiResponse(responseCode = "200", description = "Resource versions retrieved successfully"),
+				            @ApiResponse(responseCode = "400", description = "Bad request"),
+				            @ApiResponse(responseCode = "404", description = "Not found - Unknown resource"),
+				            @ApiResponse(responseCode = "500", description = "Internal server error")
+            				}
+			)
+	public <R extends DomainResource> Response read(@Parameter(description = "FHIR Resource Type, the type of the resource to be read, e.g. Patient", required = true) 
+													@PathParam("type") final String type, 
+													@Parameter(description = "FHIR Resource Id, it is the logical ID of the resource, e.g. Patient MRN", required = true) 
+													@PathParam("id") final String id,
+													@Parameter(description = "FHIR Resource Version Id, it is version id the resource, e.g. 1, 3, 5, 6", required = true) 
+													@PathParam("vid") final String vid,						 						    
+													@Parameter(description = "FHIR Resource format, indicate the format of the returned resource bundle", required = false) 
+													@QueryParam("_format") @DefaultValue("json") final String _format) {
 		
 		logger.info(localizer.x("FHR_I007: vReadResourceOperation retrieves the resource {0} by its id {1} and version # {2}", type, id, vid));										
 		

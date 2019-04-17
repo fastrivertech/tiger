@@ -63,7 +63,7 @@
 	</dependency>
 	<dependency>
 	  <groupId>ca.uhn.hapi.fhir</groupId>
-       <artifactId>hapi-fhir-structures-dstu3</artifactId>
+       <artifactId>hapi-fhir-structures-r4</artifactId>
 	</dependency>
 	<!-- javaee -->
 	<dependency>

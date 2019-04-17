@@ -48,7 +48,7 @@ public class PatientAnimalMapper extends BaseMapper {
 		}
 
 		com.frt.dr.model.base.PatientAnimal frt = null;
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.BackboneElement")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.BackboneElement")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientAnimal")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_ANIMAL);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
@@ -56,7 +56,7 @@ public class PatientAnimalMapper extends BaseMapper {
 			frt.setBreed(root.getAsJsonObject("breed")!=null?root.getAsJsonObject("breed").toString():null);
 			frt.setGenderStatus(root.getAsJsonObject("genderstatus")!=null?root.getAsJsonObject("genderstatus").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientAnimal")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.BackboneElement")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.BackboneElement")) {
 			throw new IllegalStateException("PatientAnimalMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("PatientAnimalMapper.map() from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");

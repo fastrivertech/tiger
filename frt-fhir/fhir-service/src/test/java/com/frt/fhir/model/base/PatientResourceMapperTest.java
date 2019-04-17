@@ -1,9 +1,9 @@
 package com.frt.fhir.model.base;
 
-import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.Enumerations.AdministrativeGender;
-import org.hl7.fhir.dstu3.model.HumanName;
-import org.hl7.fhir.dstu3.model.HumanName.NameUse;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.Enumerations.AdministrativeGender;
+import org.hl7.fhir.r4.model.HumanName;
+import org.hl7.fhir.r4.model.HumanName.NameUse;
 import org.junit.Test;
 import com.frt.fhir.model.ResourceDictionary;
 import com.frt.fhir.model.map.ResourceMapperFactory;

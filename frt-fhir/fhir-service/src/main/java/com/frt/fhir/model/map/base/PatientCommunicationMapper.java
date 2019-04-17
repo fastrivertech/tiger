@@ -48,14 +48,14 @@ public class PatientCommunicationMapper extends BaseMapper {
 		}
 
 		com.frt.dr.model.base.PatientCommunication frt = null;
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.BackboneElement")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.BackboneElement")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientCommunication")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_COMMUNICATION);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			frt.setPreferred(root.get("preferred")!=null?root.get("preferred").getAsBoolean():null);
 			frt.setLanguage(root.getAsJsonObject("language")!=null?root.getAsJsonObject("language").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientCommunication")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.BackboneElement")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.BackboneElement")) {
 			throw new IllegalStateException("PatientCommunicationMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("PatientCommunicationMapper.map() from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");

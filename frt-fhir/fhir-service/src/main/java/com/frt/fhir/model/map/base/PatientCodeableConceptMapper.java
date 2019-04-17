@@ -49,14 +49,14 @@ public class PatientCodeableConceptMapper extends BaseMapper {
 
 		com.frt.dr.model.base.PatientCodeableConcept frt = null;
 
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.CodeableConcept")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.CodeableConcept")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientCodeableConcept")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_CODEABLECONCEPT);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
 			frt.setCoding(root.get("coding")!=null?root.get("coding").toString():null);
 			frt.setTxt(root.get("text")!=null?root.get("text").getAsString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientCodeableConcept")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.CodeableConcept")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.CodeableConcept")) {
 			throw new IllegalStateException("PatientCodeableConceptMapper.map() called source=" + sourceClz.getCanonicalName()
 					+ ", target=" + targetClz.getCanonicalName());
 		} else {

@@ -18,10 +18,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.ResourceType;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.ResourceType;
 import com.frt.fhir.service.FhirService;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.JsonParser;
@@ -40,7 +40,7 @@ public class FhirLoad {
 		this.sourceDir = sourceDir;
 		this.limit = limit;
 		this.fhirService = new FhirService();
-		FhirContext context = FhirContext.forDstu3();
+		FhirContext context = FhirContext.forR4();
 		this.jsonParser=(ca.uhn.fhir.parser.JsonParser)context.newJsonParser();
 		
 	}
@@ -101,9 +101,9 @@ public class FhirLoad {
 			}
 			try {
 				fr = new FileReader(f);
-				org.hl7.fhir.dstu3.model.Bundle bundle = this.jsonParser.doParseResource(org.hl7.fhir.dstu3.model.Bundle.class, fr);
+				org.hl7.fhir.r4.model.Bundle bundle = this.jsonParser.doParseResource(org.hl7.fhir.r4.model.Bundle.class, fr);
 				List<Patient> pts = new ArrayList<Patient>();
-				for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry: bundle.getEntry()) {
+				for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry: bundle.getEntry()) {
 					if (entry.getResource().getResourceType()==ResourceType.Patient) {
 						pts.add((Patient)entry.getResource());
 						this.fhirService.create("Patient", (DomainResource)entry.getResource());

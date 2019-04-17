@@ -18,11 +18,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
-import org.hl7.fhir.dstu3.model.BooleanType;
-import org.hl7.fhir.dstu3.model.DateTimeType;
-import org.hl7.fhir.dstu3.model.DateType;
-import org.hl7.fhir.dstu3.model.IntegerType;
-import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.r4.model.BooleanType;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.DateType;
+import org.hl7.fhir.r4.model.IntegerType;
+import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.exceptions.FHIRException;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Resource;
@@ -81,14 +81,14 @@ public class PatientResourceMapper extends BaseMapper {
 	@Override
 	public Object map(Object source) throws MapperException {
 		
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Patient") && 
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.Patient") && 
 			targetClz.getName().equals("com.frt.dr.model.base.Patient")) {
 
-			org.hl7.fhir.dstu3.model.Patient hapiPatient = (org.hl7.fhir.dstu3.model.Patient) source;
+			org.hl7.fhir.r4.model.Patient hapiPatient = (org.hl7.fhir.r4.model.Patient) source;
 			return map(hapiPatient);
 			
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.Patient") && 
-				   targetClz.getName().equals("org.hl7.fhir.dstu3.model.Patient")) {					
+				   targetClz.getName().equals("org.hl7.fhir.r4.model.Patient")) {					
 			
 			com.frt.dr.model.base.Patient frtPatient = (com.frt.dr.model.base.Patient) source;
 			return map(frtPatient);
@@ -100,7 +100,7 @@ public class PatientResourceMapper extends BaseMapper {
 		
 	}
 
-	private Object map(org.hl7.fhir.dstu3.model.Patient hapiPatient) 
+	private Object map(org.hl7.fhir.r4.model.Patient hapiPatient) 
 		throws MapperException {
 		
 		com.frt.dr.model.base.Patient frtPatient = ResourceDictionary.getResourceInstance(PATIENT);
@@ -109,7 +109,7 @@ public class PatientResourceMapper extends BaseMapper {
 		frtPatient.setId(hapiPatient.getId());
 		// patient.domainresource.extension
 		if (hapiPatient.hasExtension()) {
-			List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getExtension();
+			List<org.hl7.fhir.r4.model.Extension> extensions = hapiPatient.getExtension();
 			addExtensions(frtPatient, extensions, "patient");
 		}
 		//ToDo: serializing hapi object to json and deserializeing json to frt object is a workaround
@@ -123,7 +123,7 @@ public class PatientResourceMapper extends BaseMapper {
 		}
 		if (hapiPatient.hasIdElement() &&
 			hapiPatient.getIdElement().hasExtension()) {
-			List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getIdElement().getExtension();
+			List<org.hl7.fhir.r4.model.Extension> extensions = hapiPatient.getIdElement().getExtension();
 			addExtensions(frtPatient, extensions, "patient.id");				
 		}
 
@@ -142,7 +142,7 @@ public class PatientResourceMapper extends BaseMapper {
 		}
 		if (hapiPatient.hasActiveElement() &&
 			hapiPatient.getActiveElement().hasExtension()) {
-			List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getActiveElement().getExtension();
+			List<org.hl7.fhir.r4.model.Extension> extensions = hapiPatient.getActiveElement().getExtension();
 			addExtensions(frtPatient, extensions, "patient.active");				
 		}
 						
@@ -156,7 +156,7 @@ public class PatientResourceMapper extends BaseMapper {
 		frtPatient.setGender(root.get("gender") != null ? root.get("gender").getAsString() : null);
 		if (hapiPatient.hasGenderElement() &&
 			hapiPatient.getGenderElement().hasExtension()) {
-			List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getGenderElement().getExtension();
+			List<org.hl7.fhir.r4.model.Extension> extensions = hapiPatient.getGenderElement().getExtension();
 			addExtensions(frtPatient, extensions, "patient.gender");				
 		}
 		
@@ -164,7 +164,7 @@ public class PatientResourceMapper extends BaseMapper {
 		frtPatient.setBirthDate(root.get("birthDate") != null ? Date.valueOf(root.get("birthDate").getAsString()) : null);
 		if (hapiPatient.hasBirthDateElement() &&
 			hapiPatient.getBirthDateElement().hasExtension()) {
-			List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getBirthDateElement().getExtension();
+			List<org.hl7.fhir.r4.model.Extension> extensions = hapiPatient.getBirthDateElement().getExtension();
 			addExtensions(frtPatient, extensions, "patient.birthDate");				
 		}
 		
@@ -173,7 +173,7 @@ public class PatientResourceMapper extends BaseMapper {
 		try {
 			if (hapiPatient.hasDeceasedBooleanType() &&
 				hapiPatient.getDeceasedBooleanType().hasExtension()) {
-				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getDeceasedBooleanType().getExtension();
+				List<org.hl7.fhir.r4.model.Extension> extensions = hapiPatient.getDeceasedBooleanType().getExtension();
 				addExtensions(frtPatient, extensions, "patient.deceasedBoolean");				
 			}
 		} catch (FHIRException ignore) {								
@@ -193,7 +193,7 @@ public class PatientResourceMapper extends BaseMapper {
 		try {
 			if (hapiPatient.hasDeceasedDateTimeType() &&
 				hapiPatient.getDeceasedDateTimeType().hasExtension()) {
-				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getDeceasedDateTimeType().getExtension();
+				List<org.hl7.fhir.r4.model.Extension> extensions = hapiPatient.getDeceasedDateTimeType().getExtension();
 				addExtensions(frtPatient, extensions, "patient.deceasedDateTime");				
 			}
 		} catch (FHIRException ignore) {								
@@ -210,7 +210,7 @@ public class PatientResourceMapper extends BaseMapper {
 		try {
 			if (hapiPatient.hasMultipleBirthBooleanType() &&
 				hapiPatient.getMultipleBirthBooleanType().hasExtension()) {
-				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getMultipleBirthBooleanType().getExtension();
+				List<org.hl7.fhir.r4.model.Extension> extensions = hapiPatient.getMultipleBirthBooleanType().getExtension();
 				addExtensions(frtPatient, extensions, "patient.multipleBirthBoolean");				
 			}
 		} catch (FHIRException ignore) {				
@@ -221,7 +221,7 @@ public class PatientResourceMapper extends BaseMapper {
 		try {
 			if (hapiPatient.hasMultipleBirthIntegerType() && 
 				hapiPatient.getMultipleBirthIntegerType().hasExtension()) {
-				List<org.hl7.fhir.dstu3.model.Extension> extensions = hapiPatient.getMultipleBirthIntegerType().getExtension();
+				List<org.hl7.fhir.r4.model.Extension> extensions = hapiPatient.getMultipleBirthIntegerType().getExtension();
 				addExtensions(frtPatient, extensions, "patient.multipleBirthInteger");				
 			}
 		} catch (FHIRException ignore) {				
@@ -255,7 +255,7 @@ public class PatientResourceMapper extends BaseMapper {
 		throws MapperException {
 		
 		String hapiPatientInJson = BaseMapper.resourceToJson(frtPatient);
-		org.hl7.fhir.dstu3.model.Patient hapiPatient = (org.hl7.fhir.dstu3.model.Patient) this.parser
+		org.hl7.fhir.r4.model.Patient hapiPatient = (org.hl7.fhir.r4.model.Patient) this.parser
 													  .parseResource(hapiPatientInJson);
 		
 		List<PatientExtension> patientExtensions = frtPatient.getExtensions();

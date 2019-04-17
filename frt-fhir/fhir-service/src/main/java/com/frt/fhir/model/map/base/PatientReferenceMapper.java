@@ -49,7 +49,7 @@ public class PatientReferenceMapper extends BaseMapper {
 					+ source.getClass().getCanonicalName());
 		}
 		com.frt.dr.model.base.PatientReference frt = null;
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Reference")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.Reference")
 				&&targetClz.getName().equals("com.frt.dr.model.base.PatientReference")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_REFERENCE);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
@@ -59,7 +59,7 @@ public class PatientReferenceMapper extends BaseMapper {
 					root.getAsJsonObject("identifier") != null ? root.getAsJsonObject("identifier").toString()
 							: null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientReference")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Reference")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.Reference")) {
 			throw new IllegalStateException("PatientReference.map() called source=" + sourceClz.getCanonicalName()
 					+ ", target=" + targetClz.getCanonicalName());
 		} else {

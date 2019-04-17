@@ -48,7 +48,7 @@ public class PatientAddressMapper extends BaseMapper {
 		}
 
 		com.frt.dr.model.base.PatientAddress frt = null;
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Address")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.Address")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientAddress")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_ADDRESS);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
@@ -64,7 +64,7 @@ public class PatientAddressMapper extends BaseMapper {
 			frt.setTxt(root.get("txt")!=null?root.get("txt").getAsString():null);
 			frt.setPeriod(root.getAsJsonObject("period")!=null?root.getAsJsonObject("period").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientAddress")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Address")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.Address")) {
 			throw new IllegalStateException("PatientAddressMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("PatientAddressMapper.map() from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");

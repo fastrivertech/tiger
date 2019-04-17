@@ -17,11 +17,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Set;
-import org.hl7.fhir.dstu3.model.BooleanType;
-import org.hl7.fhir.dstu3.model.DateTimeType;
-import org.hl7.fhir.dstu3.model.DateType;
-import org.hl7.fhir.dstu3.model.IntegerType;
-import org.hl7.fhir.dstu3.model.StringType;
+import org.hl7.fhir.r4.model.BooleanType;
+import org.hl7.fhir.r4.model.DateTimeType;
+import org.hl7.fhir.r4.model.DateType;
+import org.hl7.fhir.r4.model.IntegerType;
+import org.hl7.fhir.r4.model.StringType;
 import org.hl7.fhir.exceptions.FHIRException;
 
 import com.frt.dr.model.DomainResource;
@@ -89,14 +89,14 @@ public class DomainResourceMapper extends BaseMapper {
 					+ source.getClass().getCanonicalName());
 		}
 		JsonObject root = ((JsonElement) source).getAsJsonObject();
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.DomainResource")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.DomainResource")
 				&& targetClz.getName().equals("com.frt.dr.model.DomainResource")) {
 			com.frt.dr.model.DomainResource frt = null;
 			if (target instanceof com.frt.dr.model.DomainResource) {
 				frt = (com.frt.dr.model.DomainResource) target;
 			} else {
 				throw new IllegalArgumentException(
-						"Expect instance of org.hl7.fhir.dstu3.model.DomainResource as 'source' of mapping, actual class:"
+						"Expect instance of org.hl7.fhir.r4.model.DomainResource as 'source' of mapping, actual class:"
 								+ source.getClass().getCanonicalName());
 			}
 
@@ -114,7 +114,7 @@ public class DomainResourceMapper extends BaseMapper {
 
 			return (Object) frt;
 		} else if (sourceClz.getName().equals("com.frt.dr.model.DomainResource")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.DomainResource")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.DomainResource")) {
 			throw new IllegalStateException("DomainResourceMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("DomainResourceMapper.map(source) from " + sourceClz.getName() + " to "

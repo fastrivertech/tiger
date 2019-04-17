@@ -65,7 +65,7 @@ public class ResourceMapper extends BaseMapper {
 		
 		JsonObject root = ((JsonElement) source).getAsJsonObject();
 		
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Resource")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.Resource")
 				&& targetClz.getName().equals("com.frt.dr.model.Resource")) {
 			
 			com.frt.dr.model.Resource frt = null;
@@ -78,7 +78,7 @@ public class ResourceMapper extends BaseMapper {
 				frt = (com.frt.dr.model.Resource) target;
 			} else {
 				throw new IllegalArgumentException(
-						"Expect instance of org.hl7.fhir.dstu3.model.Resource as 'target' of mapping, actual class:"
+						"Expect instance of org.hl7.fhir.r4.model.Resource as 'target' of mapping, actual class:"
 								+ target.getClass().getCanonicalName());
 			}
 
@@ -88,7 +88,7 @@ public class ResourceMapper extends BaseMapper {
 
 			return (Object) frt;
 		} else if (sourceClz.getName().equals("com.frt.dr.model.Resource")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Resource")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.Resource")) {
 			throw new IllegalStateException("ResourceMapper.map(source, target) called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("ResourceMapper.map(source, target) from " + sourceClz.getName() + " to "

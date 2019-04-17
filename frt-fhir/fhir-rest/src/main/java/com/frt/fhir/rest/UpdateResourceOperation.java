@@ -23,8 +23,8 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import com.frt.dr.cache.CacheService;
 import com.frt.dr.cache.NamedCache;
 import com.frt.dr.model.base.Patient;
@@ -88,23 +88,26 @@ public class UpdateResourceOperation extends ResourceOperation {
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})
 	@Operation(summary = "Update an existing Patient",
-    tags = {ResourceOperation.UPDATE},
-    responses = {
-            @ApiResponse(
-               content = @Content(mediaType = "application/fhir+json",
-								  schema = @Schema(implementation = Patient.class))),
-            @ApiResponse(responseCode = "200", description = "Resource updated successfully"),
-            @ApiResponse(responseCode = "201", description = "Resource created successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
-            @ApiResponse(responseCode = "404", description = "Not found - Resource type not supported, or not a FHIR end-point"),
-            @ApiResponse(responseCode = "500", description = "Server internal error") 
-		}
-	)
-	public <R extends DomainResource> Response update(
-			@Parameter(description = "FHIR Resource Type, the type of the resource to be updated, e.g. Patient", required = true) @PathParam("type") final String type,
-			@Parameter(description = "FHIR Resource Id, it is the logical ID of the resource, e.g. Patient MRN", required = false) @PathParam("id") final String id,
-			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format, 
-			@Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) final String body) {		
+    		   tags = {ResourceOperation.UPDATE},
+    		   responses = {
+				    		@ApiResponse(content = @Content(mediaType = "application/fhir+json",
+										 schema = @Schema(implementation = Patient.class))),
+				            @ApiResponse(responseCode = "200", description = "Resource updated successfully"),
+				            @ApiResponse(responseCode = "201", description = "Resource created successfully"),
+				            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
+				            @ApiResponse(responseCode = "404", description = "Not found - Resource type not supported, or not a FHIR end-point"),
+				            @ApiResponse(responseCode = "500", description = "Server internal error") 
+							}
+			  )
+	public <R extends DomainResource> Response update(@Parameter(description = "FHIR Resource Type, the type of the resource to be updated, e.g. Patient", required = true) 
+													  @PathParam("type") final String type,
+													  @Parameter(description = "FHIR Resource Id, it is the logical ID of the resource, e.g. Patient MRN", required = false) 
+													  @PathParam("id") final String id,
+													  @Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) 
+													  @QueryParam("_format") @DefaultValue("json") final String _format, 
+													  @Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) 
+													  final String body) {
+		
 		logger.info(localizer.x("FHR_I006: UpdateResourceOperatio updates the resource {0} by its id {1}", type, id));										
 		CacheService.getInstance().createCache();
 		try {

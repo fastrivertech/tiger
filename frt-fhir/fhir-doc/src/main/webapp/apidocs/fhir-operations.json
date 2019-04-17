@@ -2,9 +2,9 @@
   "apiVersion" : "3.0",
   "swaggerVersion" : "1.2",
   "basePath" : "/frt-fhir-rest",
-  "resourcePath" : "/API",
+  "resourcePath" : "/1.0",
   "apis" : [ {
-    "path" : "/API/Patient/$link",
+    "path" : "/1.0/Patient/$link",
     "operations" : [ {
       "method" : "POST",
       "nickname" : "link",
@@ -43,7 +43,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/Patient/$match",
+    "path" : "/1.0/Patient/$match",
     "operations" : [ {
       "method" : "POST",
       "nickname" : "match",
@@ -82,7 +82,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/Patient/$merge",
+    "path" : "/1.0/Patient/$merge",
     "operations" : [ {
       "method" : "POST",
       "nickname" : "merge",
@@ -121,7 +121,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/Patient/$potential",
+    "path" : "/1.0/Patient/$potential",
     "operations" : [ {
       "method" : "GET",
       "nickname" : "search_pd",
@@ -188,7 +188,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/Patient/$search",
+    "path" : "/1.0/Patient/$search",
     "operations" : [ {
       "method" : "POST",
       "nickname" : "search",
@@ -224,7 +224,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/Patient/$unlink",
+    "path" : "/1.0/Patient/$unlink",
     "operations" : [ {
       "method" : "POST",
       "nickname" : "unlink",
@@ -263,7 +263,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/Patient/$unmerge",
+    "path" : "/1.0/Patient/$unmerge",
     "operations" : [ {
       "method" : "POST",
       "nickname" : "unmerge",
@@ -302,7 +302,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/metadata",
+    "path" : "/1.0/metadata",
     "operations" : [ {
       "method" : "GET",
       "nickname" : "read",
@@ -320,7 +320,7 @@
         "paramType" : "query",
         "name" : "_format"
       } ],
-      "summary" : "Retrieve the FHIR server capability statement resource\n GET [base]/frt-fhir-rest/API/metadata{?mode=[mode]} {&_format=[mime-type]}",
+      "summary" : "Retrieve the FHIR server capability statement resource\n GET [base]/frt-fhir-rest/1.0/metadata{?mode=[mode]} {&_format=[mime-type]}",
       "responseMessages" : [ {
         "code" : 200,
         "message" : "Request succeeded"
@@ -331,7 +331,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/{resource}/${operation}",
+    "path" : "/1.0/{resource}/${operation}",
     "operations" : [ {
       "method" : "POST",
       "nickname" : "execute",
@@ -379,7 +379,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/{type}",
+    "path" : "/1.0/{type}",
     "operations" : [ {
       "method" : "GET",
       "nickname" : "read",
@@ -409,7 +409,7 @@
         "paramType" : "query",
         "name" : "_summary"
       } ],
-      "summary" : "Get FHIR Resource by its Id and search string \n GET [base]/frt-fhir-rest/API/[type]{?[parameters]{&_format=[mime-type]}} \n GET [base]/frt-fhir-rest/API/Patient?_id=[id] or [base]/frt-fhir-rest/API/Patient/given=eve",
+      "summary" : "Get FHIR Resource by its Id and search string \n GET [base]/frt-fhir-rest/1.0/[type]{?[parameters]{&_format=[mime-type]}} \n GET [base]/frt-fhir-rest/1.0/Patient?_id=[id] or [base]/frt-fhir-rest/1.0/Patient/given=eve",
       "responseMessages" : [ {
         "code" : 200,
         "message" : "Retrieved Success"
@@ -441,7 +441,7 @@
         "name" : "body",
         "required" : true
       } ],
-      "summary" : "Create a FHIR Resource\n POST [base]/frt-fhir-rest/API/[type] {?_format=[mime-type]}",
+      "summary" : "Create a FHIR Resource\n POST [base]/frt-fhir-rest/1.0/[type] {?_format=[mime-type]}",
       "responseMessages" : [ {
         "code" : 201,
         "message" : "Created success"
@@ -459,7 +459,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/{type}/{id}",
+    "path" : "/1.0/{type}/{id}",
     "operations" : [ {
       "method" : "PUT",
       "nickname" : "update",
@@ -537,7 +537,7 @@
         "paramType" : "query",
         "name" : "_summary"
       } ],
-      "summary" : "Get FHIR Resource by its Id\n GET [base]/frt-fhir-rest/API/[type]/[id] {?_format=[mime-type]} {&_format=[mime-type]}",
+      "summary" : "Get FHIR Resource by its Id\n GET [base]/frt-fhir-rest/1.0/[type]/[id] {?_format=[mime-type]} {&_format=[mime-type]}",
       "responseMessages" : [ {
         "code" : 200,
         "message" : "Retrieved Success"
@@ -575,7 +575,7 @@
         "name" : "id",
         "required" : true
       } ],
-      "summary" : "Delete a resource by its id\n DELETE [base]/frt-fhir-rest/API/[type]/[id]",
+      "summary" : "Delete a resource by its id\n DELETE [base]/frt-fhir-rest/1.0/[type]/[id]",
       "responseMessages" : [ {
         "code" : 200,
         "message" : "OK"
@@ -592,7 +592,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/{type}/{id}/_history",
+    "path" : "/1.0/{type}/{id}/_history",
     "operations" : [ {
       "method" : "GET",
       "nickname" : "history",
@@ -616,7 +616,7 @@
         "paramType" : "query",
         "name" : "_format"
       } ],
-      "summary" : "Retrieve the history of a resource by its logical Id\n GET [base]/frt-fhir-rest/API/[type]/[id]/_history{?_format=[mime-type]}",
+      "summary" : "Retrieve the history of a resource by its logical Id\n GET [base]/frt-fhir-rest/1.0/[type]/[id]/_history{?_format=[mime-type]}",
       "responseMessages" : [ {
         "code" : 200,
         "message" : "OK"
@@ -633,7 +633,7 @@
       "produces" : [ "application/fhir+json", "application/json" ]
     } ]
   }, {
-    "path" : "/API/{type}/{id}/_history/{vid}",
+    "path" : "/1.0/{type}/{id}/_history/{vid}",
     "operations" : [ {
       "method" : "GET",
       "nickname" : "read",
@@ -663,7 +663,7 @@
         "paramType" : "query",
         "name" : "_format"
       } ],
-      "summary" : "Retrieve the resource version by its logical Id and version id\n GET [base]/frt-fhir-rest/API/[type]/[id]/_history/[vid]{?_format=[mime-type]}",
+      "summary" : "Retrieve the resource version by its logical Id and version id\n GET [base]/frt-fhir-rest/1.0/[type]/[id]/_history/[vid]{?_format=[mime-type]}",
       "responseMessages" : [ {
         "code" : 200,
         "message" : "Success"

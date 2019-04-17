@@ -20,13 +20,13 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.JsonParser;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.ResourceType;
-import org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent;
-import org.hl7.fhir.dstu3.model.Reference;
-import org.hl7.fhir.dstu3.model.Organization;
-import org.hl7.fhir.dstu3.model.Practitioner;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.ResourceType;
+import org.hl7.fhir.r4.model.Bundle.BundleEntryComponent;
+import org.hl7.fhir.r4.model.Reference;
+import org.hl7.fhir.r4.model.Organization;
+import org.hl7.fhir.r4.model.Practitioner;
 
 public class FhirBundleExtract {
 	private static Random random = new Random();
@@ -56,7 +56,7 @@ public class FhirBundleExtract {
 	public void execute() 
 		throws FhirLoadException {
 		
-		FhirContext context = FhirContext.forDstu3();
+		FhirContext context = FhirContext.forR4();
 		jsonParser=(JsonParser)context.newJsonParser();
 		
 		String sourceDir = this.getSrcDir() != null ?

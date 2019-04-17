@@ -25,10 +25,10 @@ import javax.ws.rs.client.Invocation;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.hl7.fhir.dstu3.model.Bundle;
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.Patient;
-import org.hl7.fhir.dstu3.model.ResourceType;
+import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.Patient;
+import org.hl7.fhir.r4.model.ResourceType;
 import com.frt.fhir.service.FhirService;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.JsonParser;
@@ -47,7 +47,7 @@ public class FhirRestLoad {
 	public FhirRestLoad(String target, File sourceDir, int limit) {
 		this.sourceDir = sourceDir;
 		this.limit = limit;
-		FhirContext context = FhirContext.forDstu3();
+		FhirContext context = FhirContext.forR4();
 		this.jsonParser=(ca.uhn.fhir.parser.JsonParser)context.newJsonParser();
 		this.target = target;
 	}
@@ -114,9 +114,9 @@ public class FhirRestLoad {
 			}
 			try {
 				fr = new FileReader(f);
-				org.hl7.fhir.dstu3.model.Bundle bundle = this.jsonParser.doParseResource(org.hl7.fhir.dstu3.model.Bundle.class, fr);
+				org.hl7.fhir.r4.model.Bundle bundle = this.jsonParser.doParseResource(org.hl7.fhir.r4.model.Bundle.class, fr);
 				List<Patient> pts = new ArrayList<Patient>();
-				for (org.hl7.fhir.dstu3.model.Bundle.BundleEntryComponent entry: bundle.getEntry()) {
+				for (org.hl7.fhir.r4.model.Bundle.BundleEntryComponent entry: bundle.getEntry()) {
 					if (entry.getResource().getResourceType()==ResourceType.Patient) {
 						pts.add((Patient)entry.getResource());
 						Response response = invocationBuilder.post(Entity.json(this.jsonParser.encodeResourceToString((Patient)entry.getResource())));

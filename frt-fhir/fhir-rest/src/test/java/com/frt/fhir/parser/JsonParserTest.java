@@ -16,8 +16,8 @@ import java.nio.file.Paths;
 import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 import static org.junit.Assert.fail;
-import org.hl7.fhir.dstu3.model.DomainResource;
-import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.Patient;
 
 /**
  * JsonParser class

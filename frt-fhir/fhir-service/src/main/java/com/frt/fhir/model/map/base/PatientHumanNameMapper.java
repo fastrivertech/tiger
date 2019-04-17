@@ -49,7 +49,7 @@ public class PatientHumanNameMapper extends BaseMapper {
 
 		com.frt.dr.model.base.PatientHumanName frt = null;
 
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.HumanName")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.HumanName")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientHumanName")) {
 
 			frt = ResourceDictionary.getComplexInstance(PATIENT_HUMANNAME);
@@ -63,7 +63,7 @@ public class PatientHumanNameMapper extends BaseMapper {
 			frt.setSuffix(root.get("suffix")!=null?root.get("suffix").toString():null);
 			frt.setPeriod(root.get("period")!=null?root.get("period").toString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientHumanName")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.HumanName")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.HumanName")) {
 			throw new IllegalStateException("PatientHumanNameMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("PatientHumanNameMapper.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");

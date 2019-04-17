@@ -27,7 +27,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang3.StringUtils;
-import org.hl7.fhir.dstu3.model.Patient;
+import org.hl7.fhir.r4.model.Patient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,7 +62,7 @@ public class FHIRResourceClientTest {
 	public void setUp() throws Exception {
 		setUpOk = true;
 		
-		FhirContext context = FhirContext.forDstu3();
+		FhirContext context = FhirContext.forR4();
 		parser = (ca.uhn.fhir.parser.JsonParser)context.newJsonParser();
 
 		webTarget = ClientBuilder.newClient().target(FHIR_RESOURCE_SERVICE_EP);

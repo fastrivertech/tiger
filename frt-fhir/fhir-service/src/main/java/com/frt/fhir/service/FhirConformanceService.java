@@ -15,7 +15,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import org.hl7.fhir.dstu3.model.CapabilityStatement;
+import org.hl7.fhir.r4.model.CapabilityStatement;
 import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.JsonParser;
 
@@ -43,7 +43,7 @@ public class FhirConformanceService {
 		throws FhirServiceException {
 		ClassLoader classLoader = this.getClass().getClassLoader();
 		try (InputStream is = classLoader.getResourceAsStream(CAPABILITY_STATEMENT_PATH)) {
-			FhirContext context = FhirContext.forDstu3();
+			FhirContext context = FhirContext.forR4();
 			JsonParser parser = (JsonParser)context.newJsonParser();
 			cs = parser.parseResource(CapabilityStatement.class, new InputStreamReader(is));
 		} catch (FileNotFoundException fnfex) {

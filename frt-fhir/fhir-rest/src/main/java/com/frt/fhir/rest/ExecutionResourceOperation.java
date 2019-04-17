@@ -22,7 +22,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.PathParam;
-import org.hl7.fhir.dstu3.model.OperationOutcome;
+import org.hl7.fhir.r4.model.OperationOutcome;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
@@ -62,20 +62,26 @@ public class ExecutionResourceOperation extends ResourceOperation {
 	@Path(ResourcePath.RESOURCE_PATH + ResourcePath.OPERATION_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
-	@Operation(summary = "Operations on any resource", description="Operations on any resource",
-    tags = {ResourceOperation.EXECUTE},
-    responses = {
-            @ApiResponse(
-               content = @Content(mediaType = "application/json")),
-            @ApiResponse(responseCode = "201", description = "OK, Operation completed successfully"),
-            @ApiResponse(responseCode = "400", description = "Bad request"),
-            @ApiResponse(responseCode = "422", description = "Not processable resource"),
-            @ApiResponse(responseCode = "500", description = "Server Internal Error") })
-	public Response execute(
-			@Parameter(description = "FHIR Resource Type, the type of target resource, e.g. Patient", required = true) @PathParam("resource") final String resource, 
-			@Parameter(description = "FHIR Resource Operation executed, the operation executed on the resource", required = true) @PathParam("operation") final String operation,
-			@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) @QueryParam("_format") @DefaultValue("json") final String _format,
-			@Parameter(description = "Operation Parameters: the parameters required to perform the operation.", required = false) final String body) {		
+	@Operation(summary = "Operations on any resource", 
+			   description="Operations on any resource",
+			   tags = {ResourceOperation.EXECUTE},
+			   responses = {
+				            @ApiResponse(content = @Content(mediaType = "application/json")),
+				            @ApiResponse(responseCode = "201", description = "OK, Operation completed successfully"),
+				            @ApiResponse(responseCode = "400", description = "Bad request"),
+				            @ApiResponse(responseCode = "422", description = "Not processable resource"),
+				            @ApiResponse(responseCode = "500", description = "Server Internal Error") 
+				            }
+			  )
+	public Response execute(@Parameter(description = "FHIR Resource Type, the type of target resource, e.g. Patient", required = true) 
+							@PathParam("resource") final String resource, 
+							@Parameter(description = "FHIR Resource Operation executed, the operation executed on the resource", required = true) 
+							@PathParam("operation") final String operation,
+							@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false) 
+							@QueryParam("_format") @DefaultValue("json") final String _format,
+							@Parameter(description = "Operation Parameters: the parameters required to perform the operation.", required = false) 
+							final String body) {		
+
 		logger.info(localizer.x("FHR_I008: ExecutionResourceOperation executes the POST command ${0} on resource {1}", operation, resource));												
 		String message = "Patient resource operation $" + operation + " not implemented yet"; 
 		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 

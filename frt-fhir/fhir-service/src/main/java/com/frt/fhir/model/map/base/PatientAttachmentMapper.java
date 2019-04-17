@@ -50,7 +50,7 @@ public class PatientAttachmentMapper extends BaseMapper {
 					+ source.getClass().getCanonicalName());
 		}
 		com.frt.dr.model.base.PatientAttachment frt = null;
-		if (sourceClz.getName().equals("org.hl7.fhir.dstu3.model.Attachment")
+		if (sourceClz.getName().equals("org.hl7.fhir.r4.model.Attachment")
 				&& targetClz.getName().equals("com.frt.dr.model.base.PatientAttachment")) {
 			frt = ResourceDictionary.getComplexInstance(PATIENT_ATTACHMENT);
 			JsonObject root = ((JsonElement) source).getAsJsonObject();
@@ -64,7 +64,7 @@ public class PatientAttachmentMapper extends BaseMapper {
 			frt.setData(root.get("data")!=null?root.get("data").getAsString():null);
 			frt.setHash(root.get("hash")!=null?root.get("hash").getAsString():null);
 		} else if (sourceClz.getName().equals("com.frt.dr.model.base.PatientAttachment")
-				&& targetClz.getName().equals("org.hl7.fhir.dstu3.model.Attachment")) {
+				&& targetClz.getName().equals("org.hl7.fhir.r4.model.Attachment")) {
 			throw new IllegalStateException("PatientAttachmentMapper.map() called source=" + sourceClz.getCanonicalName() + ", target=" + targetClz.getCanonicalName());
 		} else {
 			throw new MapperException("PatientAttachmentMapper.map(source) from " + sourceClz.getName() + " to " + targetClz.getName() + " Not Implemented Yet");

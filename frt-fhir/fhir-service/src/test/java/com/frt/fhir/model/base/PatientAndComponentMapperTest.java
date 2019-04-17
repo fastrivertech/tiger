@@ -29,7 +29,7 @@ public class PatientAndComponentMapperTest {
 	}
 	@Test
 	public void test() {
-		ca.uhn.fhir.context.FhirContext context = FhirContext.forDstu3();
+		ca.uhn.fhir.context.FhirContext context = FhirContext.forR4();
 		ca.uhn.fhir.parser.JsonParser parser = (ca.uhn.fhir.parser.JsonParser) context.newJsonParser();
 
 		ResourceMapperInterface mapper = ResourceDictionary.getMapper(ResourceMapperInterface.PATIENT);
@@ -46,7 +46,7 @@ public class PatientAndComponentMapperTest {
 			fail("File not found: " + f.getPath());
 		}
 
-		org.hl7.fhir.dstu3.model.Patient hapi = parser.doParseResource(org.hl7.fhir.dstu3.model.Patient.class, fr);
+		org.hl7.fhir.r4.model.Patient hapi = parser.doParseResource(org.hl7.fhir.r4.model.Patient.class, fr);
 		ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(ResourceMapperInterface.PATIENT);
 		Object target = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map(hapi);
 

@@ -16,14 +16,14 @@ import ca.uhn.fhir.context.FhirContext;
 import ca.uhn.fhir.parser.JsonParser;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import org.hl7.fhir.dstu3.model.Resource;
-import org.hl7.fhir.dstu3.model.Element;
+import org.hl7.fhir.r4.model.Resource;
+import org.hl7.fhir.r4.model.Element;
 
 public class ResourceParser {
 	private JsonParser delegate;
 	
 	public ResourceParser() {
-		FhirContext context = FhirContext.forDstu3();
+		FhirContext context = FhirContext.forR4();
 		delegate = (JsonParser)context.newJsonParser();		
 	}
 	

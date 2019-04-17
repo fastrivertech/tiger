@@ -11,7 +11,7 @@
 package com.frt.fhir.parser;
 
 import ca.uhn.fhir.context.FhirContext;
-import org.hl7.fhir.dstu3.model.Resource;
+import org.hl7.fhir.r4.model.Resource;
 import ca.uhn.fhir.parser.DataFormatException;
 
 /**
@@ -23,7 +23,7 @@ public class JsonParser implements Parser {
 	private ca.uhn.fhir.parser.JsonParser parser;
 	
 	public JsonParser() {		
-		FhirContext context = FhirContext.forDstu3();
+		FhirContext context = FhirContext.forR4();
 		parser = (ca.uhn.fhir.parser.JsonParser)context.newJsonParser();
 	}
 		
@@ -42,7 +42,7 @@ public class JsonParser implements Parser {
 		try {
 			resourceName = Character.toUpperCase(resourceName.charAt(0)) + 
 					       resourceName.substring(1).toLowerCase();
-			resourceName = "org.hl7.fhir.dstu3.model." + resourceName;
+			resourceName = "org.hl7.fhir.r4.model." + resourceName;
 			Class<R> resourceClz = (Class<R>)Class.forName(resourceName);
 			R resource = parser.parseResource(resourceClz, message);
 			return resource;

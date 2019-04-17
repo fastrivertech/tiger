@@ -55,20 +55,20 @@ public class ResourceDictionary {
 	static Hashtable<String, ResourcePair> resourcePairs = new Hashtable<String, ResourcePair>();
 	
 	static {
-		resourcePairs.put(ResourceMapperInterface.DOMAINRESOURCE, new ResourcePair(org.hl7.fhir.dstu3.model.DomainResource.class, com.frt.dr.model.DomainResource.class));
-		resourcePairs.put(ResourceMapperInterface.RESOURCE, new ResourcePair(org.hl7.fhir.dstu3.model.Resource.class, com.frt.dr.model.Resource.class));
-		resourcePairs.put(ResourceMapperInterface.PATIENT, new ResourcePair(org.hl7.fhir.dstu3.model.Patient.class, com.frt.dr.model.base.Patient.class));
-		resourcePairs.put(ResourceMapperInterface.PATIENT_HUMANNAME, new ResourcePair(org.hl7.fhir.dstu3.model.HumanName.class, com.frt.dr.model.base.PatientHumanName.class));		
-		resourcePairs.put(ResourceMapperInterface.PATIENT_IDENTIFIER, new ResourcePair(org.hl7.fhir.dstu3.model.Identifier.class, com.frt.dr.model.base.PatientIdentifier.class));		
-		resourcePairs.put(ResourceMapperInterface.PATIENT_ADDRESS, new ResourcePair(org.hl7.fhir.dstu3.model.Address.class, com.frt.dr.model.base.PatientAddress.class));		
-		resourcePairs.put(ResourceMapperInterface.PATIENT_REFERENCE, new ResourcePair(org.hl7.fhir.dstu3.model.Reference.class, com.frt.dr.model.base.PatientReference.class));		
-		resourcePairs.put(ResourceMapperInterface.PATIENT_CODEABLECONCEPT, new ResourcePair(org.hl7.fhir.dstu3.model.CodeableConcept.class, com.frt.dr.model.base.PatientCodeableConcept.class));		
-		resourcePairs.put(ResourceMapperInterface.PATIENT_ATTACHMENT, new ResourcePair(org.hl7.fhir.dstu3.model.Attachment.class, com.frt.dr.model.base.PatientAttachment.class));		
-		resourcePairs.put(ResourceMapperInterface.PATIENT_CONTACTPOINT, new ResourcePair(org.hl7.fhir.dstu3.model.ContactPoint.class, com.frt.dr.model.base.PatientContactPoint.class));		
-		resourcePairs.put(ResourceMapperInterface.PATIENT_CONTACT, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientContact.class));		
-		resourcePairs.put(ResourceMapperInterface.PATIENT_ANIMAL, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientAnimal.class));		
-		resourcePairs.put(ResourceMapperInterface.PATIENT_COMMUNICATION, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientCommunication.class));		
-		resourcePairs.put(ResourceMapperInterface.PATIENT_LINK, new ResourcePair(org.hl7.fhir.dstu3.model.BackboneElement.class, com.frt.dr.model.base.PatientLink.class));		
+		resourcePairs.put(ResourceMapperInterface.DOMAINRESOURCE, new ResourcePair(org.hl7.fhir.r4.model.DomainResource.class, com.frt.dr.model.DomainResource.class));
+		resourcePairs.put(ResourceMapperInterface.RESOURCE, new ResourcePair(org.hl7.fhir.r4.model.Resource.class, com.frt.dr.model.Resource.class));
+		resourcePairs.put(ResourceMapperInterface.PATIENT, new ResourcePair(org.hl7.fhir.r4.model.Patient.class, com.frt.dr.model.base.Patient.class));
+		resourcePairs.put(ResourceMapperInterface.PATIENT_HUMANNAME, new ResourcePair(org.hl7.fhir.r4.model.HumanName.class, com.frt.dr.model.base.PatientHumanName.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_IDENTIFIER, new ResourcePair(org.hl7.fhir.r4.model.Identifier.class, com.frt.dr.model.base.PatientIdentifier.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_ADDRESS, new ResourcePair(org.hl7.fhir.r4.model.Address.class, com.frt.dr.model.base.PatientAddress.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_REFERENCE, new ResourcePair(org.hl7.fhir.r4.model.Reference.class, com.frt.dr.model.base.PatientReference.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_CODEABLECONCEPT, new ResourcePair(org.hl7.fhir.r4.model.CodeableConcept.class, com.frt.dr.model.base.PatientCodeableConcept.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_ATTACHMENT, new ResourcePair(org.hl7.fhir.r4.model.Attachment.class, com.frt.dr.model.base.PatientAttachment.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_CONTACTPOINT, new ResourcePair(org.hl7.fhir.r4.model.ContactPoint.class, com.frt.dr.model.base.PatientContactPoint.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_CONTACT, new ResourcePair(org.hl7.fhir.r4.model.BackboneElement.class, com.frt.dr.model.base.PatientContact.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_ANIMAL, new ResourcePair(org.hl7.fhir.r4.model.BackboneElement.class, com.frt.dr.model.base.PatientAnimal.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_COMMUNICATION, new ResourcePair(org.hl7.fhir.r4.model.BackboneElement.class, com.frt.dr.model.base.PatientCommunication.class));		
+		resourcePairs.put(ResourceMapperInterface.PATIENT_LINK, new ResourcePair(org.hl7.fhir.r4.model.BackboneElement.class, com.frt.dr.model.base.PatientLink.class));		
 	}
 	
 	static Hashtable<String, Class> resources = new Hashtable<String, Class>();
