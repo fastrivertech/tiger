@@ -20,6 +20,41 @@
   "links": [],
   "panels": [
     {
+      "alert": {
+        "conditions": [
+          {
+            "evaluator": {
+              "params": [
+                1959
+              ],
+              "type": "gt"
+            },
+            "operator": {
+              "type": "and"
+            },
+            "query": {
+              "params": [
+                "A",
+                "5m",
+                "now"
+              ]
+            },
+            "reducer": {
+              "params": [],
+              "type": "avg"
+            },
+            "type": "query"
+          }
+        ],
+        "executionErrorState": "alerting",
+        "for": "5m",
+        "frequency": "1m",
+        "handler": 1,
+        "message": "patient influx stopped",
+        "name": "FHIR Patient Count By State in Time Series alert",
+        "noDataState": "no_data",
+        "notifications": []
+      },
       "aliasColors": {},
       "bars": true,
       "dashLength": 10,
@@ -80,7 +115,15 @@
           "where": []
         }
       ],
-      "thresholds": [],
+      "thresholds": [
+        {
+          "colorMode": "critical",
+          "fill": true,
+          "line": true,
+          "op": "gt",
+          "value": 1959
+        }
+      ],
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
@@ -143,7 +186,7 @@
       ],
       "datasource": "DEMO-MySQL",
       "description": "PATIENT TOTAL BY STATES & GENDER",
-      "fontColor": "#F2495C",
+      "fontColor": "#FFF899",
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
@@ -155,7 +198,7 @@
       "height": "300",
       "id": 4,
       "interval": null,
-      "labelOrientation": "45 degrees",
+      "labelOrientation": "horizontal",
       "labelSpace": 40,
       "legend": {
         "position": "On graph",
@@ -371,5 +414,5 @@
   "timezone": "",
   "title": "FHIR Patient By State ( FHIR Stream )",
   "uid": "3yl50L6iz",
-  "version": 22
+  "version": 25
 }

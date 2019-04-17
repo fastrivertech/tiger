@@ -40,19 +40,19 @@
       ],
       "datasource": "DEMO-MySQL",
       "description": "Dynamically computing from FHIR  message streams",
-      "fontColor": "#5794F2",
+      "fontColor": "#fff",
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
-        "h": 9,
-        "w": 15,
+        "h": 19,
+        "w": 14,
         "x": 0,
         "y": 0
       },
-      "height": "200",
-      "id": 2,
+      "height": 400,
+      "id": 8,
       "interval": null,
-      "labelOrientation": "vertical",
+      "labelOrientation": "45 degrees",
       "labelSpace": 40,
       "legend": {
         "position": "On graph",
@@ -67,7 +67,7 @@
         {
           "format": "table",
           "group": [],
-          "metricColumn": "ORG_ID",
+          "metricColumn": "none",
           "rawQuery": true,
           "rawSql": "SELECT\n  CONCAT(ORG_ID, \":\", FHIR_ORG_SINK.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_ORG_SINK, FHIR_ORG_SINK \nWHERE\nFHIR_GROUPBY_ORG_SINK.ORG_ID=FHIR_ORG_SINK.ID \nGROUP BY FHIR_GROUPBY_ORG_SINK.ORG_ID, FHIR_ORG_SINK.NAME, PATIENT_GENDER\nORDER BY 1 ASC",
           "refId": "A",
@@ -75,15 +75,13 @@
             [
               {
                 "params": [
-                  "CNT"
+                  "value"
                 ],
                 "type": "column"
               }
             ]
           ],
-          "table": "FHIR_GROUPBY_ORG_SINK",
-          "timeColumn": "TS",
-          "timeColumnType": "timestamp",
+          "timeColumn": "time",
           "where": [
             {
               "name": "$__timeFilter",
@@ -98,7 +96,7 @@
       "title": "FHIR  Patient  Count Grouped By Health Organization",
       "type": "grafana-groupedbarchart-panel",
       "valueName": "current",
-      "width": "800"
+      "width": 800
     },
     {
       "aliasColors": {
@@ -116,9 +114,9 @@
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
-        "h": 9,
-        "w": 9,
-        "x": 15,
+        "h": 8,
+        "w": 10,
+        "x": 14,
         "y": 0
       },
       "id": 4,
@@ -176,10 +174,10 @@
       "description": "Dynamically updating the FHIR Health Organizations",
       "fontSize": "80%",
       "gridPos": {
-        "h": 7,
-        "w": 24,
-        "x": 0,
-        "y": 9
+        "h": 10,
+        "w": 10,
+        "x": 14,
+        "y": 8
       },
       "id": 6,
       "links": [],
@@ -306,5 +304,5 @@
   "timezone": "browser",
   "title": "FHIR Patient By Organization ( FHIR Stream )",
   "uid": "0R6ysC6mk",
-  "version": 51
+  "version": 58
 }
