@@ -23,7 +23,7 @@ if not exist %datadir% mkdir %datadir%
     ::-------------------------- check list of state and population size
     if ""%1""=="""" (
 		echo Done with synthetic patient json generation.
-        goto end
+        goto feed
     )
 	set state=%1
 	shift
@@ -49,47 +49,10 @@ if not exist %datadir% mkdir %datadir%
 	set "pop="
     goto loop
 
-REM source ../env.sh
-REM  $1 data-base-dir $2 interval $3 $4 $5 $6
-REM echo "parameter count:" $#
+:feeder
 
-REM if (( $# < 3 )); then
-REM   echo "usage: fhir-stream-feeder.sh <base.dir> <interval> [<state-1> <population-1> ...<state-k> <population-k>]"
-REM   echo "example: fhir-stream-feeder.sh ./data 5000 California 1000 Arizona 600 Washington 980"
-REM   exit 0
-REM else
-REM   datadir="$1"; shift
-REM   interval="$1"; shift  
-REM   echo "datadir:" $datadir "interval:" $interval
-REM fi
-
-REM while [ -n "$1" ]
-REM do
-REM     state="$1"; shift
-REM     if [ -n "$1" ]; then
-REM         pop="$1"; shift
-REM     else
-REM 	echo "malformed arguments, each <state> requires <population>..."   
-REM         echo "usage: fhir-stream-feeder.sh <base.dir> <interval> [<state-1> <population-1> ...<state-k> <population-k>]"
-REM         echo "example: fhir-stream-feeder.sh ./data 5000 California 1000 Arizona 600 Washington 980"
-REM         exit 0
-REM     fi
-REM     echo "state:" $state "pop:" $pop
-REM     echo "path:" "$datadir/$state"
-REM     mkdir -p $datadir/$state
-REM     srcdir="$datadir/$state/fhir"
-REM     destdir="$datadir$suffix/$state"
-REM     mkdir -p $destDir
-REM     $SYNTHEA_HOME/bin/run_synthea.sh -p $pop --exporter.baseDirectory "$datadir/$state" $state 
-REM     $JAVA_HOME/bin/java -classpath "../lib/loader/db:../lib/load/*:../lib/*" com.frt.fhir.load.FhirBundleExtract $srcdir $destdir
-REM     unset srcdir;
-REM     unset destdir;
-REM     unset state;
-REM     unset pop;
-REM done
-
-REM feeder_base="$datadir$suffix"
-REM $JAVA_HOME/bin/java -classpath "../lib/*" com.frt.stream.io.FhirStreamWriter $feeder_base $interval
+set feeder_base="%datadir%%suffix%"
+%JAVA_HOME%\bin\java -classpath "..\lib\*" com.frt.stream.io.FhirStreamWriter %feeder_base% %interval%
 
 :usage
    echo "usage: fhir-stream-feeder.bat <base.dir> <interval> [<state-1> <population-1> ...<state-k> <population-k>]"
@@ -97,4 +60,3 @@ REM $JAVA_HOME/bin/java -classpath "../lib/*" com.frt.stream.io.FhirStreamWriter
 
 :end
 
-pause
