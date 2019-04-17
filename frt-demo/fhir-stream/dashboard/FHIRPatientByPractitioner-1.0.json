@@ -96,7 +96,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "FHIR Patient Count Grouped By Practitioner",
+      "title": "FHIR Patient Count Grouped By Practitioner (FHIR Stream)",
       "type": "grafana-groupedbarchart-panel",
       "valueName": "current",
       "width": "1200"
@@ -229,5 +229,5 @@
   "timezone": "",
   "title": "FHIR Patient By Practitioner",
   "uid": "Vm_YJngZz",
-  "version": 27
+  "version": 28
 }
