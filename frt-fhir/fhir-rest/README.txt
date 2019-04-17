@@ -1,69 +1,54 @@
+Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved. 
+------------------------------------------------------------------
 
-Enabling HTTP BASIC authentication & authorization for frt-fhir-rest.war:
+Installation and Deployment Guide
+---------------------------------
+Prerequisites:
+1) Build and unzip frt-service-package
+   frt-service-package-1.0.0-SNAPSHOT.zip 
 
-Added following to web.xml to enable authorization of all API operations:
-
-<!-- enable basic authentication for frt-fhir-rest -->
-	<security-constraint>
-    	<web-resource-collection>
-      		<web-resource-name>*</web-resource-name>
-      		<url-pattern>/API/*</url-pattern>
-		</web-resource-collection>
-    	<auth-constraint>
-		<role-name>apiuser</role-name>
-    	</auth-constraint>
-	</security-constraint>
-   	<security-role>
-    	<description>The role that is required to access FRT FHIR Services</description>
-    	<role-name>apiuser</role-name>
-  	</security-role>
-   	<login-config>
-    	<auth-method>BASIC</auth-method>
-    	<realm-name>ProtectedResources</realm-name>
-  	</login-config>
-
-This is tomcat specific (AFAIK):
-
-since a role "apiuser" is introduced and referenced in above security configuration,
-the target container (Tomcat) has to add below to its user DB - tomcat-users.xml:
-    <!-- added for basic auth of frt-fhir-rest.war -->
-	<user username="guest" password="fast123" roles="apiuser"/>
-    <role rolename="apiuser"/>
-	...
-	<role rolename="manager-gui"/>
-	<role rolename="tomcat"/>
-	<role rolename="role1"/>
-	<user username="tomcat" password="s3cret" roles="manager-gui"/>
-	<user username="both" password="password" roles="tomcat,manager-gui"/>
-	<user username="role1" password="password" roles="role1"/>
-  	  	
- Authorization HTTP BASIC:
- user name: guest
- password: fast123
+Install and Deploy:
+1) Install JDK 11.0.2
+2) Install Tomcat
+   2.1) Download apache-tomcat-9.0.16.tar.gz
+        from https://tomcat.appache.org 
+   2.2)	Unzip 
+   2.3) Set environment variables
+        frt-service-package\env.bat/env.sh    
+   2.4) Set roles and users
+	    CATALINA_HOME\conf\tomcat-users.xml
+   2.5) Enable remote access to Tomcat Manager
+        Uncomment out 'Valve' and 'Manager' 
+        CATALINA_HOME\webapps\manager\META-INF\context.xml
+   2.6) Start/top tomcat
+        CATALINA_HOME\bin\catlina start/stop
+   2.7) References
+		https://github.com/fastrivertech/tiger/wiki/Build-and-Deploy-Apps
+		CATALINA_HOME\RUNNING.txt
+		
+3) Install Splice Machine or Derby Database
+   3.1) Download and unzip Splice Machine standalone 
+   3.3) References
+        https://github.com/fastrivertech/tiger/wiki/Install-Splice-Machine
    
-Note, enable authorization will impact clients (examples see below) that access the FHIR services:
+4) Create and Deploy FRT FHIR database schema
+   4.1) For Splice Machine, 
+        refer to frt-service-package\schema\sp\README.txt
+   4.2) For Derby, 
+		refere to frt-service-package\schema\sp\README.txt	  	  
 
-1) end user using client tools
-2) auto tests
-3) SOAPUI testSuites
-4) Swagger UI API Doc apps
-
-The behavior is briefly described below:
+5) Deploy FRT FHIR Applications
+   5.1) Drop frt-service-package\app\frt-fhir-doc.war 
+			 to CATALINA_HOME\webapps
+   2.2) Drop frt-service-package\app\frt-fhir-rest.war 
+			 to CATALINA_HOME\webapps
    
-   If frt-fhir-rest.war has authorization enabled (see fhir-rest/README.txt for details),
-   then some kind of security challenge has to be answered by the user, e.g. a user name / password 
-   dialog box will popup if the security scheme is HTTP BASIC;
-   
-   The challenge can occur when first time execute an operation is attempted, or when
-   user clicks the button "Authorize" on the page;
-   
-   After first time the challenge is answered, it is memorized (cookie is saved), no challenge for sub-sequent operations.
-   
-   To test the authorization in action, make sure to clean the browser's cookies (browser specific, check browser doc for details)
-   for each new session, or go incognito mode, e.g. for Chrome CTRL+SHFT+N
-   
-To Disable HTTP BASIC Auth: 
-
-Comment out relevant section from web.xml of frt-fhir-rest.war
-   
- 
+6) Smoke Test
+   6.1) Fhir API docs
+   http://[host]:8088/frt-fhir-doc/apidocs
+   host = ec2-54-202-187-87.us-west-2.compute.amazonaws.com
+          or localhost     
+   6.2) Fhir Patient API
+   http://:8088/frt-fhir-rest/1.0/Patient
+   host = ec2-54-202-187-87.us-west-2.compute.amazonaws.com
+          or localhost   
