@@ -22,8 +22,8 @@ if not exist %datadir% mkdir %datadir%
 :loop
     ::-------------------------- check list of state and population size
     if ""%1""=="""" (
-		echo Done with synthetic patient json generation.
-        goto feed
+		echo Done with synthetic patient json generation and patient resource extraction.
+        goto feeder
     )
 	set state=%1
 	shift
@@ -36,11 +36,11 @@ if not exist %datadir% mkdir %datadir%
 	echo state: %state% pop: %pop%
 	echo path: %datadir%/%state%
 	mkdir %datadir%\%state%
-	set srcdir="%datadir%\%state%\fhir"
+	set srcdir="%datadir%\%state%\fhir_r4"
 	set destdir="%datadir%%suffix%\%state%"
 	mkdir %destDir%
     ::--------------------------
-	call "%SYNTHEA_HOME%\bin\run_synthea.bat" -p %pop% --exporter.baseDirectory "%datadir%\%state%" %state% 
+	call "%SYNTHEA_HOME%\bin\run_synthea.bat" -p %pop% %state% --exporter.fhir_r4.export true --exporter.fhir.export false --exporter.baseDirectory "%datadir%\%state%"
     %JAVA_HOME%\bin\java -classpath "..\lib\loader\db;..\lib\load\*;..\lib\*" com.frt.fhir.load.FhirBundleExtract %srcdir% %destdir%
     shift
 	set "srcdir="
