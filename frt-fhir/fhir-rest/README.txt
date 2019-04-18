@@ -1,13 +1,16 @@
 Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved. 
-------------------------------------------------------------------
+-------------------------------------------------------------------
 
 Installation and Deployment Guide
 ---------------------------------
+
 Prerequisites:
+--------------
 1) Build and unzip frt-service-package
    frt-service-package-1.0.0-SNAPSHOT.zip 
 
 Install and Deploy:
+-------------------
 1) Install JDK 11.0.2
 2) Install Tomcat
    2.1) Download apache-tomcat-9.0.16.tar.gz
