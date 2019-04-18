@@ -53,6 +53,7 @@ if not exist %datadir% mkdir %datadir%
 
 set feeder_base="%datadir%%suffix%"
 %JAVA_HOME%\bin\java -classpath "..\lib\*" com.frt.stream.io.FhirStreamWriter %feeder_base% %interval%
+goto end
 
 :usage
    echo "usage: fhir-stream-feeder.bat <base.dir> <interval> [<state-1> <population-1> ...<state-k> <population-k>]"

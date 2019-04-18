@@ -105,6 +105,7 @@
 			<outputDirectory>lib/load</outputDirectory>            
 			<includes>
 				<include>commons-lang3-*.jar</include>
+				<include>commons-text-*.jar</include>
 				<include>hapi-fhir-*.jar</include>
 			</includes>
 		</fileSet>
