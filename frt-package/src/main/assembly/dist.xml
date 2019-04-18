@@ -68,6 +68,13 @@
 				<include>frt-fhir-rest*.war</include>
 			</includes>
 		</fileSet>
+		<fileSet>
+			<directory>${project.basedir}/../frt-fhir/fhir-rest</directory>
+			<outputDirectory>app</outputDirectory>            
+			<includes>
+				<include>README.txt</include>
+			</includes>
+		</fileSet>		
 		<!-- package schema -->
 		<fileSet>
 			<directory>${project.basedir}/../frt-schema/sp</directory>
