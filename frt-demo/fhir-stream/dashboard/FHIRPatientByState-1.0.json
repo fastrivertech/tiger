@@ -96,8 +96,8 @@
           "group": [],
           "hide": false,
           "metricColumn": "ADDR_STATE",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  ADDR_STATE AS metric,\n  CNT\nFROM FHIR_GROUPBY_STATE_SINK\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  TS AS \"time\",\n  CONCAT(ADDR_STATE, \":\", PATIENT_GENDER) AS metric,\n  MAX(CNT)\nFROM FHIR_GROUPBY_STATE_SINK\nGROUP BY ADDR_STATE, PATIENT_GENDER, TS\nORDER BY TS",
           "refId": "A",
           "select": [
             [
@@ -121,7 +121,8 @@
           "fill": true,
           "line": true,
           "op": "gt",
-          "value": 1959
+          "value": 1959,
+          "yaxis": "left"
         }
       ],
       "timeFrom": null,
@@ -345,8 +346,8 @@
             }
           ],
           "metricColumn": "ADDR_STATE",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  $__unixEpochGroupAlias(TS,$__interval),\n  ADDR_STATE AS metric,\n  max(CNT) AS \"CNT\"\nFROM FHIR_GROUPBY_STATE_SINK\nGROUP BY 1, ADDR_STATE,2\nORDER BY $__unixEpochGroup(TS,$__interval)",
+          "rawQuery": true,
+          "rawSql": "SELECT $__unixEpochGroupAlias(TS,$__interval),\nCONCAT(ADDR_STATE, \":\", PATIENT_GENDER) AS metric,\nmax(CNT) AS \"CNT\" \nFROM FHIR_GROUPBY_STATE_SINK \nGROUP BY 1, ADDR_STATE,2 \nORDER BY 2, $__unixEpochGroup(TS,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -378,7 +379,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "PATIENT COUNT BY STATES",
+      "title": "PATIENT COUNT BY STATES & GENDER",
       "type": "grafana-piechart-panel",
       "valueName": "current"
     }
@@ -391,7 +392,7 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-24h",
     "to": "now"
   },
   "timepicker": {
@@ -414,5 +415,5 @@
   "timezone": "",
   "title": "FHIR Patient By State ( FHIR Stream )",
   "uid": "3yl50L6iz",
-  "version": 25
+  "version": 31
 }
