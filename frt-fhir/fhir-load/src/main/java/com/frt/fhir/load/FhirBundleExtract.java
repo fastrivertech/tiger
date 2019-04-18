@@ -69,6 +69,7 @@ public class FhirBundleExtract {
 		});
 		if (sourceFiles == null || sourceFiles.length < 1) {
 			System.out.println(sourceDir + " no json files");
+			return;
 		}
 		
 		String targetDir = this.getDestDir() != null ?

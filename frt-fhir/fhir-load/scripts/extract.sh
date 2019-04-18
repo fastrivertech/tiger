@@ -5,4 +5,4 @@
 ## @echo off
 
 source ../env.sh
-$JAVA_HOME/bin/java -cp "../lib/loader/db:../lib/load/db/*:../lib/load/*:../lib/*" com.frt.fhir.load.FhirBundleExtract
+$JAVA_HOME/bin/java -cp "../lib/loader/db:../lib/load/db/*:../lib/load/*:../lib/*" com.frt.fhir.load.FhirBundleExtract $1 $2
