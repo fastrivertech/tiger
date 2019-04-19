@@ -45,7 +45,7 @@
       "format": "short",
       "gridPos": {
         "h": 17,
-        "w": 16,
+        "w": 22,
         "x": 0,
         "y": 0
       },
@@ -108,7 +108,7 @@
       "fontSize": "100%",
       "gridPos": {
         "h": 6,
-        "w": 16,
+        "w": 22,
         "x": 0,
         "y": 17
       },
@@ -149,7 +149,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  id as npi,\n  name,\n  specialty,\n  telecom,\n  addressline,\n  city,\n  state,\n  postalcode\nFROM FHIR_GP_SINK\nORDER BY id",
+          "rawSql": "SELECT\n  id AS NPI,\n  name AS Name,\n  specialty AS Specialty,\n  telecom AS Phone,\n  addressline AS Address,\n  city AS City,\n  state AS State,\n  postalcode AS PostalCode\nFROM FHIR_GP_SINK\nORDER BY id",
           "refId": "A",
           "select": [
             [
@@ -229,5 +229,5 @@
   "timezone": "",
   "title": "FHIR Patient By Practitioner ( FHIR Stream)",
   "uid": "Vm_YJngZz",
-  "version": 32
+  "version": 36
 }
