@@ -43,8 +43,8 @@
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
-        "h": 15,
-        "w": 16,
+        "h": 14,
+        "w": 14,
         "x": 0,
         "y": 0
       },
@@ -111,9 +111,9 @@
       "fontSize": "100%",
       "format": "short",
       "gridPos": {
-        "h": 15,
-        "w": 8,
-        "x": 16,
+        "h": 14,
+        "w": 6,
+        "x": 14,
         "y": 0
       },
       "id": 4,
@@ -136,7 +136,7 @@
           "group": [],
           "metricColumn": "PATIENT_GENDER",
           "rawQuery": true,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  CONCAT(AGE_GROUP, \":\", PATIENT_GENDER) AS metric,\n  MAX(CAST(PATIENT_COUNT AS UNSIGNED))\nFROM FHIR_GROUPBY_AGE\nGROUP BY AGE_GROUP, PATIENT_GENDER, TS\nORDER BY AGE_GROUP, PATIENT_GENDER, TS",
+          "rawSql": "SELECT\n  TS AS \"time\",\n  AGE_GROUP AS metric,\n  SUM(CAST(PATIENT_COUNT AS UNSIGNED))\nFROM FHIR_GROUPBY_AGE\nGROUP BY AGE_GROUP, TS\nORDER BY AGE_GROUP, TS",
           "refId": "A",
           "select": [
             [
@@ -201,5 +201,5 @@
   "timezone": "",
   "title": "FHIR Patient By Age  Group  ( FHIR Data Lake )",
   "uid": "dM1ZBxRZz",
-  "version": 19
+  "version": 22
 }
