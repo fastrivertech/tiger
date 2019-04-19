@@ -131,9 +131,12 @@ public class RepositoryServiceImpl implements RepositoryService {
 		  //Optional<R> created = resourceDao.save(resource);		
 		  //Generate default narrative
 		    RepositoryServiceHelper.generateDefaultNarrative(resource);
+		    // create transaction log
 			Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
-			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);				
-			RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());			
+			BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);
+			// create resource status extension
+			RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());
+			// create resource meta data
 			resource.setMeta((new Meta()).toString());						
 		    transaction.setResource(resource);					    
 			transactionDao.save(transaction);										
@@ -187,7 +190,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 // no changes
 					 if (cache.isPresent()) {
 						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.N.name());
-					 }					 
+					 }						
+					 updatedResource = changed;					 
 				 }
 			 } else {
 				 // create resource
@@ -196,6 +200,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 				// generate default narrative
 				 RepositoryServiceHelper.generateDefaultNarrative(resource);
 				 resource.setMeta((new Meta()).toString());
+				 // create resource status extension 
 				 RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());
 				 transaction.setResource(resource);			
 				 transactionDao.save(transaction);				
@@ -228,11 +233,11 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 Optional<Extension> extension = resourceExtensionDao.findById(deleted.getResourceId().toString());
 				 if (extension.isPresent()) {
 					 if(!Transaction.ActionCode.D.name().equals(extension.get().getValue())) {
-						 // change the status to 'deleted'
+						 // change the resource status extension to 'deleted'
 						 extension.get().setValue(Transaction.ActionCode.D.name());
 						 ts.getEntityManager().merge(extension.get());
-						 // log transaction
-						 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
+						 // create the log transaction
+						 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.D);
 						 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 						 transaction.setResource(deleted);			
 						 transactionDao.save(transaction);
@@ -243,9 +248,11 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 } else {
 					 // for a case that a resource does not have a status extension, 
 					 // this is not valid case, need to fix when the resource gets created or updated 
-					 // with the right status extension 
+					 // with the right status extension
+					 // update the resource extension status 
 					 RepositoryServiceHelper.setResourceStatus(resourceClazz, deleted, Transaction.ActionCode.D.name());
 					 resourceDao.update(deleted);
+					 // create the log transaction
 					 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.D);
 					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 					 transaction.setResource(deleted);			

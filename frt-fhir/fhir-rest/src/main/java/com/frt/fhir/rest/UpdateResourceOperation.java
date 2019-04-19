@@ -136,8 +136,9 @@ public class UpdateResourceOperation extends ResourceOperation {
 															  MimeType.APPLICATION_FHIR_JSON);						
 			} else {
 				// resource no changed  
+				// R4 expects Status.OK, but Status.NOT_MODIFIED is more reasonable
 				return ResourceOperationResponseBuilder.build(resourceInJson, 
-															  Status.NOT_MODIFIED, 
+															  Status.OK, 
 															  updated.getMeta().getVersionId(), 
 															  location,
 															  MimeType.APPLICATION_FHIR_JSON);									
