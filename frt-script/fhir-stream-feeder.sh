@@ -5,7 +5,7 @@
 source ../env.sh
 ## $1 data-base-dir $2 interval $3 $4 $5 $6
 echo "parameter count:" $#
-suffix="_FHIR_MESSAGES"
+suffix="extracted"
 export SYNTHEA_HOME=../synthea
 
 if (( $# < 3 )); then

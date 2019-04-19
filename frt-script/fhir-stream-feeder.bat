@@ -11,7 +11,7 @@ shift
 set interval=%1
 shift
 
-set suffix="_FHIR_MESSAGES"
+set suffix="extracted"
 set "SYNTHEA_HOME=../synthea"
 
 echo base.dir: %datadir% interval: %interval%
