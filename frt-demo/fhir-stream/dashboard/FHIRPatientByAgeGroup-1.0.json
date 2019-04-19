@@ -135,8 +135,8 @@
           "format": "time_series",
           "group": [],
           "metricColumn": "PATIENT_GENDER",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  PATIENT_GENDER AS metric,\n  TS\nFROM FHIR_GROUPBY_AGE\nORDER BY TS",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  TS AS \"time\",\n  CONCAT(AGE_GROUP, \":\", PATIENT_GENDER) AS metric,\n  MAX(CAST(PATIENT_COUNT AS UNSIGNED))\nFROM FHIR_GROUPBY_AGE\nGROUP BY AGE_GROUP, PATIENT_GENDER, TS\nORDER BY AGE_GROUP, PATIENT_GENDER, TS",
           "refId": "A",
           "select": [
             [
@@ -201,5 +201,5 @@
   "timezone": "",
   "title": "FHIR Patient By Age  Group  ( FHIR Data Lake )",
   "uid": "dM1ZBxRZz",
-  "version": 17
+  "version": 19
 }
