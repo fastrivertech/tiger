@@ -99,10 +99,7 @@
       "width": 800
     },
     {
-      "aliasColors": {
-        "female": "#73BF69",
-        "male": "#FADE2A"
-      },
+      "aliasColors": {},
       "breakPoint": "50%",
       "cacheTimeout": null,
       "combine": {
@@ -114,15 +111,14 @@
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
-        "h": 8,
+        "h": 14,
         "w": 10,
         "x": 14,
         "y": 0
       },
-      "id": 4,
+      "id": 10,
       "interval": null,
       "legend": {
-        "percentage": true,
         "show": true,
         "values": true
       },
@@ -130,29 +126,27 @@
       "links": [],
       "maxDataPoints": 3,
       "nullPointMode": "connected",
-      "pieType": "donut",
-      "strokeWidth": "2",
+      "pieType": "pie",
+      "strokeWidth": 1,
       "targets": [
         {
           "format": "time_series",
           "group": [],
-          "metricColumn": "PATIENT_GENDER",
-          "rawQuery": false,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  PATIENT_GENDER AS metric,\n  CNT\nFROM FHIR_GROUPBY_ORG_SINK\nWHERE\n  $__timeFilter(TS)\nORDER BY TS",
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT $__unixEpochGroupAlias(TS,$__interval),\r\nCONCAT(ORG_ID, \":\", PATIENT_GENDER) AS metric,\r\nmax(CNT) AS \"CNT\" \r\nFROM FHIR_GROUPBY_ORG_SINK \r\nGROUP BY ORG_ID, PATIENT_GENDER, TS\r\nORDER BY 2, $__unixEpochGroup(TS,$__interval)",
           "refId": "A",
           "select": [
             [
               {
                 "params": [
-                  "CNT"
+                  "value"
                 ],
                 "type": "column"
               }
             ]
           ],
-          "table": "FHIR_GROUPBY_ORG_SINK",
-          "timeColumn": "TS",
-          "timeColumnType": "timestamp",
+          "timeColumn": "time",
           "where": [
             {
               "name": "$__timeFilter",
@@ -165,8 +159,9 @@
       "timeFrom": null,
       "timeShift": null,
       "title": "Total FHIR Patients ",
+      "transparent": true,
       "type": "grafana-piechart-panel",
-      "valueName": "total"
+      "valueName": "current"
     },
     {
       "columns": [],
@@ -177,7 +172,7 @@
         "h": 10,
         "w": 10,
         "x": 14,
-        "y": 8
+        "y": 14
       },
       "id": 6,
       "links": [],
@@ -304,5 +299,5 @@
   "timezone": "browser",
   "title": "FHIR Patient By Organization ( FHIR Stream )",
   "uid": "0R6ysC6mk",
-  "version": 58
+  "version": 63
 }
