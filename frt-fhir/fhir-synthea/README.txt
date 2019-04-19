@@ -28,6 +28,7 @@ run_synthea -s 21 -p 100 Utah \"Salt Lake City\"
 run_synthea -g M -a 60-65
 run_synthea -p 10 --exporter.fhir.export true
 run_synthea --exporter.baseDirectory \"./output_tx/\" Texas
+run_synthea --exporter.fhir_r4.export true
 
 e.g. 
 
