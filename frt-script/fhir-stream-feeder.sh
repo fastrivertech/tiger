@@ -32,10 +32,10 @@ do
     echo "state:" $state "pop:" $pop
     echo "path:" "$datadir/$state"
     mkdir -p $datadir/$state
-    srcdir="$datadir/$state/fhir"
+    srcdir="$datadir/$state/fhir_r4"
     destdir="$datadir$suffix/$state"
     mkdir -p $destDir
-    $SYNTHEA_HOME/bin/run_synthea.sh -p $pop --exporter.baseDirectory "$datadir/$state" $state 
+    $SYNTHEA_HOME/bin/run_synthea.sh -p $pop  $state --exporter.fhir_r4.export true --exporter.fhir.export false --exporter.baseDirectory "$datadir/$state"
     $JAVA_HOME/bin/java -classpath "../lib/loader/db:../lib/load/*:../lib/*" com.frt.fhir.load.FhirBundleExtract $srcdir $destdir
     unset srcdir;
     unset destdir;
