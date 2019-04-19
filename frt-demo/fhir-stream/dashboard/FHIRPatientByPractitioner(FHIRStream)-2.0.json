@@ -45,7 +45,7 @@
       "format": "short",
       "gridPos": {
         "h": 17,
-        "w": 24,
+        "w": 16,
         "x": 0,
         "y": 0
       },
@@ -99,7 +99,7 @@
       "title": "FHIR Patient Count Grouped By Practitioner (FHIR Stream)",
       "type": "grafana-groupedbarchart-panel",
       "valueName": "current",
-      "width": "1200"
+      "width": "1000"
     },
     {
       "columns": [],
@@ -107,8 +107,8 @@
       "description": "A list of practitioners of the Patients",
       "fontSize": "100%",
       "gridPos": {
-        "h": 10,
-        "w": 24,
+        "h": 6,
+        "w": 16,
         "x": 0,
         "y": 17
       },
@@ -229,5 +229,5 @@
   "timezone": "",
   "title": "FHIR Patient By Practitioner ( FHIR Stream)",
   "uid": "Vm_YJngZz",
-  "version": 29
+  "version": 32
 }
