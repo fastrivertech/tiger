@@ -44,7 +44,7 @@
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
-        "h": 18,
+        "h": 17,
         "w": 14,
         "x": 0,
         "y": 0
@@ -111,8 +111,8 @@
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
-        "h": 9,
-        "w": 10,
+        "h": 11,
+        "w": 9,
         "x": 14,
         "y": 0
       },
@@ -134,7 +134,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT $__unixEpochGroupAlias(TS,$__interval),\r\nCONCAT(ORG_ID, \":\", PATIENT_GENDER) AS metric,\r\nmax(CNT) AS \"CNT\" \r\nFROM FHIR_GROUPBY_ORG_SINK \r\nGROUP BY ORG_ID, PATIENT_GENDER, TS\r\nORDER BY 2, $__unixEpochGroup(TS,$__interval)",
+          "rawSql": "SELECT $__unixEpochGroupAlias(TS,$__interval),\r\nCONCAT(ORG_ID,\"-\",FHIR_ORG_SINK.NAME) AS metric,\r\nmax(CNT) AS \"CNT\" \r\nFROM FHIR_GROUPBY_ORG_SINK, FHIR_ORG_SINK\r\nWHERE FHIR_GROUPBY_ORG_SINK.ORG_ID=FHIR_ORG_SINK.ID \r\nGROUP BY FHIR_GROUPBY_ORG_SINK.ORG_ID, FHIR_ORG_SINK.NAME, TS\r\nORDER BY 2, $__unixEpochGroup(TS,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -169,10 +169,10 @@
       "description": "Dynamically updating the FHIR Health Organizations",
       "fontSize": "80%",
       "gridPos": {
-        "h": 9,
-        "w": 10,
+        "h": 6,
+        "w": 9,
         "x": 14,
-        "y": 9
+        "y": 11
       },
       "id": 6,
       "links": [],
@@ -299,5 +299,5 @@
   "timezone": "browser",
   "title": "FHIR Patient By Organization ( FHIR Stream )",
   "uid": "0R6ysC6mk",
-  "version": 67
+  "version": 72
 }
