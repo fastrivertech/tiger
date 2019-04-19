@@ -1,0 +1,233 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "FHIR Patient Count Grouped By Practitioner",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 6,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "avgLineShow": true,
+      "cacheTimeout": null,
+      "chartType": "stacked bar chart",
+      "colorSch": [
+        "#F2495C",
+        "#FF9830"
+      ],
+      "colorSet": [
+        {
+          "color": "#F2495C",
+          "text": "female"
+        },
+        {
+          "color": "#FF9830",
+          "text": "male"
+        }
+      ],
+      "datasource": "DEMO-MySQL",
+      "description": "FHIR Patient Count Grouped By Practitioner",
+      "fontColor": "#fff",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 17,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "height": 400,
+      "hideTimeOverride": true,
+      "id": 4,
+      "interval": null,
+      "labelOrientation": "45 degrees",
+      "labelSpace": 40,
+      "legend": {
+        "position": "On graph",
+        "show": true
+      },
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "orientation": "vertical",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "NPI",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  CONCAT(NPI, \":\",  FHIR_GP_SINK.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_GP, FHIR_GP_SINK\nWHERE FHIR_GROUPBY_GP.NPI=FHIR_GP_SINK.ID\nGROUP BY FHIR_GROUPBY_GP.NPI, FHIR_GP_SINK.NAME, FHIR_GROUPBY_GP.PATIENT_GENDER\nORDER BY  FHIR_GROUPBY_GP.NPI, FHIR_GP_SINK.NAME",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "CNT"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "FHIR_GROUPBY_GP",
+          "timeColumn": "TS",
+          "timeColumnType": "bigint",
+          "where": [
+            {
+              "name": "$__unixEpochFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "FHIR Patient Count Grouped By Practitioner (FHIR Stream)",
+      "type": "grafana-groupedbarchart-panel",
+      "valueName": "current",
+      "width": "1200"
+    },
+    {
+      "columns": [],
+      "datasource": "DEMO-MySQL",
+      "description": "A list of practitioners of the Patients",
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 10,
+        "w": 24,
+        "x": 0,
+        "y": 17
+      },
+      "id": 2,
+      "links": [],
+      "pageSize": null,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "Time",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "pattern": "Time",
+          "type": "date"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  id as npi,\n  name,\n  specialty,\n  telecom,\n  addressline,\n  city,\n  state,\n  postalcode\nFROM FHIR_GP_SINK\nORDER BY id",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "FHIR_GP_SINK",
+          "timeColumn": "id",
+          "timeColumnType": "varchar",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            },
+            {
+              "datatype": "varchar",
+              "name": "",
+              "params": [
+                "CITY",
+                "=",
+                "value"
+              ],
+              "type": "expression"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "FHIR Practitioners of Patients",
+      "transform": "table",
+      "type": "table"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 18,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "FHIR Patient By Practitioner ( FHIR Stream)",
+  "uid": "Vm_YJngZz",
+  "version": 29
+}
