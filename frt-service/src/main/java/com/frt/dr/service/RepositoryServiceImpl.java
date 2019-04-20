@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.regex.Pattern;
-
 import javax.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -171,6 +170,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 String meta = changed.getMeta();
 					 String changedMeta = TransactionHelper.updateMeta(meta);
 					 changed.setMeta(changedMeta);
+					 RepositoryServiceHelper.setResourceStatus(resourceClazz, changed, Transaction.ActionCode.U.name());
 					 resourceDao.update(changed);
 					 // generate default narrative
 					 RepositoryServiceHelper.generateDefaultNarrative(changed);

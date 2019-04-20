@@ -4,7 +4,6 @@ import javax.persistence.Entity;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;

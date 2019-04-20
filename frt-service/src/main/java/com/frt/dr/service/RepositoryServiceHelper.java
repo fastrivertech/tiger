@@ -11,10 +11,13 @@
  */
 package com.frt.dr.service;
 
+import java.util.Optional;
 import java.util.List;
 import com.frt.dr.model.Extension;
 import com.google.gson.JsonObject;
 import com.frt.dr.model.DomainResource;
+import com.frt.dr.model.base.Patient;
+import com.frt.dr.model.base.PatientExtension;
 
 public interface RepositoryServiceHelper {
 
@@ -23,14 +26,22 @@ public interface RepositoryServiceHelper {
 																	 					 D resourceObject, String status) 
 		throws RepositoryServiceException {
 		try {
-			java.lang.Class<?> resourceExtensionClazz = Class.forName(resourceClazz.getName() + "Extension");		
-			List<E> extensions = resourceObject.getExtensions();
-			E extension = (E)resourceExtensionClazz.newInstance();
-			extension.setResource((D)resourceObject);
-			extension.setPath("patient.status");
-			extension.setValue(status);
-			extension.setUrl("http://hl7.org/fhir/StructureDefinition/patient-status");
-			extensions.add(extension);
+			// need to be generic
+			if (resourceObject instanceof Patient) {
+				Optional<PatientExtension> extension = ((Patient)resourceObject).getExtension();
+				if (extension.isPresent()) {
+					extension.get().setValue(status);					
+				} else {
+					java.lang.Class<?> resourceExtensionClazz = Class.forName(resourceClazz.getName() + "Extension");		
+					List<PatientExtension> exts = ((Patient)resourceObject).getExtensions();
+					PatientExtension ext = (PatientExtension)resourceExtensionClazz.newInstance();
+					ext.setResource((D)resourceObject);
+					ext.setPath("patient.status");
+					ext.setValue(status);
+					ext.setUrl("http://hl7.org/fhir/StructureDefinition/patient-status");
+					exts.add(ext);					
+				}				
+			}			
 		} catch (IllegalAccessException | InstantiationException | ClassNotFoundException ex) {			
 		}
 	}

@@ -11,11 +11,13 @@
  */
 package com.frt.dr.model.base;
 
+import java.util.Optional;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import javax.persistence.Transient;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -34,6 +36,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import com.frt.dr.model.DomainResource;
+import com.frt.dr.model.Extension;
 import com.frt.dr.model.RelationMappingCustomizer;
 import javax.xml.bind.annotation.XmlTransient;
 import org.eclipse.persistence.annotations.Customizer;
@@ -139,7 +142,7 @@ public class Patient extends DomainResource {
 	@OneToMany(mappedBy = "patient", cascade = CascadeType.ALL)
 	@OrderBy("patientExtensionId ASC")	
 	private List<PatientExtension> extensions;
-    
+	
   //private List<PatientExtension> elementExtensions;
      
     public Patient() {    	
@@ -338,10 +341,24 @@ public class Patient extends DomainResource {
     	}
         return extensions;
     }
-
+    
     public void setExtensions(List<PatientExtension> extensions) {
         this.extensions = extensions;
     }    
+    
+    @Transient
+    public Optional<PatientExtension> getExtension() {
+    	// patient status extension
+    	Optional<PatientExtension> status = Optional.empty();
+    	if (extensions != null) {
+	    	for (PatientExtension extension : extensions) {
+	    		if ("patient.status".equals(extension.getPath())) {
+	    			status = Optional.of(extension);
+	    		}
+	    	}
+    	}
+    	return status;
+    }
     
 	/**
 	 * Return string representation for narrative 
