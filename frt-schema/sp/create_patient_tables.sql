@@ -82,7 +82,7 @@ CREATE TABLE PATIENT_EXTENSION (
 	resource_id	BIGINT NOT NULL, -- FK to PATIENT table
 	path VARCHAR(128), -- path patterns: patient.domain.resource/paitent.[child]/extension, for exampe, patient, patient.identifier, etc.
 	url	VARCHAR(128) NOT NULL, 	
-	value CLOB, -- value of any FHIR primitive and complex data types
+	value VARCHAR(1024), -- relex CLOB, value of any FHIR primitive and complex data types
 	isModifier BOOLEAN DEFAULT false, -- default false
 	PRIMARY KEY (patient_extension_id), 
 	FOREIGN KEY (resource_id) REFERENCES PATIENT(resource_id)	
