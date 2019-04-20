@@ -48,10 +48,11 @@ public abstract class Extension implements Serializable {
     @Column(name = "url", nullable = false)                                                    
 	private String url;
 	
-    @Lob 
+  //@Lob 
+    @Size(max = 1024)
     @Column(name = "value")                                                    
 	private String value;
-
+  	
     public String getPath() {
     	return this.path;
     }
