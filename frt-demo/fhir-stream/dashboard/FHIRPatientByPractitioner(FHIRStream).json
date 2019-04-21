@@ -45,7 +45,7 @@
       "format": "short",
       "gridPos": {
         "h": 17,
-        "w": 22,
+        "w": 15,
         "x": 0,
         "y": 0
       },
@@ -107,10 +107,10 @@
       "description": "A list of practitioners of the Patients",
       "fontSize": "100%",
       "gridPos": {
-        "h": 6,
-        "w": 22,
-        "x": 0,
-        "y": 17
+        "h": 17,
+        "w": 9,
+        "x": 15,
+        "y": 0
       },
       "id": 2,
       "links": [],
@@ -229,5 +229,5 @@
   "timezone": "",
   "title": "FHIR Patient By Practitioner ( FHIR Stream)",
   "uid": "Vm_YJngZz",
-  "version": 36
+  "version": 39
 }

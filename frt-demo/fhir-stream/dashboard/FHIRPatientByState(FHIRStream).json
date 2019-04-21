@@ -68,7 +68,9 @@
         "x": 0,
         "y": 0
       },
+      "hideTimeOverride": false,
       "id": 2,
+      "interval": "1m",
       "legend": {
         "avg": false,
         "current": false,
@@ -88,7 +90,7 @@
       "points": true,
       "renderer": "flot",
       "seriesOverrides": [],
-      "stack": false,
+      "stack": true,
       "steppedLine": true,
       "targets": [
         {
@@ -97,7 +99,7 @@
           "hide": false,
           "metricColumn": "ADDR_STATE",
           "rawQuery": true,
-          "rawSql": "SELECT\n  TS AS \"time\",\n  CONCAT(ADDR_STATE, \":\", PATIENT_GENDER) AS metric,\n  MAX(CNT)\nFROM FHIR_GROUPBY_STATE_SINK\nGROUP BY ADDR_STATE, PATIENT_GENDER, TS\nORDER BY TS",
+          "rawSql": "SELECT\n  $__unixEpochGroupAlias(TS,$__interval),\n  CONCAT(ADDR_STATE, \":\", PATIENT_GENDER) AS \"metric\",\n  MAX(CNT)\nFROM FHIR_GROUPBY_STATE_SINK\nGROUP BY 1, ADDR_STATE, PATIENT_GENDER\nORDER BY ADDR_STATE, $__unixEpochGroup(TS,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -347,7 +349,7 @@
           ],
           "metricColumn": "ADDR_STATE",
           "rawQuery": true,
-          "rawSql": "SELECT $__unixEpochGroupAlias(TS,$__interval),\nCONCAT(ADDR_STATE, \":\", PATIENT_GENDER) AS metric,\nmax(CNT) AS \"CNT\" \nFROM FHIR_GROUPBY_STATE_SINK \nGROUP BY 1, ADDR_STATE,2 \nORDER BY 2, $__unixEpochGroup(TS,$__interval)",
+          "rawSql": "SELECT $__unixEpochGroupAlias(TS,$__interval),\nADDR_STATE AS metric,\nSUM(CNT) AS \"CNT\" \nFROM FHIR_GROUPBY_STATE_SINK \nGROUP BY 1, ADDR_STATE,2 \nORDER BY 2, $__unixEpochGroup(TS,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -384,7 +386,7 @@
       "valueName": "current"
     }
   ],
-  "refresh": "10s",
+  "refresh": false,
   "schemaVersion": 18,
   "style": "dark",
   "tags": [],
@@ -392,7 +394,7 @@
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-2d",
     "to": "now"
   },
   "timepicker": {
@@ -415,5 +417,5 @@
   "timezone": "",
   "title": "FHIR Patient By State ( FHIR Stream )",
   "uid": "3yl50L6iz",
-  "version": 34
+  "version": 44
 }

@@ -112,7 +112,7 @@
       "format": "short",
       "gridPos": {
         "h": 14,
-        "w": 6,
+        "w": 10,
         "x": 14,
         "y": 0
       },
@@ -201,5 +201,5 @@
   "timezone": "",
   "title": "FHIR Patient By Age  Group  ( FHIR Data Lake )",
   "uid": "dM1ZBxRZz",
-  "version": 27
+  "version": 28
 }
