@@ -63,6 +63,20 @@ public class RepositoryServiceImpl implements RepositoryService {
 	    TransactionService.getInstance().setEntityManager(em);    	
     }
    
+    private <R extends DomainResource> boolean checkStatus(R resource, Transaction.ActionCode status) {
+    	boolean checked = false;
+		List<Extension> extensions = resource.getExtensions();
+		for (Extension extension : extensions) {
+			if("patient.status".equals(extension.getPath())) {
+				if (status.name().equals(extension.getValue())) {							
+					checked = true;
+					break;
+				}
+			}
+		}	
+    	return checked;
+    }
+    
 	@Override
 	public <R extends DomainResource> Optional<R> read(Class<?> resourceClazz, String id) 
 		throws RepositoryServiceException {
@@ -70,19 +84,14 @@ public class RepositoryServiceImpl implements RepositoryService {
 			BaseDao dao = DaoFactory.getInstance().createResourceDao(resourceClazz);						
 			Optional<R> resource = dao.findById(id);
 			if (resource.isPresent()) {
-				List<Extension> extensions = resource.get().getExtensions();
-				for (Extension extension : extensions) {
-					if("patient.status".equals(extension.getPath())) {
-						if (Transaction.ActionCode.D.name().equals(extension.getValue())) {							
-						    Optional<NamedCache> cache = CacheService.getInstance().getCache();
-						    if (cache.isPresent()) {
-						    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.D.name());
-						    }				
-						    resource = Optional.empty();
-							break;							
-						}
-					}
-				}			     
+				boolean deleted = checkStatus(resource.get(), Transaction.ActionCode.D);
+				if (deleted) {
+				    Optional<NamedCache> cache = CacheService.getInstance().getCache();
+				    if (cache.isPresent()) {
+				    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.D.name());
+				    }				
+				    resource = Optional.empty();					
+				}
 			}			
 			return resource;
 		} catch (DaoException dex) {
@@ -100,15 +109,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			if (resources.isPresent()) {
 				for (R r : resources.get()) {
 					List<Extension> extensions = r.getExtensions();
-					boolean deleted = false;
-					for (Extension extension : extensions) {						
-						if("patient.status".equals(extension.getPath())) {
-							if (Transaction.ActionCode.D.name().equals(extension.getValue())) {
-								deleted = true;
-								break;
-							}
-						}
-					}
+					boolean deleted = checkStatus(r, Transaction.ActionCode.D);
 					if (!deleted) {
 						undeleteds.add(r);
 					}					
@@ -160,12 +161,16 @@ public class RepositoryServiceImpl implements RepositoryService {
 			 Optional<R> found = resourceDao.findById(id);	
 			 
 			 if (found.isPresent()) {
-				 R changed = found.get();				 
+				 R changed = found.get();			
+				 
 				 // compute changes
 				 resourceUpdateManager.cleanChanges();
 				 resourceUpdateManager.change(resourceClazz, resourceClazz, resource, changed);
 				 Optional<String> changes = resourceUpdateManager.getChanges();
-				 if (changes.isPresent()) {
+
+				 boolean deleted = checkStatus(changed, Transaction.ActionCode.D);
+				 
+				 if (changes.isPresent() || deleted) {
 					 // save changes
 					 String meta = changed.getMeta();
 					 String changedMeta = TransactionHelper.updateMeta(meta);
@@ -177,7 +182,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 // create transaction log
 					 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
 					 transaction.setMeta(meta);
-					 transaction.setDelta(changes.get());
+					 transaction.setDelta(changes.isPresent() ? changes.get() : "");
 					 // save transaction log
 					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 					 transaction.setResource(changed);			
@@ -190,7 +195,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 // no changes
 					 if (cache.isPresent()) {
 						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.N.name());
-					 }						
+					 }											 
 					 updatedResource = changed;					 
 				 }
 			 } else {
@@ -267,7 +272,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		} catch (DaoException | ClassNotFoundException dex) {
 			ts.rollback();
 			throw new RepositoryServiceException(dex); 
-		}
+		} 
 		
 	}	
 	
@@ -292,11 +297,13 @@ public class RepositoryServiceImpl implements RepositoryService {
 							resourceUpdateManager.cleanChanges();
 							// apply changes
 							String delta = transaction.getDelta();
-							List<String> changes = Arrays.asList(delta.split(Pattern.quote(ResourceUpdateManager.DELIMITER)));
-							for (String change : changes) {
-								String[] tokens = change.split("=");
-								if (tokens != null && tokens.length == 2) {
-									resourceUpdateManager.update(resourceClazz, tokens[0], versioned, tokens[1]);
+							if (delta != null && !delta.isEmpty()) {
+								List<String> changes = Arrays.asList(delta.split(Pattern.quote(ResourceUpdateManager.DELIMITER)));
+								for (String change : changes) {
+									String[] tokens = change.split("=");
+									if (tokens != null && tokens.length == 2) {
+										resourceUpdateManager.update(resourceClazz, tokens[0], versioned, tokens[1]);
+									}
 								}
 							}
 							// apply meta
