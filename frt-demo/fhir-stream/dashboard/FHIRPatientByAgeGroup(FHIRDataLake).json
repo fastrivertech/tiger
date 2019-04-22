@@ -116,8 +116,9 @@
         "x": 14,
         "y": 0
       },
+      "hideTimeOverride": false,
       "id": 4,
-      "interval": null,
+      "interval": "",
       "legend": {
         "header": "",
         "percentage": true,
@@ -159,7 +160,7 @@
       "title": "Total Patient Count  ",
       "transparent": true,
       "type": "grafana-piechart-panel",
-      "valueName": "total"
+      "valueName": "current"
     }
   ],
   "refresh": false,
@@ -201,5 +202,5 @@
   "timezone": "",
   "title": "FHIR Patient By Age  Group  ( FHIR Data Lake )",
   "uid": "dM1ZBxRZz",
-  "version": 28
+  "version": 32
 }
