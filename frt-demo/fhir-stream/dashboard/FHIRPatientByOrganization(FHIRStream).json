@@ -31,11 +31,11 @@
       "colorSet": [
         {
           "color": "#FADE2A",
-          "text": "female"
+          "text": "male"
         },
         {
           "color": "#73BF69",
-          "text": "male"
+          "text": "female"
         }
       ],
       "datasource": "DEMO-MySQL",
@@ -69,7 +69,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  CONCAT(ORG_ID, \":\", FHIR_ORG_SINK.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_ORG_SINK, FHIR_ORG_SINK \nWHERE\nFHIR_GROUPBY_ORG_SINK.ORG_ID=FHIR_ORG_SINK.ID \nGROUP BY FHIR_GROUPBY_ORG_SINK.ORG_ID, FHIR_ORG_SINK.NAME, PATIENT_GENDER\nORDER BY 1 ASC",
+          "rawSql": "SELECT\n  CONCAT(ORG_ID, \":\", FHIR_ORG_SINK.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_ORG_GENDER, FHIR_ORG_SINK \nWHERE\nFHIR_GROUPBY_ORG_GENDER.ORG_ID=FHIR_ORG_SINK.ID \nGROUP BY FHIR_GROUPBY_ORG_GENDER.ORG_ID, FHIR_ORG_SINK.NAME, PATIENT_GENDER\nORDER BY 1 ASC",
           "refId": "A",
           "select": [
             [
@@ -134,7 +134,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT $__unixEpochGroupAlias(TS,$__interval),\r\nCONCAT(ORG_ID,\"-\",FHIR_ORG_SINK.NAME) AS metric,\r\nmax(CNT) AS \"CNT\" \r\nFROM FHIR_GROUPBY_ORG_SINK, FHIR_ORG_SINK\r\nWHERE FHIR_GROUPBY_ORG_SINK.ORG_ID=FHIR_ORG_SINK.ID \r\nGROUP BY FHIR_GROUPBY_ORG_SINK.ORG_ID, FHIR_ORG_SINK.NAME, TS\r\nORDER BY 2, $__unixEpochGroup(TS,$__interval)",
+          "rawSql": "SELECT A.TS AS \"time\",   \r\n       A.ORG_UNIQ_NAME AS metrics,   \r\n\t   SUM(A.CNT) \r\nFROM (SELECT CURRENT_TIMESTAMP AS TS, CONCAT(ORG_ID, \"-\", FHIR_ORG_SINK.NAME) AS ORG_UNIQ_NAME, PATIENT_GENDER, max(CNT) AS CNT     \r\n\t  FROM FHIR_GROUPBY_ORG_GENDER, FHIR_ORG_SINK\r\n\t  WHERE FHIR_GROUPBY_ORG_GENDER.ORG_ID=FHIR_ORG_SINK.ID\r\n\t  GROUP BY ORG_UNIQ_NAME, PATIENT_GENDER) AS A \r\nGROUP BY ORG_UNIQ_NAME, TS;\r\n\r\n",
           "refId": "A",
           "select": [
             [
@@ -299,5 +299,5 @@
   "timezone": "browser",
   "title": "FHIR Patient By Organization ( FHIR Stream )",
   "uid": "0R6ysC6mk",
-  "version": 74
+  "version": 78
 }

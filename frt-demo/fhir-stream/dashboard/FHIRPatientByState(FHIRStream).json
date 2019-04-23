@@ -349,7 +349,7 @@
           ],
           "metricColumn": "ADDR_STATE",
           "rawQuery": true,
-          "rawSql": "SELECT TS AS time,\nADDR_STATE AS metric,\nMAX(CNT) AS \"CNT\" \nFROM FHIR_GROUPBY_STATE \nGROUP BY TS, ADDR_STATE \nORDER BY ADDR_STATE, TS",
+          "rawSql": "SELECT A.TS AS \"time\",   \r\n       A.ADDR_STATE AS metrics,   \r\n\t   SUM(A.CNT) \r\nFROM (SELECT CURRENT_TIMESTAMP AS TS, ADDR_STATE, PATIENT_GENDER,max(CNT) AS CNT     \r\n\t  FROM FHIR_GROUPBY_STATE_GENDER      \r\n\t  GROUP BY ADDR_STATE, PATIENT_GENDER) AS A \r\nGROUP BY ADDR_STATE, TS;\r\n\r\n",
           "refId": "A",
           "select": [
             [
@@ -381,7 +381,7 @@
       ],
       "timeFrom": null,
       "timeShift": null,
-      "title": "PATIENT COUNT BY STATES & GENDER",
+      "title": "PATIENT COUNT BY STATES",
       "type": "grafana-piechart-panel",
       "valueName": "current"
     }
@@ -394,7 +394,7 @@
     "list": []
   },
   "time": {
-    "from": "now-15m",
+    "from": "now-6h",
     "to": "now"
   },
   "timepicker": {
@@ -417,5 +417,5 @@
   "timezone": "",
   "title": "FHIR Patient By State ( FHIR Stream )",
   "uid": "3yl50L6iz",
-  "version": 50
+  "version": 52
 }
