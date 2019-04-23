@@ -49,12 +49,18 @@ Prerequisites
   
 Setup
 -----
-1)cp tiger\frt-demo\fhir-stream to /home/ec2-user/fhir-stream (on EC2)
-2)cp /home/ec2-user/fhir-stream/confluent/etc/kafka-connect-jdbc/*.* /home/ec2-user/confluent-5.2.0/etc/kafka-connect-jdbc
-3)cp /home/ec2-user/fhir-stream/confluent/etc/schema-registry/*.* /home/ec2-user/confluent-5.2.0/etc/schema-registry
-4)cp /home/ec2-user/fhir-stream/confluent/share/java/kafka-connect-jdbc/*.jar /home/ec2-user/confluent-5.2.0/share/java/kafka-connect-jdbc
-5)cp /home/ec2-user/fhir-stream/confluent/bin/*.* /home/ec2-user/confluent-5.2.0/bin
-6)unzip frt-service-package-1.0.0-SNAPSHOT.zip to /home/ec2-user/frt-service
+1) Copy demo scripts and confluent patches, e.g. as below:
+cp tiger\frt-demo\fhir-stream to /home/ec2-user/fhir-stream (on EC2)
+2) Deploy demo scripts and patching confluent as below:
+   cd /home/ec2-user/fhir-stream and execute 
+   ./deploy2confluent.sh ~/confluent-5.2.0 (assume confluent is installed as shown)
+   OR do following steps:
+   2.1)cp /home/ec2-user/fhir-stream/confluent/etc/kafka-connect-jdbc/*.* /home/ec2-user/confluent-5.2.0/etc/kafka-connect-jdbc
+   2.2)cp /home/ec2-user/fhir-stream/confluent/etc/schema-registry/*.* /home/ec2-user/confluent-5.2.0/etc/schema-registry
+   2.3)cp /home/ec2-user/fhir-stream/confluent/share/java/kafka-connect-jdbc/*.jar /home/ec2-user/confluent-5.2.0/share/java/kafka-connect-jdbc
+   2.4)cp /home/ec2-user/fhir-stream/confluent/bin/*.* /home/ec2-user/confluent-5.2.0/bin
+3) Deploy FRT service tools by doing below:
+   unzip frt-service-package-1.0.0-SNAPSHOT.zip to /home/ec2-user/frt-service
 
 Generate Patient Data
 ---------------------
