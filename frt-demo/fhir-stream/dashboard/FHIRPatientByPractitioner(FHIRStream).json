@@ -70,7 +70,7 @@
           "group": [],
           "metricColumn": "NPI",
           "rawQuery": true,
-          "rawSql": "SELECT\n  CONCAT(NPI, \":\",  FHIR_GP_SINK.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_GP, FHIR_GP_SINK\nWHERE FHIR_GROUPBY_GP.NPI=FHIR_GP_SINK.ID\nGROUP BY FHIR_GROUPBY_GP.NPI, FHIR_GP_SINK.NAME, FHIR_GROUPBY_GP.PATIENT_GENDER\nORDER BY  FHIR_GROUPBY_GP.NPI, FHIR_GP_SINK.NAME",
+          "rawSql": "SELECT\n  CONCAT(NPI, \":\",  FHIR_GP_SINK.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_GP_GENDER, FHIR_GP_SINK\nWHERE FHIR_GROUPBY_GP_GENDER.NPI=FHIR_GP_SINK.ID\nGROUP BY FHIR_GROUPBY_GP_GENDER.NPI, FHIR_GP_SINK.NAME, FHIR_GROUPBY_GP_GENDER.PATIENT_GENDER\nORDER BY  FHIR_GROUPBY_GP_GENDER.NPI, FHIR_GP_SINK.NAME",
           "refId": "A",
           "select": [
             [
@@ -229,5 +229,5 @@
   "timezone": "",
   "title": "FHIR Patient By Practitioner ( FHIR Stream)",
   "uid": "Vm_YJngZz",
-  "version": 39
+  "version": 40
 }

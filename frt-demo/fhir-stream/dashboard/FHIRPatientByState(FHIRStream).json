@@ -99,7 +99,7 @@
           "hide": false,
           "metricColumn": "ADDR_STATE",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__unixEpochGroupAlias(TS,$__interval),\n  CONCAT(ADDR_STATE, \":\", PATIENT_GENDER) AS \"metric\",\n  MAX(CNT)\nFROM FHIR_GROUPBY_STATE_SINK\nGROUP BY 1, ADDR_STATE, PATIENT_GENDER\nORDER BY ADDR_STATE, $__unixEpochGroup(TS,$__interval)",
+          "rawSql": "SELECT\n  $__unixEpochGroupAlias(TS,$__interval),\n  CONCAT(ADDR_STATE, \":\", PATIENT_GENDER) AS \"metric\",\n  MAX(CNT)\nFROM FHIR_GROUPBY_STATE_GENDER\nGROUP BY 1, ADDR_STATE, PATIENT_GENDER\nORDER BY ADDR_STATE, $__unixEpochGroup(TS,$__interval)",
           "refId": "A",
           "select": [
             [
@@ -232,7 +232,7 @@
           ],
           "metricColumn": "PATIENT_GENDER",
           "rawQuery": true,
-          "rawSql": "SELECT\n  ADDR_STATE AS metric,\n  PATIENT_GENDER,\n  max(CNT) AS \"TOTAL\"\nFROM FHIR_GROUPBY_STATE_SINK\nGROUP BY ADDR_STATE, PATIENT_GENDER\nORDER BY ADDR_STATE",
+          "rawSql": "SELECT\n  ADDR_STATE AS metric,\n  PATIENT_GENDER,\n  max(CNT) AS \"TOTAL\"\nFROM FHIR_GROUPBY_STATE_GENDER\nGROUP BY ADDR_STATE, PATIENT_GENDER\nORDER BY ADDR_STATE",
           "refId": "A",
           "select": [
             [
@@ -349,7 +349,7 @@
           ],
           "metricColumn": "ADDR_STATE",
           "rawQuery": true,
-          "rawSql": "SELECT $__unixEpochGroupAlias(TS,$__interval),\nADDR_STATE AS metric,\nSUM(CNT) AS \"CNT\" \nFROM FHIR_GROUPBY_STATE_SINK \nGROUP BY 1, ADDR_STATE,2 \nORDER BY 2, $__unixEpochGroup(TS,$__interval)",
+          "rawSql": "SELECT TS AS time,\nADDR_STATE AS metric,\nMAX(CNT) AS \"CNT\" \nFROM FHIR_GROUPBY_STATE \nGROUP BY TS, ADDR_STATE \nORDER BY ADDR_STATE, TS",
           "refId": "A",
           "select": [
             [
@@ -386,7 +386,7 @@
       "valueName": "current"
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 18,
   "style": "dark",
   "tags": [],
@@ -394,13 +394,13 @@
     "list": []
   },
   "time": {
-    "from": "now-2d",
+    "from": "now-15m",
     "to": "now"
   },
   "timepicker": {
     "hidden": false,
     "refresh_intervals": [
-      "10s"
+      "5s"
     ],
     "time_options": [
       "5m",
@@ -417,5 +417,5 @@
   "timezone": "",
   "title": "FHIR Patient By State ( FHIR Stream )",
   "uid": "3yl50L6iz",
-  "version": 44
+  "version": 50
 }
