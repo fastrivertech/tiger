@@ -71,26 +71,24 @@ Generate Patient Data
 
 Start up Services	
 -----------------
-1)create FHIR_GROUPBY_ORG_SINK table 
-  - /home/ec2-user/fhir-stream/mysql/create_fhir_tables.sql
-2)start confluent
+1)start confluent
   - /home/ec2-user/confluent-5.2.0/bin/confluent start  
-3) stop connect
+2) stop connect
   - /home/ec2-user/confluent-5.2.0/bin/confluent stop connect
-4)launch Confluent Center
+3)launch Confluent Center
   - http://ec2-54-202-179-213.us-west-2.compute.amazonaws.com:9021     
-5)create FhirTopic
+4)create FhirTopic
   - /home/ec2-user/confluent-5.2.0/bin/create-fhir-topics.sh  
-6)create fhir streams
+5)create fhir streams
   - ksql>RUN SCRIPT './create-fhir-streams.sql';
-7)modify connection.url of mysql-sink connector
+6)modify connection.url of mysql-sink connector
   - /home/ec2-user/confluent-5.2.0/etc/kafka-connect-jdbc/fhir-groupby-org-mysql-sink.properties 
-8)load organization and practitioner records
+7)load organization and practitioner records
   - /home/ec2-user/confluent-5.2.0/bin/start-fhir-file-mysql-sink.sh
   - you only need to load once
-9)start connect
+8)start connect
   - /home/ec2-user/confluent-5.2.0/bin/start-fhir-mysql-sink.sh
-10)feed patient records
+9)feed patient records
   - /home/ec2-user/frt-service/bin/fhir-stream-writer.sh ..\data  
   OR
   - /home/ec2-user/frt-service/bin/fhir-stream-feeder.sh ..\data_feeder 1000 California 3000 Arizona 1900 Washington 900 Oregon 500
@@ -102,9 +100,9 @@ Start up Services
   c) call fhir-stream-writer given base folder (e.g. ../data_feeder_EXT_MESSAGES), each states patient jsons are read and send to kafka topic: FhirTopic
   d) in step c), each state's patient json files are read and sent by a java task (thread), the tasks are running in paralelle, generating an infux of patients across the states into the kafka streaming system.
   
-11)launch Grafana
+10)launch Grafana
   - http://ec2-54-202-179-213.us-west-2.compute.amazonaws.com:3000 
-12)create the FHIR dashboard
+11)create the FHIR dashboard
 
 Clean up
 --------
