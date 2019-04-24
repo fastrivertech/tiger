@@ -44,7 +44,7 @@
       "fontSize": "80%",
       "format": "short",
       "gridPos": {
-        "h": 17,
+        "h": 14,
         "w": 15,
         "x": 0,
         "y": 0
@@ -102,15 +102,79 @@
       "width": "1000"
     },
     {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "DEMO-MySQL",
+      "description": "FHIR Patient by Practitioner",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 14,
+        "w": 9,
+        "x": 15,
+        "y": 0
+      },
+      "id": 6,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Under graph",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT A.TS AS \"time\",   \r\n       A.GP_UNIQ_NAME AS metrics,   \r\n\t   SUM(A.CNT) \r\nFROM (SELECT CURRENT_TIMESTAMP AS TS, CONCAT(NPI, \"-\", FHIR_GP_SINK.NAME) AS GP_UNIQ_NAME, PATIENT_GENDER, max(CNT) AS CNT     \r\n\t  FROM FHIR_GROUPBY_GP_GENDER, FHIR_GP_SINK\r\n\t  WHERE FHIR_GROUPBY_GP_GENDER.NPI=FHIR_GP_SINK.ID\r\n\t  GROUP BY GP_UNIQ_NAME, PATIENT_GENDER) AS A \r\nGROUP BY GP_UNIQ_NAME, TS;\r\n\r\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "FHIR Patient by Practitioner",
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
       "columns": [],
       "datasource": "DEMO-MySQL",
       "description": "A list of practitioners of the Patients",
       "fontSize": "100%",
       "gridPos": {
-        "h": 17,
-        "w": 9,
-        "x": 15,
-        "y": 0
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 14
       },
       "id": 2,
       "links": [],
@@ -229,5 +293,5 @@
   "timezone": "",
   "title": "FHIR Patient By Practitioner ( FHIR Stream)",
   "uid": "Vm_YJngZz",
-  "version": 40
+  "version": 42
 }
