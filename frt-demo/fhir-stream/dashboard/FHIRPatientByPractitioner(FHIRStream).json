@@ -70,7 +70,7 @@
           "group": [],
           "metricColumn": "NPI",
           "rawQuery": true,
-          "rawSql": "SELECT\n  CONCAT(NPI, \":\",  FHIR_GP_SINK.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_GP_GENDER, FHIR_GP_SINK\nWHERE FHIR_GROUPBY_GP_GENDER.NPI=FHIR_GP_SINK.ID\nGROUP BY FHIR_GROUPBY_GP_GENDER.NPI, FHIR_GP_SINK.NAME, FHIR_GROUPBY_GP_GENDER.PATIENT_GENDER\nORDER BY  FHIR_GROUPBY_GP_GENDER.NPI, FHIR_GP_SINK.NAME",
+          "rawSql": "SELECT\n  CONCAT(NPI, \":\",  FHIR_GP.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_GP_GENDER, FHIR_GP\nWHERE FHIR_GROUPBY_GP_GENDER.NPI=FHIR_GP.ID\nGROUP BY FHIR_GROUPBY_GP_GENDER.NPI, FHIR_GP.NAME, FHIR_GROUPBY_GP_GENDER.PATIENT_GENDER\nORDER BY  FHIR_GROUPBY_GP_GENDER.NPI, FHIR_GP.NAME",
           "refId": "A",
           "select": [
             [
@@ -137,7 +137,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT A.TS AS \"time\",   \r\n       A.GP_UNIQ_NAME AS metrics,   \r\n\t   SUM(A.CNT) \r\nFROM (SELECT CURRENT_TIMESTAMP AS TS, CONCAT(NPI, \"-\", FHIR_GP_SINK.NAME) AS GP_UNIQ_NAME, PATIENT_GENDER, max(CNT) AS CNT     \r\n\t  FROM FHIR_GROUPBY_GP_GENDER, FHIR_GP_SINK\r\n\t  WHERE FHIR_GROUPBY_GP_GENDER.NPI=FHIR_GP_SINK.ID\r\n\t  GROUP BY GP_UNIQ_NAME, PATIENT_GENDER) AS A \r\nGROUP BY GP_UNIQ_NAME, TS;\r\n\r\n",
+          "rawSql": "SELECT A.TS AS \"time\",   \r\n       A.GP_UNIQ_NAME AS metrics,   \r\n\t   SUM(A.CNT) \r\nFROM (SELECT CURRENT_TIMESTAMP AS TS, CONCAT(NPI, \"-\", FHIR_GP.NAME) AS GP_UNIQ_NAME, PATIENT_GENDER, max(CNT) AS CNT     \r\n\t  FROM FHIR_GROUPBY_GP_GENDER, FHIR_GP\r\n\t  WHERE FHIR_GROUPBY_GP_GENDER.NPI=FHIR_GP.ID\r\n\t  GROUP BY GP_UNIQ_NAME, PATIENT_GENDER) AS A \r\nGROUP BY GP_UNIQ_NAME, TS;\r\n\r\n",
           "refId": "A",
           "select": [
             [
@@ -213,7 +213,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  id AS NPI,\n  name AS Name,\n  specialty AS Specialty,\n  telecom AS Phone,\n  addressline AS Address,\n  city AS City,\n  state AS State,\n  postalcode AS PostalCode\nFROM FHIR_GP_SINK\nORDER BY id",
+          "rawSql": "SELECT\n  id AS NPI,\n  name AS Name,\n  specialty AS Specialty,\n  telecom AS Phone,\n  addressline AS Address,\n  city AS City,\n  state AS State,\n  postalcode AS PostalCode\nFROM FHIR_GP\nORDER BY id",
           "refId": "A",
           "select": [
             [
@@ -293,5 +293,5 @@
   "timezone": "",
   "title": "FHIR Patient By Practitioner ( FHIR Stream)",
   "uid": "Vm_YJngZz",
-  "version": 42
+  "version": 45
 }

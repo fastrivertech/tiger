@@ -56,12 +56,12 @@
         "notifications": []
       },
       "aliasColors": {},
-      "bars": false,
+      "bars": true,
       "dashLength": 10,
       "dashes": false,
       "datasource": "DEMO-MySQL",
       "description": "FHIR Patient Count By State in Time Series",
-      "fill": 1,
+      "fill": 2,
       "gridPos": {
         "h": 8,
         "w": 21,
@@ -81,13 +81,13 @@
         "values": false
       },
       "lines": true,
-      "linewidth": 1,
+      "linewidth": 3,
       "links": [],
       "nullPointMode": "connected",
       "paceLength": 10,
       "percentage": false,
       "pointradius": 1,
-      "points": true,
+      "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
       "stack": true,
@@ -417,5 +417,5 @@
   "timezone": "",
   "title": "FHIR Patient By State ( FHIR Stream )",
   "uid": "3yl50L6iz",
-  "version": 52
+  "version": 53
 }
