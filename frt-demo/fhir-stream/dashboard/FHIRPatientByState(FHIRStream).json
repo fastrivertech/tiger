@@ -56,7 +56,7 @@
         "notifications": []
       },
       "aliasColors": {},
-      "bars": true,
+      "bars": false,
       "dashLength": 10,
       "dashes": false,
       "datasource": "DEMO-MySQL",
@@ -90,7 +90,7 @@
       "points": false,
       "renderer": "flot",
       "seriesOverrides": [],
-      "stack": true,
+      "stack": false,
       "steppedLine": true,
       "targets": [
         {
@@ -99,7 +99,7 @@
           "hide": false,
           "metricColumn": "ADDR_STATE",
           "rawQuery": true,
-          "rawSql": "SELECT\n  $__unixEpochGroupAlias(TS,$__interval),\n  CONCAT(ADDR_STATE, \":\", PATIENT_GENDER) AS \"metric\",\n  MAX(CNT)\nFROM FHIR_GROUPBY_STATE_GENDER\nGROUP BY 1, ADDR_STATE, PATIENT_GENDER\nORDER BY ADDR_STATE, $__unixEpochGroup(TS,$__interval)",
+          "rawSql": "/* display different gender lines\r\nSELECT\r\n  $__unixEpochGroupAlias(TS,$__interval),\r\n  CONCAT(ADDR_STATE, \":\", PATIENT_GENDER) AS \"metric\",\r\n  MAX(CNT)\r\nFROM FHIR_GROUPBY_STATE_GENDER\r\nGROUP BY 1, ADDR_STATE, PATIENT_GENDER\r\nORDER BY ADDR_STATE, $__unixEpochGroup(TS,$__interval)\r\n*/\r\n\r\n/* combined gender lines */\r\nSELECT\r\n  $__unixEpochGroupAlias(C.TS,$__interval),\r\n  C.STATE AS \"metric\",\r\n  C.ACNT + C.BCNT\r\nFROM \r\n(SELECT A.TS AS TS, A.ADDR_STATE AS STATE, A.PATIENT_GENDER AS GENDER, A.CNT AS ACNT, MAX(B.CNT) AS BCNT   \r\n FROM \r\n  (SELECT * FROM FHIR_GROUPBY_STATE_GENDER        \r\n   WHERE PATIENT_GENDER='male') A  \r\n LEFT JOIN        \r\n  (SELECT * FROM FHIR_GROUPBY_STATE_GENDER    \r\n   WHERE PATIENT_GENDER='female') B  \r\n ON (A.ADDR_STATE = B.ADDR_STATE AND A.TS > B.TS)  \r\n GROUP BY A.TS, A.ADDR_STATE, A.PATIENT_GENDER, A.CNT, B.PATIENT_GENDER) C\r\nORDER BY C.STATE, $__unixEpochGroup(C.TS,$__interval)\r\n",
           "refId": "A",
           "select": [
             [
@@ -417,5 +417,5 @@
   "timezone": "",
   "title": "FHIR Patient By State ( FHIR Stream )",
   "uid": "3yl50L6iz",
-  "version": 53
+  "version": 62
 }
