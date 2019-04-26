@@ -45,6 +45,10 @@ Prerequisites
   - Use tiger\frt-demo\fhir-stream\mysql\create_db_user.sql
     > Create FHIR_DB database
 	> Create a frt user with mysql-native-password policy  
+  - Use tiger\frt-demo\fhir-stream\mysql\create_grafana_ds_resources.sql
+    > Create FHIR_GROUPBY_STATE_GENDER table with ET timestamp for historical data simulation
+	> Create insert trigger DS_TRIGGER_STATE_GENDER to map influx state + gender aggregate records to any time range by tagging the record with ET timestamp
+	> ET will be used by grafana time series queries to render history data points on a time graph.
 5)Build the Tiger project using JDK 11.0.2 and get frt-service-package ready  
   
 Setup
