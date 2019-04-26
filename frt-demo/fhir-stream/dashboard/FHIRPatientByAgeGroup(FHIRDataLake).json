@@ -68,7 +68,7 @@
           "group": [],
           "metricColumn": "none",
           "rawQuery": true,
-          "rawSql": "SELECT\n  REPLACE(AGE_GROUP, '>91', '91 and above') AS metric,\n  PATIENT_GENDER,\n  CONVERT(MAX(PATIENT_COUNT), SIGNED)\nFROM FHIR_GROUPBY_AGE\nGROUP BY AGE_GROUP, PATIENT_GENDER\nORDER BY AGE_GROUP\n",
+          "rawSql": "SELECT\n  REPLACE(AGE_GROUP, '>91', '91 and above') AS metric,\n  PATIENT_GENDER,\n  MAX(CONVERT(PATIENT_COUNT,SIGNED))\nFROM FHIR_GROUPBY_AGE\nGROUP BY AGE_GROUP, PATIENT_GENDER\nORDER BY AGE_GROUP\n",
           "refId": "A",
           "select": [
             [
@@ -163,7 +163,7 @@
       "valueName": "current"
     }
   ],
-  "refresh": false,
+  "refresh": "5s",
   "schemaVersion": 18,
   "style": "dark",
   "tags": [],
@@ -176,16 +176,7 @@
   },
   "timepicker": {
     "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
+      "5s"
     ],
     "time_options": [
       "5m",
@@ -202,5 +193,5 @@
   "timezone": "",
   "title": "FHIR Patient By Age  Group  ( FHIR Data Lake )",
   "uid": "dM1ZBxRZz",
-  "version": 32
+  "version": 38
 }
