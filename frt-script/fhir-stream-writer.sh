@@ -4,4 +4,4 @@
 
 source ../env.sh
 
-$JAVA_HOME/bin/java -classpath "../lib/*" com.frt.stream.io.FhirStreamWriter $1
+$JAVA_HOME/bin/java -classpath "../lib/*" com.frt.stream.io.FhirStreamWriter $1 $2
