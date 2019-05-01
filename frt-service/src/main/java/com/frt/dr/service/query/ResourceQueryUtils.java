@@ -78,6 +78,24 @@ public class ResourceQueryUtils {
 	}
 
 	/**
+	 * generate param place holder for a MV 
+	 * @param i
+	 * @param j
+	 * @param ap
+	 * @return
+	 */
+	public static String getPlaceHolder(int i, int j, CompositeParameter ap) {
+		StringBuilder sb = new StringBuilder(ap.getBaseName());
+		String m = ap.getModifier()!=null?ap.getModifier():"";
+		String c = ap.getComparator()!=null&&ap.getComparator().size()>0?ap.getComparator().get(i):"";
+		sb.append("_").append(m).append(c).append("_").append(i);
+		if (j>=0) {
+			sb.append("_").append(j);
+		}
+		return sb.toString();
+	}
+
+	/**
 	 * helper - given a string value, generate SQL predicate LIKE pattern
 	 * @param value - the given string value
 	 * @return the SQL LIKE predicate matching pattern 

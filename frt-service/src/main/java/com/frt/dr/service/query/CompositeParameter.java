@@ -12,7 +12,9 @@ package com.frt.dr.service.query;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * ActualParameter class
@@ -34,8 +36,9 @@ public class CompositeParameter {
 	private List<String> values; 
 	private Class<?> type;
 	// value(s) in java object as indicated by type
+	// ugly fix - if the ith entry is MV, then it is replaced by Map of mangled param name and resolved value;
 	private List<Object> valObjs; 
-
+	
 	public CompositeParameter(String rawName, List<String> values) {
 		super();
 		this.rawName = rawName;
@@ -259,6 +262,19 @@ public class CompositeParameter {
 				setEnumModifier(SearchParameter.Modifier.CONTAINS);
 			}
 		}
+	}
+
+	public void setMV(int i, String n, String v) {
+		Object value = this.getValueObject().get(i);
+		Map<String, String> mv = null;
+		if (value instanceof Map) {
+			mv = (Map)value;
+		}
+		else {
+			mv = new HashMap<String, String>();
+			this.getValueObject().set(i, mv);
+		}
+		mv.put(n, v);
 	}
 
 }

@@ -12,6 +12,7 @@ package com.frt.dr.service.query.impl;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -71,14 +72,6 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 		
 		Set<Parameter<?>> qparams = query.getParameters();
 
-//		if (qparams.size() > parameters.size()) {
-//			System.out.println("Query parameters count: " + qparams.size() + " > actual parameters count: "
-//					+ parameters.size());
-//		} else if (qparams.size() < parameters.size()) {
-//			System.out.println("Query parameters count: " + qparams.size() + " < actual parameters count: "
-//					+ parameters.size());
-//		}
-//
 		Iterator<Class<?>> it = parameters.keySet().iterator();
 		
 		while (it.hasNext()) {
@@ -86,13 +79,32 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 			List<CompositeParameter> paramsPerClazz = parameters.get(clazz);
 			for (CompositeParameter ap : paramsPerClazz) {
 				List<Object> valObjs = ap.getValueObject();
+				Map<String, String> mvMapping = null;
 				if (ap.getType().equals(String.class) && ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
 					for (int i=0; i<valObjs.size(); i++) {
-						query.setParameter(ResourceQueryUtils.getPlaceHolder(i, ap), ResourceQueryUtils.convertToLikePattern(ap.getValueObject().get(i).toString()));
+						Object value = valObjs.get(i);
+						if (value instanceof Map) {
+							mvMapping = (Map<String, String>)value;
+							for (Map.Entry<String, String> e: mvMapping.entrySet()) {
+								query.setParameter(e.getKey(), ResourceQueryUtils.convertToLikePattern(e.getValue()));
+							}
+						}
+						else {
+							query.setParameter(ResourceQueryUtils.getPlaceHolder(i, ap), ResourceQueryUtils.convertToLikePattern(value.toString()));
+						}
 					}
 				} else {
 					for (int i=0; i<valObjs.size(); i++) {
-						query.setParameter(ResourceQueryUtils.getPlaceHolder(i, ap), ap.getValueObject().get(i));
+						Object value = valObjs.get(i);
+						if (value instanceof Map) {
+							mvMapping = (Map<String, String>)value;
+							for (Map.Entry<String, String> e: mvMapping.entrySet()) {
+								query.setParameter(e.getKey(), e.getValue());
+							}
+						}
+						else {
+							query.setParameter(ResourceQueryUtils.getPlaceHolder(i, ap), value);
+						}
 					}
 				}
 			}
@@ -130,25 +142,26 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 		CriteriaQuery<T> cq = cb.createQuery(resourceClazz);
 		Root<T> rootResource = cq.from(resourceClazz);
 		Predicate where = cb.conjunction();
-
-		Iterator<Class<?>> it = parameters.keySet().iterator();
-
-		while (it.hasNext()) {
-			Class<?> clazz = (Class<?>)it.next();
-			List<CompositeParameter> paramsPerClazz = parameters.get(clazz);
-			if (clazz.equals(resourceClazz)) {
-				// process search parameters on primary class (the FHIR resource)
-				where = addCriteria(where, cb, rootResource, null, paramsPerClazz, true);
-			} else {
-				// process search parameters on child classes (the FHIR complex types)
-				// a join is needed plus other expression
-				String[] joinAttrs = SearchParameterRegistry.getJoinAttributes(resourceClazz, (Class<U>)clazz);
-				Metamodel m = em.getMetamodel();
-				EntityType<T> resourceEntity_ = m.entity(resourceClazz);
-				// handle one foreign key for now
-				// think about chained join later if there are use cases
-				Join<T, U> join = rootResource.join(resourceEntity_.getList(joinAttrs[0], (Class<U>) clazz));
-				where = addCriteria(where, cb, null, join, paramsPerClazz, true);
+		if (parameters!=null) {
+			Iterator<Class<?>> it = parameters.keySet().iterator();
+	
+			while (it.hasNext()) {
+				Class<?> clazz = (Class<?>)it.next();
+				List<CompositeParameter> paramsPerClazz = parameters.get(clazz);
+				if (clazz.equals(resourceClazz)) {
+					// process search parameters on primary class (the FHIR resource)
+					where = addCriteria(where, cb, rootResource, null, paramsPerClazz, true);
+				} else {
+					// process search parameters on child classes (the FHIR complex types)
+					// a join is needed plus other expression
+					String[] joinAttrs = SearchParameterRegistry.getJoinAttributes(resourceClazz, (Class<U>)clazz);
+					Metamodel m = em.getMetamodel();
+					EntityType<T> resourceEntity_ = m.entity(resourceClazz);
+					// handle one foreign key for now
+					// think about chained join later if there are use cases
+					Join<T, U> join = rootResource.join(resourceEntity_.getList(joinAttrs[0], (Class<U>) clazz));
+					where = addCriteria(where, cb, null, join, paramsPerClazz, true);
+				}
 			}
 		}
 		cq.where(where);
@@ -200,14 +213,18 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 			// value can be multiple - if multiple values present for a param, the semantics is AND'd
 			if (ap.getType().equals(String.class)) {
 				for (int i = 0; i < valObjs.size(); i++) {
-					ParameterExpression<String> p = cb.parameter(String.class, ResourceQueryUtils.getPlaceHolder(i, ap));
-					if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
-						term = cb.and(term, cb.equal(path, p));
-					} else if (ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
-						term = cb.and(term, cb.like(path.as(String.class), p));
+					String value = (String)valObjs.get(i);
+					String[] mv = value.split(",");
+					if (mv.length==1) {
+						term = addCompare(cb, term, path, i, -1, null, ap);
 					} else {
-						throw new IllegalArgumentException(
-								"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + ap.getCannonicalName());
+						Predicate orExp = cb.disjunction();
+						int index = 0;
+						for (String v: mv) {
+							orExp = addCompare(cb, orExp, path, i, index, v, ap);
+							index++;
+						}
+						term = cb.and(term, orExp);
 					}
 				}
 			} else if (ap.getType().equals(Boolean.class)) {
@@ -314,6 +331,63 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 			actualParams.addAll(expandedParams);
 		}
 		return where;
+	}
+
+	private Predicate addCompare(CriteriaBuilder cb, Predicate term, Path<Object> path, int i, int j, String v, CompositeParameter ap) {
+		Predicate result = null;
+		String mangledParamName = ResourceQueryUtils.getPlaceHolder(i, j, ap);
+		ParameterExpression<String> p = cb.parameter(String.class, mangledParamName);
+		if (j>=0) {
+			// MV
+			ap.setMV(i, mangledParamName, v);
+			if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
+				result = cb.or(term, cb.equal(path, p));
+			} else if (ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
+				result = cb.or(term, cb.like(path.as(String.class), p));
+			} else {
+				throw new IllegalArgumentException(
+					"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + ap.getCannonicalName());
+			}
+		}
+		else {
+			if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
+				result = cb.and(term, cb.equal(path, p));
+			} else if (ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
+				result = cb.and(term, cb.like(path.as(String.class), p));
+			} else {
+				throw new IllegalArgumentException(
+					"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + ap.getCannonicalName());
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * generate OR'd string comparison predicates
+	 * @param term 
+	 * @param cb 
+	 * @param path 
+	 * @param valObjs - actual param value
+	 * @param i - position of value (may be a comma delimited multi-value);
+	 * @param ap 
+	 * @return 
+	 */
+	private List<CompositeParameter> processMultiValues(CriteriaBuilder cb, Predicate term, Path<Object> path, List<Object> valObjs, int i, CompositeParameter ap) {
+		String value = (String)valObjs.get(i);
+		String[] mv = value.split(",");
+		List<CompositeParameter> pl = new ArrayList<CompositeParameter>();
+		for (int j=0; j<mv.length; j++) {
+			ParameterExpression<String> p = cb.parameter(String.class, ResourceQueryUtils.getPlaceHolder(i, ap));
+			if (ap.getEnumModifier() == null || ap.getEnumModifier() == SearchParameter.Modifier.EXACT) {
+				term = cb.and(term, cb.equal(path, p));
+			} else if (ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
+				term = cb.and(term, cb.like(path.as(String.class), p));
+			} else {
+				throw new IllegalArgumentException(
+						"Unsupported modifier: " + ap.getModifier() + ", for parameter: " + ap.getCannonicalName());
+			}
+		}
+		return null;
 	}
 
 	/**
