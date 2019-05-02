@@ -30,15 +30,19 @@ public class ResourceQueryUtils {
 	 * @param groupParams - IN/OUT - actual parameters that represent a group search parameter e.g. Patient.name, Patient.address etc.
 	 * @return list of actual parameters extracted from query parameters
 	 */
-	public static Map<Class<?>, List<CompositeParameter>> processParameters(MultivaluedMap<String, String> params) {
-		Map<Class<?>, List<CompositeParameter>> actualParamsMap = null;
-		for (Map.Entry<Class<?>, List<String>> paramsPerClazz : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.entrySet()) {
-			List<CompositeParameter> actualParams = null;
-			Class<?> clazz = paramsPerClazz.getKey();
-			for (String paramName : paramsPerClazz.getValue()) {
-				Iterator<String> it = params.keySet().iterator();
-				while (it.hasNext()) {
-					String key = (String) it.next();
+	public static Map<Class<?>, List<CompositeParameter>> processParameters(MultivaluedMap<String, String> params) 
+		throws QueryException {
+		
+		Map<Class<?>, List<CompositeParameter>> actualParamsMap = new HashMap<Class<?>, List<CompositeParameter>>();
+		Iterator<String> it = params.keySet().iterator();
+		while (it.hasNext()) {
+			String key = (String) it.next();
+			boolean supported = false;
+			for (Map.Entry<Class<?>, List<String>> paramsPerClazz : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.entrySet()) {		
+				List<CompositeParameter> actualParams = null;
+				Class<?> clazz = paramsPerClazz.getKey();
+				for (String paramName : paramsPerClazz.getValue()) {	
+					// previous loop					
 					List<String> mValues = (List)params.get(key);
 					String[] name_parts = parseParamName(key);
 					String baseName = name_parts[0];
@@ -46,18 +50,20 @@ public class ResourceQueryUtils {
 						SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(baseName);
 						CompositeParameter actualParam = new CompositeParameter(key, mValues);
 						actualParam.parse(sp);
-						if (actualParams==null) {
+						if (actualParams == null) {
 							actualParams = new ArrayList<CompositeParameter>();
 						}
 						actualParams.add(actualParam);
+						supported = true;
+					}
+					// end of the previous loop
+					if (actualParams != null) {
+						actualParamsMap.put(clazz, actualParams);
 					}
 				}
-				if (actualParams!=null) {
-					if (actualParamsMap==null) {
-						actualParamsMap = new HashMap<Class<?>, List<CompositeParameter>>();
-					}
-					actualParamsMap.put(clazz, actualParams);
-				}
+			}
+			if (!supported) {
+				throw new QueryException("invalid search parameters: " + params.keySet().toString());
 			}
 		}
 		return actualParamsMap;
@@ -82,14 +88,14 @@ public class ResourceQueryUtils {
 	 * @param i
 	 * @param j
 	 * @param ap
-	 * @return
+	 * @return 
 	 */
 	public static String getPlaceHolder(int i, int j, CompositeParameter ap) {
 		StringBuilder sb = new StringBuilder(ap.getBaseName());
-		String m = ap.getModifier()!=null?ap.getModifier():"";
-		String c = ap.getComparator()!=null&&ap.getComparator().size()>0?ap.getComparator().get(i):"";
+		String m = ap.getModifier() != null ? ap.getModifier() : "";
+		String c = ap.getComparator() != null && ap.getComparator().size()>0 ? ap.getComparator().get(i) : "";
 		sb.append("_").append(m).append(c).append("_").append(i);
-		if (j>=0) {
+		if ( j>=0 ) {
 			sb.append("_").append(j);
 		}
 		return sb.toString();

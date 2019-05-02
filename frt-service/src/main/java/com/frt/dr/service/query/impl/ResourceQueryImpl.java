@@ -60,50 +60,49 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 	
 	@Override
 	public void prepareQuery() {
-		checkState(QUERY_STATES.CREATED);
 		
-		CriteriaQuery<T> cq = getQueryCriteria(resourceClazz, parameters);
-		
+		checkState(QUERY_STATES.CREATED);		
+		CriteriaQuery<T> cq = getQueryCriteria(resourceClazz, parameters);		
 		this.query = em.createQuery(cq);
 		
-		if (parameters==null&&parameters.size()==0) {
+		if (parameters == null ||
+		    parameters.size() == 0) {
 			this.query.setMaxResults(3);
-		}
-		
-		Set<Parameter<?>> qparams = query.getParameters();
-
-		Iterator<Class<?>> it = parameters.keySet().iterator();
-		
-		while (it.hasNext()) {
-			Class<?> clazz = (Class<?>)it.next();
-			List<CompositeParameter> paramsPerClazz = parameters.get(clazz);
-			for (CompositeParameter ap : paramsPerClazz) {
-				List<Object> valObjs = ap.getValueObject();
-				Map<String, String> mvMapping = null;
-				if (ap.getType().equals(String.class) && ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
-					for (int i=0; i<valObjs.size(); i++) {
-						Object value = valObjs.get(i);
-						if (value instanceof Map) {
-							mvMapping = (Map<String, String>)value;
-							for (Map.Entry<String, String> e: mvMapping.entrySet()) {
-								query.setParameter(e.getKey(), ResourceQueryUtils.convertToLikePattern(e.getValue()));
+		} else {
+			Set<Parameter<?>> qparams = query.getParameters();		
+			Iterator<Class<?>> it = parameters.keySet().iterator();
+			
+			while (it.hasNext()) {
+				Class<?> clazz = (Class<?>)it.next();
+				List<CompositeParameter> paramsPerClazz = parameters.get(clazz);
+				for (CompositeParameter ap : paramsPerClazz) {
+					List<Object> valObjs = ap.getValueObject();
+					Map<String, String> mvMapping = null;
+					if (ap.getType().equals(String.class) && ap.getEnumModifier() == SearchParameter.Modifier.CONTAINS) {
+						for (int i=0; i<valObjs.size(); i++) {
+							Object value = valObjs.get(i);
+							if (value instanceof Map) {
+								mvMapping = (Map<String, String>)value;
+								for (Map.Entry<String, String> e: mvMapping.entrySet()) {
+									query.setParameter(e.getKey(), ResourceQueryUtils.convertToLikePattern(e.getValue()));
+								}
+							}
+							else {
+								query.setParameter(ResourceQueryUtils.getPlaceHolder(i, ap), ResourceQueryUtils.convertToLikePattern(value.toString()));
 							}
 						}
-						else {
-							query.setParameter(ResourceQueryUtils.getPlaceHolder(i, ap), ResourceQueryUtils.convertToLikePattern(value.toString()));
-						}
-					}
-				} else {
-					for (int i=0; i<valObjs.size(); i++) {
-						Object value = valObjs.get(i);
-						if (value instanceof Map) {
-							mvMapping = (Map<String, String>)value;
-							for (Map.Entry<String, String> e: mvMapping.entrySet()) {
-								query.setParameter(e.getKey(), e.getValue());
+					} else {
+						for (int i=0; i<valObjs.size(); i++) {
+							Object value = valObjs.get(i);
+							if (value instanceof Map) {
+								mvMapping = (Map<String, String>)value;
+								for (Map.Entry<String, String> e: mvMapping.entrySet()) {
+									query.setParameter(e.getKey(), e.getValue());
+								}
 							}
-						}
-						else {
-							query.setParameter(ResourceQueryUtils.getPlaceHolder(i, ap), value);
+							else {
+								query.setParameter(ResourceQueryUtils.getPlaceHolder(i, ap), value);
+							}
 						}
 					}
 				}
@@ -142,9 +141,8 @@ public class ResourceQueryImpl<T extends Resource> implements ResourceQuery<Reso
 		CriteriaQuery<T> cq = cb.createQuery(resourceClazz);
 		Root<T> rootResource = cq.from(resourceClazz);
 		Predicate where = cb.conjunction();
-		if (parameters!=null) {
-			Iterator<Class<?>> it = parameters.keySet().iterator();
-	
+		if (parameters != null) {			
+			Iterator<Class<?>> it = parameters.keySet().iterator();	
 			while (it.hasNext()) {
 				Class<?> clazz = (Class<?>)it.next();
 				List<CompositeParameter> paramsPerClazz = parameters.get(clazz);

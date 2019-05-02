@@ -8,44 +8,43 @@
  * $Author: cye			$: Author of last commit       
  * $Date:	10-10-2018	$: Date of last commit
  */
-package com.frt.dr.service.search;
+package com.frt.dr.service.query;
 
-public class ResourceQueryException extends RuntimeException {
+public class QueryException extends RuntimeException {
 	private static final long serialVersionUID = -8321293485415818762L;
 	
 	/**
-	 * ResourceQueryException Constructor
+	 * QueryException Constructor
 	 */
-	public ResourceQueryException() {
+	public QueryException() {
 		super();
 	}
 
 	/**
-	 * ResourceQueryException Constructor
+	 * QueryException Constructor
 	 * 
 	 * @param m Message string
 	 */
-	public ResourceQueryException(String m) {
+	public QueryException(String m) {
 		super(m);
 	}
 
 	/**
-	 * ResourceQueryException Constructor
+	 * QueryException Constructor
 	 * 
 	 * @param m Message string
 	 * @param t Throwable inherited
 	 */
-	public ResourceQueryException(String m, Throwable t) {
+	public QueryException(String m, Throwable t) {
 		super(m, t);
 	}
 
 	/**
-	 * ResourceQueryException Constructor
+	 * QueryException Constructor
 	 * 
 	 * @param t Throwable inherited
 	 */
-	public ResourceQueryException(Throwable t) {
+	public QueryException(Throwable t) {
 		super(t);
 	}
-
-}	
+}

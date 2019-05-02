@@ -36,7 +36,7 @@ public class CompositeParameter {
 	private List<String> values; 
 	private Class<?> type;
 	// value(s) in java object as indicated by type
-	// ugly fix - if the ith entry is MV, then it is replaced by Map of mangled param name and resolved value;
+	// if the ith entry is mv, then it is replaced by Map of mangled param name and resolved value;
 	private List<Object> valObjs; 
 	
 	public CompositeParameter(String rawName, List<String> values) {

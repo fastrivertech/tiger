@@ -27,6 +27,7 @@ import com.frt.dr.service.query.ResourceQuery;
 import com.frt.dr.service.query.ResourceQueryBuilder;
 import com.frt.dr.service.query.ResourceQueryUtils;
 import com.frt.dr.service.query.QueryCriteria;
+import com.frt.dr.service.query.QueryException;
 
 /**
  * ResourceDao class
@@ -82,7 +83,8 @@ public class ResourceDao extends BaseDao<Resource, String> {
 			ResourceQuery<Resource> rq = rb.createQuery();
 			rq.prepareQuery();
 			return rq.doQuery();
-		} catch (IllegalArgumentException | 
+		} catch (QueryException |
+				 IllegalArgumentException | 
 				 QueryTimeoutException | 
 				 TransactionRequiredException | 
 				 PessimisticLockException | 
