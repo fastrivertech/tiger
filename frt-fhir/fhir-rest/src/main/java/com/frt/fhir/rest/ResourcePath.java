@@ -25,6 +25,7 @@ public interface ResourcePath {
 	 public static final String METADATA_PATH = "/metadata";	
 	 public static final String RESOURCE_PATH = "/{resource:[a-ln-zA-Z]+}";	 
 	 public static final String OPERATION_PATH = "/${operation:[A-Za-z]+}";	
+	 public static final String SEARCH_PATH = "/_search";	 		 
 	 
 	 // FHIR MPI operations
 	 public static final String PATIENT_PATH = "/Patient";	 	

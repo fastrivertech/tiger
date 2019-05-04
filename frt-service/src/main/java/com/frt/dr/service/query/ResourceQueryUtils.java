@@ -37,33 +37,36 @@ public class ResourceQueryUtils {
 		Iterator<String> it = params.keySet().iterator();
 		while (it.hasNext()) {
 			String key = (String) it.next();
-			boolean supported = false;
-			for (Map.Entry<Class<?>, List<String>> paramsPerClazz : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.entrySet()) {		
-				List<CompositeParameter> actualParams = null;
-				Class<?> clazz = paramsPerClazz.getKey();
-				for (String paramName : paramsPerClazz.getValue()) {	
-					// previous loop					
-					List<String> mValues = (List)params.get(key);
-					String[] name_parts = parseParamName(key);
-					String baseName = name_parts[0];
-					if (baseName.equals(paramName)) {
-						SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(baseName);
-						CompositeParameter actualParam = new CompositeParameter(key, mValues);
-						actualParam.parse(sp);
-						if (actualParams == null) {
-							actualParams = new ArrayList<CompositeParameter>();
+			if (!"_format".equals(key) &&
+				!"_summary".equals(key)) {
+				boolean supported = false;
+				for (Map.Entry<Class<?>, List<String>> paramsPerClazz : SearchParameterRegistry.ENTITY_SEARCH_PARAMETERS.entrySet()) {		
+					List<CompositeParameter> actualParams = null;
+					Class<?> clazz = paramsPerClazz.getKey();
+					for (String paramName : paramsPerClazz.getValue()) {	
+						// previous loop					
+						List<String> mValues = (List)params.get(key);
+						String[] name_parts = parseParamName(key);
+						String baseName = name_parts[0];
+						if (baseName.equals(paramName)) {
+							SearchParameter sp = SearchParameterRegistry.getParameterDescriptor(baseName);
+							CompositeParameter actualParam = new CompositeParameter(key, mValues);
+							actualParam.parse(sp);
+							if (actualParams == null) {
+								actualParams = new ArrayList<CompositeParameter>();
+							}
+							actualParams.add(actualParam);
+							supported = true;
 						}
-						actualParams.add(actualParam);
-						supported = true;
-					}
-					// end of the previous loop
-					if (actualParams != null) {
-						actualParamsMap.put(clazz, actualParams);
+						// end of the previous loop
+						if (actualParams != null) {
+							actualParamsMap.put(clazz, actualParams);
+						}
 					}
 				}
-			}
-			if (!supported) {
-				throw new QueryException("invalid search parameters: " + params.keySet().toString());
+				if (!supported) {
+					throw new QueryException("invalid search parameters: " + params.keySet().toString());
+				}
 			}
 		}
 		return actualParamsMap;
