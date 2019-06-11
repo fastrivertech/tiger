@@ -25,23 +25,23 @@
         <exclude-unlisted-classes>true</exclude-unlisted-classes>
         <shared-cache-mode>NONE</shared-cache-mode>		
         <properties>			
-			<!-- for splice machine --> 
+			<!-- for splice machine 
 			<property name="javax.persistence.jdbc.driver" value="com.splicemachine.db.jdbc.ClientDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:splice://ec2-54-202-187-87.us-west-2.compute.amazonaws.com:1527/splicedb"/>
             <property name="javax.persistence.jdbc.user" value="frt"/>
             <property name="javax.persistence.jdbc.password" value="frt"/>
-			
+			-->
 			<!-- for embedded derby -->
 		    <!--
 			<property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:derby:C:\apache\derby\tiger_db"/>
 			-->
-			<!-- for  network derby
+			<!-- for  network derby -->
 		    <property name="javax.persistence.jdbc.driver" value="org.apache.derby.jdbc.ClientDriver"/>
             <property name="javax.persistence.jdbc.url" value="jdbc:derby://localhost:1527/tiger_db"/>	
             <property name="javax.persistence.jdbc.user" value="frt"/>
             <property name="javax.persistence.jdbc.password" value="frt"/>
-			-->
+			
 			<!-- eclipselink.ddl-generation: none/create-tables -->
             <!-- property name="eclipselink.ddl-generation" value="none"/-->		
             <property name="eclipselink.ddl-generation" value="none"/>		
