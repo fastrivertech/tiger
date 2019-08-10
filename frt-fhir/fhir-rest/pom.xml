@@ -145,6 +145,10 @@
 	  <groupId>com.frt</groupId>
       <artifactId>frt-fhir-service</artifactId>
 	</dependency>  	
+	<dependency>
+	  <groupId>com.frt</groupId>
+      <artifactId>frt-fhir-mpi</artifactId>
+	</dependency>  		
 	<!-- hapi -->
 	<dependency>
 		<groupId>ca.uhn.hapi.fhir</groupId>

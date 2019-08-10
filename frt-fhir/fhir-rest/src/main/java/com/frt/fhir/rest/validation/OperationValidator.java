@@ -26,7 +26,7 @@ import com.frt.util.logging.Localization;
  * @author cqye
  */
 public class OperationValidator {
-	private final static Localization localizer = Localization.getInstance();
+	protected final static Localization localizer = Localization.getInstance();
 
 	private final static List<String> formats = new ArrayList<>();
 	private final static List<String> summaries = new ArrayList<>();

@@ -10,11 +10,14 @@
  */
 package com.frt.fhir.rest;
 
+import java.util.List;
+import java.util.Optional;
 import javax.annotation.security.PermitAll;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -23,6 +26,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriInfo;
 import org.hl7.fhir.r4.model.Bundle;
+import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import com.frt.dr.model.base.Patient;
 import com.frt.fhir.mpi.MpiService;
@@ -31,7 +35,12 @@ import com.frt.fhir.mpi.MpiServiceImpl;
 import com.frt.fhir.mpi.parser.ParameterParser;
 import com.frt.fhir.mpi.parser.ParameterParserException;
 import com.frt.fhir.mpi.resource.Parameters;
+import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.parser.JsonParser;
+import com.frt.fhir.rest.validation.MpiOperationValidator;
+import com.frt.fhir.rest.validation.OperationValidatorException;
+import com.frt.fhir.service.FhirServiceException;
+import com.frt.stream.service.StreamServiceException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 
@@ -194,8 +203,8 @@ public class MpiResourceOperation extends ResourceOperation {
 	 * @status 400 Bad request
 	 * @status 404 Not found
 	 * @status 500 Internal server error
-	 */	
-	@POST
+	 */
+	@PUT
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_MERGE_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
@@ -213,19 +222,50 @@ public class MpiResourceOperation extends ResourceOperation {
 				            @ApiResponse(responseCode = "500", description = "Internal server error")
 						  }
 			   )
-	public Response merge(@Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false)
-  						  @QueryParam("_format") @DefaultValue("json") final String _format,
-						  @Parameter(description = "FHIR Resource in json / xml string, json supported", required = true) 
-						  final String body) {
+	public <R extends DomainResource> Response merge(@Parameter(description = "FHIR source patient identifier merges to target patient identifier", required = true)
+						  							 @QueryParam("patient.identifier") final List<String> identifiers,
+  												     @Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false)
+						  						     @QueryParam("_format") @DefaultValue("json") final String _format) {
+		try {
+			logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "merge"));												
 		
-		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "merge"));												
-		
-		String message = "Patient resource operation merge not implemented yet"; 
-		OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
-																						  OperationOutcome.IssueSeverity.INFORMATION, 
-																						  OperationOutcome.IssueType.INFORMATIONAL);
-		String resourceInJson = jsonParser.serialize(outcome);
-		return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);		
+			MpiOperationValidator.validateFormat(_format);
+			MpiOperationValidator.validateIdentifiers(identifiers);		
+			Optional<R> merged = mpiService.merge(identifiers, null);		
+			if (merged.isPresent()) {
+				String resourceInJson = jsonParser.serialize(merged.get());      				
+				String location = uriInfo.getAbsolutePath().getPath() + "_history/" + merged.get().getMeta().getVersionId();
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "2", location, MimeType.APPLICATION_FHIR_JSON);											
+			} else {
+				String error = "failed to merge '" + identifiers.get(0) + "' and '" + identifiers.get(0) + "'"; 
+				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
+																								  OperationOutcome.IssueSeverity.ERROR, 
+																								  OperationOutcome.IssueType.PROCESSING);
+				String resourceInJson = jsonParser.serialize(outcome);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_FHIR_JSON);
+			}
+		} catch (OperationValidatorException vx) {
+			String error = "invalid parameter: " + vx.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = jsonParser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_FHIR_JSON);				
+		} catch (JsonFormatException fx) {
+			String error = "invalid resource: " + fx.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = jsonParser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);							 
+		} catch (MpiServiceException | UnsupportedOperationException ex) {								
+			String error = "service failure: " + ex.getMessage(); 
+			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
+																							  OperationOutcome.IssueSeverity.ERROR, 
+																							  OperationOutcome.IssueType.PROCESSING);
+			String resourceInJson = jsonParser.serialize(outcome);
+			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);							 			 			 
+		} 
 	}
 	
 	/**
