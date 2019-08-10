@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/*
+ * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS HEADER.
+ *
+ * Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
+ * 
+ * $Id:					$: Id of last commit                
+ * $Revision:			$: Revision of last commit 
+ * $Author: cye			$: Author of last commit       
+ * $Date:	10-10-2018	$: Date of last commit
+ */
+--> 
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">  
+  <parent>
+    <groupId>com.frt</groupId>
+    <artifactId>frt-fhir</artifactId>
+    <version>${frt.fhir.version}</version>
+  </parent>
+  
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.frt</groupId>
+  <artifactId>frt-fhir-mpi</artifactId>
+  <packaging>jar</packaging>  
+  <version>${frt.fhir.mpi.version}</version>
+  <name>FRT FHIR MPI SERVICE ${frt.fhir.mpi.version}</name>
+  <description>Fast River FHIR MPI SERVICE ${frt.fhir.mpi.version}</description>
+   
+  <build>
+    <plugins>
+      <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+			<source>1.10</source>
+			<target>1.10</target>
+			<release>${maven.compiler.plugin.version.release}</release>
+        </configuration>
+      </plugin>	  
+    </plugins>
+  </build>
+    
+  <dependencies>
+	<!-- frt -->
+	<dependency>
+	  <groupId>com.frt</groupId>
+      <artifactId>frt-common</artifactId>
+	</dependency>    
+	<dependency>
+	  <groupId>com.frt</groupId>
+      <artifactId>frt-service</artifactId>
+	</dependency>    	
+	<!-- hapi -->
+	<dependency>
+	  <groupId>ca.uhn.hapi.fhir</groupId>
+       <artifactId>hapi-fhir-base</artifactId>
+	</dependency>
+	<dependency>
+	  <groupId>ca.uhn.hapi.fhir</groupId>
+       <artifactId>hapi-fhir-utilities</artifactId>
+	</dependency>
+	<dependency>
+	  <groupId>ca.uhn.hapi.fhir</groupId>
+       <artifactId>hapi-fhir-structures-r4</artifactId>
+	</dependency>
+	<!-- javaee -->
+	<dependency>
+		<groupId>javax</groupId>
+		<artifactId>javaee-api</artifactId>
+		<scope>provided</scope>
+    </dependency>
+	<!-- junit -->
+	<dependency>
+		<groupId>junit</groupId>
+		<artifactId>junit</artifactId>
+		<scope>test</scope>
+	</dependency>			
+  </dependencies>
+ 
+</project>

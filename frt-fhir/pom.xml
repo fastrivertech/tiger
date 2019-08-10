@@ -33,8 +33,9 @@
 		<!-- frt -->
 		<frt.fhir.rest.version>1.0.0-SNAPSHOT</frt.fhir.rest.version>
         <frt.fhir.service.version>1.0.0-SNAPSHOT</frt.fhir.service.version>
+		<frt.fhir.mpi.version>1.0.0-SNAPSHOT</frt.fhir.mpi.version>					
 		<frt.fhir.rest.test.version>1.0.0-SNAPSHOT</frt.fhir.rest.test.version>		
-		<frt.fhir.load.version>1.0.0-SNAPSHOT</frt.fhir.load.version>				
+		<frt.fhir.load.version>1.0.0-SNAPSHOT</frt.fhir.load.version>			
 		<!-- jersey -->
 		<jersey.version>2.27</jersey.version>
 		<javax.ws.rs.version>2.1</javax.ws.rs.version>	
@@ -95,7 +96,12 @@
 			  <groupId>com.frt</groupId>
 			  <artifactId>frt-fhir-service</artifactId>
 			  <version>${frt.fhir.service.version}</version>
-			</dependency>  				
+			</dependency>  			
+			<dependency>
+			  <groupId>com.frt</groupId>
+			  <artifactId>frt-fhir-mpi</artifactId>
+			  <version>${frt.fhir.mpi.version}</version>
+			</dependency>  						
 			<!-- javax -->	
 			<dependency>
 			  <groupId>javax.ws.rs</groupId>
@@ -145,7 +151,8 @@
     </dependencyManagement>
 
     <modules>
-		<module>fhir-service</module>				
+		<module>fhir-service</module>
+		<module>fhir-mpi</module>		
 		<module>fhir-rest</module>	
 		<module>fhir-load</module>			
 		<module>fhir-harness</module>	
