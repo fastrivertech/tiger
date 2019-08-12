@@ -15,6 +15,9 @@ import java.util.Optional;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.Identifier;
+import org.hl7.fhir.r4.model.Patient;
+import com.frt.fhir.mpi.parser.ParameterParser;
+import com.frt.fhir.mpi.parser.ParameterParserException;
 import com.frt.fhir.mpi.resource.Parameter;
 import com.frt.fhir.mpi.resource.Parameters;
 
@@ -24,7 +27,10 @@ import com.frt.fhir.mpi.resource.Parameters;
  */
 public class MpiServiceImpl implements MpiService<DomainResource> {
 
+	private MpiProvider mpiProvider;
+	
 	public MpiServiceImpl() {
+		mpiProvider = new MpiProviderImpl();
 	}
 
 	/**
@@ -51,7 +57,13 @@ public class MpiServiceImpl implements MpiService<DomainResource> {
 	@Override	
 	public Optional<DomainResource> merge(List<String> identifiers, List<Parameter> options)
 		throws MpiServiceException {
-		throw new UnsupportedOperationException();
+		try {
+			Identifier source = ParameterParser.decodeIdentifier(identifiers.get(0));
+			Identifier target = ParameterParser.decodeIdentifier(identifiers.get(0));
+			return mpiProvider.merge(target, source, options);
+		} catch (MpiProviderException | ParameterParserException ex) {
+			throw new MpiServiceException(ex);
+		}		
 	}
 
 	/**

@@ -25,6 +25,9 @@ import javax.json.JsonValue.ValueType;
 import javax.json.stream.JsonGenerator;
 import javax.json.stream.JsonGeneratorFactory;
 import javax.json.stream.JsonParsingException;
+
+import org.hl7.fhir.r4.model.Identifier;
+
 import com.frt.fhir.mpi.resource.Parameter;
 import com.frt.fhir.mpi.resource.Parameters;
 
@@ -49,5 +52,20 @@ public class ParameterParser {
 			throw new ParameterParserException(ex);
 		}
 	}
+	
+	public static Identifier decodeIdentifier(String id) 
+		throws ParameterParserException {
 		
+			Identifier identifier = new Identifier();
+			String[] splitted = id.split("|");		
+			if ( splitted.length == 2 &&
+				!splitted[0].isEmpty() &&
+				!splitted[1].isEmpty()) {
+				identifier.setSystem(splitted[1]).setValue(splitted[0]);
+				return identifier;
+			} else {	
+				throw new ParameterParserException("invalid identifier '" + id + "'");
+			}
+	}
+	
 }
