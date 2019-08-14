@@ -13,7 +13,7 @@ package com.frt.fhir.mpi;
 import java.util.List;
 import java.util.Optional;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.DomainResource;
+import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Patient;
 import com.frt.fhir.mpi.parser.ParameterParser;
@@ -25,7 +25,7 @@ import com.frt.fhir.mpi.resource.Parameters;
  * MpiServiceImpl class
  * @author cqye
  */
-public class MpiServiceImpl implements MpiService<DomainResource> {
+public class MpiServiceImpl implements MpiService<Patient> {
 
 	private MpiProvider mpiProvider;
 	
@@ -55,7 +55,7 @@ public class MpiServiceImpl implements MpiService<DomainResource> {
 	 * @see com.frt.fhir.mpi.MpiService#merge(Identifier, Identifier, List)
 	 */
 	@Override	
-	public Optional<DomainResource> merge(List<String> identifiers, List<Parameter> options)
+	public Optional<Patient> merge(List<String> identifiers, List<Parameter> options)
 		throws MpiServiceException {
 		try {
 			Identifier source = ParameterParser.decodeIdentifier(identifiers.get(0));
