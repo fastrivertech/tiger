@@ -54,6 +54,9 @@ public interface MpiService<T> {
 	Bundle search(Parameters parameters)
 		throws MpiServiceException;
 	
+	Optional<T> update(T object, List<Parameter> options) 
+		throws MpiServiceException;
+	
 	/**
 	 * Merge a source domain resource with the sourceId to a target domain resource with the targetId.
 	 * FHIR patient merge operation maps to HL7 ADT A40, identifier maps to PID-3 (Patient Identifier List) 

@@ -51,6 +51,13 @@ public class MpiServiceImpl implements MpiService<Patient> {
 		throw new UnsupportedOperationException();
 	}
 
+	@Override
+	public Optional<Patient> update(Patient patient, List<Parameter> options) 
+		throws MpiServiceException {
+		Optional<Patient> updated = Optional.empty();
+		return updated;
+	}
+		
 	/**
 	 * @see com.frt.fhir.mpi.MpiService#merge(Identifier, Identifier, List)
 	 */
