@@ -1,0 +1,1370 @@
+openapi: 3.0.1
+info:
+  title: Fast River Technologies FHIR Service API
+  description: FHIR Compliant and Streaming-Enabled REST API
+  contact:
+    name: Fast River Tech Inc.
+    url: http://fastrivertech.com
+servers:
+- url: http://{host}:{port}/frt-fhir-rest/
+  description: 'FHIR Resource Server: FHIR Resource Services On Premises or On Cloud'
+  variables:
+    host:
+      description: Host name where FHIR Resource Services Deployed
+      default: localhost
+      enum:
+      - localhost
+      - ec2-54-202-187-87.us-west-2.compute.amazonaws.com
+    port:
+      description: Port where FHIR Resource Services Deployed
+      default: "8080"
+      enum:
+      - "8080"
+      - "8088"
+paths:
+  /1.0/metadata:
+    get:
+      tags:
+      - READ
+      summary: Get CapabilityStatement
+      description: Get CapabilityStatement Resource of the server
+      operationId: read
+      parameters:
+      - name: mode
+        in: query
+        description: 'Mode: return information mode: full, normative or terminology'
+        schema:
+          type: string
+          default: normative
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+          (json/xml))
+        schema:
+          type: string
+          default: json
+      responses:
+        default:
+          description: 'FHIR DomainResource: CapabilityStatement'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        200:
+          description: Resource (CapabilityStatement) retrieved successfully
+        500:
+          description: Internal server error
+  /1.0/{type}:
+    get:
+      tags:
+      - READ
+      summary: Search Patient
+      description: Search Patient Resource Using Query Parameters
+      operationId: read_1
+      parameters:
+      - name: type
+        in: path
+        description: FHIR Resource Type, the type of the resource to be retrieved,
+          e.g. Patient
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: FHIR Resource Id, it is the logical ID of the resource, e.g.
+          Patient MRN
+        required: true
+        schema:
+          type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      - name: _summary
+        in: query
+        description: _summary parameter requests the server to return a subset of
+          the resource
+        schema:
+          type: string
+          default: "false"
+      responses:
+        default:
+          description: 'FHIR DomainResource: Patient that satisfied query parameters'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        200:
+          description: Resource retrieved successfully
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        410:
+          description: Gone - Resource deleted
+        404:
+          description: Not found - Unknown resource
+        500:
+          description: Internal server error
+    post:
+      tags:
+      - CREATE
+      summary: Create Patient
+      description: Create A New Patient
+      operationId: create
+      parameters:
+      - name: type
+        in: path
+        description: FHIR Resource Type, the type of the resource to be created, e.g.
+          Patient
+        required: true
+        schema:
+          type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      requestBody:
+        description: FHIR Resource in json / xml string, json supported
+        content:
+          application/fhir+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        default:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        201:
+          description: Resource created successfully
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        404:
+          description: Not found - Resource type not supported, or not a FHIR end-point
+        422:
+          description: Unprocessable entity
+  /1.0/{type}/{id}:
+    get:
+      tags:
+      - READ
+      summary: Get Patient
+      description: Get Patient Resource By Logical ID
+      operationId: read_2
+      parameters:
+      - name: type
+        in: path
+        description: FHIR Resource Type, the type of the resource to be retrieved,
+          e.g. Patient
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: FHIR Resource Id, it is the logical ID of the resource, e.g.
+          Patient MRN
+        required: true
+        schema:
+          type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      - name: _summary
+        in: query
+        description: _summary parameter requests the server to return a subset of
+          the resource
+        schema:
+          type: string
+          default: "false"
+      responses:
+        default:
+          description: 'FHIR DomainResource: Patient'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        200:
+          description: Resource retrieved successfully
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        410:
+          description: Gone - Resource deleted
+        404:
+          description: Not found - Unknown resource
+        500:
+          description: Internal server error
+    put:
+      tags:
+      - UPDATE
+      summary: Update an existing Patient
+      operationId: update
+      parameters:
+      - name: type
+        in: path
+        description: FHIR Resource Type, the type of the resource to be updated, e.g.
+          Patient
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: FHIR Resource Id, it is the logical ID of the resource, e.g.
+          Patient MRN
+        required: true
+        schema:
+          type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      requestBody:
+        description: FHIR Resource in json / xml string, json supported
+        content:
+          application/fhir+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        default:
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        200:
+          description: Resource updated successfully
+        201:
+          description: Resource created successfully
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        404:
+          description: Not found - Resource type not supported, or not a FHIR end-point
+        500:
+          description: Server internal error
+    delete:
+      tags:
+      - DELETE
+      summary: Delete Patient
+      description: Delete A Patient
+      operationId: delete
+      parameters:
+      - name: type
+        in: path
+        description: FHIR Resource Type, the type of the resource to be deleted, e.g.
+          Patient
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: FHIR Resource Id, it is the logical ID of the resource, e.g.
+          Patient MRN
+        required: true
+        schema:
+          type: string
+      responses:
+        default:
+          content:
+            application/json: {}
+        200:
+          description: OK, Resource deleted successfully
+        400:
+          description: Bad request
+        404:
+          description: Not found - Resource with the given ID not found
+        500:
+          description: Server Internal Error
+  /1.0/{resource}/${operation}:
+    post:
+      tags:
+      - EXECUTE
+      summary: Operations on any resource
+      description: Operations on any resource
+      operationId: execute
+      parameters:
+      - name: resource
+        in: path
+        description: FHIR Resource Type, the type of target resource, e.g. Patient
+        required: true
+        schema:
+          type: string
+      - name: operation
+        in: path
+        description: FHIR Resource Operation executed, the operation executed on the
+          resource
+        required: true
+        schema:
+          type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      requestBody:
+        description: 'Operation Parameters: the parameters required to perform the
+          operation.'
+        content:
+          application/fhir+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+      responses:
+        default:
+          content:
+            application/json: {}
+        201:
+          description: OK, Operation completed successfully
+        400:
+          description: Bad request
+        422:
+          description: Not processable resource
+        500:
+          description: Server Internal Error
+  /1.0/{type}/{id}/_history:
+    get:
+      tags:
+      - READ
+      summary: Retrieve History of A Patient
+      description: Retrieve the history of a patient resource by its logical Id
+      operationId: history
+      parameters:
+      - name: type
+        in: path
+        description: FHIR Resource Type, the type of the resource to be retrieved
+          of history, e.g. Patient
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: FHIR Resource Id, it is the logical ID of the resource, e.g.
+          Patient MRN
+        required: true
+        schema:
+          type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle of Resource History'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        200:
+          description: OK, Resource History Retrieved Successfully
+        400:
+          description: Bad Request
+        404:
+          description: Resource Not Found
+        500:
+          description: Internal server error
+  /1.0/Patient/$merge:
+    put:
+      tags:
+      - MPI
+      summary: Merge Two Domain Resource (Source & Target)
+      description: Merge a source domain resource with the sourceId to a target domain
+        resource with the targetId..
+      operationId: merge
+      parameters:
+      - name: patient.identifier
+        in: query
+        description: FHIR source patient identifier merges to target patient identifier
+        required: true
+        schema:
+          type: array
+          items:
+            type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle a Set of Merged Domain Resource
+            and Survived Domain Resource'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        201:
+          description: 'Merged: Resources Merged Successfully'
+        202:
+          description: Has Been Merged
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        404:
+          description: Not Found Resource
+        500:
+          description: Internal server error
+  /1.0/Patient/$match:
+    post:
+      tags:
+      - MPI
+      summary: Match Domain Resource
+      description: Match domain resource with golden domain resources in the MPI database
+        based on the MPI provider.
+      operationId: match
+      parameters:
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      requestBody:
+        description: FHIR Resource in json / xml string, json supported
+        content:
+          application/fhir+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle Contains A Set of Matched Golden
+            Domain Resources or Potentially Matched Records'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        200:
+          description: 'Matched: Resources Matched Successfully'
+        201:
+          description: No Match and Created
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        422:
+          description: Not Processable Resource
+        500:
+          description: Internal server error
+  /1.0/Patient/$search:
+    post:
+      tags:
+      - MPI
+      summary: Probabilistic search golden domain resources based on search criteria
+        and options
+      description: Probabilistic search golden domain resources based on search criteria
+        and options.
+      operationId: search
+      parameters:
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      requestBody:
+        description: FHIR Resource in json / xml string, json supported
+        content:
+          application/fhir+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle contains a set of matched golden
+            domain resources with score above the match threshold'
+          content:
+            application/fhir+json: {}
+        200:
+          description: Matched
+        400:
+          description: Bad request
+        422:
+          description: Not processable resource
+        500:
+          description: Internal server error
+  /1.0/Patient/$link:
+    post:
+      tags:
+      - MPI
+      summary: Link Two Domain Resources
+      description: "Link two domain resources,  FHIR link operation is global merge\
+        \ or enterprise merge \r\n in MPI perspective, but does not perform local\
+        \ merge or domain resource merge."
+      operationId: link
+      parameters:
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      requestBody:
+        description: FHIR Resource in json / xml string, json supported
+        content:
+          application/fhir+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle of A Set of Linked Domain Resources'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        201:
+          description: 'Linked: Resources Linked Successfully'
+        202:
+          description: Has Been Linked, Resources Has Been Linked
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        404:
+          description: Not found - Unknown resource
+        500:
+          description: Internal server error
+  /1.0/Patient/$unlink:
+    post:
+      tags:
+      - MPI
+      summary: Un-merge a survived domain resource
+      description: Un-merge a survived domain resource.
+      operationId: unlink
+      parameters:
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      requestBody:
+        description: FHIR Resource in json / xml string, json supported
+        content:
+          application/fhir+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle a set of merged domain resource
+            and survived domain resource'
+          content:
+            application/fhir+json: {}
+        201:
+          description: Unlinked
+        202:
+          description: Has Been Unlinked
+        400:
+          description: Bad request
+        404:
+          description: Not found
+        500:
+          description: Internal server error
+  /1.0/Patient/$unmerge:
+    post:
+      tags:
+      - MPI
+      summary: Unmerge A Survived Domain Resource
+      description: Unmerge A Survived Domain Resource.
+      operationId: unmerge
+      parameters:
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      requestBody:
+        description: FHIR Resource in json / xml string, json supported
+        content:
+          application/fhir+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle of A Set Of Source Domain Resource
+            And target Domain Resource'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        201:
+          description: Unmerged
+        202:
+          description: Has Been Merged
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        404:
+          description: Not found - Unknown resource
+        500:
+          description: Internal server error
+  /1.0/Patient/$potential:
+    get:
+      tags:
+      - MPI
+      summary: Retrieve potential duplicates for the given patient identifier
+      description: Retrieve potential duplicates for the given patient identifier.
+      operationId: search_pd
+      parameters:
+      - name: identifier
+        in: query
+        description: FHIR Resource Id, it is the logical ID of the resource, e.g.
+          Patient MRN
+        required: true
+        schema:
+          type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle a set of potential duplicate patient
+            resources'
+          content:
+            application/fhir+json: {}
+        200:
+          description: Success
+        400:
+          description: Bad request
+        404:
+          description: Not found
+        500:
+          description: Internal server error
+    post:
+      tags:
+      - MPI
+      summary: Resolve two potential duplicates
+      description: Resolve two potential duplicates.
+      operationId: resolve_pd
+      parameters:
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      requestBody:
+        description: FHIR Resource in json / xml string, json supported
+        content:
+          application/fhir+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle a Set of Potential Duplicate Patient
+            Resources'
+          content:
+            application/fhir+json: {}
+        201:
+          description: Resolved
+        400:
+          description: Bad request
+        404:
+          description: Not Found
+        500:
+          description: Internal server error
+  /1.0/{type}/_search:
+    post:
+      tags:
+      - READ
+      summary: Search Patient
+      description: Search Patient Resource Using Query Parameters
+      operationId: read_3
+      parameters:
+      - name: type
+        in: path
+        description: FHIR Resource Type, the type of the resource to be retrieved,
+          e.g. Patient
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: FHIR Resource Id, it is the logical ID of the resource, e.g.
+          Patient MRN
+        required: true
+        schema:
+          type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      - name: _summary
+        in: query
+        description: _summary parameter requests the server to return a subset of
+          the resource
+        schema:
+          type: string
+          default: "false"
+      responses:
+        default:
+          description: 'FHIR DomainResource: Patient that satisfied query parameters'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        200:
+          description: Resource retrieved successfully
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        410:
+          description: Gone - Resource deleted
+        404:
+          description: Not found - Unknown resource
+        500:
+          description: Internal server error
+  /1.0/{type}/_search/{id}:
+    post:
+      tags:
+      - READ
+      summary: Get Patient
+      description: Get Patient Resource By Logical ID
+      operationId: read_4
+      parameters:
+      - name: type
+        in: path
+        description: FHIR Resource Type, the type of the resource to be retrieved,
+          e.g. Patient
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: FHIR Resource Id, it is the logical ID of the resource, e.g.
+          Patient MRN
+        required: true
+        schema:
+          type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      - name: _summary
+        in: query
+        description: _summary parameter requests the server to return a subset of
+          the resource
+        schema:
+          type: string
+          default: "false"
+      responses:
+        default:
+          description: 'FHIR DomainResource: Patient'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        200:
+          description: Resource retrieved successfully
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        410:
+          description: Gone - Resource deleted
+        404:
+          description: Not found - Unknown resource
+        500:
+          description: Internal server error
+  /1.0/{type}/{id}/_history/{vid}:
+    get:
+      tags:
+      - READ
+      summary: Retrieve Patient Version
+      description: Retrieve the resource version by its logical Id and version id
+      operationId: read_5
+      parameters:
+      - name: type
+        in: path
+        description: FHIR Resource Type, the type of the resource to be read, e.g.
+          Patient
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: FHIR Resource Id, it is the logical ID of the resource, e.g.
+          Patient MRN
+        required: true
+        schema:
+          type: string
+      - name: vid
+        in: path
+        description: FHIR Resource Version Id, it is version id the resource, e.g.
+          1, 3, 5, 6
+        required: true
+        schema:
+          type: string
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+          bundle
+        schema:
+          type: string
+          default: json
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle of resource versions by its logical
+            Id and version id'
+          content:
+            application/fhir+json: {}
+        200:
+          description: Resource versions retrieved successfully
+        400:
+          description: Bad request
+        404:
+          description: Not found - Unknown resource
+        500:
+          description: Internal server error
+components:
+  schemas:
+    DomainResource:
+      required:
+      - id
+      - resourceId
+      type: object
+      properties:
+        resourceId:
+          type: integer
+        id:
+          maxLength: 64
+          minLength: 0
+          type: string
+        meta:
+          maxLength: 1024
+          minLength: 0
+          type: string
+        implicitRules:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        language:
+          maxLength: 32
+          minLength: 0
+          type: string
+        domainResourceId:
+          type: integer
+        txt:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        contained:
+          type: string
+        extensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Extension'
+    Extension:
+      type: object
+      properties:
+        path:
+          maxLength: 128
+          minLength: 0
+          type: string
+        url:
+          maxLength: 128
+          minLength: 0
+          type: string
+        value:
+          maxLength: 1024
+          minLength: 0
+          type: string
+        resource:
+          $ref: '#/components/schemas/DomainResource'
+    Patient:
+      required:
+      - active
+      - id
+      - resourceId
+      type: object
+      properties:
+        resourceId:
+          type: integer
+        id:
+          maxLength: 64
+          minLength: 0
+          type: string
+        meta:
+          maxLength: 1024
+          minLength: 0
+          type: string
+        implicitRules:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        language:
+          maxLength: 32
+          minLength: 0
+          type: string
+        domainResourceId:
+          type: integer
+        txt:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        contained:
+          type: string
+        patientId:
+          type: integer
+        active:
+          type: boolean
+        names:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientHumanName'
+        identifiers:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientIdentifier'
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientAddress'
+        contacts:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientContact'
+        photos:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientAttachment'
+        telecoms:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientContactPoint'
+        maritalStatus:
+          $ref: '#/components/schemas/PatientCodeableConcept'
+        generalPractitioners:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientReference'
+        managingOrganization:
+          $ref: '#/components/schemas/PatientReference'
+        animal:
+          $ref: '#/components/schemas/PatientAnimal'
+        communications:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientCommunication'
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientLink'
+        gender:
+          maxLength: 32
+          minLength: 0
+          type: string
+        birthDate:
+          type: string
+          format: date-time
+        deceasedBoolean:
+          type: boolean
+        deceasedDateTime:
+          type: string
+          format: date-time
+        multipleBirthBoolean:
+          type: boolean
+        multipleBirthInteger:
+          type: integer
+          format: int32
+        extensions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PatientExtension'
+        extension:
+          $ref: '#/components/schemas/PatientExtension'
+    PatientAddress:
+      required:
+      - addressId
+      type: object
+      properties:
+        addressId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        path:
+          maxLength: 128
+          minLength: 0
+          type: string
+        use:
+          maxLength: 32
+          minLength: 0
+          type: string
+        type:
+          maxLength: 32
+          minLength: 0
+          type: string
+        txt:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        line:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        city:
+          maxLength: 32
+          minLength: 0
+          type: string
+        district:
+          maxLength: 32
+          minLength: 0
+          type: string
+        state:
+          maxLength: 32
+          minLength: 0
+          type: string
+        postalcode:
+          maxLength: 32
+          minLength: 0
+          type: string
+        country:
+          maxLength: 32
+          minLength: 0
+          type: string
+        period:
+          type: string
+    PatientAnimal:
+      required:
+      - animalId
+      type: object
+      properties:
+        animalId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        species:
+          type: string
+        breed:
+          type: string
+        genderStatus:
+          type: string
+        path:
+          type: string
+          writeOnly: true
+    PatientAttachment:
+      required:
+      - attachmentId
+      type: object
+      properties:
+        attachmentId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        path:
+          maxLength: 128
+          minLength: 0
+          type: string
+        contenttype:
+          maxLength: 32
+          minLength: 0
+          type: string
+        language:
+          maxLength: 32
+          minLength: 0
+          type: string
+        data:
+          type: string
+        url:
+          maxLength: 1024
+          minLength: 0
+          type: string
+        size:
+          type: integer
+          format: int32
+        hash:
+          type: string
+        title:
+          maxLength: 32
+          minLength: 0
+          type: string
+        creation:
+          type: string
+          format: date-time
+    PatientCodeableConcept:
+      required:
+      - codeableconceptId
+      type: object
+      properties:
+        codeableconceptId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        path:
+          maxLength: 128
+          minLength: 0
+          type: string
+        coding:
+          type: string
+        txt:
+          maxLength: 2048
+          minLength: 0
+          type: string
+    PatientCommunication:
+      required:
+      - communicationId
+      type: object
+      properties:
+        communicationId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        preferred:
+          type: boolean
+        language:
+          maxLength: 256
+          minLength: 0
+          type: string
+        path:
+          type: string
+          writeOnly: true
+    PatientContact:
+      required:
+      - contactId
+      type: object
+      properties:
+        contactId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        gender:
+          maxLength: 32
+          minLength: 0
+          type: string
+        relationship:
+          maxLength: 256
+          minLength: 0
+          type: string
+        name:
+          maxLength: 1024
+          minLength: 0
+          type: string
+        telecom:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        address:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        period:
+          type: string
+        organization:
+          type: string
+        path:
+          type: string
+          writeOnly: true
+    PatientContactPoint:
+      required:
+      - contactpointId
+      type: object
+      properties:
+        contactpointId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        path:
+          maxLength: 128
+          minLength: 0
+          type: string
+        system:
+          maxLength: 128
+          minLength: 0
+          type: string
+        value:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        use:
+          maxLength: 32
+          minLength: 0
+          type: string
+        rank:
+          type: integer
+          format: int32
+        period:
+          type: string
+    PatientExtension:
+      required:
+      - patientExtensionId
+      type: object
+      properties:
+        path:
+          maxLength: 128
+          minLength: 0
+          type: string
+        url:
+          maxLength: 128
+          minLength: 0
+          type: string
+        value:
+          maxLength: 1024
+          minLength: 0
+          type: string
+        patientExtensionId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        resource:
+          $ref: '#/components/schemas/DomainResource'
+    PatientHumanName:
+      required:
+      - humannameId
+      type: object
+      properties:
+        humannameId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        path:
+          maxLength: 128
+          minLength: 0
+          type: string
+        use:
+          maxLength: 32
+          minLength: 0
+          type: string
+        txt:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        family:
+          maxLength: 32
+          minLength: 0
+          type: string
+        given:
+          maxLength: 1024
+          minLength: 0
+          type: string
+        prefix:
+          maxLength: 1024
+          minLength: 0
+          type: string
+        suffix:
+          maxLength: 1024
+          minLength: 0
+          type: string
+        period:
+          type: string
+    PatientIdentifier:
+      required:
+      - identifierId
+      type: object
+      properties:
+        identifierId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        path:
+          maxLength: 128
+          minLength: 0
+          type: string
+        use:
+          maxLength: 32
+          minLength: 0
+          type: string
+        type:
+          type: string
+        system:
+          maxLength: 128
+          minLength: 0
+          type: string
+        value:
+          maxLength: 128
+          minLength: 0
+          type: string
+        period:
+          type: string
+        assigner:
+          type: string
+    PatientLink:
+      required:
+      - linkId
+      type: object
+      properties:
+        linkId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        other:
+          type: string
+        type:
+          maxLength: 32
+          minLength: 0
+          type: string
+        path:
+          type: string
+          writeOnly: true
+    PatientReference:
+      required:
+      - referenceId
+      type: object
+      properties:
+        referenceId:
+          type: integer
+        patient:
+          $ref: '#/components/schemas/Patient'
+        path:
+          maxLength: 128
+          minLength: 0
+          type: string
+        reference:
+          maxLength: 2048
+          minLength: 0
+          type: string
+        identifier:
+          maxLength: 4096
+          minLength: 0
+          type: string
+        display:
+          maxLength: 2048
+          minLength: 0
+          type: string

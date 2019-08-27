@@ -70,7 +70,8 @@ public class MpiServiceImpl implements MpiService<Patient> {
 		try {
 			Identifier source = ParameterParser.decodeIdentifier(identifiers.get(0));
 			Identifier target = ParameterParser.decodeIdentifier(identifiers.get(0));
-			return mpiProvider.merge(target, source);
+		  //return mpiProvider.merge(target, source);
+			return Optional.empty();  
 		} catch (MpiProviderException | ParameterParserException ex) {
 			throw new MpiServiceException(ex);
 		}		

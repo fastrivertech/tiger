@@ -86,12 +86,7 @@
 			  <groupId>com.frt</groupId>
 			  <artifactId>frt-service</artifactId>
 			  <version>${frt.service.version}</version>
-			</dependency>   
-			<dependency>
-			  <groupId>com.frt</groupId>
-			  <artifactId>frt-mpi</artifactId>
-			  <version>${frt.mpi.version}</version>
-			</dependency>   			
+			</dependency>   		
 			<dependency>
 			  <groupId>com.frt</groupId>
 			  <artifactId>frt-stream</artifactId>

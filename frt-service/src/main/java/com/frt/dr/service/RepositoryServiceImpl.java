@@ -23,6 +23,8 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.stereotype.Service;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.model.Extension;
+import com.frt.dr.model.base.Patient;
+import com.frt.dr.model.base.PatientIdentifier;
 import com.frt.dr.service.query.QueryCriteria;
 import com.frt.dr.transaction.TransactionHelper;
 import com.frt.dr.transaction.TransactionService;
@@ -36,6 +38,8 @@ import com.frt.dr.dao.DaoException;
 import com.frt.dr.cache.CacheService;
 import com.frt.dr.cache.NamedCache;
 import com.frt.mpi.MpiProvider;
+import com.frt.mpi.MpiProviderImpl;
+import com.frt.mpi.MpiProviderException;
 
 /**
  * RepositoryServiceImpl class
@@ -51,6 +55,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     
     public RepositoryServiceImpl() {	
     	resourceUpdateManager = new ResourceUpdateManager();
+    	mpiProvider = new MpiProviderImpl();
     }
     
     @Autowired
@@ -141,6 +146,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 			// create resource meta data
 			resource.setMeta((new Meta()).toString());						
 		    transaction.setResource(resource);
+		    // mpi 
+		    mpiProvider.create((Patient)resource);
 		    
 			transactionDao.save(transaction);										
 			ts.commit();
@@ -188,7 +195,10 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 transaction.setDelta(changes.isPresent() ? changes.get() : "");
 					 // save transaction log
 					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
-					 transaction.setResource(changed);			
+					 transaction.setResource(changed);	
+					 
+					 mpiProvider.create((Patient)resource);
+
 					 transactionDao.save(transaction);						     					
 					 if (cache.isPresent()) {
 						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.U.name());
@@ -210,7 +220,10 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 resource.setMeta((new Meta()).toString());
 				 // create resource status extension 
 				 RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());
-				 transaction.setResource(resource);			
+				 transaction.setResource(resource);		
+
+				 mpiProvider.create((Patient)resource);
+
 				 transactionDao.save(transaction);				
 			     if (cache.isPresent()) {
 			    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.C.name());

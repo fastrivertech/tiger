@@ -30,7 +30,6 @@
 	<frt.stream.version>1.0.0-SNAPSHOT</frt.stream.version>	
 	<frt.common.version>1.0.0-SNAPSHOT</frt.common.version>		
 	<frt.service.version>1.0.0-SNAPSHOT</frt.service.version>	
-	<frt.mpi.version>1.0.0-SNAPSHOT</frt.mpi.version>					
 	<frt.datalake.version>1.0.0-SNAPSHOT</frt.datalake.version>
 	<!-- splice machine -->
 	<com.splicemachine.version>2.7.0.1852</com.splicemachine.version>
@@ -73,7 +72,6 @@
     <module>frt-common</module>  
     <module>frt-stream</module>
     <module>frt-datalake</module>	
-    <module>frt-mpi</module> 	
     <module>frt-service</module>
 	<module>frt-fhir</module>	
 	<module>frt-package</module>	
@@ -91,11 +89,6 @@
 			<groupId>com.frt</groupId>
 			<artifactId>frt-datalake</artifactId>
 			<version>${frt.datalake.version}</version>			
-		</dependency>		
-		<dependency>
-			<groupId>com.frt</groupId>
-			<artifactId>frt-mpi</artifactId>
-			<version>${frt.mpi.version}</version>			
 		</dependency>		
 		<dependency>
 			<groupId>com.frt</groupId>
