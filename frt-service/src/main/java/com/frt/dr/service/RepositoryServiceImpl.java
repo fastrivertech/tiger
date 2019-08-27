@@ -35,6 +35,7 @@ import com.frt.dr.transaction.model.dao.TransactionDao;
 import com.frt.dr.dao.DaoException;
 import com.frt.dr.cache.CacheService;
 import com.frt.dr.cache.NamedCache;
+import com.frt.mpi.MpiProvider;
 
 /**
  * RepositoryServiceImpl class
@@ -46,6 +47,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     private DataSource dataSource;
     private JpaTransactionManager jpaTransactionManager;
     private ResourceUpdateManager resourceUpdateManager;
+    private MpiProvider mpiProvider;
     
     public RepositoryServiceImpl() {	
     	resourceUpdateManager = new ResourceUpdateManager();
@@ -138,7 +140,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 			RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());
 			// create resource meta data
 			resource.setMeta((new Meta()).toString());						
-		    transaction.setResource(resource);					    
+		    transaction.setResource(resource);
+		    
 			transactionDao.save(transaction);										
 			ts.commit();
 			return resource;			
