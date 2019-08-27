@@ -20,6 +20,9 @@ import com.frt.fhir.mpi.parser.ParameterParser;
 import com.frt.fhir.mpi.parser.ParameterParserException;
 import com.frt.fhir.mpi.resource.Parameter;
 import com.frt.fhir.mpi.resource.Parameters;
+import com.frt.mpi.MpiProvider;
+import com.frt.mpi.MpiProviderImpl;
+import com.frt.mpi.MpiProviderException;
 
 /**
  * MpiServiceImpl class
@@ -67,7 +70,7 @@ public class MpiServiceImpl implements MpiService<Patient> {
 		try {
 			Identifier source = ParameterParser.decodeIdentifier(identifiers.get(0));
 			Identifier target = ParameterParser.decodeIdentifier(identifiers.get(0));
-			return mpiProvider.merge(target, source, options);
+			return mpiProvider.merge(target, source);
 		} catch (MpiProviderException | ParameterParserException ex) {
 			throw new MpiServiceException(ex);
 		}		

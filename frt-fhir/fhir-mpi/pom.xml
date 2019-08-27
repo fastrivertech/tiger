@@ -56,6 +56,10 @@
 	<dependency>
 	  <groupId>com.frt</groupId>
       <artifactId>frt-service</artifactId>
+	</dependency>   
+	<dependency>
+	  <groupId>com.frt</groupId>
+      <artifactId>frt-mpi</artifactId>
 	</dependency>    	
 	<!-- hapi -->
 	<dependency>
