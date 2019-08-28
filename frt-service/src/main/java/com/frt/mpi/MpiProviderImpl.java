@@ -101,8 +101,14 @@ public class MpiProviderImpl implements MpiProvider {
 			systemPatient.setLocalId(localId.getValue());
 			systemPatient.setPatient(beanPatient);
 			MatchColResult result = mpi.executeMatchUpdate(systemPatient);					
-		  //result.getResultCode()			
-			created.of(patient);
+		    int code = result.getResultCode();	
+			if ( code == 1 /* NEW_EO */ || 
+			     code == 2 /* SYS_ID_MATCH */ || 
+			     code == 3 /* ASSUMED_MATCH */) {		    		
+				 created.of(patient);
+			} else {
+				throw new MpiProviderException("mpi failed to execute match");
+			}
 			return created;
 		} catch (ProcessingException_Exception | UserException_Exception ex) {
 			throw new MpiProviderException(ex);
