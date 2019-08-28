@@ -36,6 +36,11 @@ public class MpiServiceImpl implements MpiService<Patient> {
 		mpiProvider = new MpiProviderImpl();
 	}
 
+	public boolean isEnabled() {
+		boolean enabled = false;
+		return enabled;
+	}
+	
 	/**
 	 * @see com.frt.fhir.mpi.MpiService#match(Parameters) 
 	 */
