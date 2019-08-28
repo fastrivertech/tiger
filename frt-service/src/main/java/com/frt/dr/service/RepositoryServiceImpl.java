@@ -147,14 +147,14 @@ public class RepositoryServiceImpl implements RepositoryService {
 			resource.setMeta((new Meta()).toString());						
 		    transaction.setResource(resource);
 		    // mpi 
-		    mpiProvider.create((Patient)resource);
-		    
+		    mpiProvider.save((Patient)resource);
+		    // data source
 			transactionDao.save(transaction);										
 			ts.commit();
 			return resource;			
-		} catch (DaoException dex) {
+		} catch (DaoException | MpiProviderException ex) {
 			ts.rollback();
-			throw new RepositoryServiceException(dex); 
+			throw new RepositoryServiceException(ex); 
 		}
 	}
 
@@ -196,9 +196,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 // save transaction log
 					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 					 transaction.setResource(changed);	
-					 
-					 mpiProvider.create((Patient)resource);
-
+					 // mpi
+					 mpiProvider.save((Patient)resource);
+					 // data source
 					 transactionDao.save(transaction);						     					
 					 if (cache.isPresent()) {
 						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.U.name());
@@ -221,9 +221,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 // create resource status extension 
 				 RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());
 				 transaction.setResource(resource);		
-
-				 mpiProvider.create((Patient)resource);
-
+				 // mpi
+				 mpiProvider.save((Patient)resource);
+				 // data source
 				 transactionDao.save(transaction);				
 			     if (cache.isPresent()) {
 			    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.C.name());
@@ -231,9 +231,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 			 }
 			 ts.commit();
 			 return updatedResource;
-		} catch (DaoException dex) {
+		} catch (DaoException | MpiProviderException ex) {
 			ts.rollback();
-			throw new RepositoryServiceException(dex); 
+			throw new RepositoryServiceException(ex); 
 		} finally {
 			resourceUpdateManager.cleanChanges();
 		}

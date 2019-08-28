@@ -13,6 +13,6 @@ public interface MpiProvider {
 	Optional<Patient> link(PatientIdentifier target, PatientIdentifier source)
 		throws MpiProviderException;
 	
-	Optional<Patient> create(Patient patient)
+	Optional<Patient> save(Patient patient)
 		throws MpiProviderException;
 }

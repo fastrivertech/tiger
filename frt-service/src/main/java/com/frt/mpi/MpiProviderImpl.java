@@ -70,45 +70,43 @@ public class MpiProviderImpl implements MpiProvider {
 		}
 	}
 		
-	public Optional<Patient> create(Patient patient)
+	public Optional<Patient> save(Patient patient)
 		throws MpiProviderException {
-		return null;
-		/*
 		try {			
 			Optional<Patient> created = Optional.empty();
 			SystemPatient systemPatient = new SystemPatient();
 			PatientBean beanPatient = new PatientBean();
 			
-			List<HumanName> names = patient.getName();
-			HumanName name = names.get(0);
-			AdministrativeGender gender = patient.getGender();			
+			List<PatientHumanName> names = patient.getNames();
+			PatientHumanName name = names.get(0);
+			String gender = patient.getGender();			
 			Date date = patient.getBirthDate();
-			List<Address> addresses = patient.getAddress();
-			Address address = addresses.get(0);
+			List<PatientAddress> addresses = patient.getAddresses();
+			PatientAddress address = addresses.get(0);
 			
-			beanPatient.setFirstName(name.getGivenAsSingleString());
+			beanPatient.setFirstName(name.getGiven());
 			beanPatient.setLastName(name.getFamily());
-			beanPatient.setGender(gender.name());
+			beanPatient.setGender(gender);
 			beanPatient.setDOB(date.toString());
 			List<AddressBean> addressBeans = beanPatient.getAddress();
 			AddressBean addressBean = new AddressBean();
-			addressBean.setAddressType(address.getType().name());
+			addressBean.setAddressType(address.getType());
 			addressBean.setAddressLine1(address.getLine().toString());			
 			addressBeans.add(addressBean);
 						
-			List<Identifier> identifiers = patient.getIdentifier();
-			Identifier localId = identifiers.get(0);
+			List<PatientIdentifier> identifiers = patient.getIdentifiers();
+			PatientIdentifier localId = identifiers.get(0);
 			
 			systemPatient.setSystemCode(localId.getSystem());
 			systemPatient.setLocalId(localId.getValue());
 			systemPatient.setPatient(beanPatient);
-			MatchColResult result = mpi.executeMatchUpdate(systemPatient);		
+			MatchColResult result = mpi.executeMatchUpdate(systemPatient);					
+		  //result.getResultCode()			
+			created.of(patient);
 			return created;
-			
 		} catch (ProcessingException_Exception | UserException_Exception ex) {
 			throw new MpiProviderException(ex);
 		}
-		*/
 	}
 	
 	
