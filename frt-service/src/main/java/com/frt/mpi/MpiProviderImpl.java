@@ -26,9 +26,37 @@ public class MpiProviderImpl implements MpiProvider {
 	public Optional<Patient> merge(PatientIdentifier target, PatientIdentifier source)
 		throws MpiProviderException {
 		try {
-			Optional<Patient> merged = Optional.empty();				
-			MergePatientResult result = mpi.mergeSystemRecord(target.getSystem(), source.getValue(), target.getValue(), false);					
-			return merged;		
+			Optional<Patient> result = Optional.empty();				
+			MergePatientResult resulted = mpi.mergeSystemRecord(target.getSystem(), source.getValue(), target.getValue(), false);				
+			List<SystemPatient> patients = resulted.getDestinationEO().getSystemPatient();
+			
+			patients.forEach(patient->{
+				if (target.getSystem().equals(patient.getSystemCode()) &&
+					target.getValue().equals(patient.getLocalId())) {						
+					Patient merged = new Patient();
+		
+					PatientHumanName name = new PatientHumanName();
+					name.setFamily(patient.getPatient().getLastName());
+					name.setGiven(patient.getPatient().getFirstName());					
+					merged.getNames().add(name);
+					
+					List<AddressBean> addresses = patient.getPatient().getAddress();
+					addresses.forEach(address->{
+						PatientAddress addr = new PatientAddress();
+						addr.setLine(address.getAddressLine1());
+						addr.setCity(address.getCity());
+						addr.setPostalcode(address.getPostalCode());
+						addr.setState(address.getStateCode());
+						merged.getAddresses().add(addr);						
+					});
+					
+					merged.setGender(patient.getPatient().getGender());
+					merged.setBirthDate(new Date(patient.getPatient().getDOB()));			
+					result.of(merged);
+				}
+			});			
+			
+			return result;		
 		} catch (ProcessingException_Exception | UserException_Exception ex) {
 			throw new MpiProviderException(ex);
 		}
