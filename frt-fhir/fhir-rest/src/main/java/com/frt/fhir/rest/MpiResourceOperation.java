@@ -34,9 +34,9 @@ import com.frt.fhir.mpi.MpiServiceException;
 import com.frt.fhir.mpi.MpiServiceImpl;
 import com.frt.fhir.mpi.parser.ParameterParser;
 import com.frt.fhir.mpi.parser.ParameterParserException;
-import com.frt.fhir.mpi.resource.Parameters;
 import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.parser.JsonParser;
+import com.frt.fhir.mpi.resource.Parameters;
 import com.frt.fhir.rest.validation.MpiOperationValidator;
 import com.frt.fhir.rest.validation.OperationValidatorException;
 import com.frt.fhir.service.FhirServiceException;
@@ -204,7 +204,7 @@ public class MpiResourceOperation extends ResourceOperation {
 	 * @status 404 Not found
 	 * @status 500 Internal server error
 	 */
-	@PUT
+	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_MERGE_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
 	@Produces({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
@@ -222,22 +222,21 @@ public class MpiResourceOperation extends ResourceOperation {
 				            @ApiResponse(responseCode = "500", description = "Internal server error")
 						  }
 			   )
-	public <R extends DomainResource> Response merge(@Parameter(description = "FHIR source patient identifier merges to target patient identifier", required = true)
-						  							 @QueryParam("patient.identifier") final List<String> identifiers,
-  												     @Parameter(description = "FHIR Resource format, indicate the format of the returned resource", required = false)
-						  						     @QueryParam("_format") @DefaultValue("json") final String _format) {
+	public <R extends DomainResource> Response merge(@QueryParam("_format") @DefaultValue("json") final String _format,
+						  						     @Parameter(description = "FHIR Parameters resource specifying source and target patients to be merged", required = false) final String body) {
 		try {
-			logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "merge"));												
-		
+			logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "merge"));														
+			
+			org.hl7.fhir.r4.model.Parameters parameters = jsonParser.deserialize("Parameters", body);			
 			MpiOperationValidator.validateFormat(_format);
-			MpiOperationValidator.validateIdentifiers(identifiers);		
-			Optional<R> merged = mpiService.merge(identifiers, null);		
+			MpiOperationValidator.validateParameters(parameters);			
+			Optional<R> merged = mpiService.merge(parameters);		
 			if (merged.isPresent()) {
 				String resourceInJson = jsonParser.serialize(merged.get());      				
 				String location = uriInfo.getAbsolutePath().getPath() + "_history/" + merged.get().getMeta().getVersionId();
 				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "2", location, MimeType.APPLICATION_FHIR_JSON);											
 			} else {
-				String error = "failed to merge '" + identifiers.get(0) + "' and '" + identifiers.get(0) + "'"; 
+				String error = "failed to merge '" + body + "'"; 
 				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																								  OperationOutcome.IssueSeverity.ERROR, 
 																								  OperationOutcome.IssueType.PROCESSING);

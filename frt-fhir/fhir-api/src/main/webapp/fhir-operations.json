@@ -505,31 +505,34 @@
       }
     },
     "/1.0/Patient/$merge" : {
-      "put" : {
+      "post" : {
         "tags" : [ "MPI" ],
         "summary" : "Merge Two Domain Resource (Source & Target)",
         "description" : "Merge a source domain resource with the sourceId to a target domain resource with the targetId..",
         "operationId" : "merge",
         "parameters" : [ {
-          "name" : "patient.identifier",
-          "in" : "query",
-          "description" : "FHIR source patient identifier merges to target patient identifier",
-          "required" : true,
-          "schema" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          }
-        }, {
           "name" : "_format",
           "in" : "query",
-          "description" : "FHIR Resource format, indicate the format of the returned resource",
           "schema" : {
             "type" : "string",
             "default" : "json"
           }
         } ],
+        "requestBody" : {
+          "description" : "FHIR Parameters resource specifying source and target patients to be merged",
+          "content" : {
+            "application/fhir+json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            },
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          }
+        },
         "responses" : {
           "default" : {
             "description" : "FHIR DomainResource: Bundle a Set of Merged Domain Resource and Survived Domain Resource",

@@ -67,15 +67,15 @@ public class MpiServiceImpl implements MpiService<Patient> {
 	}
 		
 	/**
-	 * @see com.frt.fhir.mpi.MpiService#merge(Identifier, Identifier, List)
+	 * @see com.frt.fhir.mpi.MpiService#merge(org.hl7.fhir.r4.model.Parameters)
 	 */
 	@Override	
-	public Optional<Patient> merge(List<String> identifiers, List<Parameter> options)
+	public Optional<Patient> merge(org.hl7.fhir.r4.model.Parameters parameters)
 		throws MpiServiceException {
 		try {
-			Identifier source = ParameterParser.decodeIdentifier(identifiers.get(0));
-			Identifier target = ParameterParser.decodeIdentifier(identifiers.get(0));
-		  //return mpiProvider.merge(target, source);
+			//Identifier source = ParameterParser.decodeIdentifier(identifiers.get(0));
+			//Identifier target = ParameterParser.decodeIdentifier(identifiers.get(0));
+		    //return mpiProvider.merge(target, source);
 			return Optional.empty();  
 		} catch (MpiProviderException | ParameterParserException ex) {
 			throw new MpiServiceException(ex);
