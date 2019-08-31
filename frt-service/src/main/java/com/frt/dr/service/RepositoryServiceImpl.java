@@ -37,9 +37,6 @@ import com.frt.dr.transaction.model.dao.TransactionDao;
 import com.frt.dr.dao.DaoException;
 import com.frt.dr.cache.CacheService;
 import com.frt.dr.cache.NamedCache;
-import com.frt.mpi.MpiProvider;
-import com.frt.mpi.MpiProviderImpl;
-import com.frt.mpi.MpiProviderException;
 
 /**
  * RepositoryServiceImpl class
@@ -51,11 +48,9 @@ public class RepositoryServiceImpl implements RepositoryService {
     private DataSource dataSource;
     private JpaTransactionManager jpaTransactionManager;
     private ResourceUpdateManager resourceUpdateManager;
-    private MpiProvider mpiProvider;
     
     public RepositoryServiceImpl() {	
     	resourceUpdateManager = new ResourceUpdateManager();
-    	mpiProvider = new MpiProviderImpl();
     }
     
     @Autowired
@@ -146,13 +141,11 @@ public class RepositoryServiceImpl implements RepositoryService {
 			// create resource meta data
 			resource.setMeta((new Meta()).toString());						
 		    transaction.setResource(resource);
-		    // mpi 
-		    mpiProvider.save((Patient)resource);
 		    // data source
 			transactionDao.save(transaction);										
 			ts.commit();
 			return resource;			
-		} catch (DaoException | MpiProviderException ex) {
+		} catch (DaoException ex) {
 			ts.rollback();
 			throw new RepositoryServiceException(ex); 
 		}
@@ -196,8 +189,6 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 // save transaction log
 					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
 					 transaction.setResource(changed);	
-					 // mpi
-					 mpiProvider.save((Patient)resource);
 					 // data source
 					 transactionDao.save(transaction);						     					
 					 if (cache.isPresent()) {
@@ -220,10 +211,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 resource.setMeta((new Meta()).toString());
 				 // create resource status extension 
 				 RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());
-				 transaction.setResource(resource);		
-				 // mpi
-				 mpiProvider.save((Patient)resource);
-				 // data source
+				 transaction.setResource(resource);						 // data source
 				 transactionDao.save(transaction);				
 			     if (cache.isPresent()) {
 			    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.C.name());
@@ -231,7 +219,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			 }
 			 ts.commit();
 			 return updatedResource;
-		} catch (DaoException | MpiProviderException ex) {
+		} catch (DaoException ex) {
 			ts.rollback();
 			throw new RepositoryServiceException(ex); 
 		} finally {

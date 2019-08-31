@@ -28,7 +28,6 @@ import javax.ws.rs.core.UriInfo;
 import org.hl7.fhir.r4.model.Bundle;
 import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.OperationOutcome;
-import com.frt.dr.model.base.Patient;
 import com.frt.fhir.mpi.MpiService;
 import com.frt.fhir.mpi.MpiServiceException;
 import com.frt.fhir.mpi.MpiServiceImpl;
@@ -39,11 +38,8 @@ import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.mpi.resource.Parameters;
 import com.frt.fhir.rest.validation.MpiOperationValidator;
 import com.frt.fhir.rest.validation.OperationValidatorException;
-import com.frt.fhir.service.FhirServiceException;
-import com.frt.stream.service.StreamServiceException;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
-
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -103,7 +99,7 @@ public class MpiResourceOperation extends ResourceOperation {
 			   responses = {
 					   		@ApiResponse(description = "FHIR DomainResource: Bundle Contains A Set of Matched Golden Domain Resources or Potentially Matched Records",
 					   					 content = @Content(mediaType = "application/fhir+json",
-					   					 schema = @Schema(implementation = Patient.class))),
+					   					 schema = @Schema(implementation = com.frt.dr.model.base.Patient.class))),
 				            @ApiResponse(responseCode = "200", description = "Matched: Resources Matched Successfully"),
 				            @ApiResponse(responseCode = "201", description = "No Match and Created"),
 				            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
@@ -214,7 +210,7 @@ public class MpiResourceOperation extends ResourceOperation {
 			   responses = {
 				            @ApiResponse(description = "FHIR DomainResource: Bundle a Set of Merged Domain Resource and Survived Domain Resource",
 				                         content = @Content(mediaType = "application/fhir+json",
-				                         schema = @Schema(implementation = Patient.class))),
+				                         schema = @Schema(implementation = com.frt.dr.model.base.Patient.class))),
 				            @ApiResponse(responseCode = "201", description = "Merged: Resources Merged Successfully"),
 				            @ApiResponse(responseCode = "202", description = "Has Been Merged"),
 				            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
@@ -291,7 +287,7 @@ public class MpiResourceOperation extends ResourceOperation {
 			   responses = {
 				            @ApiResponse(description = "FHIR DomainResource: Bundle of A Set Of Source Domain Resource And target Domain Resource",
 				            		     content = @Content(mediaType = "application/fhir+json",
-				                         schema = @Schema(implementation = Patient.class))),
+				                         schema = @Schema(implementation = com.frt.dr.model.base.Patient.class))),
 				            @ApiResponse(responseCode = "201", description = "Unmerged"),
 				            @ApiResponse(responseCode = "202", description = "Has Been Merged"),
 				            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
@@ -338,7 +334,7 @@ public class MpiResourceOperation extends ResourceOperation {
 			   responses = {
 				            @ApiResponse(description = "FHIR DomainResource: Bundle of A Set of Linked Domain Resources",
 				            		     content = @Content(mediaType = "application/fhir+json",
-				                         schema = @Schema(implementation = Patient.class))),
+				                         schema = @Schema(implementation = com.frt.dr.model.base.Patient.class))),
 				            @ApiResponse(responseCode = "201", description = "Linked: Resources Linked Successfully"),
 				            @ApiResponse(responseCode = "202", description = "Has Been Linked, Resources Has Been Linked"),
 				            @ApiResponse(responseCode = "400", description = "Bad request - Resource could not be parsed or failed basic FHIR validation rules"),
