@@ -1,0 +1,57 @@
+{
+  "resourceType": "Patient",
+  "id": "01",
+  "identifier": [
+    {
+      "use": "official",
+      "type": {
+        "coding": [
+          {
+            "system": "http://www.hospital-a/localid",
+            "code": "MRN"
+          }
+        ]
+      },
+      "system": "http://www.hospital-a/localid",
+      "value": "1000000001",
+      "assigner": {
+        "display": "Hospital A"
+      }
+    },
+    {
+      "use": "official",
+      "type": {
+        "coding": [
+          {
+            "system": "http://hl7.org/fhir/identifier-type",
+            "code": "SS",
+            "display": "Social Security Number"
+          }
+        ]
+      },
+      "system": "http://hl7.org/fhir/sid/us-ssn",
+      "value": "999-60-6922"
+    }
+  ],
+  "active": true,
+  "name": [
+    {
+      "use": "official",
+      "family": "WASHINTON",
+      "given": "MARY"
+    }
+  ],
+  "gender": "female",
+  "birthDate": "1954-07-04",
+  "address": [
+    {
+      "use": "home",
+      "line": [
+        "456 Main St"
+      ],
+      "city": "West Newbury",
+      "state": "Massachusetts",
+      "postalCode": "01985"
+    }
+  ]
+}

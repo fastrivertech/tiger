@@ -1,0 +1,184 @@
+{
+  "resourceType": "Parameters",
+  "parameter": [
+    {
+      "name": "source-patient",
+      "valueReference": {
+        "reference": "Patient/01"
+      }
+    },
+    {
+      "name": "source-patient-identifier",
+      "valueReference": {
+        "identifier": {
+          "use": "official",
+          "type": {
+            "coding": [
+              {
+                "system": "http://www.hospital-a/localid",
+                "code": "MRN"
+              }
+            ]
+          },
+          "system": "http://www.hospital-a/localid",
+          "value": "1000000001",
+          "assigner": {
+            "display": "Hospital A"
+          }
+        }
+      }
+    },
+    {
+      "name": "source-patient-identifier",
+      "valueReference": {
+        "identifier": {
+          "use": "official",
+          "type": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/identifier-type",
+                "code": "SS",
+                "display": "Social Security Number"
+              }
+            ]
+          },
+          "system": "http://hl7.org/fhir/sid/us-ssn",
+          "value": "999-60-6922"
+        }
+      }
+    },
+    {
+      "name": "patient",
+      "valueReference": {
+        "reference": "Patient/02"
+      }
+    },
+    {
+      "name": "patient-identifier",
+      "valueReference": {
+        "identifier": {
+          "use": "official",
+          "type": {
+            "coding": [
+              {
+                "system": "http://www.hospital-b/localid",
+                "code": "MRN"
+              }
+            ]
+          },
+          "system": "http://www.hospital-b/localid",
+          "value": "2000000001",
+          "assigner": {
+            "display": "Hospital B"
+          }
+        }
+      }
+    },
+    {
+      "name": "patient-identifier",
+      "valueReference": {
+        "identifier": {
+          "use": "official",
+          "type": {
+            "coding": [
+              {
+                "system": "http://hl7.org/fhir/identifier-type",
+                "code": "SS",
+                "display": "Social Security Number"
+              }
+            ]
+          },
+          "system": "http://hl7.org/fhir/sid/us-ssn",
+          "value": "999-60-6922"
+        }
+      }
+    },
+    {
+      "name": "result-patient",
+      "resource": {
+        "resourceType": "Patient",
+        "id": "02",
+        "identifier": [
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://www.hospital-a/localid",
+                  "code": "MRN"
+                }
+              ]
+            },
+            "system": "http://www.hospital-a/localid",
+            "value": "1000000001",
+            "assigner": {
+              "display": "Hospital A"
+            }
+          },
+          {
+            "use": "old",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://www.hospital-b/localid",
+                  "code": "MRN"
+                }
+              ]
+            },
+            "system": "http://www.hospital-b/localid",
+            "value": "2000000001",
+            "assigner": {
+              "display": "Hospital B"
+            }
+          },
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/identifier-type",
+                  "code": "SS",
+                  "display": "Social Security Number"
+                }
+              ]
+            },
+            "system": "http://hl7.org/fhir/sid/us-ssn",
+            "value": "999-60-6922"
+          },
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/identifier-type",
+                  "code": "DL",
+                  "display": "Driver's License Number"
+                }
+              ]
+            },
+            "system": "http://hl7.org/fhir/sid/us-dl",
+            "value": "999-60-6922"
+          }
+        ],
+        "name": [
+          {
+            "use": "official",
+            "family": "LINCON",
+            "given": [
+              "MARY"
+            ]
+          },
+          {
+            "use": "old",
+            "family": "WASHINGTON",
+            "given": [
+              "MARY"
+            ]
+          }
+        ],
+        "gender": "male",
+        "birthDate": "1974-12-25"
+      }
+    }
+  ]
+}
