@@ -35,9 +35,9 @@ import com.frt.fhir.mpi.parser.ParameterParser;
 import com.frt.fhir.mpi.parser.ParameterParserException;
 import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.parser.JsonParser;
-import com.frt.fhir.mpi.resource.Parameters;
 import com.frt.fhir.rest.validation.MpiOperationValidator;
 import com.frt.fhir.rest.validation.OperationValidatorException;
+import com.frt.fhir.service.FhirService;
 import com.frt.util.logging.Localization;
 import com.frt.util.logging.Logger;
 import io.swagger.v3.oas.annotations.Operation;
@@ -61,12 +61,14 @@ public class MpiResourceOperation extends ResourceOperation {
 	
 	private JsonParser jsonParser;
 	private ParameterParser paramParser;
+	private FhirService fhirService;
 	private MpiService mpiService;
 	
 	public MpiResourceOperation() {
 		jsonParser = new JsonParser();	
 		paramParser = new ParameterParser();
-		mpiService = new MpiServiceImpl();
+		fhirService = new FhirService();
+		mpiService = new MpiServiceImpl(fhirService);
 	}
 	
   /**
@@ -114,7 +116,7 @@ public class MpiResourceOperation extends ResourceOperation {
 		
 		logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "match"));		
 		try {
-			Parameters params = paramParser.deserialize(body);			
+			com.frt.fhir.mpi.resource.Parameters params = paramParser.deserialize(body);			
 			Bundle bundle = mpiService.match(params);
 			Bundle.BundleLinkComponent link = bundle.addLink();
 			link.setRelation("self");

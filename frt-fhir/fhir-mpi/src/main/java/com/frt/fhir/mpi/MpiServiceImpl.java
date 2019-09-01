@@ -13,21 +13,17 @@ package com.frt.fhir.mpi;
 import java.util.List;
 import java.util.Optional;
 import org.hl7.fhir.r4.model.Bundle;
-import org.hl7.fhir.r4.model.Patient;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.Identifier;
-import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
-import com.frt.dr.service.RepositoryApplication;
-import com.frt.dr.service.RepositoryContext;
-import com.frt.dr.service.RepositoryContextException;
-import com.frt.dr.service.RepositoryServiceException;
+import org.hl7.fhir.r4.model.Patient;
 import com.frt.dr.service.query.QueryOption;
 import com.frt.dr.service.query.QueryCriteria;
 import com.frt.fhir.mpi.parser.ParameterParser;
 import com.frt.fhir.mpi.parser.ParameterParserException;
 import com.frt.fhir.mpi.resource.Parameter;
 import com.frt.fhir.mpi.resource.Parameters;
+import com.frt.fhir.service.FhirService;
 import com.frt.mpi.MpiProvider;
 import com.frt.mpi.MpiProviderImpl;
 import com.frt.mpi.MpiProviderException;
@@ -38,18 +34,11 @@ import com.frt.mpi.MpiProviderException;
  */
 public class MpiServiceImpl implements MpiService<Patient> {
 
-	@Autowired
-	private RepositoryApplication repository;	
 	private MpiProvider mpiProvider;
+	private FhirService fhirService;
 	
-	public MpiServiceImpl() 
-		throws MpiServiceException {
-		try {
-			RepositoryContext context = new RepositoryContext(RepositoryApplication.class); 			
-			repository = (RepositoryApplication)context.getBean(RepositoryApplication.class);			
-		} catch (RepositoryContextException rcex) {
-			throw new MpiServiceException(rcex);
-		}	
+	public MpiServiceImpl(FhirService fhirService) {
+		this.fhirService = fhirService;
 	}
 
 	public boolean isEnabled() {
@@ -83,13 +72,16 @@ public class MpiServiceImpl implements MpiService<Patient> {
 	 * @see com.frt.fhir.mpi.MpiService#merge(org.hl7.fhir.r4.model.Parameters)
 	 */
 	public Optional<Patient> merge(org.hl7.fhir.r4.model.Parameters parameters)
-		throws MpiServiceException {		
+		throws MpiServiceException, MpiInvalidException{		
 		try {
-			List<org.hl7.fhir.r4.model.Type> source_patients = parameters.getParameters("source-patient");		
+			List<org.hl7.fhir.r4.model.Type> source_patients = parameters.getParameters("source-patient");					
 			source_patients.forEach(source_patient->{
-				Reference ref = (Reference)source_patient;
-				System.out.println("source-patient reference = " + ref.getReference());
-				
+				String reference = ((Reference)source_patient).getReference();
+				String[] tokens = reference.split("/");
+				if (tokens.length != 2 &&
+					!tokens[0].equalsIgnoreCase("Patient")) {
+					throw new MpiInvalidException("invalid patient resource type: " + reference);
+				}
 			});
 			
 			List<org.hl7.fhir.r4.model.Type> source_patient_identifiers = parameters.getParameters("source-patient-identifier");
@@ -111,7 +103,6 @@ public class MpiServiceImpl implements MpiService<Patient> {
 			});
 			
 			if (parameters.hasParameter("result-patient")) {
-				//List<org.hl7.fhir.r4.model.Type> result_patients = parameters.getParameters("result-patient");
 				List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> values = parameters.getParameter();
 				values.forEach(value->{
 					if ("result-patient".equals(value.getName())) {
