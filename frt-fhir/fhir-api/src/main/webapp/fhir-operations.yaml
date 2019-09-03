@@ -594,6 +594,49 @@ paths:
           description: Not found - Unknown resource
         500:
           description: Internal server error
+  /1.0/Patient/$unmerge:
+    post:
+      tags:
+      - MPI
+      summary: Unmerge A Survived Domain Resource
+      description: Unmerge A Survived Domain Resource.
+      operationId: unmerge
+      parameters:
+      - name: _format
+        in: query
+        description: FHIR Resource format, indicate the format of the returned resource
+        schema:
+          type: string
+          default: json
+      requestBody:
+        description: FHIR Resource in json / xml string, json supported
+        content:
+          application/fhir+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+        required: true
+      responses:
+        default:
+          description: 'FHIR DomainResource: Bundle of A Set Of Source Domain Resource
+            And target Domain Resource'
+          content:
+            application/fhir+json:
+              schema:
+                $ref: '#/components/schemas/Patient'
+        201:
+          description: Unmerged
+        202:
+          description: Has Been Merged
+        400:
+          description: Bad request - Resource could not be parsed or failed basic
+            FHIR validation rules
+        404:
+          description: Not found - Unknown resource
+        500:
+          description: Internal server error
   /1.0/Patient/$potential:
     get:
       tags:
@@ -664,49 +707,6 @@ paths:
           description: Bad request
         404:
           description: Not Found
-        500:
-          description: Internal server error
-  /1.0/Patient/$unmerge:
-    post:
-      tags:
-      - MPI
-      summary: Unmerge A Survived Domain Resource
-      description: Unmerge A Survived Domain Resource.
-      operationId: unmerge
-      parameters:
-      - name: _format
-        in: query
-        description: FHIR Resource format, indicate the format of the returned resource
-        schema:
-          type: string
-          default: json
-      requestBody:
-        description: FHIR Resource in json / xml string, json supported
-        content:
-          application/fhir+json:
-            schema:
-              type: string
-          application/json:
-            schema:
-              type: string
-        required: true
-      responses:
-        default:
-          description: 'FHIR DomainResource: Bundle of A Set Of Source Domain Resource
-            And target Domain Resource'
-          content:
-            application/fhir+json:
-              schema:
-                $ref: '#/components/schemas/Patient'
-        201:
-          description: Unmerged
-        202:
-          description: Has Been Merged
-        400:
-          description: Bad request - Resource could not be parsed or failed basic
-            FHIR validation rules
-        404:
-          description: Not found - Unknown resource
         500:
           description: Internal server error
   /1.0/{type}/_search:
