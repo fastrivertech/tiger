@@ -675,6 +675,62 @@
         }
       }
     },
+    "/1.0/Patient/$unlink" : {
+      "post" : {
+        "tags" : [ "MPI" ],
+        "summary" : "Un-merge a survived domain resource",
+        "description" : "Un-merge a survived domain resource.",
+        "operationId" : "unlink",
+        "parameters" : [ {
+          "name" : "_format",
+          "in" : "query",
+          "description" : "FHIR Resource format, indicate the format of the returned resource",
+          "schema" : {
+            "type" : "string",
+            "default" : "json"
+          }
+        } ],
+        "requestBody" : {
+          "description" : "FHIR Resource in json / xml string, json supported",
+          "content" : {
+            "application/fhir+json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            },
+            "application/json" : {
+              "schema" : {
+                "type" : "string"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "default" : {
+            "description" : "FHIR DomainResource: Bundle a set of merged domain resource and survived domain resource",
+            "content" : {
+              "application/fhir+json" : { }
+            }
+          },
+          "201" : {
+            "description" : "Unlinked"
+          },
+          "202" : {
+            "description" : "Has Been Unlinked"
+          },
+          "400" : {
+            "description" : "Bad request"
+          },
+          "404" : {
+            "description" : "Not found"
+          },
+          "500" : {
+            "description" : "Internal server error"
+          }
+        }
+      }
+    },
     "/1.0/Patient/$link" : {
       "post" : {
         "tags" : [ "MPI" ],
@@ -728,62 +784,6 @@
           },
           "404" : {
             "description" : "Not found - Unknown resource"
-          },
-          "500" : {
-            "description" : "Internal server error"
-          }
-        }
-      }
-    },
-    "/1.0/Patient/$unlink" : {
-      "post" : {
-        "tags" : [ "MPI" ],
-        "summary" : "Un-merge a survived domain resource",
-        "description" : "Un-merge a survived domain resource.",
-        "operationId" : "unlink",
-        "parameters" : [ {
-          "name" : "_format",
-          "in" : "query",
-          "description" : "FHIR Resource format, indicate the format of the returned resource",
-          "schema" : {
-            "type" : "string",
-            "default" : "json"
-          }
-        } ],
-        "requestBody" : {
-          "description" : "FHIR Resource in json / xml string, json supported",
-          "content" : {
-            "application/fhir+json" : {
-              "schema" : {
-                "type" : "string"
-              }
-            },
-            "application/json" : {
-              "schema" : {
-                "type" : "string"
-              }
-            }
-          },
-          "required" : true
-        },
-        "responses" : {
-          "default" : {
-            "description" : "FHIR DomainResource: Bundle a set of merged domain resource and survived domain resource",
-            "content" : {
-              "application/fhir+json" : { }
-            }
-          },
-          "201" : {
-            "description" : "Unlinked"
-          },
-          "202" : {
-            "description" : "Has Been Unlinked"
-          },
-          "400" : {
-            "description" : "Bad request"
-          },
-          "404" : {
-            "description" : "Not found"
           },
           "500" : {
             "description" : "Internal server error"
