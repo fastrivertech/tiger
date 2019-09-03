@@ -30,6 +30,9 @@ import org.hl7.fhir.r4.model.DomainResource;
 import org.hl7.fhir.r4.model.OperationOutcome;
 import com.frt.fhir.mpi.MpiService;
 import com.frt.fhir.mpi.MpiServiceException;
+import com.frt.dr.cache.CacheService;
+import com.frt.dr.cache.NamedCache;
+import com.frt.fhir.mpi.MpiValidationException;
 import com.frt.fhir.mpi.MpiServiceImpl;
 import com.frt.fhir.mpi.parser.ParameterParser;
 import com.frt.fhir.mpi.parser.ParameterParserException;
@@ -224,15 +227,30 @@ public class MpiResourceOperation extends ResourceOperation {
 						  						     @Parameter(description = "FHIR Parameters resource specifying source and target patients to be merged", required = false) final String body) {
 		try {
 			logger.info(localizer.x("FHR_I010: ExecutionResourceOperation executes the mpi {0} command", "merge"));														
-			
+			CacheService.getInstance().createCache();
+
 			org.hl7.fhir.r4.model.Parameters parameters = jsonParser.deserialize("Parameters", body);			
 			MpiOperationValidator.validateFormat(_format);
 			MpiOperationValidator.validateParameters(parameters);			
-			Optional<R> merged = mpiService.merge(parameters);		
-			if (merged.isPresent()) {
-				String resourceInJson = jsonParser.serialize(merged.get());      				
-				String location = uriInfo.getAbsolutePath().getPath() + "_history/" + merged.get().getMeta().getVersionId();
-				return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, "2", location, MimeType.APPLICATION_FHIR_JSON);											
+			R merged = (R)mpiService.merge(parameters);		
+			
+			Optional<NamedCache> cache = CacheService.getInstance().getCache();
+			String action = (String)cache.get().get(NamedCache.ACTION_CODE);
+			
+			if (action.equalsIgnoreCase("Merged")) {		
+					String resourceInJson = jsonParser.serialize(merged);      				
+					String location = uriInfo.getAbsolutePath().getPath() + "_history/" + merged.getMeta().getVersionId();
+					return ResourceOperationResponseBuilder.build(resourceInJson, Status.OK, 
+																  merged.getMeta().getVersionId(), 
+															      location, 
+															      MimeType.APPLICATION_FHIR_JSON);
+			} else if (action.equalsIgnoreCase("HasMerged")) {
+				String resourceInJson = jsonParser.serialize(merged);      				
+				String location = uriInfo.getAbsolutePath().getPath() + "_history/" + merged.getMeta().getVersionId();
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.ACCEPTED, 
+															  merged.getMeta().getVersionId(), 
+														      location, 
+														      MimeType.APPLICATION_FHIR_JSON);				
 			} else {
 				String error = "failed to merge '" + body + "'"; 
 				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
@@ -240,8 +258,8 @@ public class MpiResourceOperation extends ResourceOperation {
 																								  OperationOutcome.IssueType.PROCESSING);
 				String resourceInJson = jsonParser.serialize(outcome);
 				return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_FHIR_JSON);
-			}
-		} catch (OperationValidatorException vx) {
+			}		
+		} catch (OperationValidatorException | MpiValidationException vx) {
 			String error = "invalid parameter: " + vx.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
 																							  OperationOutcome.IssueSeverity.ERROR, 
