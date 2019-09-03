@@ -101,7 +101,7 @@ public class MpiServiceImpl implements MpiService<Patient> {
 			}
 			
 			// merge operation			
-			Patient result = target.copy();
+			Patient result = MpiMerge.execute(source, target);
 			PatientLinkComponent sourceLink = new PatientLinkComponent();
 			sourceLink.setId(source.getId());
 			result.addLink(sourceLink);
