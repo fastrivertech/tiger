@@ -100,31 +100,26 @@ public class MpiServiceImpl implements MpiService<Patient> {
 				});						
 			}
 			
-			// merge operation			
+			// merge source to target			
 			Patient result = MpiMerge.execute(source, target);
-			PatientLinkComponent sourceLink = new PatientLinkComponent();
-			sourceLink.setId(source.getId());
-			result.addLink(sourceLink);
 			
-			// merge source to target 
-			Patient resulted = fhirService.update(Patient.class.getName(), 
-					                              target.getId(),
-					                              result);
-			PatientLinkComponent targetLink = new PatientLinkComponent();
-			source.addLink(targetLink);
-			source.setActive(false);
-			fhirService.update(Patient.class.getName(), 
-                    		   source.getId(),
-                               source);
+			// update target 
+			Patient updatedTarget = fhirService.update(Patient.class.getName(), 
+					                                   result.getId(),
+					                                   result);
+			// update source
+			Patient updatedSource = fhirService.update(Patient.class.getName(), 
+                    		                           source.getId(),
+                                                       source);
 			// delete source
-			//fhirService.delete(org.hl7.fhir.r4.model.Patient.class.getName(), 
-			//				   source.get().getId());
+			// fhirService.delete(Patient.class.getName(), 
+			//	 			      source.getId());
 			
 			 if (cache.isPresent()) {
 				 cache.get().put(NamedCache.ACTION_CODE, "Merged");
 			 }				
 			 
-			return resulted;  												     
+			return updatedTarget;  												     
 		} catch (Exception ex) {
 			throw new MpiServiceException(ex);
 		}
