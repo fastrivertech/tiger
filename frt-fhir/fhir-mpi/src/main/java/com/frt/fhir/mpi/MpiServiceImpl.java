@@ -74,100 +74,44 @@ public class MpiServiceImpl implements MpiService<Patient> {
 	 * @see com.frt.fhir.mpi.MpiService#merge(org.hl7.fhir.r4.model.Parameters)
 	 */
 	public Optional<Patient> merge(org.hl7.fhir.r4.model.Parameters parameters)
-		throws MpiServiceException, MpiInvalidException{		
+		throws MpiServiceException, MpiValidationException{		
+		MpiMergeValidator validator = new MpiMergeValidator(fhirService);
 		try {
 			// source-patient
-			Optional<Patient> source = Optional.empty(); 
-			List<org.hl7.fhir.r4.model.Type> source_patients = parameters.getParameters("source-patient");					
-			source_patients.forEach(source_patient->{
-				String reference = ((Reference)source_patient).getReference();
-				String[] tokens = reference.split("/");
-				if (tokens.length != 2 &&
-					!tokens[0].equalsIgnoreCase("Patient")) {
-					throw new MpiInvalidException("invalid source patient type: " + reference);
-				}
-				Optional<Patient> patient = fhirService.read(org.hl7.fhir.r4.model.Patient.class.getName(), 
-						                                     tokens[1], 
-						                                     new QueryOption());
-				if (!patient.isPresent()) {
-					throw new MpiInvalidException("invalid source patient reference Id: " + reference);					
-				};
-				source.of(patient);
-			}); 
-			// source-patient-identifier
-			List<org.hl7.fhir.r4.model.Type> source_patient_identifiers = parameters.getParameters("source-patient-identifier");
-			source_patient_identifiers.forEach(source_patient_identifier->{
-				Reference reference = (Reference)source_patient_identifier;
-				System.out.println("source-patient-identifier = " + 
-				                    reference.getIdentifier().getSystem() + " : " + 
-				                    reference.getIdentifier().getValue());
-				QueryCriteria criterias = new QueryCriteria();
-				MultivaluedMap params = null; 
-				criterias.setParams(params);
-				Optional<List<Patient>> patients = fhirService.read(org.hl7.fhir.r4.model.Patient.class.getName(), 
-						                                           criterias, 
-														     	   new QueryOption());
-				if (!patients.isPresent() || 
-					 patients.get().size() > 1) {
-					throw new MpiInvalidException("invalid source patient identifier: " + reference.getIdentifier().toString());					
-				}
-				Patient patient = patients.get().get(0);
-				if (source.isPresent()) {
-					if (!source.get().equals(patient.getId())) {
-						throw new MpiInvalidException("invalid source patient identifier: " + reference.getIdentifier().toString());											
-					}
-				} else {
-					source.of(patient);
-				}
-				
-			});
+			Patient source = validator.validateSource(parameters, "source-patient");
 			// patient
-			Optional<Patient> target = Optional.empty();
-			List<org.hl7.fhir.r4.model.Type> patients = parameters.getParameters("patient");;
-			patients.forEach(patient->{
-				Reference reference = (Reference)patient;
-				System.out.println("patient reference = " + reference.getReference());	
-				// ToDo 
-				
-			});
-			// patient-identifier
-			List<org.hl7.fhir.r4.model.Type> patient_identifiers = parameters.getParameters("patient-identifier");
-			patient_identifiers.forEach(patient_identifier->{
-				Reference reference = (Reference)patient_identifier;
-				System.out.println("patient-identifier = " + 
-				                   reference.getIdentifier().getSystem() + " : " + 
-						           reference.getIdentifier().getValue());
-				// ToDo
-			});
+			Patient target = validator.validateSource(parameters, "patient");
+			
 			// result-patient
 			if (parameters.hasParameter("result-patient")) {
 				List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> result_patients = parameters.getParameter();
 				result_patients.forEach(result_patient->{
 					if ("result-patient".equals(result_patient.getName())) {
-						org.hl7.fhir.r4.model.Patient patient = (org.hl7.fhir.r4.model.Patient)result_patient.getResource();						
+						Patient patient = (Patient)result_patient.getResource();						
 						System.out.println("result-patient = " + patient.getId());
-						if (!target.get().equals(result_patient.getId())) {
-							throw new MpiInvalidException("invalid result patient: " + result_patient.getId());												
+						if (!target.getId().equals(result_patient.getId())) {
+							throw new MpiValidationException("invalid result patient: " + result_patient.getId());												
 						}						
 					}					
 				});						
 			}
+			
 			// merge operation			
-			Patient result = target.get().copy();
+			Patient result = target.copy();
 			PatientLinkComponent sourceLink = new PatientLinkComponent();
-			sourceLink.setId(source.get().getId());
+			sourceLink.setId(source.getId());
 			result.addLink(sourceLink);
 			
 			// merge source to target 
-			Patient resulted = fhirService.update(org.hl7.fhir.r4.model.Patient.class.getName(), 
-					                              target.get().getId(),
+			Patient resulted = fhirService.update(Patient.class.getName(), 
+					                              target.getId(),
 					                              result);
 			PatientLinkComponent targetLink = new PatientLinkComponent();
-			source.get().addLink(targetLink);
-			source.get().setActive(false);
-			fhirService.update(org.hl7.fhir.r4.model.Patient.class.getName(), 
-                    		   source.get().getId(),
-                               source.get());
+			source.addLink(targetLink);
+			source.setActive(false);
+			fhirService.update(Patient.class.getName(), 
+                    		   source.getId(),
+                               source);
 			// delete source
 			//fhirService.delete(org.hl7.fhir.r4.model.Patient.class.getName(), 
 			//				   source.get().getId());

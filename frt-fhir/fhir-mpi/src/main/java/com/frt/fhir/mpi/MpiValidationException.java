@@ -11,12 +11,12 @@
  */
 package com.frt.fhir.mpi;
 
-public class MpiInvalidException extends RuntimeException {
+public class MpiValidationException extends RuntimeException {
 
 	/**
 	 * MpiInvalidException Constructor
 	 */
-	public MpiInvalidException() {
+	public MpiValidationException() {
 		super();
 	}
 
@@ -25,7 +25,7 @@ public class MpiInvalidException extends RuntimeException {
 	 * 
 	 * @param m Message string
 	 */
-	public MpiInvalidException(String m) {
+	public MpiValidationException(String m) {
 		super(m);
 	}
 
@@ -35,7 +35,7 @@ public class MpiInvalidException extends RuntimeException {
 	 * @param m Message string
 	 * @param t Throwable inherited
 	 */
-	public MpiInvalidException(String m, Throwable t) {
+	public MpiValidationException(String m, Throwable t) {
 		super(m, t);
 	}
 
@@ -44,7 +44,7 @@ public class MpiInvalidException extends RuntimeException {
 	 * 
 	 * @param t Throwable inherited
 	 */
-	public MpiInvalidException(Throwable t) {
+	public MpiValidationException(Throwable t) {
 		super(t);
 	}
 

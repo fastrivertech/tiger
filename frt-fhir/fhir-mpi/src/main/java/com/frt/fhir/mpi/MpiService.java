@@ -77,7 +77,7 @@ public interface MpiService<T> {
 	 * @throws MpiServiceException throws exception if any error occurs during process
 	 */
 	Optional<T> merge(org.hl7.fhir.r4.model.Parameters parameters) 
-		throws MpiServiceException, MpiInvalidException;
+		throws MpiServiceException, MpiValidationException;
 	
 	/**
 	 * Un-merge a survived domain resource
