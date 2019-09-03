@@ -76,7 +76,7 @@ public interface MpiService<T> {
 	 * operation outcome: operation result code
 	 * @throws MpiServiceException throws exception if any error occurs during process
 	 */
-	Optional<T> merge(org.hl7.fhir.r4.model.Parameters parameters) 
+	 T merge(org.hl7.fhir.r4.model.Parameters parameters) 
 		throws MpiServiceException, MpiValidationException;
 	
 	/**

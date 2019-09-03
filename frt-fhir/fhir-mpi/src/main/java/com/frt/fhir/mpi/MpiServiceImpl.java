@@ -20,6 +20,9 @@ import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Patient.PatientLinkComponent;
 import com.frt.dr.service.query.QueryOption;
+import com.frt.dr.transaction.model.Transaction;
+import com.frt.dr.cache.CacheService;
+import com.frt.dr.cache.NamedCache;
 import com.frt.dr.service.query.QueryCriteria;
 import com.frt.fhir.mpi.parser.ParameterParser;
 import com.frt.fhir.mpi.parser.ParameterParserException;
@@ -73,8 +76,9 @@ public class MpiServiceImpl implements MpiService<Patient> {
 	/**
 	 * @see com.frt.fhir.mpi.MpiService#merge(org.hl7.fhir.r4.model.Parameters)
 	 */
-	public Optional<Patient> merge(org.hl7.fhir.r4.model.Parameters parameters)
-		throws MpiServiceException, MpiValidationException{		
+	public Patient merge(org.hl7.fhir.r4.model.Parameters parameters)
+		throws MpiServiceException, MpiValidationException {		
+		Optional<NamedCache> cache = CacheService.getInstance().getCache();
 		MpiMergeValidator validator = new MpiMergeValidator(fhirService);
 		try {
 			// source-patient
@@ -116,7 +120,11 @@ public class MpiServiceImpl implements MpiService<Patient> {
 			//fhirService.delete(org.hl7.fhir.r4.model.Patient.class.getName(), 
 			//				   source.get().getId());
 			
-			return Optional.of(resulted);  												     
+			 if (cache.isPresent()) {
+				 cache.get().put(NamedCache.ACTION_CODE, "Merged");
+			 }				
+			 
+			return resulted;  												     
 		} catch (Exception ex) {
 			throw new MpiServiceException(ex);
 		}
