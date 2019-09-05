@@ -30,7 +30,8 @@ public interface Transaction extends Serializable {
 		R("Read/view/print"),
 		U("Update"),
 		D("Delete"),
-		E("Excute"),
+		E("Excute"),		
+		M("Merge"),
 		N("NOP");
 				
 		private String code;
