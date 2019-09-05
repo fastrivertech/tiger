@@ -19,6 +19,7 @@ import org.hl7.fhir.r4.model.Identifier;
 import org.hl7.fhir.r4.model.Reference;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Patient.PatientLinkComponent;
+import org.hl7.fhir.r4.model.Extension;
 import com.frt.dr.service.query.QueryOption;
 import com.frt.dr.transaction.model.Transaction;
 import com.frt.dr.cache.CacheService;
@@ -85,7 +86,6 @@ public class MpiServiceImpl implements MpiService<Patient> {
 			Patient source = validator.validateSource(parameters, "source-patient");
 			// patient
 			Patient target = validator.validateSource(parameters, "patient");
-			
 			// result-patient
 			if (parameters.hasParameter("result-patient")) {
 				List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> result_patients = parameters.getParameter();
@@ -100,9 +100,22 @@ public class MpiServiceImpl implements MpiService<Patient> {
 				});						
 			}
 			
+			if (checkStatus(source, Transaction.ActionCode.M)) {
+				String linked = source.getLinkFirstRep().getId();
+				if (linked.equals(target.getId())) { 
+					if (cache.isPresent()) {
+						cache.get().put(NamedCache.ACTION_CODE, "HasMerged");
+					}
+				} else {
+					throw new MpiValidationException("source patient:" + 
+				                                     source.getId() + 
+				                                     "has been merged to a wrong target patient: " + linked);
+				}
+			}
+			
 			// merge source to target			
 			Patient result = MpiMerge.execute(source, target);
-			
+	
 			// update target 
 			Patient updatedTarget = fhirService.update(Patient.class.getName(), 
 					                                   result.getId(),
@@ -118,6 +131,7 @@ public class MpiServiceImpl implements MpiService<Patient> {
 			 if (cache.isPresent()) {
 				 cache.get().put(NamedCache.ACTION_CODE, "Merged");
 			 }				
+			 
 			 
 			return updatedTarget;  												     
 		} catch (Exception ex) {
@@ -149,4 +163,19 @@ public class MpiServiceImpl implements MpiService<Patient> {
 		throw new UnsupportedOperationException();
 	}
 
+	
+	public static boolean checkStatus(Patient patient, Transaction.ActionCode status) {
+		boolean checked = false;
+		List<Extension> extensions = patient.getExtension();
+		for (Extension extension : extensions) {
+			if ("http://hl7.org/fhir/StructureDefinition/patient-status".equals(extension.getUrl())) {
+				if (status.name().equals(extension.getValue())) {
+					checked = true;
+					break;
+				}
+			}
+		}
+		return checked;
+	}
+	   
 }
