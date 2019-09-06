@@ -132,7 +132,6 @@ public class MpiServiceImpl implements MpiService<Patient> {
 				 cache.get().put(NamedCache.ACTION_CODE, "Merged");
 			 }				
 			 
-			 
 			return updatedTarget;  												     
 		} catch (Exception ex) {
 			throw new MpiServiceException(ex);
