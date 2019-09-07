@@ -205,6 +205,7 @@ public class MpiResourceOperation extends ResourceOperation {
 	 * @status 404 Not found
 	 * @status 500 Internal server error
 	 */
+	@SuppressWarnings("rawtypes")
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_MERGE_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	
@@ -232,6 +233,7 @@ public class MpiResourceOperation extends ResourceOperation {
 			org.hl7.fhir.r4.model.Parameters parameters = jsonParser.deserialize("Parameters", body);			
 			MpiOperationValidator.validateFormat(_format);
 			MpiOperationValidator.validateParameters(parameters);			
+			@SuppressWarnings("unchecked")
 			R merged = (R)mpiService.merge(parameters);		
 			
 			Optional<NamedCache> cache = CacheService.getInstance().getCache();
