@@ -1,8 +1,12 @@
 package com.frt.fhir.mpi;
 
 import java.util.List;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.MultivaluedHashMap;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
@@ -29,7 +33,7 @@ public class MpiMergeValidator {
 				if (tokens.length != 2 && !tokens[0].equalsIgnoreCase("Patient")) {
 					throw new MpiValidationException(name + " invalid type: " + reference);
 				}
-				Optional<Patient> patient = fhirService.read(Patient.class.getName(), 
+				Optional<Patient> patient = fhirService.read("Patient", 
 														     tokens[1],
 														     new QueryOption());
 				if (!patient.isPresent()) {
@@ -48,9 +52,12 @@ public class MpiMergeValidator {
 						           reference.getIdentifier().getValue());
 				
 				QueryCriteria criterias = new QueryCriteria();
-				MultivaluedMap params = null;
+				MultivaluedMap params = new MultivaluedHashMap<>();
+				List values = new LinkedList();
+				values.add(reference.getIdentifier().getValue());
+				params.add(reference.getIdentifier().getSystem(), values);
 				criterias.setParams(params);
-				Optional<List<Patient>> patients = fhirService.read(Patient.class.getName(),
+				Optional<List<Patient>> patients = fhirService.read("Patient",
 																	criterias, 
 																	new QueryOption());
 				if (!patients.isPresent() || patients.get().size() > 1) {
