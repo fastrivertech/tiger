@@ -53,9 +53,7 @@ public class MpiMergeValidator {
 				
 				QueryCriteria criterias = new QueryCriteria();
 				MultivaluedMap params = new MultivaluedHashMap<>();
-				List values = new LinkedList();
-				values.add(reference.getIdentifier().getValue());
-				params.add(reference.getIdentifier().getSystem(), values);
+				params.add(reference.getIdentifier().getSystem(), reference.getIdentifier().getValue());
 				criterias.setParams(params);
 				Optional<List<Patient>> patients = fhirService.read("Patient",
 																	criterias, 
