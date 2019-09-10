@@ -233,10 +233,10 @@ public class MpiResourceOperation extends ResourceOperation {
 			org.hl7.fhir.r4.model.Parameters parameters = jsonParser.deserialize("Parameters", body);			
 			MpiOperationValidator.validateFormat(_format);
 			MpiOperationValidator.validateParameters(parameters);			
-			@SuppressWarnings("unchecked")
+			
 			R merged = (R)mpiService.merge(parameters);		
 			
-			Optional<NamedCache> cache = CacheService.getInstance().getCache();
+			Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();
 			String action = (String)cache.get().get(NamedCache.ACTION_CODE);
 			
 			if (action.equalsIgnoreCase("Merged")) {		
@@ -282,7 +282,9 @@ public class MpiResourceOperation extends ResourceOperation {
 																							  OperationOutcome.IssueType.PROCESSING);
 			String resourceInJson = jsonParser.serialize(outcome);
 			return ResourceOperationResponseBuilder.build(resourceInJson, Status.NOT_ACCEPTABLE, "", MimeType.APPLICATION_FHIR_JSON);							 			 			 
-		} 
+		} finally {
+			CacheService.getInstance().destroyCache();						
+		}
 	}
 	
 	/**

@@ -117,7 +117,7 @@ public class UpdateResourceOperation extends ResourceOperation {
 
 			String resourceInJson = parser.serialize(updated);
 			
-			Optional<NamedCache> cache = CacheService.getInstance().getCache();
+			Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();
 			String action = (String)cache.get().get(NamedCache.ACTION_CODE);
 			String location = uriInfo.getAbsolutePath().getPath() + "/_history/" + updated.getMeta().getVersionId();				
 			if (action.equalsIgnoreCase("U")) {

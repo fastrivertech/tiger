@@ -234,7 +234,7 @@ public class SearchResourceOperation extends ResourceOperation {
 			}
 
 			boolean deleted = false;
-			Optional<NamedCache> cache = CacheService.getInstance().getCache();			
+			Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();			
 			if (cache.isPresent() &&
 				cache.get().get(NamedCache.ACTION_CODE) != null) {
 				String action = (String)cache.get().get(NamedCache.ACTION_CODE);
