@@ -88,7 +88,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			if (resource.isPresent()) {
 				boolean deleted = checkStatus(resource.get(), Transaction.ActionCode.D);
 				if (deleted) {
-				    Optional<NamedCache> cache = CacheService.getInstance().getCache();
+				    Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();
 				    if (cache.isPresent()) {
 				    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.D.name());
 				    }				
@@ -157,7 +157,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		throws RepositoryServiceException {
 		R updatedResource = resource;
 		TransactionService ts  = TransactionService.getInstance();
-		Optional<NamedCache> cache = CacheService.getInstance().getCache();
+		Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();
 		try {			
 			 ts.start();		
 			 BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);	

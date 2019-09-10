@@ -20,7 +20,7 @@ import java.util.Optional;
 public class CacheService {	
 	private static CacheService instance;
 	
-	private ThreadLocal<NamedCache> cache;
+	private ThreadLocal<NamedCache<String, String>> cache;
 		
 	private CacheService() {	
 	}
@@ -34,12 +34,12 @@ public class CacheService {
 	
 	public void createCache() {
 		if (cache == null) {
-			cache = new ThreadLocal<NamedCache>();
+			cache = new ThreadLocal<NamedCache<String, String>>();
 			cache.set(new NamedCache<String, String>());
 		}
 	}
 	
-	public Optional<NamedCache> getCache() {
+	public Optional<NamedCache<String, String>> getCache() {
 		if (cache != null) {
 			return Optional.of(cache.get());
 		} else {
