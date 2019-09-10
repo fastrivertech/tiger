@@ -77,9 +77,10 @@ public class MpiServiceImpl implements MpiService<Patient> {
 	/**
 	 * @see com.frt.fhir.mpi.MpiService#merge(org.hl7.fhir.r4.model.Parameters)
 	 */
+	@SuppressWarnings("rawtypes")
 	public Patient merge(org.hl7.fhir.r4.model.Parameters parameters)
 		throws MpiServiceException, MpiValidationException {		
-		Optional<NamedCache> cache = CacheService.getInstance().getCache();
+		Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();
 		MpiMergeValidator validator = new MpiMergeValidator(fhirService);
 		try {
 			// source-patient
@@ -93,9 +94,9 @@ public class MpiServiceImpl implements MpiService<Patient> {
 					if ("result-patient".equals(result_patient.getName())) {
 						Patient patient = (Patient)result_patient.getResource();						
 						System.out.println("result-patient = " + patient.getId());
-						if (!target.getId().equals(result_patient.getId())) {
-							throw new MpiValidationException("invalid result patient: " + result_patient.getId());												
-						}						
+						if (!target.getId().startsWith(patient.getId())) {
+							throw new MpiValidationException("invalid result patient: " + patient.getId());												
+						}
 					}					
 				});						
 			}
@@ -117,12 +118,12 @@ public class MpiServiceImpl implements MpiService<Patient> {
 			Patient result = MpiMerge.execute(source, target);
 	
 			// update target 
-			Patient updatedTarget = fhirService.update(Patient.class.getName(), 
-					                                   result.getId(),
+			Patient updatedTarget = fhirService.update("Patient", 
+					                                   result.getIdElement().getIdPart(),
 					                                   result);
 			// update source
-			Patient updatedSource = fhirService.update(Patient.class.getName(), 
-                    		                           source.getId(),
+			Patient updatedSource = fhirService.update("Patient", 
+                    		                           source.getIdElement().getIdPart(),
                                                        source);
 			// delete source
 			// fhirService.delete(Patient.class.getName(), 

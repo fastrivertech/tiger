@@ -27,8 +27,11 @@ public class MpiMergeValidator {
 		try {
 			Optional<Patient> source = Optional.empty();
 			List<org.hl7.fhir.r4.model.Type> resourceReferences = parameters.getParameters(name);
-			resourceReferences.forEach(resourceReference-> {
+			for (org.hl7.fhir.r4.model.Type resourceReference :  resourceReferences) {	
 				String reference = ((Reference) resourceReference).getReference();
+				
+				System.out.println(name + " reference = " + reference);				
+				
 				String[] tokens = reference.split("/");
 				if (tokens.length != 2 && !tokens[0].equalsIgnoreCase("Patient")) {
 					throw new MpiValidationException(name + " invalid type: " + reference);
@@ -38,40 +41,46 @@ public class MpiMergeValidator {
 														     new QueryOption());
 				if (!patient.isPresent()) {
 					throw new MpiValidationException(name + " invalid reference Id: " + reference);
-				}
-				;
-				source.of(patient);
-			});
+				};
+				source = Optional.of(patient.get());
+			};
 
 			List<org.hl7.fhir.r4.model.Type> resourceIdentifiers = parameters.getParameters(name + "-identifier");
-			   resourceIdentifiers.forEach(resourceIdentifier-> {
+			for (org.hl7.fhir.r4.model.Type resourceIdentifier :  resourceIdentifiers) {	
 				Reference reference = (Reference) resourceIdentifier;
 				
-				System.out.println(name + "-identifier = " + 
-								   reference.getIdentifier().getSystem() + " : " + 
-						           reference.getIdentifier().getValue());
+				System.out.println(name + "-identifier = " +
+								   "{ system:" +
+								      reference.getIdentifier().getSystem() + " , " + 
+								      "value:" +
+						              reference.getIdentifier().getValue() + " }");
 				
 				QueryCriteria criterias = new QueryCriteria();
 				MultivaluedMap params = new MultivaluedHashMap<>();
-				params.add(reference.getIdentifier().getSystem(), reference.getIdentifier().getValue());
+				params.add("system", reference.getIdentifier().getSystem()); 
+				params.add("value",	reference.getIdentifier().getValue());
 				criterias.setParams(params);
 				Optional<List<Patient>> patients = fhirService.read("Patient",
 																	criterias, 
 																	new QueryOption());
-				if (!patients.isPresent() || patients.get().size() > 1) {
+				if (!patients.isPresent() || patients.get().size() != 1) {
 					throw new MpiValidationException(
 							name + " invalid identifier: " + reference.getIdentifier().toString());
 				}
 				Patient patient = patients.get().get(0);
 				if (source.isPresent()) {
-					if (!source.get().equals(patient.getId())) {
-						throw new MpiValidationException(
-								name + " invalid identifier: " + reference.getIdentifier().toString());
+					if (!source.get().getId().equals(patient.getId())) {
+						throw new MpiValidationException(name + 
+														 " invalid identifier: " + 
+														 "{ system:" +
+														 reference.getIdentifier().getSystem() + " , " + 
+														 "value:" +
+												         reference.getIdentifier().getValue() + " }");
 					}
 				} else {
-					source.of(patient);
+					source = Optional.of(patient);
 				}
-			});
+			};
 			   
 			return source.get();
 		} catch (FhirServiceException ex) {

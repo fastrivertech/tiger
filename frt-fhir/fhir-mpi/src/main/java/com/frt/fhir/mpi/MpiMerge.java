@@ -14,11 +14,10 @@ import org.hl7.fhir.r4.model.HumanName.NameUse;
 public class MpiMerge {
 
 	public static Patient execute(Patient source, Patient  target) {
-		Patient result = target.copy();
 		
 		PatientLinkComponent sourceLink = new PatientLinkComponent();
 		sourceLink.setId(source.getId());
-		result.addLink(sourceLink);
+		target.addLink(sourceLink);
 
 		PatientLinkComponent targetLink = new PatientLinkComponent();
 		source.addLink(targetLink);
@@ -45,7 +44,7 @@ public class MpiMerge {
 		});
 		
 		
-		return result;
+		return target;
 	}
 	
 }
