@@ -103,6 +103,9 @@ public class ResourceUpdateManager {
 							Object targetFieldValue = null;
 							if (((List)targetFieldValues.get()).isEmpty()) {
 								targetFieldValue = Class.forName(type.getTypeName()).newInstance();
+								// setPatient
+								Method setPatient = Class.forName(type.getTypeName()).getDeclaredMethod("setPatient", com.frt.dr.model.base.Patient.class);
+								setPatient.invoke(targetFieldValue, (com.frt.dr.model.base.Patient)target);
 								((List)targetFieldValues.get()).add(targetFieldValue);
 							} else {
 								targetFieldValue = ((List)targetFieldValues.get()).get(0);
@@ -110,7 +113,7 @@ public class ResourceUpdateManager {
 							String path = ResourceUpdateHelper.name(root) + "." + field.getName();
 							copyObjectValue(path, Class.forName(type.getTypeName()), sourceFieldValue, targetFieldValue);
 						}						
-					} catch (IllegalAccessException | InstantiationException | ClassNotFoundException ex) {
+					} catch (IllegalAccessException | InstantiationException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException ex) {
 						throw new ResourceUpdateException(ex);
 					}
 				} else {
@@ -146,12 +149,15 @@ public class ResourceUpdateManager {
 						Optional<Object> targetFieldValue = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), target);
 						if (!targetFieldValue.isPresent()) {
 							targetFieldValue = Optional.of(field.getType().newInstance());
+							// setPatient
+							Method setPatient = field.getType().getDeclaredMethod("setPatient", com.frt.dr.model.base.Patient.class);
+							setPatient.invoke(targetFieldValue.get(), (com.frt.dr.model.base.Patient)target);							
 							ResourceUpdateHelper.setFieldValue(clazz, field.getName(), target, targetFieldValue.get());														
 						}
 						String path = ResourceUpdateHelper.name(root) + "." + field.getName();						
 						copyObjectValue(path, field.getType(), sourceFieldValue.get(),  targetFieldValue.get());					
 					}								
-				} catch (IllegalAccessException | InstantiationException ex) {
+				} catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException ex) {
 					throw new ResourceUpdateException(ex);
 				}
 			} else {
