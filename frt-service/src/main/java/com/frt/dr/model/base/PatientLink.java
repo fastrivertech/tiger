@@ -13,7 +13,6 @@ package com.frt.dr.model.base;
 
 import java.io.Serializable;
 import java.math.BigInteger;
-
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +27,6 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-
 import com.frt.dr.model.BackboneElement;
 import com.frt.dr.model.ResourceComplexType;
 
@@ -63,8 +61,7 @@ public class PatientLink implements Serializable, ResourceComplexType, BackboneE
     
 	public PatientLink() {    	
     }
-    
-    
+        
     public Patient getPatient() {
     	return this.patient;
     }
@@ -81,31 +78,24 @@ public class PatientLink implements Serializable, ResourceComplexType, BackboneE
 		this.type = type;
 	}
 
-
 	public BigInteger getLinkId() {
 		return linkId;
 	}
-
 
 	public void setLinkId(BigInteger linkId) {
 		this.linkId = linkId;
 	}
 
-
 	public String getOther() {
 		return other;
 	}
-
 
 	public void setOther(String other) {
 		this.other = other;
 	}
 
-
 	@Override
 	public void setPath(String path) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
