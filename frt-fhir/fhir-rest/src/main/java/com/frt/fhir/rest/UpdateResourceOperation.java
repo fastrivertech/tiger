@@ -28,6 +28,7 @@ import org.hl7.fhir.r4.model.OperationOutcome;
 import com.frt.dr.cache.CacheService;
 import com.frt.dr.cache.NamedCache;
 import com.frt.dr.model.base.Patient;
+import com.frt.dr.transaction.model.Transaction;
 import com.frt.fhir.parser.JsonFormatException;
 import com.frt.fhir.parser.JsonParser;
 import com.frt.fhir.service.validation.IdValidatorException;
@@ -113,7 +114,7 @@ public class UpdateResourceOperation extends ResourceOperation {
 		try {
 			OperationValidator.validateFormat(_format);			
 			R resource = parser.deserialize(type, body);	
-			R updated = fhirService.update(type, id, resource);			
+			R updated = fhirService.update(type, id, resource, Transaction.ActionCode.U);			
 
 			String resourceInJson = parser.serialize(updated);
 			

@@ -205,7 +205,7 @@ public class MpiResourceOperation extends ResourceOperation {
 	 * @status 404 Not found
 	 * @status 500 Internal server error
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("unchecked")
 	@POST
 	@Path(ResourcePath.PATIENT_PATH + ResourcePath.MPI_MERGE_PATH)
 	@Consumes({MimeType.APPLICATION_FHIR_JSON, MimeType.APPLICATION_JSON})	

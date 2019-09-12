@@ -20,6 +20,34 @@ public class QueryOption implements Serializable {
 
 	private boolean summary = false;
 	private MediaType format = MediaType.JSON;
+	private StatusType status = StatusType.ALL;
+
+	public enum StatusType {
+		
+		ACTIVE("Active"),
+		INACTIVE("Inactive"),
+		ALL("All");		
+		private final String type;
+		
+		StatusType(String type) {
+			this.type = type;
+		}
+		
+		@Override 
+		public String toString() {
+			return this.type;
+		}
+		
+		public static StatusType value(String text) {
+			for (StatusType t : StatusType.values()) {
+				if (t.toString().equals(text)) {
+					return t;
+				}
+			}
+			return null;
+		}
+		
+	}
 	
 	public enum MediaType {
 		JSON("json"),
@@ -36,7 +64,8 @@ public class QueryOption implements Serializable {
 			this.type = type;
 		}
 		
-		@Override public String toString() {
+		@Override 
+		public String toString() {
 			return this.type;
 		}
 		
@@ -67,6 +96,14 @@ public class QueryOption implements Serializable {
 	
 	public MediaType getFormat() {
 		return this.format;
+	}
+	
+	public void setStatus(StatusType status) {
+		this.status = status;
+	}
+	
+	public StatusType getStatus() {
+		return this.status;
 	}
 	
 }

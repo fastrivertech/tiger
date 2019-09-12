@@ -14,7 +14,8 @@ package com.frt.dr.service;
 import java.util.List;
 import java.util.Optional;
 import com.frt.dr.model.DomainResource;
-import com.frt.dr.service.query.QueryCriteria;;
+import com.frt.dr.service.query.QueryCriteria;
+import com.frt.dr.transaction.model.Transaction;;
 
 /**
  * RepositoryService Interface
@@ -31,7 +32,7 @@ public interface RepositoryService {
 	<R extends DomainResource> R save(java.lang.Class<?> resourceClazz, R resource)
 	   throws RepositoryServiceException;
 	
-	<R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource)
+	<R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource, Transaction.ActionCode action)
 		throws RepositoryServiceException;	
 
 	<R extends DomainResource> Optional<R> delete(java.lang.Class<?> resourceClazz, String id)

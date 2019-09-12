@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import com.frt.dr.model.DomainResource;
 import com.frt.dr.service.query.QueryCriteria;
+import com.frt.dr.transaction.model.Transaction;
 
 /**
  * RepositoryApplication class
@@ -52,11 +53,11 @@ public class RepositoryApplication {
 		return resources;
 	}
 	
-	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, Object object)
+	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, Object object, Transaction.ActionCode action)
 		throws RepositoryServiceException {
-		return this.repositoryService.update(resourceClazz, id, (R)object); 
+		return this.repositoryService.update(resourceClazz, id, (R)object, action); 
 	}
-	
+
 	public <R extends DomainResource> Optional<R> delete(java.lang.Class<?> resourceClazz, String id)
 		throws RepositoryServiceException {
 		return this.repositoryService.delete(resourceClazz, id); 

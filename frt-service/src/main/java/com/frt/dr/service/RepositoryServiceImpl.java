@@ -153,7 +153,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource)
+	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource, Transaction.ActionCode action)
 		throws RepositoryServiceException {
 		R updatedResource = resource;
 		TransactionService ts  = TransactionService.getInstance();
@@ -168,22 +168,26 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 
 				 // compute changes
 				 resourceUpdateManager.cleanChanges();
-				 resourceUpdateManager.change(resourceClazz, resourceClazz, resource, changed);
+				 if (Transaction.ActionCode.M == action) {
+					 resourceUpdateManager.changem(resourceClazz, resourceClazz, resource, changed);					 
+				 } else {
+					 resourceUpdateManager.change(resourceClazz, resourceClazz, resource, changed);					 
+				 }
 				 Optional<String> changes = resourceUpdateManager.getChanges();
 
-				 boolean deleted = checkStatus(changed, Transaction.ActionCode.D);
+				 boolean deleted = checkStatus(changed, Transaction.ActionCode.D) || checkStatus(changed, Transaction.ActionCode.M);
 				 
 				 if (changes.isPresent() || deleted) {
 					 // save changes
 					 String meta = changed.getMeta();
 					 String changedMeta = TransactionHelper.updateMeta(meta);
-					 changed.setMeta(changedMeta);
-					 RepositoryServiceHelper.setResourceStatus(resourceClazz, changed, Transaction.ActionCode.U.name());
+					 changed.setMeta(changedMeta);					 
+					 RepositoryServiceHelper.setResourceStatus(resourceClazz, changed, action.name());					 
 					 resourceDao.update(changed);
 					 // generate default narrative
 					 RepositoryServiceHelper.generateDefaultNarrative(changed);
 					 // create transaction log
-					 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
+					 Transaction transaction = TransactionHelper.createTransaction(action);
 					 transaction.setMeta(meta);
 					 transaction.setDelta(changes.isPresent() ? changes.get() : "");
 					 // save transaction log
@@ -192,7 +196,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 					 // data source
 					 transactionDao.save(transaction);						     					
 					 if (cache.isPresent()) {
-						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.U.name());
+						 cache.get().put(NamedCache.ACTION_CODE, action.name());
 					 }
 					 updatedResource = changed;
 				 } else {

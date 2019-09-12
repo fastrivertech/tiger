@@ -60,9 +60,13 @@ public class MpiMergeValidator {
 				params.add("system", reference.getIdentifier().getSystem()); 
 				params.add("value",	reference.getIdentifier().getValue());
 				criterias.setParams(params);
+				
+				QueryOption queryOption = new QueryOption();
+				queryOption.setStatus(QueryOption.StatusType.ACTIVE);
 				Optional<List<Patient>> patients = fhirService.read("Patient",
 																	criterias, 
-																	new QueryOption());
+																	queryOption);
+				
 				if (!patients.isPresent() || patients.get().size() != 1) {
 					throw new MpiValidationException(
 							name + " invalid identifier: " + reference.getIdentifier().toString());

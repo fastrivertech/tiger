@@ -31,6 +31,7 @@ public class MpiMerge {
 		source.addLink(targetLink);
 			 
 		List<Identifier> identifiers = source.getIdentifier();
+		target.getIdentifier().clear();
 		identifiers.forEach(identifier->{
 			Identifier instance = identifier.copy();			
 			if (instance.getSystem().contains(("localid"))) {
@@ -38,18 +39,25 @@ public class MpiMerge {
 			}
 			target.addIdentifier(instance);
 		});		
+		source.getIdentifier().clear();
+		
 		List<Address> addresses = source.getAddress();
+		target.getAddress().clear();
 		addresses.forEach(address->{
 			Address instance = address.copy();
 			instance.setUse(AddressUse.OLD);
 			target.addAddress(instance);
-		});		
+		});
+		source.getAddress().clear();
+		
 		List<HumanName> names = source.getName();
+		target.getName().clear();
 		names.forEach(name->{
 			HumanName instance = name.copy();
 			instance.setUse(NameUse.OLD);
 			target.addName(instance);
 		});
+		source.getName().clear();
 		
 		source.setActive(false);
 		

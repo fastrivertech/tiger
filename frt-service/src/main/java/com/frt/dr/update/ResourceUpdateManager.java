@@ -102,10 +102,10 @@ public class ResourceUpdateManager {
 							Optional<Object> targetFieldValues = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), target);					
 							Object targetFieldValue = null;
 							if (((List)targetFieldValues.get()).isEmpty()) {
-								targetFieldValue = Class.forName(type.getTypeName()).newInstance();
+								targetFieldValue = Class.forName(type.getTypeName()).newInstance();								
 								// setPatient
 								Method setPatient = Class.forName(type.getTypeName()).getDeclaredMethod("setPatient", com.frt.dr.model.base.Patient.class);
-								setPatient.invoke(targetFieldValue, (com.frt.dr.model.base.Patient)target);
+								setPatient.invoke(targetFieldValue, (com.frt.dr.model.base.Patient)target);											
 								((List)targetFieldValues.get()).add(targetFieldValue);
 							} else {
 								targetFieldValue = ((List)targetFieldValues.get()).get(0);
@@ -169,14 +169,105 @@ public class ResourceUpdateManager {
 			
 		});		
 	}
+
+	@SuppressWarnings("unchecked")
+	public void changem(Class clazz, Class root, Object source, Object target) 
+		throws ResourceUpdateException {
+		
+		List<Field> fieldList = new ArrayList(Arrays.asList(clazz.getDeclaredFields()));
+		fieldList.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));	
+		fieldList.addAll(Arrays.asList(clazz.getSuperclass().getSuperclass().getDeclaredFields()));			
+		Field[] fields = fieldList.toArray(new Field[] {});
+		
+		Stream.of(fields).forEach(field->{
+			
+			if (field.getType().getName().equals("java.util.List")) {
+				// List
+				ParameterizedType listType = (ParameterizedType)field.getGenericType();				
+				Type type = listType.getActualTypeArguments()[0];
+				if (!ResourceUpdateHelper.primitives.contains(type.toString())) {
+					// List complex data type					
+					try {						
+						Optional<Object> sourceFieldValues = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), source);					
+						
+						if (!((List)sourceFieldValues.get()).isEmpty()) {											
+							
+							Optional<Object> targetFieldValues = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), target);								
+							((List)targetFieldValues.get()).clear();
+
+							List<Object> sourceFieldObjects = ((List)sourceFieldValues.get());							
+							for (Object sourceFieldValue : sourceFieldObjects) {							
+								// getPatient & setPatient
+								List<Object> targetFieldObjects = ((List)targetFieldValues.get());
+								// setPatient
+								Method setPatient = Class.forName(type.getTypeName()).getDeclaredMethod("setPatient", com.frt.dr.model.base.Patient.class);
+								setPatient.invoke(sourceFieldValue, (com.frt.dr.model.base.Patient)target);										
+								// add to target 
+								((List)targetFieldValues.get()).add(sourceFieldValue);																	
+							}
+							
+						}						
+					} catch (IllegalAccessException | ClassNotFoundException | NoSuchMethodException | InvocationTargetException ex) {
+						throw new ResourceUpdateException(ex);
+					}
+				} else {
+					// List primitive data type
+					throw new ResourceUpdateException("List primitive type " + type.toString() + " not supported");
+				}
+			} else if (ResourceUpdateHelper.primitives.contains(field.getType().getName())) {
+				// primitive data type				
+				if (!field.getName().equals("serialVersionUID")) {					
+					Optional<Object> sourceFieldValue = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), source);
+					Optional<Object> targetFieldValue = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), target);										
+					if (sourceFieldValue.isPresent()) {						
+						if (targetFieldValue.isPresent()) {
+							if (!ResourceUpdateHelper.equals(field.getType().getName(), sourceFieldValue.get(), targetFieldValue.get())) {								
+								String changed = ResourceUpdateHelper.name(root) + "." + field.getName() + "=" + targetFieldValue.get().toString();
+								changes.add(changed);								
+								ResourceUpdateHelper.setFieldValue(clazz, field.getName(), target, sourceFieldValue.get());
+							}
+						} else {							
+							String changed = ResourceUpdateHelper.name(root) + "." + field.getName() + "=NULL";
+							changes.add(changed);
+							ResourceUpdateHelper.setFieldValue(clazz, field.getName(), target, sourceFieldValue.get());							
+						}
+					}
+				}
+			} else if (!field.getType().getName().equals(root.getName())) {
+				// complex data type				
+				try {
+					Optional<Object> sourceFieldValue = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), source);
+					if (sourceFieldValue.isPresent()) {
+						Optional<Object> targetFieldValue = ResourceUpdateHelper.getFieldValue(clazz, field.getName(), target);
+						if (!targetFieldValue.isPresent()) {
+							targetFieldValue = Optional.of(field.getType().newInstance());
+							// setPatient
+							Method setPatient = field.getType().getDeclaredMethod("setPatient", com.frt.dr.model.base.Patient.class);
+							setPatient.invoke(targetFieldValue.get(), (com.frt.dr.model.base.Patient)target);							
+							ResourceUpdateHelper.setFieldValue(clazz, field.getName(), target, targetFieldValue.get());														
+						}
+					    String path = ResourceUpdateHelper.name(root) + "." + field.getName();						
+					    copyObjectValue(path, field.getType(), sourceFieldValue.get(),  targetFieldValue.get());					
+					}								
+				} catch (IllegalAccessException | InstantiationException | NoSuchMethodException | InvocationTargetException ex) {
+					throw new ResourceUpdateException(ex);
+				}
+			} else {
+				// unknown data type
+				if (!field.getType().getName().equals(root.getName())) {
+					throw new ResourceUpdateException(clazz.getName() + " unknown Field " + field.getName());
+				}
+			}
+			
+		});		
+	}
 	
 	@SuppressWarnings("unchecked")	
 	public void copyObjectValue(String path, Class clazz, Object source, Object target) 
-		throws ResourceUpdateException {
+		throws ResourceUpdateException {		
 		List<Field> fieldList = new ArrayList(Arrays.asList(clazz.getDeclaredFields()));
 		fieldList.addAll(Arrays.asList(clazz.getSuperclass().getDeclaredFields()));		
-		Field[] fields = fieldList.toArray(new Field[] {});
-		
+		Field[] fields = fieldList.toArray(new Field[] {});		
 		Stream.of(fields).forEach(field -> {
 			if (ResourceUpdateHelper.primitives.contains(field.getType().getName())) {
 				if (!field.getName().equals("serialVersionUID")) {
@@ -184,6 +275,7 @@ public class ResourceUpdateManager {
 				}
 			} // enhance to support child object with complex data type
 		});
+		
 	}
 
 	@SuppressWarnings("unchecked")	
@@ -191,28 +283,26 @@ public class ResourceUpdateManager {
 		throws ResourceUpdateException {
 		try {
 			Optional<Method> getMethod = ResourceUpdateHelper.getClazzMethod(clazz,
-					ResourceUpdateHelper.buldMethodName(field.getName(), "get"));
+																			 ResourceUpdateHelper.buldMethodName(field.getName(), "get"));
 			if (getMethod.isPresent()) {
 				Object sourceFieldValue = getMethod.get().invoke(source);
 				if ( sourceFieldValue != null) {
 					Object targetFieldValue = getMethod.get().invoke(target);
 					if (targetFieldValue == null || 
-						ResourceUpdateHelper.notEquals(field.getType().getTypeName(), sourceFieldValue, targetFieldValue)) { 
-					
+						ResourceUpdateHelper.notEquals(field.getType().getTypeName(), sourceFieldValue, targetFieldValue)) { 					
+						
 						Optional<Method> setMethod = ResourceUpdateHelper.getClazzMethod(clazz,
-								ResourceUpdateHelper.buldMethodName(field.getName(), "set"));
+																						 ResourceUpdateHelper.buldMethodName(field.getName(), "set"));
 						if (setMethod.isPresent()) {
 							setMethod.get().invoke(target, sourceFieldValue);
-							String changed = path + "." + field.getName() + "="
-									+ (targetFieldValue == null ? "NULL" : ResourceUpdateHelper.objectToString(targetFieldValue, field.getType().getTypeName()).get());
+							String changed = path + "." + field.getName() + "=" + 
+								            (targetFieldValue == null ? "NULL" : ResourceUpdateHelper.objectToString(targetFieldValue, field.getType().getTypeName()).get());
 							changes.add(changed);							
-						}
-						
+						}						
 					}
 				}
 			} else {
-				throw new ResourceUpdateException(
-						"get method for " + field + " of " + clazz.getName() + " is not defined");
+				throw new ResourceUpdateException("get method for " + field + " of " + clazz.getName() + " is not defined");
 			}
 		} catch (InvocationTargetException | IllegalAccessException ex) {
 			throw new ResourceUpdateException(ex);
@@ -221,15 +311,15 @@ public class ResourceUpdateManager {
 	
 	@SuppressWarnings("unchecked")
 	public void copyFieldValue(String path, Class clazz, String field, Object source, Object target)
-			throws ResourceUpdateException {
+		throws ResourceUpdateException {
 		try {
 			Optional<Method> getMethod = ResourceUpdateHelper.getClazzMethod(clazz,
-					ResourceUpdateHelper.buldMethodName(field, "get"));
+																			 ResourceUpdateHelper.buldMethodName(field, "get"));
 			if (getMethod.isPresent()) {
 				Object value = getMethod.get().invoke(source);
 				if (value != null) {
 					Optional<Method> setMethod = ResourceUpdateHelper.getClazzMethod(clazz,
-							ResourceUpdateHelper.buldMethodName(field, "set"));
+																				     ResourceUpdateHelper.buldMethodName(field, "set"));
 					if (setMethod.isPresent()) {
 						setMethod.get().invoke(target, value);
 					  //String changed = path + "." + field + "=" + value.toString();								
@@ -237,8 +327,7 @@ public class ResourceUpdateManager {
 					}
 				}
 			} else {
-				throw new ResourceUpdateException(
-						"get method for " + field + " of " + clazz.getName() + " is not defined");
+				throw new ResourceUpdateException("get method for " + field + " of " + clazz.getName() + " is not defined");
 			}
 		} catch (InvocationTargetException | IllegalAccessException ex) {
 			throw new ResourceUpdateException(ex);
@@ -246,4 +335,3 @@ public class ResourceUpdateManager {
 	}
 
 }
-

@@ -28,6 +28,7 @@ import com.frt.dr.service.RepositoryContext;
 import com.frt.dr.service.RepositoryContextException;
 import com.frt.dr.service.RepositoryServiceException;
 import com.frt.dr.service.query.QueryOption;
+import com.frt.dr.transaction.model.Transaction;
 import com.frt.dr.service.query.QueryCriteria;
 
 /**
@@ -74,11 +75,18 @@ public class FhirService {
 			Optional<List<com.frt.dr.model.DomainResource>> frtResources = repository.read(resourcePair.getFrt(), criterias);
 			Optional<List<R>> hapiResources = Optional.empty();
 			if (frtResources.isPresent()) {
-				hapiResources = Optional.of(new ArrayList());
+				hapiResources = Optional.of(new ArrayList());				
 				for (com.frt.dr.model.DomainResource frtResource : frtResources.get()) {
-					R hapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object) frtResource);
-					hapiResources.get().add(hapiResource);
-				}
+					R hapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object) frtResource);		
+					boolean active = ((com.frt.dr.model.base.Patient)frtResource).getActive();					
+					if (options.getStatus() == QueryOption.StatusType.ALL) {					
+						hapiResources.get().add(hapiResource);
+					} else if (options.getStatus() == QueryOption.StatusType.ACTIVE && active) {					
+						hapiResources.get().add(hapiResource);
+					} else if (options.getStatus() == QueryOption.StatusType.INACTIVE && !active) {					
+						hapiResources.get().add(hapiResource);
+					}					
+				}				
 			}
 			return hapiResources;
 		} catch (MapperException | RepositoryServiceException ex) {
@@ -109,7 +117,7 @@ public class FhirService {
 	
 	public <R extends DomainResource> R update(@Nonnull String type, 
 											   String id, 
-			 								   R hapiResource) 
+			 								   R hapiResource, Transaction.ActionCode action) 
 		throws FhirServiceException, ValidatorException {
 		try {						
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);		
@@ -118,7 +126,7 @@ public class FhirService {
 			
 			ValidationService.getInstance().validate(id, (com.frt.dr.model.Resource)frtResource);
 		
-			com.frt.dr.model.DomainResource updatedfrtResource = repository.update(resourcePair.getFrt(), id, frtResource);									
+			com.frt.dr.model.DomainResource updatedfrtResource = repository.update(resourcePair.getFrt(), id, frtResource, action);									
 			R updatedhapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)updatedfrtResource);
 			return updatedhapiResource;			
 		} catch (MapperException | RepositoryServiceException ex) {

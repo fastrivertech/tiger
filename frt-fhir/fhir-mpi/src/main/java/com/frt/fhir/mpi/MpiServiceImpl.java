@@ -77,9 +77,10 @@ public class MpiServiceImpl implements MpiService<Patient> {
 	/**
 	 * @see com.frt.fhir.mpi.MpiService#merge(org.hl7.fhir.r4.model.Parameters)
 	 */
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings("unchecked")
 	public Patient merge(org.hl7.fhir.r4.model.Parameters parameters)
-		throws MpiServiceException, MpiValidationException {		
+		throws MpiServiceException, MpiValidationException {	
+		
 		Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();
 		MpiMergeValidator validator = new MpiMergeValidator(fhirService);
 		try {
@@ -120,11 +121,13 @@ public class MpiServiceImpl implements MpiService<Patient> {
 			// update target 
 			Patient updatedTarget = fhirService.update("Patient", 
 					                                   result.getIdElement().getIdPart(),
-					                                   result);
+					                                   result, 
+					                                   Transaction.ActionCode.M);
 			// update source
 			Patient updatedSource = fhirService.update("Patient", 
                     		                           source.getIdElement().getIdPart(),
-                                                       source);
+                                                       source,
+                                                       Transaction.ActionCode.U);
 			// delete source
 			// fhirService.delete(Patient.class.getName(), 
 			//	 			      source.getId());
