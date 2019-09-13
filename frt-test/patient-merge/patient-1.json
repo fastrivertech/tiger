@@ -12,7 +12,7 @@
           }
         ]
       },
-      "system": "http://www.hospital-a/localid",
+      "system": "urn:oid:2.16.840.1.113883.3.72.5.9.1",
       "value": "1000000001",
       "assigner": {
         "display": "Hospital A"

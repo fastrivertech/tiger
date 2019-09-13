@@ -20,7 +20,7 @@
               }
             ]
           },
-          "system": "http://www.hospital-a/localid",
+          "system": "urn:oid:2.16.840.1.113883.3.72.5.9.1",
           "value": "1000000001",
           "assigner": {
             "display": "Hospital A"
@@ -43,7 +43,7 @@
             ]
           },
           "system": "http://hl7.org/fhir/sid/us-ssn",
-          "value": "999-60-6922"
+          "value": "999-60-6921"
         }
       }
     },
@@ -61,15 +61,15 @@
           "type": {
             "coding": [
               {
-                "system": "http://www.hospital-b/localid",
+                "system": "http://www.hospital-a/localid",
                 "code": "MRN"
               }
             ]
           },
-          "system": "http://www.hospital-b/localid",
-          "value": "2000000001",
+          "system": "urn:oid:2.16.840.1.113883.3.72.5.9.1",
+          "value": "1000000002",
           "assigner": {
-            "display": "Hospital B"
+            "display": "Hospital A"
           }
         }
       }
@@ -110,7 +110,7 @@
               ]
             },
             "system": "http://www.hospital-a/localid",
-            "value": "1000000001",
+            "value": "1000000002",
             "assigner": {
               "display": "Hospital A"
             }
@@ -120,30 +120,16 @@
             "type": {
               "coding": [
                 {
-                  "system": "http://www.hospital-b/localid",
+                  "system": "http://www.hospital-a/localid",
                   "code": "MRN"
                 }
               ]
             },
-            "system": "http://www.hospital-b/localid",
-            "value": "2000000001",
+            "system": "http://www.hospital-a/localid",
+            "value": "1000000001",
             "assigner": {
-              "display": "Hospital B"
+              "display": "Hospital A"
             }
-          },
-          {
-            "use": "official",
-            "type": {
-              "coding": [
-                {
-                  "system": "http://hl7.org/fhir/identifier-type",
-                  "code": "SS",
-                  "display": "Social Security Number"
-                }
-              ]
-            },
-            "system": "http://hl7.org/fhir/sid/us-ssn",
-            "value": "999-60-6922"
           },
           {
             "use": "official",
@@ -158,7 +144,21 @@
             },
             "system": "http://hl7.org/fhir/sid/us-dl",
             "value": "999-60-6922"
-          }
+          },
+          {
+            "use": "official",
+            "type": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/identifier-type",
+                  "code": "SS",
+                  "display": "Social Security Number"
+                }
+              ]
+            },
+            "system": "http://hl7.org/fhir/sid/us-ssn",
+            "value": "999-60-6921"
+          }		  
         ],
         "name": [
           {
@@ -177,7 +177,27 @@
           }
         ],
         "gender": "male",
-        "birthDate": "1974-12-25"
+        "birthDate": "1974-12-25",
+		"address":[
+		  {
+		    "use": "home",
+			"line": [
+			  "986 Schulist Pathway"
+			],
+			"city": "Lawrence",
+			"state": "Massachusetts",
+			"postalCode": "01840"
+		  },
+		  {
+			"use": "old",
+			"line": [
+			  "456 Main St"
+			],
+			"city": "West Newbury",
+			"state": "Massachusetts",
+			"postalCode": "01985"
+		  }		  
+		]
       }
     }
   ]
