@@ -29,8 +29,8 @@
           }
         ]
       },
-      "system": "http://hl7.org/fhir/sid/us-ssn",
-      "value": "999-60-6921"
+      "system": "http://hl7.org/fhir/SSN",
+      "value": "999606921"
     }
   ],
   "active": true,

@@ -29,8 +29,8 @@
           }
         ]
       },
-      "system": "http://hl7.org/fhir/sid/us-dl",
-      "value": "999-60-6922"
+      "system": "http://hl7.org/fhir/DL",
+      "value": "999606922"
     }
   ],
   "active": true,
