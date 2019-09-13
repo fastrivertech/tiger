@@ -24,24 +24,24 @@ public class MpiOperationValidator extends OperationValidator {
 		//sourceReference or sourceIdentifier has to be specified 
 		if (sourceReference == null && 
 			sourceIdentifier == null) {
-			throw new OperationValidatorException("one of source-patient or source-patient-identifier has to be given for locating a source patient");
+			throw new OperationValidatorException("Missing Source Parameters: source-patient or source-patient-identifier required");
 		}
 		
 		Type targetReference = parameters.getParameter("patient");
 		Type targetIdentifier = parameters.getParameter("patient-identifier");
 		if (targetReference == null && 
 			targetIdentifier == null) {
-			throw new OperationValidatorException("one of patient or patient-identifier has to be given for locating a target patient");			
+			throw new OperationValidatorException("Missing Target Parameters: patient or patient-identifier required");			
 		}
 
 		List<org.hl7.fhir.r4.model.Type> source_patients = parameters.getParameters("source-patient");		
 		if (source_patients != null && source_patients.size() > 1) {
-			throw new OperationValidatorException("only one source-patient allowed");						
+			throw new OperationValidatorException("More Sources: only one source-patient allowed");						
 		}
 		
 		List<org.hl7.fhir.r4.model.Type> patients = parameters.getParameters("patient");;
 		if (patients != null && patients.size() > 1) {
-			throw new OperationValidatorException("only one patient allowed");						
+			throw new OperationValidatorException("More Targets: only one patient allowed");						
 		}
 
 		int count_of_result_patients = 0;
@@ -52,7 +52,7 @@ public class MpiOperationValidator extends OperationValidator {
 			}								
 		}			
 		if (count_of_result_patients > 1) {
-			throw new OperationValidatorException("only one result-patient allowed");									
+			throw new OperationValidatorException("More Results: only one result-patient allowed");									
 		}
 	}
 	
