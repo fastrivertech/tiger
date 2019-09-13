@@ -153,50 +153,42 @@ public class RepositoryServiceImpl implements RepositoryService {
 
 	@Override
 	@SuppressWarnings("unchecked")
-	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource, Transaction.ActionCode action)
+	public <R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource, Transaction.ActionCode status)
 		throws RepositoryServiceException {
+		
 		R updatedResource = resource;
 		TransactionService ts  = TransactionService.getInstance();
 		Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();
 		try {			
 			 ts.start();		
 			 BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);	
-			 Optional<R> found = resourceDao.findById(id);	
-			 
+			 Optional<R> found = resourceDao.findById(id);				 
 			 if (found.isPresent()) {
-				 R changed = found.get();			
-				 
+				 R changed = found.get();							 
 				 // compute changes
 				 resourceUpdateManager.cleanChanges();
-				 if (Transaction.ActionCode.M == action) {
-					 resourceUpdateManager.changem(resourceClazz, resourceClazz, resource, changed);					 
-				 } else {
-					 resourceUpdateManager.change(resourceClazz, resourceClazz, resource, changed);					 
-				 }
+				 resourceUpdateManager.change(resourceClazz, resourceClazz, resource, changed);
 				 Optional<String> changes = resourceUpdateManager.getChanges();
-
-				 boolean deleted = checkStatus(changed, Transaction.ActionCode.D) || checkStatus(changed, Transaction.ActionCode.M);
-				 
+				 boolean deleted = checkStatus(changed, Transaction.ActionCode.D) || checkStatus(changed, Transaction.ActionCode.M);				 
 				 if (changes.isPresent() || deleted) {
 					 // save changes
 					 String meta = changed.getMeta();
 					 String changedMeta = TransactionHelper.updateMeta(meta);
-					 changed.setMeta(changedMeta);					 
-					 RepositoryServiceHelper.setResourceStatus(resourceClazz, changed, action.name());					 
+					 changed.setMeta(changedMeta);
+					 RepositoryServiceHelper.setResourceStatus(resourceClazz, changed, status.name());
 					 resourceDao.update(changed);
 					 // generate default narrative
 					 RepositoryServiceHelper.generateDefaultNarrative(changed);
 					 // create transaction log
-					 Transaction transaction = TransactionHelper.createTransaction(action);
+					 Transaction transaction = TransactionHelper.createTransaction(status);
 					 transaction.setMeta(meta);
 					 transaction.setDelta(changes.isPresent() ? changes.get() : "");
 					 // save transaction log
 					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
-					 transaction.setResource(changed);	
-					 // data source
+					 transaction.setResource(changed);			
 					 transactionDao.save(transaction);						     					
 					 if (cache.isPresent()) {
-						 cache.get().put(NamedCache.ACTION_CODE, action.name());
+						 cache.get().put(NamedCache.ACTION_CODE, status.name());
 					 }
 					 updatedResource = changed;
 				 } else {
@@ -215,7 +207,81 @@ public class RepositoryServiceImpl implements RepositoryService {
 				 resource.setMeta((new Meta()).toString());
 				 // create resource status extension 
 				 RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());
-				 transaction.setResource(resource);						 // data source
+				 transaction.setResource(resource);			
+				 transactionDao.save(transaction);				
+			     if (cache.isPresent()) {
+			    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.C.name());
+			     }							 
+			 }
+			 ts.commit();
+			 return updatedResource;
+		} catch (DaoException dex) {
+			ts.rollback();
+			throw new RepositoryServiceException(dex); 
+		} finally {
+			resourceUpdateManager.cleanChanges();
+		}
+	}
+	
+	@Override
+	@SuppressWarnings("unchecked")
+	public <R extends DomainResource> R updatem(java.lang.Class<?> resourceClazz, String id, R resource)
+		throws RepositoryServiceException {
+		R updatedResource = resource;
+		TransactionService ts  = TransactionService.getInstance();
+		Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();
+		try {			
+			 ts.start();		
+			 BaseDao resourceDao = DaoFactory.getInstance().createResourceDao(resourceClazz);	
+			 Optional<R> found = resourceDao.findById(id);				 
+			 if (found.isPresent()) {
+				 R changed = found.get();							 
+				 // compute changes
+				 resourceUpdateManager.cleanChanges();
+				 resourceUpdateManager.changem(resourceClazz, resourceClazz, resource, changed);					 
+				 Optional<String> changes = resourceUpdateManager.getChanges();
+
+				 boolean deleted = checkStatus(changed, Transaction.ActionCode.D) || checkStatus(changed, Transaction.ActionCode.M);				 
+				 if (changes.isPresent() || deleted) {
+					 // save changes
+					 String meta = changed.getMeta();
+					 String changedMeta = TransactionHelper.updateMeta(meta);
+					 changed.setMeta(changedMeta);					 
+					 RepositoryServiceHelper.setResourceStatus(resourceClazz, changed, Transaction.ActionCode.U.name());					 
+					 resourceDao.update(changed);
+					 // generate default narrative
+					 RepositoryServiceHelper.generateDefaultNarrative(changed);
+					 // create transaction log
+					 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.U);
+					 transaction.setMeta(meta);
+					 transaction.setDelta(changes.isPresent() ? changes.get() : "");
+					 // save transaction log
+					 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);			
+					 transaction.setResource(changed);	
+					 // data source
+					 transactionDao.save(transaction);						     					
+					 if (cache.isPresent()) {
+						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.U.name());
+					 }
+					 updatedResource = changed;
+				 } else {
+					 // no changes
+					 if (cache.isPresent()) {
+						 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.N.name());
+					 }											 
+					 updatedResource = changed;					 
+				 }
+			 } else {
+				 // create resource
+				 Transaction transaction = TransactionHelper.createTransaction(Transaction.ActionCode.C);
+				 BaseDao transactionDao = DaoFactory.getInstance().createTransactionDao(resourceClazz);
+				// generate default narrative
+				 RepositoryServiceHelper.generateDefaultNarrative(resource);
+				 resource.setMeta((new Meta()).toString());
+				 // create resource status extension 
+				 RepositoryServiceHelper.setResourceStatus(resourceClazz, resource, Transaction.ActionCode.C.name());
+				 // data source
+				 transaction.setResource(resource);	
 				 transactionDao.save(transaction);				
 			     if (cache.isPresent()) {
 			    	 cache.get().put(NamedCache.ACTION_CODE, Transaction.ActionCode.C.name());

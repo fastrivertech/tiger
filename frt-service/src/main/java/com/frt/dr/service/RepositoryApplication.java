@@ -58,6 +58,11 @@ public class RepositoryApplication {
 		return this.repositoryService.update(resourceClazz, id, (R)object, action); 
 	}
 
+	public <R extends DomainResource> R updatem(java.lang.Class<?> resourceClazz, String id, Object object)
+		throws RepositoryServiceException {
+		return this.repositoryService.updatem(resourceClazz, id, (R)object); 
+	}
+	
 	public <R extends DomainResource> Optional<R> delete(java.lang.Class<?> resourceClazz, String id)
 		throws RepositoryServiceException {
 		return this.repositoryService.delete(resourceClazz, id); 

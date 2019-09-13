@@ -35,6 +35,9 @@ public interface RepositoryService {
 	<R extends DomainResource> R update(java.lang.Class<?> resourceClazz, String id, R resource, Transaction.ActionCode action)
 		throws RepositoryServiceException;	
 
+	<R extends DomainResource> R updatem(java.lang.Class<?> resourceClazz, String id, R resource)
+		throws RepositoryServiceException;	
+	
 	<R extends DomainResource> Optional<R> delete(java.lang.Class<?> resourceClazz, String id)
 		throws RepositoryServiceException;
 	
