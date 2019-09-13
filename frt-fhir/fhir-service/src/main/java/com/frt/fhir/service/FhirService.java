@@ -124,14 +124,31 @@ public class FhirService {
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);			
 			Object frtResource = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object)hapiResource);
 			
-			ValidationService.getInstance().validate(id, (com.frt.dr.model.Resource)frtResource);
-		
+			ValidationService.getInstance().validate(id, (com.frt.dr.model.Resource)frtResource);		
 			com.frt.dr.model.DomainResource updatedfrtResource = repository.update(resourcePair.getFrt(), id, frtResource, action);									
 			R updatedhapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)updatedfrtResource);
 			return updatedhapiResource;			
 		} catch (MapperException | RepositoryServiceException ex) {
 			throw new FhirServiceException(ex);
 		}		
+	}
+
+	public <R extends DomainResource> R updatem(@Nonnull String type, 
+												String id, 
+												R hapiResource)
+		throws FhirServiceException, ValidatorException {
+		try {
+			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
+			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
+			Object frtResource = mapper.from(resourcePair.getFhir()).to(resourcePair.getFrt()).map((Object) hapiResource);
+
+			ValidationService.getInstance().validate(id, (com.frt.dr.model.Resource) frtResource);
+			com.frt.dr.model.DomainResource updatedfrtResource = repository.updatem(resourcePair.getFrt(), id, frtResource);			
+			R updatedhapiResource = (R) mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object) updatedfrtResource);
+			return updatedhapiResource;
+		} catch (MapperException | RepositoryServiceException ex) {
+			throw new FhirServiceException(ex);
+		}
 	}
 	
 	public <R extends DomainResource> Optional<R> delete(@Nonnull String type, 

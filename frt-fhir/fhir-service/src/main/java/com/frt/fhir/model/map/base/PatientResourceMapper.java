@@ -266,9 +266,10 @@ public class PatientResourceMapper extends BaseMapper {
 		getExtensions(hapiPatient, patientExtensions, "patient.birthDate");
 		getExtensions(hapiPatient, patientExtensions, "patient.gender");
 		getExtensions(hapiPatient, patientExtensions, "patient.active");			
-		getExtensions(hapiPatient, patientExtensions, "patient.id");			
+		getExtensions(hapiPatient, patientExtensions, "patient.id");				
 		getExtensions(hapiPatient, patientExtensions, "patient");	
-		
+		getExtensions(hapiPatient, patientExtensions, "patient.status");	
+				
 		return hapiPatient;
 		
 	}

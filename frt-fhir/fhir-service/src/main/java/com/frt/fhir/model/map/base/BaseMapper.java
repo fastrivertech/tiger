@@ -529,26 +529,40 @@ public abstract class BaseMapper implements ResourceMapperInterface {
 	protected void getExtensions(org.hl7.fhir.r4.model.Patient hapiPatient, 
 								 List<PatientExtension> patientExtensions,
 								 String path) {
-		patientExtensions.forEach(patientExtension -> {
+		PatientExtension status = null;
+		for (PatientExtension patientExtension : patientExtensions) {		
 			// patient.extension
-			if (path.equalsIgnoreCase("patient") && path.equalsIgnoreCase(patientExtension.getPath())) {
+			if (path.equalsIgnoreCase("patient") && 
+				path.equalsIgnoreCase(patientExtension.getPath())) {
 				org.hl7.fhir.r4.model.Extension extension = new org.hl7.fhir.r4.model.Extension();
 				extension.setUrl(patientExtension.getUrl());
 				extension.setValue(new StringType(patientExtension.getValue()));
 				hapiPatient.addExtension(extension);
 			}
+			// patient.extension.status		
+			if (path.equalsIgnoreCase("patient.status") && 
+				path.equalsIgnoreCase(patientExtension.getPath())) {
+				status = patientExtension;
+			}
 			// patient.birthdate.extension
-			if (path.equalsIgnoreCase("patient.birthdate") && path.equalsIgnoreCase(patientExtension.getPath())) {
+			if (path.equalsIgnoreCase("patient.birthdate") && 
+				path.equalsIgnoreCase(patientExtension.getPath())) {
 				org.hl7.fhir.r4.model.Extension extension = new org.hl7.fhir.r4.model.Extension();
 				extension.setUrl(patientExtension.getUrl());
 				String value = patientExtension.getValue();
 				value = value.substring(value.indexOf("[") + 1, value.indexOf("]"));
 				extension.setValue(new org.hl7.fhir.r4.model.DateTimeType(value));
 				hapiPatient.getBirthDateElement().addExtension(extension);
-
 			}
-		});
-
+		};		
+		// patient.extension.status		
+		if (status != null) {
+			org.hl7.fhir.r4.model.Extension extension = new org.hl7.fhir.r4.model.Extension();
+			extension.setUrl(status.getUrl());
+			extension.setValue(new StringType(status.getValue()));
+			hapiPatient.getExtension().clear();
+			hapiPatient.addExtension(extension);
+		}
 	}
 
 }
