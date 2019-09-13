@@ -7,12 +7,16 @@ import java.util.HashMap;
 import java.util.Optional;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.core.MultivaluedHashMap;
+import org.hl7.fhir.r4.model.Extension;
 import org.hl7.fhir.r4.model.Parameters;
 import org.hl7.fhir.r4.model.Patient;
 import org.hl7.fhir.r4.model.Reference;
 import com.frt.fhir.service.FhirServiceException;
+import com.frt.dr.cache.CacheService;
+import com.frt.dr.cache.NamedCache;
 import com.frt.dr.service.query.QueryCriteria;
 import com.frt.dr.service.query.QueryOption;
+import com.frt.dr.transaction.model.Transaction;
 import com.frt.fhir.service.FhirService;
 
 public class MpiMergeValidator {
@@ -23,7 +27,8 @@ public class MpiMergeValidator {
 	}
 
 	public Patient validateSource(Parameters parameters, String name) 
-		throws MpiValidationException {
+		throws MpiValidationException, MpiHasMergedException {
+		Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();		
 		try {
 			Optional<Patient> source = Optional.empty();
 			List<org.hl7.fhir.r4.model.Type> resourceReferences = parameters.getParameters(name);
@@ -42,18 +47,24 @@ public class MpiMergeValidator {
 				if (!patient.isPresent()) {
 					throw new MpiValidationException(name + " invalid reference Id: " + reference);
 				};
+				
 				source = Optional.of(patient.get());
+				if (checkStatus(patient.get())) {
+					// has been merged
+					 if (cache.isPresent()) {
+				    	 cache.get().put(NamedCache.ACTION_CODE, "HasMerged");
+				     }							
+					return patient.get();
+				}
 			};
 
 			List<org.hl7.fhir.r4.model.Type> resourceIdentifiers = parameters.getParameters(name + "-identifier");
 			for (org.hl7.fhir.r4.model.Type resourceIdentifier :  resourceIdentifiers) {	
-				Reference reference = (Reference) resourceIdentifier;
 				
-				System.out.println(name + "-identifier = " +
-								   "{ system:" +
-								      reference.getIdentifier().getSystem() + " , " + 
-								      "value:" +
-						              reference.getIdentifier().getValue() + " }");
+				Reference reference = (Reference) resourceIdentifier;
+				String message = "{ system:" + reference.getIdentifier().getSystem() + " , " + 
+								    "value:" + reference.getIdentifier().getValue() + " }";				
+				System.out.println(name + "-identifier = " + message);				
 				
 				QueryCriteria criterias = new QueryCriteria();
 				MultivaluedMap params = new MultivaluedHashMap<>();
@@ -68,18 +79,12 @@ public class MpiMergeValidator {
 																	queryOption);
 				
 				if (!patients.isPresent() || patients.get().size() != 1) {
-					throw new MpiValidationException(
-							name + " invalid identifier: " + reference.getIdentifier().toString());
+					throw new MpiValidationException(name + " invalid identifier: " + message);
 				}
 				Patient patient = patients.get().get(0);
 				if (source.isPresent()) {
 					if (!source.get().getId().equals(patient.getId())) {
-						throw new MpiValidationException(name + 
-														 " invalid identifier: " + 
-														 "{ system:" +
-														 reference.getIdentifier().getSystem() + " , " + 
-														 "value:" +
-												         reference.getIdentifier().getValue() + " }");
+						throw new MpiValidationException(name +  " invalid identifier: " + message);
 					}
 				} else {
 					source = Optional.of(patient);
@@ -87,9 +92,25 @@ public class MpiMergeValidator {
 			};
 			   
 			return source.get();
+		} catch (MpiValidationException | MpiHasMergedException ex) {
+			throw ex;
 		} catch (FhirServiceException ex) {
 			throw new MpiValidationException(ex);
 		}
 	}
 
+	public static boolean checkStatus(Patient patient) {
+		boolean checked = false;
+		List<Extension> extensions = patient.getExtension();
+		for (Extension extension : extensions) {
+			if ("http://hl7.org/fhir/StructureDefinition/patient-status".equals(extension.getUrl())) {
+				if ("M".equals(extension.getValue().toString())) {
+					checked = true;
+					break;
+				}
+			}
+		}
+		return checked;
+	}
+	
 }

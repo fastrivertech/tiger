@@ -79,15 +79,23 @@ public class MpiServiceImpl implements MpiService<Patient> {
 	 */
 	@SuppressWarnings("unchecked")
 	public Patient merge(org.hl7.fhir.r4.model.Parameters parameters)
-		throws MpiServiceException, MpiValidationException {	
+		throws MpiServiceException, MpiValidationException, MpiHasMergedException {	
 		
 		Optional<NamedCache<String, String>> cache = CacheService.getInstance().getCache();
 		MpiMergeValidator validator = new MpiMergeValidator(fhirService);
 		try {
 			// source-patient
 			Patient source = validator.validateSource(parameters, "source-patient");
+			if (cache.isPresent()) { 
+				String action = (String)cache.get().get(NamedCache.ACTION_CODE);			
+				if (action.equalsIgnoreCase("HasMerged")) {								
+					return source;
+				}
+			} 
+			 
 			// patient
 			Patient target = validator.validateSource(parameters, "patient");
+			
 			// result-patient
 			if (parameters.hasParameter("result-patient")) {
 				List<org.hl7.fhir.r4.model.Parameters.ParametersParameterComponent> result_patients = parameters.getParameter();
@@ -107,6 +115,7 @@ public class MpiServiceImpl implements MpiService<Patient> {
 				if (linked.equals(target.getId())) { 
 					if (cache.isPresent()) {
 						cache.get().put(NamedCache.ACTION_CODE, "HasMerged");
+						return source;
 					}
 				} else {
 					throw new MpiValidationException("source patient:" + 
@@ -119,15 +128,14 @@ public class MpiServiceImpl implements MpiService<Patient> {
 			Patient result = MpiMerge.execute(source, target);
 	
 			// update target 
-			Patient updatedTarget = fhirService.update("Patient", 
+			Patient updatedTarget = fhirService.updatem("Patient", 
 					                                   result.getIdElement().getIdPart(),
-					                                   result, 
-					                                   Transaction.ActionCode.M);
+					                                   result);
 			// update source
 			Patient updatedSource = fhirService.update("Patient", 
                     		                           source.getIdElement().getIdPart(),
                                                        source,
-                                                       Transaction.ActionCode.U);
+                                                       Transaction.ActionCode.M);
 			// delete source
 			// fhirService.delete(Patient.class.getName(), 
 			//	 			      source.getId());
@@ -137,8 +145,8 @@ public class MpiServiceImpl implements MpiService<Patient> {
 			 }				
 			 
 			return updatedTarget;  												     
-		} catch (Exception ex) {
-			throw new MpiServiceException(ex);
+		} catch (MpiServiceException | MpiValidationException | MpiHasMergedException ex) {
+			throw ex;
 		}
 	}
 
