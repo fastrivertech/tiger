@@ -247,12 +247,20 @@ public class MpiResourceOperation extends ResourceOperation {
 															      location, 
 															      MimeType.APPLICATION_FHIR_JSON);
 			} else if (action.equalsIgnoreCase("HasMerged")) {
+				/*
 				String resourceInJson = jsonParser.serialize(merged);      				
 				String location = uriInfo.getAbsolutePath().getPath() + "_history/" + merged.getMeta().getVersionId();
 				return ResourceOperationResponseBuilder.build(resourceInJson, Status.ACCEPTED, 
 															  merged.getMeta().getVersionId(), 
 														      location, 
-														      MimeType.APPLICATION_FHIR_JSON);				
+														      MimeType.APPLICATION_FHIR_JSON);	
+				*/
+				String message = "patient " + merged.getId() + " has been merged"; 
+				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(message, 
+																								  OperationOutcome.IssueSeverity.INFORMATION, 
+																								  OperationOutcome.IssueType.INFORMATIONAL);
+				String resourceInJson = jsonParser.serialize(outcome);
+				return ResourceOperationResponseBuilder.build(resourceInJson, Status.ACCEPTED, "", MimeType.APPLICATION_FHIR_JSON);								
 			} else {
 				String error = "failed to merge '" + body + "'"; 
 				OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
@@ -260,7 +268,7 @@ public class MpiResourceOperation extends ResourceOperation {
 																								  OperationOutcome.IssueType.PROCESSING);
 				String resourceInJson = jsonParser.serialize(outcome);
 				return ResourceOperationResponseBuilder.build(resourceInJson, Status.BAD_REQUEST, "", MimeType.APPLICATION_FHIR_JSON);
-			}		
+			}					
 		} catch (OperationValidatorException | MpiValidationException vx) {
 			String error = "invalid parameter: " + vx.getMessage(); 
 			OperationOutcome outcome = ResourceOperationResponseBuilder.buildOperationOutcome(error, 
