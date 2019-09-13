@@ -32,20 +32,20 @@ public class MpiMergeValidator {
 		try {
 			Optional<Patient> source = Optional.empty();
 			List<org.hl7.fhir.r4.model.Type> resourceReferences = parameters.getParameters(name);
-			for (org.hl7.fhir.r4.model.Type resourceReference :  resourceReferences) {	
-				String reference = ((Reference) resourceReference).getReference();
+			for (org.hl7.fhir.r4.model.Type resourceReference :  resourceReferences) {
 				
-				System.out.println(name + " reference = " + reference);				
-				
+				String reference = ((Reference) resourceReference).getReference();				
+				System.out.println(name + " reference = " + reference);								
 				String[] tokens = reference.split("/");
 				if (tokens.length != 2 && !tokens[0].equalsIgnoreCase("Patient")) {
-					throw new MpiValidationException(name + " invalid type: " + reference);
+					throw new MpiValidationException(name + " Reference: " + reference + " invalid");
 				}
+				
 				Optional<Patient> patient = fhirService.read("Patient", 
 														     tokens[1],
 														     new QueryOption());
 				if (!patient.isPresent()) {
-					throw new MpiValidationException(name + " invalid reference Id: " + reference);
+					throw new MpiValidationException(name + " Reference : " + reference + " not found");
 				};
 				
 				source = Optional.of(patient.get());
@@ -85,7 +85,7 @@ public class MpiMergeValidator {
 																		queryOption);
 					if (!more.isPresent() ||
 						more.get().isEmpty()) {																				
-						throw new MpiValidationException(name + " invalid identifier: " + message);
+						throw new MpiValidationException(name + " identifier: " + message + " not found");
 					} else if (checkStatus(more.get().get(0))) {
 						// has been merged
 						if (cache.isPresent()) {
@@ -93,14 +93,14 @@ public class MpiMergeValidator {
 						}							
 						return more.get().get(0);
 					} else {
-						throw new MpiValidationException(name + " invalid identifier: " + message);						
+						throw new MpiValidationException(name + " identifier: " + message + " not found");						
 					}
 				}
 			
 				Patient patient = patients.get().get(0);
 				if (source.isPresent()) {
 					if (!source.get().getId().equals(patient.getId())) {
-						throw new MpiValidationException(name +  " invalid identifier: " + message);
+						throw new MpiValidationException(name +  " identifier: " + message);
 					}
 				} else {
 					source = Optional.of(patient);
