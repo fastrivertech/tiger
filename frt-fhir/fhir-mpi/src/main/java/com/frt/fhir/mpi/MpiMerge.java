@@ -20,6 +20,7 @@ public class MpiMerge {
 		sourceLink.setType(LinkType.REPLACES);
 		Reference replaces = new Reference();
 		replaces.setReference(source.getId());
+		replaces.setDisplay(source.getName().get(0).getNameAsSingleString());
 		sourceLink.setOther(replaces);
 		target.addLink(sourceLink);
 
@@ -27,6 +28,7 @@ public class MpiMerge {
 		targetLink.setType(LinkType.REPLACEDBY);
 		Reference replaced = new Reference();
 		replaced.setReference(target.getId());
+		replaced.setDisplay(target.getName().get(0).getNameAsSingleString());
 		targetLink.setOther(replaced);
 		source.addLink(targetLink);
 			 
