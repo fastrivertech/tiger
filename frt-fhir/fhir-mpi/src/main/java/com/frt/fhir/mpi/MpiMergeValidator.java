@@ -76,11 +76,27 @@ public class MpiMergeValidator {
 				queryOption.setStatus(QueryOption.StatusType.ACTIVE);
 				Optional<List<Patient>> patients = fhirService.read("Patient",
 																	criterias, 
-																	queryOption);
-				
-				if (!patients.isPresent() || patients.get().size() != 1) {
-					throw new MpiValidationException(name + " invalid identifier: " + message);
+																	queryOption);				
+				if (!patients.isPresent() ||
+					patients.get().isEmpty()) {
+					queryOption.setStatus(QueryOption.StatusType.INACTIVE);
+					Optional<List<Patient>> more = fhirService.read("Patient",
+																		criterias, 
+																		queryOption);
+					if (!more.isPresent() ||
+						more.get().isEmpty()) {																				
+						throw new MpiValidationException(name + " invalid identifier: " + message);
+					} else if (checkStatus(more.get().get(0))) {
+						// has been merged
+						if (cache.isPresent()) {
+							cache.get().put(NamedCache.ACTION_CODE, "HasMerged");
+						}							
+						return more.get().get(0);
+					} else {
+						throw new MpiValidationException(name + " invalid identifier: " + message);						
+					}
 				}
+			
 				Patient patient = patients.get().get(0);
 				if (source.isPresent()) {
 					if (!source.get().getId().equals(patient.getId())) {
