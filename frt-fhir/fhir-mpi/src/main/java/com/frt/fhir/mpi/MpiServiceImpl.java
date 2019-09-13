@@ -88,7 +88,8 @@ public class MpiServiceImpl implements MpiService<Patient> {
 			Patient source = validator.validateSource(parameters, "source-patient");
 			if (cache.isPresent()) { 
 				String action = (String)cache.get().get(NamedCache.ACTION_CODE);			
-				if (action.equalsIgnoreCase("HasMerged")) {								
+				if (action != null &&
+					action.equalsIgnoreCase("HasMerged")) {								
 					return source;
 				}
 			} 
