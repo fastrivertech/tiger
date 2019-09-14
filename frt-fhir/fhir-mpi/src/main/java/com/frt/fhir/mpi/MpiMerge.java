@@ -36,7 +36,8 @@ public class MpiMerge {
 		target.getIdentifier().clear();
 		identifiers.forEach(identifier->{
 			Identifier instance = identifier.copy();			
-			if (instance.getSystem().contains(("localid"))) {
+			if (instance.getSystem().contains(("localid")) ||
+				instance.getSystem().contains(("urn:oid"))) {
 				instance.setUse(IdentifierUse.OLD);
 			}
 			target.addIdentifier(instance);
