@@ -23,6 +23,7 @@ import com.frt.fhir.model.map.ResourceMapperInterface;
 import com.frt.fhir.service.validation.ValidationService;
 import com.frt.fhir.service.validation.ValidatorException;
 import com.frt.fhir.model.ResourceDictionary;
+import com.frt.dr.model.Extension;
 import com.frt.dr.service.RepositoryApplication;
 import com.frt.dr.service.RepositoryContext;
 import com.frt.dr.service.RepositoryContextException;
@@ -77,16 +78,30 @@ public class FhirService {
 			if (frtResources.isPresent()) {
 				hapiResources = Optional.of(new ArrayList());				
 				for (com.frt.dr.model.DomainResource frtResource : frtResources.get()) {
-					R hapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object) frtResource);		
-					boolean active = ((com.frt.dr.model.base.Patient)frtResource).getActive();					
-					if (options.getStatus() == QueryOption.StatusType.ALL) {					
-						hapiResources.get().add(hapiResource);
-					} else if (options.getStatus() == QueryOption.StatusType.ACTIVE && active) {					
-						hapiResources.get().add(hapiResource);
-					} else if (options.getStatus() == QueryOption.StatusType.INACTIVE && !active) {					
-						hapiResources.get().add(hapiResource);
-					}					
-				}				
+					R hapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object) frtResource);	
+					// check if it is merged
+					boolean merged = checkStatus(frtResource, Transaction.ActionCode.M);
+					if (!merged) {
+						/*
+						List<org.hl7.fhir.r4.model.Patient.PatientLinkComponent> links = ((org.hl7.fhir.r4.model.Patient)hapiResource).getLink();
+						org.hl7.fhir.r4.model.Patient.PatientLinkComponent link = links.get(0);
+						String reference = link.getOther().getReference();
+						String[] tokens = reference.split("/");
+						if (tokens.length != 2 && !tokens[0].equalsIgnoreCase("Patient")) {
+							throw new FhirServiceException("merged patient: " + frtResource.getId() + "'s link " + reference + " invalid");
+						}
+						hapiResource = (R)read(type, tokens[1], options).get();
+						*/
+						boolean active = ((com.frt.dr.model.base.Patient)frtResource).getActive();					
+						if (options.getStatus() == QueryOption.StatusType.ALL) {					
+							hapiResources.get().add(hapiResource);
+						} else if (options.getStatus() == QueryOption.StatusType.ACTIVE && active) {					
+							hapiResources.get().add(hapiResource);
+						} else if (options.getStatus() == QueryOption.StatusType.INACTIVE && !active) {					
+							hapiResources.get().add(hapiResource);
+						}	
+					}
+				}	
 			}
 			return hapiResources;
 		} catch (MapperException | RepositoryServiceException ex) {
@@ -102,13 +117,23 @@ public class FhirService {
 		try {
 			ResourceMapperInterface mapper = ResourceMapperFactory.getInstance().create(type);
 			ResourceDictionary.ResourcePair resourcePair = ResourceDictionary.get(type);
-			
 			Optional<com.frt.dr.model.DomainResource> frtResource = repository.read(resourcePair.getFrt(), id);
 			if (frtResource.isPresent()) {
 				R hapiResource = (R)mapper.from(resourcePair.getFrt()).to(resourcePair.getFhir()).map((Object)frtResource.get());
 				retVal = Optional.of(hapiResource);
+				// check if it is merged
+				boolean merged = checkStatus(frtResource.get(), Transaction.ActionCode.M);
+				if (merged) {
+					List<org.hl7.fhir.r4.model.Patient.PatientLinkComponent> links = ((org.hl7.fhir.r4.model.Patient)hapiResource).getLink();
+					org.hl7.fhir.r4.model.Patient.PatientLinkComponent link = links.get(0);
+					String reference = link.getOther().getReference();
+					String[] tokens = reference.split("/");
+					if (tokens.length != 2 && !tokens[0].equalsIgnoreCase("Patient")) {
+						throw new FhirServiceException("merged patient: " + id + "'s link " + reference + " invalid");
+					}
+					return read(type, tokens[1], options);
+				}
 			}
-			
 			return retVal;
 		} catch (MapperException | RepositoryServiceException ex) {
 			throw new FhirServiceException(ex);
@@ -210,4 +235,18 @@ public class FhirService {
 		}
 	}
 	
+    private <R extends com.frt.dr.model.DomainResource> boolean checkStatus(R resource, Transaction.ActionCode status) {
+    	boolean checked = false;
+		List<Extension> extensions = resource.getExtensions();
+		for (Extension extension : extensions) {
+			if("patient.status".equals(extension.getPath())) {
+				if (status.name().equals(extension.getValue())) {							
+					checked = true;
+					break;
+				}
+			}
+		}	
+    	return checked;
+    }
+    
 }
