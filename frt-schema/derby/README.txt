@@ -60,8 +60,9 @@ default user: APP/null or app/null
 	<property name="javax.persistence.jdbc.user" value="APP"/>
 	<property name="javax.persistence.jdbc.password" value="null"/>
 
-
-
+4. start derby server
+C:\frt-dev\tiger\env.bat
+C:\frt-dev\tiger\frt-schema\derby\start-derby.bat
 
 
 
