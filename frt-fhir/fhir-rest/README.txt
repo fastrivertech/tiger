@@ -38,7 +38,7 @@ Install and Deploy:
    4.1) For Splice Machine, 
         refer to frt-service-package\schema\sp\README.txt
    4.2) For Derby, 
-		refere to frt-service-package\schema\sp\README.txt	  	  
+		refere to frt-service-package\schema\derby\README.txt	  	  
 
 5) Deploy FRT FHIR Applications
    5.1) Drop frt-service-package\app\frt-fhir-doc.war 
