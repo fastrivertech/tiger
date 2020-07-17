@@ -17,7 +17,8 @@ Options: [-s seed] [-p populationSize]
          [-g gender] [-a minAge-maxAge]");
          [-o overflowPopulation]");
          [--config* value]");
-          * any setting from src/main/resources/synthea.properties");
+         * any setting from src/main/resources/synthea.properties");
+					
 Examples:");
 run_synthea Massachusetts
 run_synthea Alaska Juneau
@@ -30,14 +31,16 @@ run_synthea -p 10 --exporter.fhir.export true
 run_synthea --exporter.baseDirectory \"./output_tx/\" Texas
 run_synthea --exporter.fhir_r4.export true
 
-e.g. 
+run_synthea -p 10 --exporter.fhir_r4.export true California
+this generates 10 patients for California in fhir_r4 format
 
-./synthea.bat  -p 100 Utah "Salt Lake City"
+e.g. 
+./run_synthea.bat  -p 100 Utah "Salt Lake City"
 
 this will generate 100 patient fhir resource in the form of fhir bundle in json format,
 
 Sample stdout:
-
+--------------
 Loaded 4 modules.
 Running with options:
 Population: 100
