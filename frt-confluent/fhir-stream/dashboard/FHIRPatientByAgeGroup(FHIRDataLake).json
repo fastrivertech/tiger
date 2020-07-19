@@ -1,0 +1,197 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 7,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "avgLineShow": true,
+      "cacheTimeout": null,
+      "chartType": "bar chart",
+      "colorSch": [
+        "#73BF69",
+        "#FADE2A"
+      ],
+      "colorSet": [
+        {
+          "color": "#73BF69",
+          "text": "female"
+        },
+        {
+          "color": "#FADE2A",
+          "text": "male"
+        }
+      ],
+      "datasource": "DEMO-MySQL",
+      "description": "FHIR Patient  Grouped by Age Range from DataLake HDFS\n",
+      "fontColor": "#fff",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 15,
+        "w": 14,
+        "x": 0,
+        "y": 0
+      },
+      "height": 400,
+      "id": 6,
+      "interval": null,
+      "labelOrientation": "45 degrees",
+      "labelSpace": 40,
+      "legend": {
+        "position": "On graph",
+        "show": true
+      },
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "orientation": "vertical",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  REPLACE(AGE_GROUP, '>91', '91 and above') AS metric,\n  PATIENT_GENDER,\n  MAX(CONVERT(PATIENT_COUNT,SIGNED))\nFROM FHIR_GROUPBY_AGE\nGROUP BY AGE_GROUP, PATIENT_GENDER\nORDER BY AGE_GROUP\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "FHIR Patient By Age Range",
+      "transparent": true,
+      "type": "grafana-groupedbarchart-panel",
+      "valueName": "current",
+      "width": 800
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "100%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "DEMO-MySQL",
+      "decimals": null,
+      "fontSize": "100%",
+      "format": "short",
+      "gridPos": {
+        "h": 14,
+        "w": 10,
+        "x": 14,
+        "y": 0
+      },
+      "hideTimeOverride": false,
+      "id": 4,
+      "interval": "",
+      "legend": {
+        "header": "",
+        "percentage": true,
+        "show": true,
+        "values": true
+      },
+      "legendType": "On graph",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "PATIENT_GENDER",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  TS AS \"time\",\n  AGE_GROUP AS metric,\n  SUM(CAST(PATIENT_COUNT AS UNSIGNED))\nFROM FHIR_GROUPBY_AGE\nGROUP BY AGE_GROUP, TS\nORDER BY AGE_GROUP, TS",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "TS"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "FHIR_GROUPBY_AGE",
+          "timeColumn": "TS",
+          "timeColumnType": "bigint",
+          "where": []
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Total Patient Count  ",
+      "transparent": true,
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 18,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-2d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "",
+  "title": "FHIR Patient By Age  Group  ( FHIR Data Lake )",
+  "uid": "dM1ZBxRZz",
+  "version": 38
+}

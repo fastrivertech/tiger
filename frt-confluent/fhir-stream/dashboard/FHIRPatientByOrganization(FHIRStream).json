@@ -1,0 +1,303 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "FHIR Patient By Organizations",
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 3,
+  "links": [],
+  "panels": [
+    {
+      "aliasColors": {},
+      "avgLineShow": true,
+      "cacheTimeout": null,
+      "chartType": "stacked bar chart",
+      "colorSch": [
+        "#FADE2A",
+        "#73BF69"
+      ],
+      "colorSet": [
+        {
+          "color": "#FADE2A",
+          "text": "male"
+        },
+        {
+          "color": "#73BF69",
+          "text": "female"
+        }
+      ],
+      "datasource": "DEMO-MySQL",
+      "description": "Dynamically computing from FHIR  message streams, FHIR  Patient  Count (M/F) Grouped By Health Organization",
+      "fontColor": "#fff",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 21,
+        "w": 14,
+        "x": 0,
+        "y": 0
+      },
+      "height": 400,
+      "id": 8,
+      "interval": null,
+      "labelOrientation": "45 degrees",
+      "labelSpace": 40,
+      "legend": {
+        "position": "On graph",
+        "show": true
+      },
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "orientation": "vertical",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  CONCAT(ORG_ID, \":\", FHIR_ORG.NAME) AS metric,\n  PATIENT_GENDER,\n  MAX(CNT)\nFROM FHIR_GROUPBY_ORG_GENDER, FHIR_ORG \nWHERE\nFHIR_GROUPBY_ORG_GENDER.ORG_ID=FHIR_ORG.ID \nGROUP BY FHIR_GROUPBY_ORG_GENDER.ORG_ID, FHIR_ORG.NAME, PATIENT_GENDER\nORDER BY 1 ASC",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "FHIR  Patient  Count Grouped By Health Organization",
+      "type": "grafana-groupedbarchart-panel",
+      "valueName": "current",
+      "width": 800
+    },
+    {
+      "aliasColors": {},
+      "breakPoint": "50%",
+      "cacheTimeout": null,
+      "combine": {
+        "label": "Others",
+        "threshold": 0
+      },
+      "datasource": "DEMO-MySQL",
+      "description": "Dynamically computing from real-time FHIR message streaming, Total FHIR Patients  By Hospitals",
+      "fontSize": "80%",
+      "format": "short",
+      "gridPos": {
+        "h": 13,
+        "w": 9,
+        "x": 14,
+        "y": 0
+      },
+      "id": 10,
+      "interval": null,
+      "legend": {
+        "show": true,
+        "values": true
+      },
+      "legendType": "Under graph",
+      "links": [],
+      "maxDataPoints": 3,
+      "nullPointMode": "connected",
+      "pieType": "pie",
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "format": "time_series",
+          "group": [],
+          "metricColumn": "none",
+          "rawQuery": true,
+          "rawSql": "SELECT A.TS AS \"time\",   \r\n       A.ORG_UNIQ_NAME AS metrics,   \r\n\t   SUM(A.CNT) \r\nFROM (SELECT CURRENT_TIMESTAMP AS TS, CONCAT(ORG_ID, \"-\", FHIR_ORG.NAME) AS ORG_UNIQ_NAME, PATIENT_GENDER, max(CNT) AS CNT     \r\n\t  FROM FHIR_GROUPBY_ORG_GENDER, FHIR_ORG\r\n\t  WHERE FHIR_GROUPBY_ORG_GENDER.ORG_ID=FHIR_ORG.ID\r\n\t  GROUP BY ORG_UNIQ_NAME, PATIENT_GENDER) AS A \r\nGROUP BY ORG_UNIQ_NAME, TS;\r\n\r\n",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "value"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "timeColumn": "time",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "Total FHIR Patients  By Hospitals",
+      "transparent": true,
+      "type": "grafana-piechart-panel",
+      "valueName": "current"
+    },
+    {
+      "columns": [],
+      "datasource": "DEMO-MySQL",
+      "description": "Dynamically updating the FHIR Health Organizations",
+      "fontSize": "80%",
+      "gridPos": {
+        "h": 10,
+        "w": 9,
+        "x": 14,
+        "y": 13
+      },
+      "id": 6,
+      "links": [],
+      "pageSize": 10,
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 0,
+        "desc": true
+      },
+      "styles": [
+        {
+          "alias": "ID",
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "link": true,
+          "mappingType": 1,
+          "pattern": "ID",
+          "type": "string"
+        },
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "decimals": 2,
+          "pattern": "/.*/",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        }
+      ],
+      "targets": [
+        {
+          "format": "table",
+          "group": [],
+          "metricColumn": "ID",
+          "rawQuery": true,
+          "rawSql": "SELECT\n  ID,\n  NAME,\n  TELECOM,\n  ADDRESSLINE,\n  CITY,\n  STATE,\n  POSTALCODE\nFROM FHIR_ORG\nORDER BY ID",
+          "refId": "A",
+          "select": [
+            [
+              {
+                "params": [
+                  "ID"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "NAME"
+                ],
+                "type": "column"
+              }
+            ],
+            [
+              {
+                "params": [
+                  "TELECOM"
+                ],
+                "type": "column"
+              }
+            ]
+          ],
+          "table": "FHIR_ORG_SINK",
+          "timeColumn": "ID",
+          "timeColumnType": "varchar",
+          "where": [
+            {
+              "name": "$__timeFilter",
+              "params": [],
+              "type": "macro"
+            }
+          ]
+        }
+      ],
+      "timeFrom": null,
+      "timeShift": null,
+      "title": "FHIR Health Organizations",
+      "transform": "table",
+      "type": "table"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 18,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-2d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "timezone": "browser",
+  "title": "FHIR Patient By Organization ( FHIR Stream )",
+  "uid": "0R6ysC6mk",
+  "version": 87
+}
