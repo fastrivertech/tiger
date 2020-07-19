@@ -73,9 +73,9 @@
     <module>frt-stream</module>
     <module>frt-datalake</module>	
     <module>frt-service</module>    
-	<module>frt-fhir</module>	
-	<module>frt-package</module>	
-	<module>frt-demo</module>		
+		<module>frt-fhir</module>	
+		<module>frt-confluent</module>		
+		<module>frt-package</module>
   </modules>
   	
   <dependencyManagement>
