@@ -28,7 +28,7 @@
     <description>Fast River CONFLUENT STREAM PACKAGE ${frt.version}</description>
 
 	<build>
-		<finalName>frt-confluent-stream-package</finalName>
+		<finalName>frt-stream-package</finalName>
 		<plugins>		
 		<plugin>
   		<groupId>org.apache.maven.plugins</groupId>
@@ -36,7 +36,7 @@
   		<version>${maven.assembly.plugin.version}</version>
   		<configuration>
     		<descriptor>./src/main/assembly/dist.xml</descriptor>
-    		<finalName>frt-confluent-stream-package-${frt.version}</finalName>
+    		<finalName>frt-stream-package-${frt.version}</finalName>
     		<outputDirectory>target</outputDirectory>  
  			<appendAssemblyId>false</appendAssemblyId> 
   		</configuration>
