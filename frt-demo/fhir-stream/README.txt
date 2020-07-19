@@ -1,14 +1,23 @@
 # Copyright(c) 2018 Fast River Technologies Inc. All Rights Reserved.
 -------------------------------------------------------------------------
 DataFlow: 
-	patient messages -> FhirTopic 
-	  			     -> FHIR_JSON_STREAM stream with patient schema
-				     -> FHIR_AVRO_STREAM stream
+	patient fhir messages -> FhirTopic 
+	  			 -> FHIR_JSON_STREAM stream with patient schema
+				   -> FHIR_AVRO_STREAM stream
 					 -> FHIR_GROUPBY_ORG table with queries 
 					 -> FHIR_GROUPBY_ORG_SINK table with dashboard schema
 					 -> FHIR MySQL Sink Connector
 					 -> MySQL FHIR_GROUPBY_ORG_SINK table
 					 -> Grafana dashboard
+-------------------------------------------------------------------------
+DataFlow: 
+	messages -> FhirDlTopic 
+	  			 -> FHIR_DL_STREAM stream
+				   -> FHIR_GROUPBY_AGE stream
+					 -> FHIR_GROUPBY_AGE table with dashboard schema
+					 -> FHIR MySQL Sink Connector
+					 -> MySQL FHIR_GROUPBY_AGE table
+					 -> Grafana dashboard					 
 --------------------------------------------------------------------------
 DataFlow: managingOrganization.csv
 				     -> FHIR ORG File Source Connector
@@ -80,7 +89,7 @@ Start up Services
 2) stop connect
   - /home/ec2-user/confluent-5.2.0/bin/confluent stop connect
 3)launch Confluent Center
-  - http://ec2-54-202-179-213.us-west-2.compute.amazonaws.com:9021     
+  - http://ec2-18-236-222-44.us-west-2.compute.amazonaws.com:9021     
 4)create FhirTopic
   - /home/ec2-user/confluent-5.2.0/bin/create-fhir-topics.sh  
 5)create fhir streams
@@ -105,7 +114,7 @@ Start up Services
   d) in step c), each state's patient json files are read and sent by a java task (thread), the tasks are running in paralelle, generating an infux of patients across the states into the kafka streaming system.
   
 10)launch Grafana
-  - http://ec2-54-202-179-213.us-west-2.compute.amazonaws.com:3000 
+  - http://ec2-18-237-217-142.us-west-2.compute.amazonaws.com:3000 
 11)create the FHIR dashboard
 
 Clean up
