@@ -9,7 +9,7 @@
 	<fileSets>
 		<fileSet>
 			<directory>${project.basedir}/fhir-stream</directory>
-			<outputDirectory>fhir-stream</outputDirectory>            
+			<outputDirectory></outputDirectory>            
 			<includes>
 				<include>**/*</include>
 			</includes>
