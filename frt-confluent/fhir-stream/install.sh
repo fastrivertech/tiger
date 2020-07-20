@@ -3,8 +3,8 @@
 ## @echo off
 
 if (( $# < 1 )); then
-  echo "usage: deploy2confluent.sh <confluent-base-dir>"
-  echo "example: deploy2confluent.sh ~/confluent-5.2.0"
+  echo "usage: install.sh <confluent-base-dir>"
+  echo "example: install.sh ~/confluent-5.2.0"
   exit 0
 else
   echo "parameter count:" $#

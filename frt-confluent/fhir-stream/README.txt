@@ -51,27 +51,29 @@ Prerequisites
 4)Install MySQL on EC2  
   - https://github.com/fastrivertech/tiger/wiki/Install-MySQL-on-EC2-(RHEL7)
   - MySQL 8.0
-  - Use tiger\frt-demo\fhir-stream\mysql\create_db_user.sql
+  - Use tiger\fhir-stream\mysql\create_db_user.sql
     > Create FHIR_DB database
-	> Create a frt user with mysql-native-password policy  
-  - Use tiger\frt-demo\fhir-stream\mysql\create_grafana_ds_resources.sql
+	  > Create a frt user with mysql-native-password policy  
+  - Use tiger\fhir-stream\mysql\create_grafana_ds_resources.sql
     > Create FHIR_GROUPBY_STATE_GENDER table with ET timestamp for historical data simulation
-	> Create insert trigger DS_TRIGGER_STATE_GENDER to map influx state + gender aggregate records to any time range by tagging the record with ET timestamp
-	> ET will be used by grafana time series queries to render history data points on a time graph.
+	  > Create insert trigger DS_TRIGGER_STATE_GENDER to map influx state + gender aggregate records to any time range by tagging the record with ET timestamp
+	  > ET will be used by Grafana time series queries to render history data points on a time graph.
 5)Build the Tiger project using JDK 11.0.2 and get frt-service-package ready  
   
 Setup
 -----
 1) Copy demo scripts and confluent patches, e.g. as below:
-cp tiger\frt-demo\fhir-stream to /home/ec2-user/fhir-stream (on EC2)
-2) Deploy demo scripts and patching confluent as below:
+   cp tiger\fhir-stream to /home/ec2-user/fhir-stream (on EC2)
+2) Install scripts and patching confluent as below:
    cd /home/ec2-user/fhir-stream and execute 
-   ./deploy2confluent.sh ~/confluent-5.2.0 (assume confluent is installed as shown)
-   OR do following steps:
+   ./install.sh ~/confluent-5.2.0 (assume confluent is installed as shown)
+	 
+   or manually do following steps:
    2.1)cp /home/ec2-user/fhir-stream/confluent/etc/kafka-connect-jdbc/*.* /home/ec2-user/confluent-5.2.0/etc/kafka-connect-jdbc
    2.2)cp /home/ec2-user/fhir-stream/confluent/etc/schema-registry/*.* /home/ec2-user/confluent-5.2.0/etc/schema-registry
    2.3)cp /home/ec2-user/fhir-stream/confluent/share/java/kafka-connect-jdbc/*.jar /home/ec2-user/confluent-5.2.0/share/java/kafka-connect-jdbc
    2.4)cp /home/ec2-user/fhir-stream/confluent/bin/*.* /home/ec2-user/confluent-5.2.0/bin
+	 
 3) Deploy FRT service tools by doing below:
    unzip frt-service-package-1.0.0-SNAPSHOT.zip to /home/ec2-user/frt-service
 
