@@ -45,7 +45,7 @@
 		<javax.xml.bind.version>2.2.7</javax.xml.bind.version>
 		<javax.activation.version>1.2.0</javax.activation.version>
 		<!-- junit -->
-		<junit.version>4.12</junit.version>		
+		<junit.version>4.13.1</junit.version>		
         <sonar.skip>true</sonar.skip>
 		<soapui.maven.plugin.version>5.0.0</soapui.maven.plugin.version>
 	</properties>
