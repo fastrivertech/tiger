@@ -43,7 +43,7 @@
 	<!-- apache derby -->
 	<org.apache.derby.version>10.14.2.0</org.apache.derby.version>	
 	<!-- hadoop -->
-	<org.apache.hadoop.version>2.6.0-cdh5.13.3</org.apache.hadoop.version>
+	<org.apache.hadoop.version>3.2.3</org.apache.hadoop.version>
 	<!-- hapi -->
 	<hapi.fhir.version>3.7.0</hapi.fhir.version>		
 	<!-- gson -->
